@@ -15,30 +15,28 @@
 #include <sys/wait.h>
 #include <signal.h>
 
-#define MAXDATASIZE 100 // max number of bytes we can get at once
+#define MAXDATASIZE 100
 #define BACKLOG 10
 
-fd_set master;   // conjunto maestro de descriptores de fichero
-fd_set read_fds; // conjunto temporal de descriptores de fichero para select()
-struct sockaddr_in remoteaddr; // dirección del cliente
+fd_set master;
+fd_set read_fds;
+struct sockaddr_in remoteaddr;
 int addrlen;
 int fdmax;
 
 int crearSocketDeEscucha(int puerto) {
-	struct sockaddr_in myaddr;     // dirección del servidor
+	struct sockaddr_in myaddr;
 	int listener;
 	int yes = 1;
 	if ((listener = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
 		perror("socket");
 		exit(1);
 	}
-	// obviar el mensaje "address already in use" (la dirección ya se está usando)
 	if (setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int))
 			== -1) {
 		perror("setsockopt");
 		exit(1);
 	}
-	// enlazar
 	myaddr.sin_family = AF_INET;
 	myaddr.sin_addr.s_addr = INADDR_ANY;
 	myaddr.sin_port = htons(puerto);
@@ -47,7 +45,6 @@ int crearSocketDeEscucha(int puerto) {
 		perror("bind");
 		exit(1);
 	}
-	// escuchar
 	if (listen(listener, 10) == -1) {
 		perror("listen");
 		exit(1);
@@ -56,7 +53,6 @@ int crearSocketDeEscucha(int puerto) {
 }
 
 int aceptarNuevaConexion(int listener) {
-	// gestionar nuevas conexiones
 	addrlen = sizeof(remoteaddr);
 	int newfd = accept(listener, (struct sockaddr *) &remoteaddr, &addrlen);
 	if (newfd == -1) {
@@ -64,8 +60,8 @@ int aceptarNuevaConexion(int listener) {
 	}
 	else
 	{
-		FD_SET(newfd, &master); // añadir al conjunto maestro
-		if (newfd > fdmax) {    // actualizar el máximo
+		FD_SET(newfd, &master);
+		if (newfd > fdmax) {
 			fdmax = newfd;
 		}
 		printf("selectserver: new connection from %s on "
@@ -90,8 +86,8 @@ int conexionConServidor(char* ip,char* puerto)
 {
 	int sockfd;
 	struct addrinfo hints;
-	struct addrinfo *servinfo;//=malloc(sizeof(struct addrinfo*));
-	struct addrinfo *p;///=malloc(sizeof(struct addrinfo*));
+	struct addrinfo *servinfo;
+	struct addrinfo *p;
 	int rv;
 	char s[INET6_ADDRSTRLEN];
 	memset(&hints, 0, sizeof hints);
@@ -101,7 +97,6 @@ int conexionConServidor(char* ip,char* puerto)
 		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
 		return 1;
 	}
-	// loop through all the results and connect to the first we can
 	for(p = servinfo; p != NULL; p = p->ai_next) {
 		if ((sockfd = socket(p->ai_family, p->ai_socktype,
 				p->ai_protocol)) == -1) {
@@ -124,6 +119,5 @@ int conexionConServidor(char* ip,char* puerto)
 			s, sizeof s);
 	printf("Conexion con ip %s - ", s);
 	freeaddrinfo(servinfo); // all done with this structure
-
 	return sockfd;
 }
