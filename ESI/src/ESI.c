@@ -12,10 +12,16 @@
 #include "commons/string.h"
 
 void main() {
-	char * j=malloc(5);
-	strcpy(j,"hola");
+	char * j=malloc(50);
 	int socketServer=conexionConServidor("127.0.0.1","9034");
-	send(socketServer,j,sizeof(j),0);
+	while(1){
+		fflush(stdin);
+		gets(j);
+		int tamano=strlen(j)+1;
+		printf("\ņ %s \n",j);
+		send(socketServer,&tamano,sizeof(int),0);
+		send(socketServer,j,tamano,0);
+	}
 }
 
 
