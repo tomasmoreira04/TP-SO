@@ -21,10 +21,11 @@
 fd_set master;
 fd_set read_fds;
 struct sockaddr_in remoteaddr;
-int addrlen;
+//int addrlen;
+socklen_t addrlen;
 int fdmax;
 
-int crearSocketDeEscucha(int puerto) {
+int crear_socket_de_escucha(int puerto) {
 	struct sockaddr_in myaddr;
 	int listener;
 	int yes = 1;
@@ -52,7 +53,7 @@ int crearSocketDeEscucha(int puerto) {
 	return listener;
 }
 
-int aceptarNuevaConexion(int listener) {
+int aceptar_nueva_conexion(int listener) {
 	addrlen = sizeof(remoteaddr);
 	int newfd = accept(listener, (struct sockaddr *) &remoteaddr, &addrlen);
 	if (newfd == -1) {
@@ -77,13 +78,11 @@ void *get_in_addr(struct sockaddr *sa) {
 	return &(((struct sockaddr_in6*) sa)->sin6_addr);
 }
 
-void *getSin_Addr(struct sockaddr *sa)
-{
+void *getSin_Addr(struct sockaddr *sa) {
 	return &(((struct sockaddr_in*)sa)->sin_addr); //IPV4
 }
 
-int conexionConServidor(char* ip,char* puerto)
-{
+int conexion_con_servidor(char* ip, char* puerto) {
 	int sockfd;
 	struct addrinfo hints;
 	struct addrinfo *servinfo;

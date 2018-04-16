@@ -1,0 +1,1 @@
+void* conectar_coordinador();

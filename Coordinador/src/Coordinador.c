@@ -9,6 +9,7 @@
 #include "../../Librerias/src/Socket.c"
 
 #define PORT 9034
+
 void main() {
 	int listener;
 	char buf[256];
@@ -18,7 +19,7 @@ void main() {
 	FD_ZERO(&master);
 	FD_ZERO(&read_fds);
 
-	listener = crearSocketDeEscucha(PORT);
+	listener = crear_socket_de_escucha(PORT);
 
 	FD_SET(listener, &master);
 	fdmax = listener;
@@ -31,15 +32,15 @@ void main() {
 		for (i = 3; i <= fdmax; i++) {
 			if (FD_ISSET(i, &read_fds)) {
 				if (i == listener) {
-					aceptarNuevaConexion(listener);
+					aceptar_nueva_conexion(listener);
 				} else {
-					int tamano;
-					recv(i,&tamano,sizeof(int),0);
+					int tamanio;
+					recv(i, &tamanio, sizeof(int), 0);
 
-					printf(" tamano:   %d\n  ",tamano);
+					printf(" tamanio:   %s\n  ", tamanio);
 
 
-					if ((nbytes = recv(i, buf, tamano, 0)) <= 0) {
+					if ((nbytes = recv(i, buf, tamanio, 0)) <= 0) {
 						if (nbytes == 0) {
 							printf("selectserver: socket %d hung up\n", i);
 						} else {
@@ -52,11 +53,11 @@ void main() {
 						for (j = 3; j <= fdmax; j++) {
 							if (FD_ISSET(j, &master)) {
 								if (j != listener && j != i) {
-									int tamanoEnviar=strlen(buf);
+									int tamanio_enviar = strlen(buf);
 
-									send(j,&tamanoEnviar,sizeof(int),0);
+									send(j, &tamanio_enviar, sizeof(int), 0);
 
-									if (send(j, buf, tamanoEnviar, 0) == -1) {
+									if (send(j, buf, tamanio_enviar, 0) == -1) {
 										perror("send");
 									}
 								}
