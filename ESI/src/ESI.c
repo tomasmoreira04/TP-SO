@@ -1,15 +1,37 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <errno.h>
-#include <string.h>
-#include <netdb.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include "../../Librerias/src/Socket.c"
-#include "commons/string.h"
+#include "ESI.h"
+
+
+Configuracion* leerArchivoConfiguracion(t_config* archivo){
+	Configuracion* arch = malloc(sizeof(Configuracion));
+	strcpy(arch->ip_planificador, config_get_string_value(archivo,"IP_PLANIFICADOR"));
+	arch->puerto_planificador = config_get_int_value(archivo, "PUERTO_PLANIFICADOR");
+	strcpy(arch->ip_coordinador, config_get_string_value(archivo,"IP_COORDINADOR"));
+	arch->puerto_coordinador = config_get_int_value(archivo,"PUERTO_COORDINADOR");
+	return arch;
+}
+
+int estanTodosLosCampos(t_config* conf, char** campos){
+	for(int i=0;i<config_keys_amount(conf);i++){
+		if(!config_has_property(conf,campos[i])){
+			return 0;
+		}
+	}
+	return 1;
+}
+
+t_config* crearArchivoConfiguracion(char* path, char** campos){
+	t_config* conf= config_create(path);
+	if(!estanTodosLosCampos(conf, campos) || conf == NULL){
+		puts("Archivo de Configuracion Invalido");
+		exit(EXIT_FAILURE);
+	}
+
+	return conf;
+
+}
+
+
+
 
 void main() {
 	char * j=malloc(50);
