@@ -1,1 +1,1 @@
-void* conectar_coordinador();
+void RecibirConecciones();

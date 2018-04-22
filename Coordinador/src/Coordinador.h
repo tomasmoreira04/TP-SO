@@ -19,6 +19,12 @@
 #include "../../Bibliotecas/src/Socket.c"
 #include "commons/config.h"
 
+#include <errno.h>
+#include <netdb.h>
+#include <pthread.h>
+#include "commons/string.h"
+
+
 #define PORT 9034
 
 typedef struct{
