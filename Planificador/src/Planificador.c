@@ -53,7 +53,8 @@ void RecibirConecciones() {
 					int tamanio;
 					recv(i, &tamanio, sizeof(int), 0);
 
-					printf(" tamanio:   %s\n  ", tamanio);
+					//puts(tamanio);
+					printf(" tamanio:   %d\n  ", tamanio);
 
 					if ((nbytes = recv(i, buf, tamanio, 0)) <= 0) {
 						if (nbytes == 0) {
