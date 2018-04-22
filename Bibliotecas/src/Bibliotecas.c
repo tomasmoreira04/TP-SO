@@ -1,6 +1,6 @@
 /*
  ============================================================================
- Name        : Librerias.c
+ Name        : Bibliotecas.c
  Author      : 
  Version     :
  Copyright   : Your copyright notice

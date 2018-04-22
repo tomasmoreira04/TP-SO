@@ -18,7 +18,7 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include "../../Librerias/src/Socket.c"
+#include "../../Bibliotecas/src/Socket.c"
 #include "commons/string.h"
 #include "commons/config.h"
 

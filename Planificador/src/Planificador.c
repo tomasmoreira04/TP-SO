@@ -12,7 +12,7 @@
 #include "commons/string.h"
 #include "Consola.h"
 #include "Planificador.h"
-#include "../../Librerias/src/Socket.c"
+#include "../../Bibliotecas/src/Socket.c"
 
 void main() {
 	pthread_t thread_consola, thread_escucha;
