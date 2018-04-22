@@ -13,7 +13,7 @@
 
 void main() {
 	char * j=malloc(50);
-	int socketServer=conexionConServidor("127.0.0.1","9034");
+	int socketServer = conexion_con_servidor("127.0.0.1","9034");
 	while(1){
 		int tamano=strlen(j);
 		recv(socketServer,&tamano,sizeof(int),0);
