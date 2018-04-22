@@ -1,16 +1,29 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include  <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include "../../Bibliotecas/src/Socket.c"
+#include "Coordinador.h"
 
-#define PORT 9034
+Configuracion* leerArchivoConfiguracion(t_config* arch){
+	Configuracion* conf = malloc(sizeof(Configuracion));
+	conf->puerto= config_get_int_value(arch, "PUERTO");
+	strcpy(conf->algoritmo, config_get_string_value(arch,"ALGORITMO"));
+	conf->cant_entradas = config_get_int_value(arch, "CANTIDAD_ENTRADAS");
+	conf->tamanio_entradas = config_get_int_value(arch, "TAMANIO_ENTRADAS");
+	conf->retardo = config_get_int_value(arch, "RETARDO");
+	return conf;
+}
+
+
+void mostrarPorPantallaConfig(Configuracion* config){
+	puts("----------------PROCESO COORDINADOR--------------");
+	printf("PUERTO: %i\n", config->puerto);
+	printf("ALGORITMO: %s\n", config->algoritmo);
+	printf("CANTIDAD DE ENTRADAS: %i\n", config->cant_entradas);
+	printf("TAMANIO DE ENTRADAS: %i\n", config-> tamanio_entradas);
+	printf("RETARDO: %i\n", config->retardo);
+
+}
+
 
 void main() {
+
 	int listener;
 	char buf[256];
 	int nbytes;
