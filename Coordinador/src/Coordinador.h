@@ -1,42 +1,20 @@
-/*
- * Coordinador.h
- *
- *  Created on: 22 abr. 2018
- *      Author: utnso
- */
-
 #ifndef COORDINADOR_H_
 #define COORDINADOR_H_
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include "../../Bibliotecas/src/Socket.c"
-#include "commons/config.h"
-
-#include <errno.h>
-#include <netdb.h>
-#include <pthread.h>
-#include "commons/string.h"
-
-
-#define PORT 9034
+#define MAX_ALG 4
 
 typedef struct{
-	int puerto;
-	char algoritmo[3];
-	int cant_entradas;
+	int puerto_escucha;
+	char algoritmo_distribucion[MAX_ALG];
+	int cantidad_entradas;
 	int tamanio_entradas;
 	int retardo;
-}Configuracion;
+} Configuracion;
 
-Configuracion* leerArchivoConfiguracion(t_config* arch);
-void mostrarPorPantallaConfig(Configuracion* config);
-
+Configuracion* cargar_configuracion(char* ruta);
+int estan_todos_los_campos(t_config* config, char** campos);
+void mostrar_por_pantalla_config(Configuracion* config);
+t_config* crear_archivo_configuracion(char* ruta, char** campos);
+t_config* crear_prueba_configuracion(char* algoritmo_reemplazo);
 
 #endif /* COORDINADOR_H_ */
