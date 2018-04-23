@@ -39,7 +39,7 @@ int main() {
 
 
 Configuracion* cargar_configuracion(char* ruta) {
-	char* campos[6] = { "PUERTO_ESCUCHA","ALGORITMO_DISTRIBUCION", "CANTIDAD_ENTRADAS", "TAMANIO_ENTRADAS", "RETARDO" };
+	char* campos[5] = { "PUERTO_ESCUCHA","ALGORITMO_DISTRIBUCION", "CANTIDAD_ENTRADAS", "TAMANIO_ENTRADAS", "RETARDO" };
 	t_config* archivo = crear_archivo_configuracion(ruta, campos);
 	Configuracion* configuracion = malloc(sizeof(Configuracion));
 	configuracion->puerto_escucha = config_get_int_value(archivo, "PUERTO_ESCUCHA");

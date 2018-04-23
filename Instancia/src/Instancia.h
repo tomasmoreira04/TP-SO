@@ -1,4 +1,5 @@
 #include <commons/config.h>
+#include <sys/types.h>
 
 #ifndef INSTANCIA_H_
 #define INSTANCIA_H_
@@ -10,11 +11,11 @@
 
 typedef struct{
 	char ip_coordinador[LARGO_IP];
-	int puerto_coordinador;
+	int32_t puerto_coordinador;
 	char algoritmo_reemplazo[MAX_ALG];
 	char punto_montaje[MAX_RUTA];
 	char nombre_instancia[MAX_NOMBRE];
-	int intervalo_dump;
+	int32_t intervalo_dump;
 } Configuracion;
 
 

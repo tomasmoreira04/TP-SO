@@ -1,39 +1,21 @@
-/*
- * ESI.h
- *
- *  Created on: 17 abr. 2018
- *      Author: utnso
- */
+#include "commons/config.h"
 
 #ifndef ESI_H_
 #define ESI_H_
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <errno.h>
-#include <string.h>
-#include <netdb.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include "../../Bibliotecas/src/Socket.c"
-#include "commons/string.h"
-#include "commons/config.h"
-
-t_config* archivoConf;
+#define LARGO_IP 16
 
 typedef struct{
-	char ip_planificador[20];
+	char ip_planificador[LARGO_IP];
 	int32_t puerto_planificador;
-	char ip_coordinador[20];
+	char ip_coordinador[LARGO_IP];
 	int32_t puerto_coordinador;
 
-}Configuracion;
+} Configuracion;
 
-Configuracion* leerArchivoConfiguracion(t_config* archivo);
-int estanTodosLosCampos(t_config* conf, char** campos);
-t_config* crearArchivoConfiguracion(char* path, char** campos);
+Configuracion* cargar_configuracion(char* ruta);
+t_config* crear_prueba_configuracion();
+t_config* crear_archivo_configuracion(char* ruta, char** campos);
+int estan_todos_los_campos(t_config* config, char** campos);
 
 #endif /* ESI_H_ */
