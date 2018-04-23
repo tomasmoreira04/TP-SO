@@ -1,4 +1,3 @@
-
 #include <commons/config.h>
 #include <commons/string.h>
 
@@ -29,4 +28,3 @@ int estan_todos_los_campos(t_config* config, char** campos);
 int parsear_algoritmo(char* valor);
 Configuracion* leer_archivo_configuracion(t_config* archivo);
 void copiar_claves_configuracion(char* destino, char** claves_leidas, int cant);
-void RecibirConecciones();

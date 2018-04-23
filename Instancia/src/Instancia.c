@@ -1,15 +1,19 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <errno.h>
-#include <string.h>
-#include <netdb.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include "../../Bibliotecas/src/Socket.c"
-#include "commons/string.h"
+#include "Instancia.h"
+
+
+Configuracion* leerArchivoConfiguracion(t_config* arch){
+	Configuracion* conf = malloc(sizeof(Configuracion));
+	strcpy(conf->ip_coordinador, config_get_string_value(arch,"IP_COORDINADOR"));
+	conf->puerto_coordinador = config_get_int_value(arch, "PUERTO_COORDINADOR");
+	strcpy(conf->algoritmo_reemplazo, config_get_string_value(arch, "ALGORITMO DE REEMPLAZO"));
+	strcpy(conf->path, config_get_string_value(arch, "PATH"));
+	strcpy(conf->nombre, config_get_string_value(arch, "NOMBRE"));
+	conf->intervalo_dump = config_get_int_value(arch, "INTERVALO DE DUMP");
+	return conf;
+}
+
+
+
 
 void main() {
 	char * j=malloc(50);

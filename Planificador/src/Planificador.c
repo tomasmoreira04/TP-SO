@@ -15,26 +15,76 @@
 #include <commons/config.h>
 #include <commons/string.h>
 
+#define PORT 9034
+
 int main() {
 	Configuracion* configuracion = cargar_configuracion("Configuracion.cfg");
-
-	pthread_t thread_consola, thread_escucha;
-	pthread_create(&thread_consola, NULL, iniciar_consola, NULL);
-	pthread_create(&thread_escucha, NULL, conectar_coordinador, NULL);
-	pthread_join(thread_consola, NULL);
-	return 0;
+	//pthread_t thread_consola, thread_escucha;
+	//pthread_create(&thread_consola, NULL, iniciar_consola, NULL);
+	RecibirConecciones();
+	//pthread_join(thread_consola, NULL);
 }
 
-void* conectar_coordinador() {
-	char* buffer = "hola";
-	int socket_server = conexion_con_servidor("127.0.0.1", "9034");
-	send(socket_server, buffer, strlen(buffer), 0);
-		/*while(1){
-			int tamanio = strlen(j);
-			recv(socket_server, j, tamanio, 0);
-			printf("\nel valor %s\n", j);
-		}*/
-	return NULL;
+void RecibirConecciones() {
+	int listener;
+	char buf[256];
+	int nbytes;
+
+	int i, j;
+	FD_ZERO(&master);
+	FD_ZERO(&read_fds);
+
+	listener = crear_socket_de_escucha(PORT);
+
+	FD_SET(listener, &master);
+	fdmax = listener;
+	while (1) {
+		read_fds = master;
+		if (select(fdmax + 1, &read_fds, NULL, NULL, NULL) == -1) {
+			perror("select");
+			exit(1);
+		}
+		for (i = 3; i <= fdmax; i++) {
+			if (FD_ISSET(i, &read_fds)) {
+				if (i == listener) {
+					aceptar_nueva_conexion(listener);
+				}
+				else {
+					int tamanio;
+					recv(i, &tamanio, sizeof(int), 0);
+
+					//puts(tamanio);
+					printf(" tamanio:   %d\n  ", tamanio);
+
+					if ((nbytes = recv(i, buf, tamanio, 0)) <= 0) {
+						if (nbytes == 0) {
+							printf("selectserver: socket %d hung up\n", i);
+						} else {
+							perror("recv");
+						}
+						close(i);
+						FD_CLR(i, &master);
+					} else {
+						printf("me llego %s\n", buf);
+						/*for (j = 3; j <= fdmax; j++) {
+							if (FD_ISSET(j, &master)) {
+								if (j != listener && j != i) {
+									int tamanio_enviar = strlen(buf);
+
+									send(j, &tamanio_enviar, sizeof(int), 0);
+
+									if (send(j, buf, tamanio_enviar, 0) == -1) {
+										perror("send");
+									}
+								}
+							}
+						}*/
+						//consola planif
+					}
+				}
+			}
+		}
+	}
 }
 
 Configuracion* cargar_configuracion(char* ruta) {
