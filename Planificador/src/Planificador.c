@@ -32,7 +32,10 @@ void RecibirConecciones(int puerto) {
 	FD_ZERO(&master);
 	FD_ZERO(&read_fds);
 
+	int socketCoordinador=9999;
+
 	listener = crear_socket_de_escucha(puerto);
+
 
 	FD_SET(listener, &master);
 	fdmax = listener;
@@ -48,36 +51,23 @@ void RecibirConecciones(int puerto) {
 					aceptar_nueva_conexion(listener);
 				}
 				else {
-					int tamanio;
-					recv(i, &tamanio, sizeof(int), 0);
-
-					//puts(tamanio);
-					printf(" tamanio:   %d\n  ", tamanio);
-
-					if ((nbytes = recv(i, buf, tamanio, 0)) <= 0) {
-						if (nbytes == 0) {
-							printf("selectserver: socket %d hung up\n", i);
-						} else {
-							perror("recv");
-						}
-						close(i);
-						FD_CLR(i, &master);
-					} else {
-						printf("me llego %s\n", buf);
-						/*for (j = 3; j <= fdmax; j++) {
-							if (FD_ISSET(j, &master)) {
-								if (j != listener && j != i) {
-									int tamanio_enviar = strlen(buf);
-
-									send(j, &tamanio_enviar, sizeof(int), 0);
-
-									if (send(j, buf, tamanio_enviar, 0) == -1) {
-										perror("send");
-									}
-								}
+					if(i==socketCoordinador){
+						//ACCIONES Coordinador
+					}
+					else{
+						void *stream;
+						int accion=recibirMensaje(i,&stream);
+						switch(accion){
+						case 1:{
+							printf("me llego: %s \n",(char*) stream);
 							}
-						}*/
-						//consola planif
+						break;
+						case 0:{
+							close(socket);
+							FD_CLR(i,&master);
+						}
+						break;
+						}
 					}
 				}
 			}

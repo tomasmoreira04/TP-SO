@@ -14,25 +14,62 @@
 #include "commons/string.h"
 #include "Coordinador.h"
 
+//ACCIONES DE LOS HILOS
+void *rutinaInstancia(void * arg){
+	int socketCPU = (int)arg;
+
+}
+
+void *rutinaESI(void * arg){
+	int socketCPU = (int)arg;
+}
+
+void crearHilo(int nuevoSocket,int modulo){
+	pthread_attr_t attr;
+	pthread_t hilo ;
+	//Hilos detachables cpn manejo de errores tienen que ser logs
+	int  res;
+	res = pthread_attr_init(&attr);
+	if (res != 0) {
+		printf("Error en los atributos del hilo");
+	}
+
+	res = pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+	if (res != 0) {
+		printf("Error en el seteado del estado de detached");
+	}
+	res=(modulo==instancia) ? pthread_create (&hilo ,&attr, rutinaInstancia , (void *)nuevoSocket)
+			:pthread_create (&hilo ,&attr, rutinaESI , (void *)nuevoSocket);
+
+	if (res != 0) {
+		printf("Error en la creacion del hilo");
+	}
+	pthread_attr_destroy(&attr);
+}
+
+
+
 int main() {
 	Configuracion* configuracion = cargar_configuracion("Configuracion.cfg");
 	mostrar_por_pantalla_config(configuracion);
+
+	int listener=crear_socket_de_escucha(9035);
 	char* buffer = "ESI";
 	int socket_server = conexion_con_servidor("127.0.0.1", "9034");
 	int longitud;
 	longitud = strlen(buffer) + 1;
 	send(socket_server, &longitud, sizeof(int), 0);
 	send(socket_server, buffer, longitud, 0);
-	/*while(1){
-	 int tamanio = strlen(j);
-	 recv(socket_server, j, tamanio, 0);
-	 printf("\nel valor %s\n", j);
-	 }*/
 
-	/*void* conectar_planificador() {
 
-	 return NULL;
-	 }*/
+	int nuevoSocket;
+	int modulo;
+	while(1){
+		nuevoSocket=aceptar_nueva_conexion(listener);
+		recv(nuevoSocket, &modulo, sizeof(int), 0);//HS
+		crearHilo(nuevoSocket,modulo);
+	}
+
 	return 0;
 }
 

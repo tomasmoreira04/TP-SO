@@ -18,12 +18,58 @@
 #define MAXDATASIZE 100
 #define BACKLOG 10
 
+
+enum {
+	coordinador=1,
+	planificador=2,
+	esi=3,
+	instancia=4
+};
+
+
 fd_set master;
 fd_set read_fds;
 struct sockaddr_in remoteaddr;
 //int addrlen;
 socklen_t addrlen;
 int fdmax;
+
+typedef struct{
+	int accion;
+	int tamano;
+}header;
+
+int recibirMensaje(int socket,void** stream){
+	header heder;//MODIFICAR FLAG
+	int verificador;
+	if((verificador=recv(socket,&heder,sizeof(header),0))<=0){
+		if(verificador==0){
+			return 0;
+		}
+		else
+			perror("Error en el recv");
+	}
+	*stream=malloc(heder.tamano);
+	if((verificador=recv(socket,*stream,heder.tamano,0))<=0){
+		if(verificador==0){
+			return 0;
+		}
+		else
+			perror("Error al recibir el stream");
+	}
+
+
+	return heder.accion;
+}
+
+void enviarMensaje(int socket,int accion,void* contenido,int tamano){
+	header heder={.accion=accion,.tamano=tamano};//MODIFICAR FLAG
+	void* stream=malloc( sizeof(header)+tamano );
+	memcpy(stream, &heder, sizeof(header));
+	memcpy(stream+sizeof(header), contenido, tamano);
+	send(socket,stream,sizeof(header)+tamano,0);
+	free(stream);
+}
 
 int crear_socket_de_escucha(int puerto) {
 	struct sockaddr_in myaddr;
@@ -120,3 +166,9 @@ int conexion_con_servidor(char* ip, char* puerto) {
 	freeaddrinfo(servinfo); // all done with this structure
 	return sockfd;
 }
+
+void handShake(int socket,int modulo){
+	send(socket, &modulo, sizeof(int), 0);//HS
+}
+
+

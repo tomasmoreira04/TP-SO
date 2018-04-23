@@ -15,17 +15,17 @@
 
 int main() {
 	Configuracion* configuracion = cargar_configuracion("Configuracion.cfg");
-/*
 	char * j=malloc(50);
-	int socketServer = conexion_con_servidor("127.0.0.1","9034");
+	int socketPlanificador= conexion_con_servidor("127.0.0.1","9034");
+	int socketCoordinador= conexion_con_servidor("127.0.0.1","9035");
+	handShake(socketCoordinador,esi);
 	while(1){
 		fflush(stdin);
 		gets(j);
 		int tamano=strlen(j)+1;
 		printf("\ņ %s \n",j);
-		send(socketServer,&tamano,sizeof(int),0);
-		send(socketServer,j,tamano,0);
-	}*/
+		enviarMensaje(socketPlanificador,1,j,strlen(j)+1);
+	}
 	return 0;
 }
 
