@@ -21,11 +21,11 @@ int main() {
 	Configuracion* configuracion = cargar_configuracion("Configuracion.cfg");
 	//pthread_t thread_consola, thread_escucha;
 	//pthread_create(&thread_consola, NULL, iniciar_consola, NULL);
-	RecibirConecciones();
+	RecibirConecciones(configuracion->puerto_escucha);
 	//pthread_join(thread_consola, NULL);
 }
 
-void RecibirConecciones() {
+void RecibirConecciones(int puerto) {
 	int listener;
 	char buf[256];
 	int nbytes;
@@ -34,7 +34,7 @@ void RecibirConecciones() {
 	FD_ZERO(&master);
 	FD_ZERO(&read_fds);
 
-	listener = crear_socket_de_escucha(PORT);
+	listener = crear_socket_de_escucha(puerto);
 
 	FD_SET(listener, &master);
 	fdmax = listener;
@@ -96,6 +96,7 @@ Configuracion* cargar_configuracion(char* ruta) {
 	configuracion->puerto_coordinador = config_get_int_value(archivo, "PUERTO_COORDINADOR");
 	strcpy(configuracion->ip_coordinador, config_get_string_value(archivo,"IP_COORDINADOR"));
 	strcpy(configuracion->algoritmo_planificacion, config_get_string_value(archivo, "ALGORITMO_PLANIFICACION"));
+	//strcpy(configuracion->claves_bloqueadas, config_get_array_value(archivo, "CLAVES_BLOQUEADAS"));
 	return configuracion;
 }
 
@@ -118,7 +119,7 @@ t_config* crear_prueba_configuracion(char* algoritmo_planificacion) {
 	char* ruta = "Configuracion.cfg";
 	fclose(fopen(ruta, "w"));
 	t_config *config = config_create(ruta);
-	config_set_value(config, "PUERTO_ESCUCHA", "8000");
+	config_set_value(config, "PUERTO_ESCUCHA", "9034");
 	config_set_value(config, "ALGORITMO_PLANIFICACION", algoritmo_planificacion);
 	config_set_value(config, "ESTIMACION_INICIAL", "5");
 	config_set_value(config, "IP_COORDINADOR", "127.0.0.1");

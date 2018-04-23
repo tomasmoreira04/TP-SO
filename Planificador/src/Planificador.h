@@ -18,7 +18,7 @@ typedef struct {
 	int32_t estimacion_inicial;
 	char ip_coordinador[LARGO_IP];
 	int32_t puerto_coordinador;
-	char claves_bloqueadas[MAX_CLAVES][LARGO_CLAVE];
+	char* claves_bloqueadas[LARGO_CLAVE];
 } Configuracion;
 
 void* conectar_coordinador();
@@ -28,5 +28,5 @@ t_config* crear_archivo_configuracion(char* ruta, char** campos);
 int estan_todos_los_campos(t_config* config, char** campos);
 int parsear_algoritmo(char* valor);
 Configuracion* leer_archivo_configuracion(t_config* archivo);
-void copiar_claves_configuracion(char* destino, char** claves_leidas, int cant);
+void separar_claves(char** claves);
 void RecibirConecciones();
