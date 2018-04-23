@@ -15,8 +15,6 @@
 #include <commons/config.h>
 #include <commons/string.h>
 
-#define PORT 9034
-
 int main() {
 	Configuracion* configuracion = cargar_configuracion("Configuracion.cfg");
 	//pthread_t thread_consola, thread_escucha;

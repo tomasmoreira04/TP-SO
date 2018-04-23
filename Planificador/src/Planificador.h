@@ -1,11 +1,10 @@
-
 #include <commons/config.h>
-#include <commons/string.h>
 
 #define LARGO_CLAVE 20
 #define MAX_CLAVES 50
 #define LARGO_VALOR 20
 #define LARGO_IP 16
+#define MAX_ALG 7
 
 typedef struct {
 	char clave[LARGO_CLAVE];
@@ -14,7 +13,7 @@ typedef struct {
 
 typedef struct {
 	int32_t puerto_escucha;
-	char algoritmo_planificacion[6];
+	char algoritmo_planificacion[MAX_ALG];
 	int32_t estimacion_inicial;
 	char ip_coordinador[LARGO_IP];
 	int32_t puerto_coordinador;

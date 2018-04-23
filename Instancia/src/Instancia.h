@@ -1,42 +1,26 @@
-/*
- * Instancia.h
- *
- *  Created on: 22 abr. 2018
- *      Author: utnso
- */
+#include <commons/config.h>
 
 #ifndef INSTANCIA_H_
 #define INSTANCIA_H_
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <errno.h>
-#include <string.h>
-#include <netdb.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include "../../Bibliotecas/src/Socket.c"
-#include "commons/string.h"
-#include "commons/config.h"
-
+#define LARGO_IP 16
+#define MAX_ALG 5
+#define MAX_RUTA 50
+#define MAX_NOMBRE 20
 
 typedef struct{
-
-	char ip_coordinador[20];
+	char ip_coordinador[LARGO_IP];
 	int puerto_coordinador;
-	char algoritmo_reemplazo[5];
-	char* path;
-	char* nombre;
+	char algoritmo_reemplazo[MAX_ALG];
+	char punto_montaje[MAX_RUTA];
+	char nombre_instancia[MAX_NOMBRE];
 	int intervalo_dump;
-
-}Configuracion;
-
-
-Configuracion* leerArchivoConfiguracion(t_config* arch);
+} Configuracion;
 
 
+Configuracion* cargar_configuracion(char* ruta);
+int estan_todos_los_campos(t_config* config, char** campos);
+t_config* crear_archivo_configuracion(char* ruta, char** campos);
+t_config* crear_prueba_configuracion(char* algoritmo_reemplazo);
 
 #endif /* INSTANCIA_H_ */
