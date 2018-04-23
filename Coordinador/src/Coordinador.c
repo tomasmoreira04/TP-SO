@@ -1,5 +1,32 @@
 #include "Coordinador.h"
 
+void crearLogOp(){
+FILE* logOp = fopen(LOGPATH,"a+");
+fprintf(logOp,"%s", "ESI		OPERACION\n\n");
+fclose(logOp);
+}
+
+void guardarEnLog(int idEsi, char* sentencia){
+FILE* logOp = fopen(LOGPATH,"a+");
+fprintf(logOp,"%d %s %s %s",idEsi,"		",sentencia,"\n");
+fclose(logOp);
+}
+
+
+void mostrarArchivo(char* path){
+	FILE *f =fopen(path,"r");
+
+	if( f==NULL )
+	  printf("Error al abrir el archivo\n");
+		else
+		{
+		while( !feof(f) )
+		printf("%c",getc(f));
+		}
+	fclose(f);
+}
+
+
 Configuracion* leerArchivoConfiguracion(t_config* arch) {
 	Configuracion* conf = malloc(sizeof(Configuracion));
 	conf->puerto = config_get_int_value(arch, "PUERTO");

@@ -26,6 +26,7 @@
 
 
 #define PORT 9034
+#define LOGPATH "../Log.txt"
 
 typedef struct{
 	int puerto;
