@@ -17,7 +17,6 @@
 int main() {
 	Configuracion* configuracion = cargar_configuracion("Configuracion.cfg");
 	mostrar_por_pantalla_config(configuracion);
-
 	char* buffer = "ESI";
 	int socket_server = conexion_con_servidor("127.0.0.1", "9034");
 	int longitud;
@@ -85,5 +84,30 @@ void mostrar_por_pantalla_config(Configuracion* config) {
 	printf("TAMANIO DE ENTRADAS: %i\n", config->tamanio_entradas);
 	printf("RETARDO: %i\n", config->retardo);
 
+}
+
+void guardarEnLog(int idEsi, char* sentencia){
+FILE* logOp = fopen(LOGPATH,"a+");
+fprintf(logOp,"%d %s %s %s",idEsi,"		",sentencia,"\n");
+fclose(logOp);
+}
+
+void mostrarArchivo(char* path){
+	FILE *f =fopen(path,"r");
+
+	if( f==NULL )
+	  printf("Error al abrir el archivo\n");
+		else
+		{
+		while( !feof(f) )
+		printf("%c",getc(f));
+		}
+	fclose(f);
+}
+
+void crearLogOp(){
+FILE* logOp = fopen(LOGPATH,"a+");
+fprintf(logOp,"%s", "ESI		OPERACION\n\n");
+fclose(logOp);
 }
 
