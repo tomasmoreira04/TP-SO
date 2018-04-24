@@ -14,65 +14,57 @@
 #include "commons/string.h"
 #include "Coordinador.h"
 
+int main() {
+	Configuracion* configuracion = cargar_configuracion("Configuracion.cfg");
+	mostrar_por_pantalla_config(configuracion);
+	int listener = crear_socket_de_escucha(configuracion->puerto_escucha);
+	int socket_server = conexion_con_servidor("127.0.0.1", "9034");
+	int bytes = enviar("ESI", socket_server);
+	int nuevo_socket, modulo;
+	while(1){
+		nuevo_socket = aceptar_nueva_conexion(listener);
+		recv(nuevo_socket, &modulo, sizeof(int), 0);//HS
+		crear_hilo(nuevo_socket, modulo);
+	}
+	return 0;
+}
+
 //ACCIONES DE LOS HILOS
-void *rutinaInstancia(void * arg){
-	int socketCPU = (int)arg;
-
+void *rutina_instancia(void * arg) {
+	int socket_CPU = (int)arg;
+	return NULL;
 }
 
-void *rutinaESI(void * arg){
-	int socketCPU = (int)arg;
+void *rutina_ESI(void * arg) {
+	int socket_CPU = (int)arg;
+	return NULL;
 }
 
-void crearHilo(int nuevoSocket,int modulo){
+void crear_hilo(int nuevo_socket, int modulo) {
 	pthread_attr_t attr;
-	pthread_t hilo ;
-	//Hilos detachables cpn manejo de errores tienen que ser logs
-	int  res;
-	res = pthread_attr_init(&attr);
+	pthread_t hilo;
+	//Hilos detachables con manejo de errores tienen que ser logs
+	int  res = pthread_attr_init(&attr);
 	if (res != 0) {
 		printf("Error en los atributos del hilo");
 	}
-
 	res = pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 	if (res != 0) {
 		printf("Error en el seteado del estado de detached");
 	}
-	res=(modulo==instancia) ? pthread_create (&hilo ,&attr, rutinaInstancia , (void *)nuevoSocket)
-			:pthread_create (&hilo ,&attr, rutinaESI , (void *)nuevoSocket);
-
+	res = (modulo == instancia) ? pthread_create (&hilo ,&attr, rutina_instancia , (void *)nuevo_socket)
+			:pthread_create (&hilo ,&attr, rutina_ESI , (void *)nuevo_socket);
 	if (res != 0) {
 		printf("Error en la creacion del hilo");
 	}
 	pthread_attr_destroy(&attr);
 }
 
-
-
-int main() {
-	Configuracion* configuracion = cargar_configuracion("Configuracion.cfg");
-	mostrar_por_pantalla_config(configuracion);
-
-	int listener=crear_socket_de_escucha(9035);
-	char* buffer = "ESI";
-	int socket_server = conexion_con_servidor("127.0.0.1", "9034");
-	int longitud;
-	longitud = strlen(buffer) + 1;
-	send(socket_server, &longitud, sizeof(int), 0);
-	send(socket_server, buffer, longitud, 0);
-
-
-	int nuevoSocket;
-	int modulo;
-	while(1){
-		nuevoSocket=aceptar_nueva_conexion(listener);
-		recv(nuevoSocket, &modulo, sizeof(int), 0);//HS
-		crearHilo(nuevoSocket,modulo);
-	}
-
-	return 0;
+int enviar(char* mensaje, int socket) {
+	int longitud = strlen(mensaje) + 1;
+	send(socket, &longitud, sizeof(int), 0);
+	return send(socket, mensaje, longitud, 0);
 }
-
 
 Configuracion* cargar_configuracion(char* ruta) {
 	char* campos[5] = { "PUERTO_ESCUCHA","ALGORITMO_DISTRIBUCION", "CANTIDAD_ENTRADAS", "TAMANIO_ENTRADAS", "RETARDO" };
@@ -104,7 +96,7 @@ t_config* crear_prueba_configuracion(char* algoritmo_distribucion) {
 	char* ruta = "Configuracion.cfg";
 	fclose(fopen(ruta, "w"));
 	t_config *config = config_create(ruta);
-	config_set_value(config, "PUERTO_ESCUCHA", "8000");
+	config_set_value(config, "PUERTO_ESCUCHA", "9035");
 	config_set_value(config, "ALGORITMO_DISTRIBUCION", algoritmo_distribucion);
 	config_set_value(config, "CANTIDAD_ENTRADAS", "20");
 	config_set_value(config, "TAMANIO_ENTRADAS", "100");
@@ -120,31 +112,27 @@ void mostrar_por_pantalla_config(Configuracion* config) {
 	printf("CANTIDAD DE ENTRADAS: %i\n", config->cantidad_entradas);
 	printf("TAMANIO DE ENTRADAS: %i\n", config->tamanio_entradas);
 	printf("RETARDO: %i\n", config->retardo);
-
 }
 
-void guardarEnLog(int idEsi, char* sentencia){
-FILE* logOp = fopen(LOGPATH,"a+");
-fprintf(logOp,"%d %s %s %s",idEsi,"		",sentencia,"\n");
-fclose(logOp);
+void guardar_en_log(int id_esi, char* sentencia) {
+	FILE* log_operacion = fopen(LOG_PATH, "a+");
+	fprintf(log_operacion,"%d %s %s %s",id_esi,"		",sentencia,"\n");
+	fclose(log_operacion);
 }
 
-void mostrarArchivo(char* path){
-	FILE *f =fopen(path,"r");
-
-	if( f==NULL )
+void mostrar_archivo(char* path) {
+	FILE *f = fopen(path, "r");
+	if(f == NULL)
 	  printf("Error al abrir el archivo\n");
-		else
-		{
-		while( !feof(f) )
-		printf("%c",getc(f));
-		}
+	else
+		while(!feof(f))
+			printf("%c", getc(f));
 	fclose(f);
 }
 
-void crearLogOp(){
-FILE* logOp = fopen(LOGPATH,"a+");
-fprintf(logOp,"%s", "ESI		OPERACION\n\n");
-fclose(logOp);
+void crear_log_operacion() {
+	FILE* log_operacion = fopen(LOG_PATH, "a+");
+	fprintf(log_operacion, "%s", "ESI		OPERACION\n\n");
+	fclose(log_operacion);
 }
 
