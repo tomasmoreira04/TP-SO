@@ -12,6 +12,7 @@
 #include "commons/string.h"
 #include "commons/config.h"
 #include "ESI.h"
+int cantidadDeSentencias();
 
 int main() {
 	Configuracion* configuracion = cargar_configuracion("Configuracion.cfg");
@@ -19,14 +20,33 @@ int main() {
 	int socketPlanificador= conexion_con_servidor("127.0.0.1","9034");
 	int socketCoordinador= conexion_con_servidor("127.0.0.1","9035");
 	handShake(socketCoordinador,esi);
-	while(1){
-		fflush(stdin);
-		gets(j);
-		int tamano=strlen(j)+1;
-		printf("\ņ %s \n",j);
-		enviarMensaje(socketPlanificador,1,j,strlen(j)+1);
-	}
+	int rafagas=cantidadDeSentencias();
+	enviarMensaje(socketPlanificador,18,rafagas,sizeof(int));//FALTA DEFINIR ACCION Y EL RECV
 	return 0;
+}
+
+int cantidadDeSentencias(){
+	FILE * f;
+	f=fopen("Script.txt","r");
+	char *valor=malloc(5);
+	char *aux=malloc(5);
+	strcpy(valor," ");
+	strcpy(aux," ");
+	int i=0;
+	if (f==NULL)
+			perror ("Error opening file");
+    do
+    {
+    	*aux=*valor;
+    	*valor = fgetc (f);
+    	if (*valor == '\n') i++;
+    }
+    while (*valor != EOF);
+    if(*aux!='\n')  i++;
+	fclose(f);
+	free(valor);
+	free(aux);
+	return i;
 }
 
 Configuracion* cargar_configuracion(char* ruta) {
