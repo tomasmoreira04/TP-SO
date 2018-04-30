@@ -17,14 +17,15 @@ int main() {
 	Configuracion* configuracion = cargar_configuracion("Configuracion.cfg");
 
 	char * j = malloc(50);
-	int socketServer = conexion_con_servidor("127.0.0.1", "9034"); //usar conf->puerto_coordinador
-	while(1){
+	int socketServer = conexion_con_servidor("127.0.0.1", "9035"); //usar conf->puerto_coordinador
+	/*while(1){
 		int tamano=strlen(j);
 		recv(socketServer,&tamano,sizeof(int),0);
 		recv(socketServer,j,tamano,0);
 
 		printf("\nel valor %s\n", j);
-	}
+	}*/
+	handShake(socketServer,instancia);
 	return 0;
 }
 

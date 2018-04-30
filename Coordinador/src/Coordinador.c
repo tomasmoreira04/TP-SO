@@ -32,6 +32,7 @@ int main() {
 //ACCIONES DE LOS HILOS
 void *rutina_instancia(void * arg) {
 	int socket_CPU = (int)arg;
+	printf("puto el que lee\n");
 	return NULL;
 }
 

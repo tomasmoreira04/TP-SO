@@ -29,14 +29,14 @@ void sentencia_ejecutada() {
 float estimar(ESI esi, float alfa) {
 	return alfa * esi.rafaga_anterior + (1 - alfa) * esi.estimacion_anterior;
 }
-
+/*
 ESI* esi_rafaga_mas_corta(ESI** esis, float alfa) {
 	ESI* esi_mas_corto = esis[0];
 	for (int i = 0; i < num_esis(esis); i++)
 		if (estimar(esis[i], alfa) < estimar(esi_mas_corto, alfa))
 			esi_mas_corto = esis[i];
 	return esi_mas_corto;
-}
+}*/
 
 ESI* esi_resp_ratio_mas_corto(ESI** esis) {
 	//

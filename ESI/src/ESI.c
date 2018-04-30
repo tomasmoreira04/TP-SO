@@ -21,7 +21,7 @@ int main() {
 	int socketCoordinador= conexion_con_servidor("127.0.0.1","9035");
 	handShake(socketCoordinador,esi);
 	int rafagas=cantidadDeSentencias();
-	enviarMensaje(socketPlanificador,18,rafagas,sizeof(int));//FALTA DEFINIR ACCION Y EL RECV
+	//enviarMensaje(socketPlanificador,18,rafagas,sizeof(int));//FALTA DEFINIR ACCION Y EL RECV
 	return 0;
 }
 
