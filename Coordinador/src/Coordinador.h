@@ -3,6 +3,7 @@
 
 #define MAX_ALG 4
 #define LOG_PATH "../Log.txt"
+#include "commons/config.h"
 
 typedef struct{
 	int32_t puerto_escucha;

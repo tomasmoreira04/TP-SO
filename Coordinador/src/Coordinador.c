@@ -7,7 +7,6 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include "../../Bibliotecas/src/Socket.c"
-#include "commons/config.h"
 #include <errno.h>
 #include <netdb.h>
 #include <pthread.h>

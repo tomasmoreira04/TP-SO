@@ -10,7 +10,6 @@
 #include <arpa/inet.h>
 #include "../../Bibliotecas/src/Socket.c"
 #include "commons/string.h"
-#include "commons/config.h"
 #include "ESI.h"
 int cantidadDeSentencias();
 
