@@ -173,11 +173,11 @@ void movimiento_entre_estados(ESI esi, int movimiento) {
 		} break;
 
 		case hacia_bloqueado: {
-			printf("estoy en la coal de blqueados!")
+			printf("estoy en la coal de blqueados!");
 		} break;
 
 		case hacia_finalizado: {
-			printf("finalice!! :D")
+			printf("finalice!! :D");
 		}
 	}
 }
