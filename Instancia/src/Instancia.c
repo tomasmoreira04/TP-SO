@@ -13,19 +13,26 @@
 #include "commons/config.h"
 #include "Instancia.h"
 
+
 int main() {
 	Configuracion* configuracion = cargar_configuracion("Configuracion.cfg");
 
-	char * j = malloc(50);
-	int socketServer = conexion_con_servidor("127.0.0.1", "9035"); //usar conf->puerto_coordinador
-	/*while(1){
-		int tamano=strlen(j);
-		recv(socketServer,&tamano,sizeof(int),0);
-		recv(socketServer,j,tamano,0);
 
-		printf("\nel valor %s\n", j);
-	}*/
+	int socketServer = conexion_con_servidor("127.0.0.1", "9035"); //usar conf->puerto_coordinador
 	handShake(socketServer,instancia);
+
+
+	Dimensiones_Inst* dimensiones = malloc(sizeof(Dimensiones_Inst));
+	int accion = recibirMensaje(socketServer,&dimensiones);
+
+	printf("\n------INSTANCIA------\n");
+	printf("\nCANT ENTRADAS: %i \nTAM ENTRADAS: %i \n",dimensiones->cant_entradas, dimensiones->tam_entradas);
+
+	///asignar memoria
+
+
+	free(dimensiones);
+	free(configuracion);
 	return 0;
 }
 

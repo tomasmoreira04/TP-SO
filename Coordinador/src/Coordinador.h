@@ -13,6 +13,11 @@ typedef struct{
 	int32_t retardo;
 } Configuracion;
 
+typedef struct{
+	int32_t cant_entradas;
+	int32_t tam_entradas;
+} Dimensiones_Inst;
+
 Configuracion* cargar_configuracion(char* ruta);
 int estan_todos_los_campos(t_config* config, char** campos);
 void mostrar_por_pantalla_config(Configuracion* config);
@@ -25,5 +30,7 @@ void *rutina_instancia(void * arg);
 void *rutina_ESI(void * arg);
 void crear_hilo(int nuevo_socket, int modulo);
 int enviar(char* mensaje, int socket);
+
+void configurar_instancia(int socket);
 
 #endif /* COORDINADOR_H_ */
