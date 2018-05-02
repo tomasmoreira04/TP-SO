@@ -15,6 +15,7 @@
 #include <commons/config.h>
 #include <commons/string.h>
 
+//hay que revisar si está bien esto
 typedef struct {
 	int id;
 	int estimacion_anterior; //la inicial esta dada por arch de config
@@ -44,11 +45,13 @@ ESI* esi_resp_ratio_mas_corto(ESI** esis) {
 }
 
 int main() {
+	cola_de_listos = list_create();
 	Configuracion* configuracion = cargar_configuracion("Configuracion.cfg");
 	//pthread_t thread_consola, thread_escucha;
 	//pthread_create(&thread_consola, NULL, iniciar_consola, NULL);
-	RecibirConecciones(configuracion->puerto_escucha);
+	//RecibirConecciones(configuracion->puerto_escucha);
 	//pthread_join(thread_consola, NULL);
+	list_destroy(cola_de_listos);
 }
 
 void RecibirConecciones(int puerto) {
@@ -79,22 +82,28 @@ void RecibirConecciones(int puerto) {
 					aceptar_nueva_conexion(listener);
 				}
 				else {
+					//Y SI PONEMOS TOoDO EN UN SWITCH?
 					if(i==socketCoordinador){
 						//ACCIONES Coordinador
 					}
-					else{
+					else{ // Este es el ESI
 						void *stream;
+						ESI esi; //<--luego vemos como manejar esto, seguro que con ids
 						int accion=recibirMensaje(i,&stream);
-						switch(accion){
-						case 1:{
-							printf("me llego: %s \n",(char*) stream);
+						switch(accion) {
+							case 1:{ //accion = 1 entonces el proceso es NUEVO
+								printf("me llego: %s \n",(char*) stream);
+								ingreso_cola_de_listos(esi);
 							}
-						break;
-						case 0:{
-							close(socket);
-							FD_CLR(i,&master);
-						}
-						break;
+							break;
+							case 2: { //accion = 2 replanificar?
+							}
+							break;
+							case 0: { //accion = 0 me desconecto
+								close(socket);
+								FD_CLR(i,&master);
+							}
+							break;
 						}
 					}
 				}
@@ -143,4 +152,32 @@ t_config* crear_prueba_configuracion(char* algoritmo_planificacion) {
 	config_set_value(config, "CLAVES_BLOQUEADAS", "[materias:K3002,materias:K3001,materias:K3003]");
 	config_save(config);
 	return config;
+}
+
+void ingreso_cola_de_listos(ESI* esi) {
+	//agregar validaciones
+	list_add(cola_de_listos, &esi);
+}
+
+void movimiento_entre_estados(ESI esi, int movimiento) {
+
+	//esqueleto del movimiento
+	switch(movimiento) {
+		case hacia_listos:{
+			printf("estoy en la cola de listos!");
+			//hacer algo
+		} break;
+
+		case hacia_ejecutando: {
+			printf("estoy ejecutando!");
+		} break;
+
+		case hacia_bloqueado: {
+			printf("estoy en la coal de blqueados!")
+		} break;
+
+		case hacia_finalizado: {
+			printf("finalice!! :D")
+		}
+	}
 }
