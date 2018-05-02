@@ -10,42 +10,81 @@
 #include <arpa/inet.h>
 #include "../../Bibliotecas/src/Socket.c"
 #include "commons/string.h"
+#include "commons/collections/list.h"
 #include "ESI.h"
+
 int cantidadDeSentencias();
+void guardarSentenciasEnLaLista();
+
+t_list *listaDeComandos;
 
 int main() {
 	Configuracion* configuracion = cargar_configuracion("Configuracion.cfg");
-	char * j=malloc(50);
+	//char * j=malloc(50);
 	int socketPlanificador= conexion_con_servidor("127.0.0.1","9034");
 	int socketCoordinador= conexion_con_servidor("127.0.0.1","9035");
 	handShake(socketCoordinador,esi);
 	int rafagas=cantidadDeSentencias();
-	//enviarMensaje(socketPlanificador,18,rafagas,sizeof(int));//FALTA DEFINIR ACCION Y EL RECV
+	printf("\n\nLa cantidad de rafagas es de %d\n\n",rafagas);
+	list_get(listaDeComandos,0);
+	enviarMensaje(socketPlanificador,18,rafagas,sizeof(int));//FALTA DEFINIR ACCION Y EL RECV
 	return 0;
 }
 
+
+
 int cantidadDeSentencias(){
+	//ARCHIVO
 	FILE * f;
 	f=fopen("Script.txt","r");
 	char *valor=malloc(5);
 	char *aux=malloc(5);
+	char *contenidopri=malloc(200);
 	strcpy(valor," ");
 	strcpy(aux," ");
+	strcpy(contenidopri,"");//TURBIO
 	int i=0;
+	int contador=0;
+	//LISTA
+	listaDeComandos=list_create();
+
+
 	if (f==NULL)
 			perror ("Error opening file");
     do
     {
     	*aux=*valor;
     	*valor = fgetc (f);
-    	if (*valor == '\n') i++;
+
+    	if (*valor == '\n'){
+    		i++;
+    		//contador++;
+    		char *contenido=malloc(contador);
+    		strcpy(contenido,contenidopri);
+    		//printf("El contador es: %d \n",contador);
+    		//fflush(stdin);
+    		//printf("\nCONTENIDO: %s\n\n",contenido);
+    		guardarSentenciasEnLaLista(contenido);
+    		strcpy(contenidopri,"");
+    		free(contenido);
+    		contador=0;
+    	}
+    	else{
+    		strcat(contenidopri,valor);
+    		contador++;
+    	}
     }
     while (*valor != EOF);
     if(*aux!='\n')  i++;
 	fclose(f);
 	free(valor);
 	free(aux);
+	free(contenidopri);
 	return i;
+}
+
+void guardarSentenciasEnLaLista(char * sentencia){
+	list_add(listaDeComandos, (void *)sentencia);
 }
 
 Configuracion* cargar_configuracion(char* ruta) {
