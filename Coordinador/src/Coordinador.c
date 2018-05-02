@@ -13,6 +13,7 @@
 #include "commons/string.h"
 #include "Coordinador.h"
 
+
 int main() {
 	Configuracion* configuracion = cargar_configuracion("Configuracion.cfg");
 	mostrar_por_pantalla_config(configuracion);
@@ -30,10 +31,21 @@ int main() {
 
 //ACCIONES DE LOS HILOS
 void *rutina_instancia(void * arg) {
-	int socket_CPU = (int)arg;
-	printf("puto el que lee\n");
+	int socket_INST = (int)arg;
+	printf("Nueva Instancia ejecutada\n");
+	configurar_instancia(socket_INST);
 	return NULL;
 }
+
+void configurar_instancia(int socket){
+	Configuracion* configuracion = cargar_configuracion("Configuracion.cfg");
+	Dimensiones_Inst* dim = malloc(sizeof(dim));
+	dim->cant_entradas = configuracion->cantidad_entradas;
+	dim->tam_entradas = configuracion->tamanio_entradas;
+	enviarMensaje(socket,1,(void*)dim,sizeof(Dimensiones_Inst));
+	free(configuracion);
+}
+
 
 void *rutina_ESI(void * arg) {
 	int socket_CPU = (int)arg;

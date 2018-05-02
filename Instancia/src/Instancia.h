@@ -18,6 +18,10 @@ typedef struct{
 	int32_t intervalo_dump;
 } Configuracion;
 
+typedef struct{
+	int32_t cant_entradas;
+	int32_t tam_entradas;
+} Dimensiones_Inst;
 
 Configuracion* cargar_configuracion(char* ruta);
 int estan_todos_los_campos(t_config* config, char** campos);
