@@ -26,8 +26,8 @@ int main() {
 	handShake(socketCoordinador,esi);
 	int rafagas=cantidadDeSentencias();
 	printf("\n\nLa cantidad de rafagas es de %d\n\n",rafagas);
-	list_get(listaDeComandos,0);
-	enviarMensaje(socketPlanificador,18,rafagas,sizeof(int));//FALTA DEFINIR ACCION Y EL RECV
+	//list_get(listaDeComandos,0);
+	//enviarMensaje(socketPlanificador,18,rafagas,sizeof(int));//FALTA DEFINIR ACCION Y EL RECV
 	return 0;
 }
 
@@ -58,12 +58,12 @@ int cantidadDeSentencias(){
 
     	if (*valor == '\n'){
     		i++;
-    		//contador++;
+    		////contador++;
     		char *contenido=malloc(contador);
     		strcpy(contenido,contenidopri);
-    		//printf("El contador es: %d \n",contador);
-    		//fflush(stdin);
-    		//printf("\nCONTENIDO: %s\n\n",contenido);
+    		////printf("El contador es: %d \n",contador);
+    		////fflush(stdin);
+    		printf("\nCONTENIDO: %s\n\n",contenido);
     		guardarSentenciasEnLaLista(contenido);
     		strcpy(contenidopri,"");
     		free(contenido);

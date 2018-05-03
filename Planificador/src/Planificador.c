@@ -49,7 +49,7 @@ int main() {
 	Configuracion* configuracion = cargar_configuracion("Configuracion.cfg");
 	//pthread_t thread_consola, thread_escucha;
 	//pthread_create(&thread_consola, NULL, iniciar_consola, NULL);
-	//RecibirConecciones(configuracion->puerto_escucha);
+	RecibirConecciones(configuracion->puerto_escucha);
 	//pthread_join(thread_consola, NULL);
 	list_destroy(cola_de_listos);
 }
