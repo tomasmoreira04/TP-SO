@@ -14,24 +14,23 @@
 #include "ESI.h"
 
 int cantidadDeSentencias();
-void guardarSentenciasEnLaLista();
 
 t_list *listaDeComandos;
 
 int main() {
 	Configuracion* configuracion = cargar_configuracion("Configuracion.cfg");
-	//char * j=malloc(50);
 	int socketPlanificador= conexion_con_servidor("127.0.0.1","9034");
 	int socketCoordinador= conexion_con_servidor("127.0.0.1","9035");
 	handShake(socketCoordinador,esi);
 	int rafagas=cantidadDeSentencias();
 	printf("\n\nLa cantidad de rafagas es de %d\n\n",rafagas);
-	//list_get(listaDeComandos,0);
-	//enviarMensaje(socketPlanificador,18,rafagas,sizeof(int));//FALTA DEFINIR ACCION Y EL RECV
+	char* aux=list_get(listaDeComandos,0);
+
+	printf("\n\nLISTA CHAN: %s\n\n", aux);
+	enviarMensaje(socketPlanificador,18,rafagas,sizeof(int));//FALTA DEFINIR ACCION Y EL RECV
+	//DESTRUIR LISTA
 	return 0;
 }
-
-
 
 int cantidadDeSentencias(){
 	//ARCHIVO
@@ -47,8 +46,6 @@ int cantidadDeSentencias(){
 	int contador=0;
 	//LISTA
 	listaDeComandos=list_create();
-
-
 	if (f==NULL)
 			perror ("Error opening file");
     do
@@ -63,10 +60,10 @@ int cantidadDeSentencias(){
     		strcpy(contenido,contenidopri);
     		////printf("El contador es: %d \n",contador);
     		////fflush(stdin);
-    		printf("\nCONTENIDO: %s\n\n",contenido);
-    		guardarSentenciasEnLaLista(contenido);
+    		//printf("\nCONTENIDO: %s\n\n",contenido);
+    		list_add(listaDeComandos, contenido);
     		strcpy(contenidopri,"");
-    		free(contenido);
+    		//free(contenido);
     		contador=0;
     	}
     	else{
@@ -83,9 +80,7 @@ int cantidadDeSentencias(){
 	return i;
 }
 
-void guardarSentenciasEnLaLista(char * sentencia){
-	list_add(listaDeComandos, (void *)sentencia);
-}
+
 
 Configuracion* cargar_configuracion(char* ruta) {
 	char* campos[4] = { "IP_PLANIFICADOR","PUERTO_PLANIFICADOR", "IP_COORDINADOR", "PUERTO_COORDINADOR" };
