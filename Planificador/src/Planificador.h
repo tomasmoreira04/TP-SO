@@ -12,6 +12,15 @@ typedef struct {
 	char valor[LARGO_VALOR];
 } Clave;
 
+//hay que revisar si está bien esto
+typedef struct {
+	int id;
+	int estimacion_anterior; //la inicial esta dada por arch de config
+	int rafaga_anterior;
+	int cant_rafagas;
+	char* claves[LARGO_CLAVE];
+} ESI;
+
 typedef struct {
 	int32_t puerto_escucha;
 	char algoritmo_planificacion[MAX_ALG];
@@ -35,6 +44,8 @@ enum movimientos_entre_estados {
 	hacia_finalizado = 4
 };
 
+int ultimo_id;
+
 void* conectar_coordinador();
 Configuracion* cargar_configuracion(char* ruta);
 t_config* crear_prueba_configuracion(char* algoritmo_planificacion);
@@ -45,3 +56,5 @@ Configuracion* leer_archivo_configuracion(t_config* archivo);
 void separar_claves(char** claves);
 void RecibirConecciones();
 void ingreso_cola_de_listos();
+void movimiento_entre_estados(ESI esi, int);
+void cargar_datos_de_esi(ESI* esi);

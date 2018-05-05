@@ -15,13 +15,6 @@
 #include <commons/config.h>
 #include <commons/string.h>
 
-//hay que revisar si está bien esto
-typedef struct {
-	int id;
-	int estimacion_anterior; //la inicial esta dada por arch de config
-	int rafaga_anterior;
-	char* claves[LARGO_CLAVE];
-} ESI;
 
 void sentencia_ejecutada() {
 	//evento
@@ -46,15 +39,17 @@ ESI* esi_resp_ratio_mas_corto(ESI** esis) {
 
 int main() {
 	cola_de_listos = list_create();
-	Configuracion* configuracion = cargar_configuracion("Configuracion.cfg");
+	Configuracion* planif_cfg = cargar_configuracion("Configuracion.cfg");
 	//pthread_t thread_consola, thread_escucha;
 	//pthread_create(&thread_consola, NULL, iniciar_consola, NULL);
-	RecibirConecciones(configuracion->puerto_escucha);
+	ultimo_id = 0;
+	RecibirConexiones(planif_cfg->puerto_escucha);
 	//pthread_join(thread_consola, NULL);
 	list_destroy(cola_de_listos);
+	config_destroy(planif_cfg);
 }
 
-void RecibirConecciones(int puerto) {
+void RecibirConexiones(int puerto) {
 	int listener;
 	char buf[256];
 	int nbytes;
@@ -89,21 +84,18 @@ void RecibirConecciones(int puerto) {
 					else{ // Este es el ESI
 						void *stream;
 						ESI esi; //<--luego vemos como manejar esto, seguro que con ids
-						int accion=recibirMensaje(i,&stream);
+						int accion = recibirMensaje(i,&stream);
 						switch(accion) {
-							case 1:{ //accion = 1 entonces el proceso es NUEVO
+							case 1: //accion = 1 entonces el proceso es NUEVO
 								printf("me llego: %s \n",(char*) stream);
 								ingreso_cola_de_listos(esi);
-							}
+								break;
+							case 2: //accion = 2 ME BLOQUEO
 							break;
-							case 2: { //accion = 2 replanificar?
-							}
-							break;
-							case 0: { //accion = 0 me desconecto
+							case 0: //accion = 0 me desconecto
 								close(socket);
 								FD_CLR(i,&master);
-							}
-							break;
+								break;
 						}
 					}
 				}
@@ -154,8 +146,14 @@ t_config* crear_prueba_configuracion(char* algoritmo_planificacion) {
 	return config;
 }
 
+void cargar_datos_de_esi(ESI* esi) {
+	esi->id = ultimo_id;
+	//luego hay que agregar otros campos
+}
+
 void ingreso_cola_de_listos(ESI* esi) {
 	//agregar validaciones
+	cargar_datos_de_esi(esi);
 	list_add(cola_de_listos, &esi);
 }
 
@@ -163,21 +161,20 @@ void movimiento_entre_estados(ESI esi, int movimiento) {
 
 	//esqueleto del movimiento
 	switch(movimiento) {
-		case hacia_listos:{
+		case hacia_listos:
 			printf("estoy en la cola de listos!");
 			//hacer algo
-		} break;
+			break;
 
-		case hacia_ejecutando: {
+		case hacia_ejecutando:
 			printf("estoy ejecutando!");
-		} break;
+			break;
 
-		case hacia_bloqueado: {
+		case hacia_bloqueado:
 			printf("estoy en la coal de blqueados!");
-		} break;
+			break;
 
-		case hacia_finalizado: {
+		case hacia_finalizado:
 			printf("finalice!! :D");
-		}
 	}
 }
