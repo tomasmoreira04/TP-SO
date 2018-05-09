@@ -12,15 +12,22 @@
 #include <pthread.h>
 #include "commons/string.h"
 #include "Coordinador.h"
+#include "commons/collections/list.h"
 
+t_list *lista_Instancias;
+Configuracion* configuracion;
 
 int main() {
-	Configuracion* configuracion = cargar_configuracion("Configuracion.cfg");
+	configuracion = cargar_configuracion("Configuracion.cfg");
 	mostrar_por_pantalla_config(configuracion);
+	lista_Instancias = list_create();
+
 	int listener = crear_socket_de_escucha(configuracion->puerto_escucha);
 	int socket_server = conexion_con_servidor("127.0.0.1", "9034");
+
 	int bytes = enviar("ESI", socket_server);
 	int nuevo_socket, modulo;
+
 	while(1){
 		nuevo_socket = aceptar_nueva_conexion(listener);
 		recv(nuevo_socket, &modulo, sizeof(int), 0);//HS
@@ -32,7 +39,23 @@ int main() {
 //ACCIONES DE LOS HILOS
 void *rutina_instancia(void * arg) {
 	int socket_INST = (int)arg;
-	printf("Nueva Instancia ejecutada\n");
+	printf("\n------------------------------------\n");
+	printf("NUEVA INSTANCIA EJECUTADA || ");
+
+	Nodo_Instancia* nuevaInstancia = malloc(sizeof(Nodo_Instancia));
+	nuevaInstancia->socket = socket_INST;
+
+	if(list_is_empty(lista_Instancias)){
+		nuevaInstancia->inst_ID = 0;
+	} else {
+		Nodo_Instancia* aux = list_get(lista_Instancias, (lista_Instancias->elements_count-1));
+		nuevaInstancia->inst_ID = (aux->inst_ID)+1;
+		free(aux);
+		}
+
+	list_add(lista_Instancias,(void*)nuevaInstancia);
+	printf("ID:%d || SOCKET: %d\n", nuevaInstancia->inst_ID, nuevaInstancia->socket);
+
 	configurar_instancia(socket_INST);
 	return NULL;
 }

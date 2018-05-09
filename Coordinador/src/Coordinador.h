@@ -18,6 +18,12 @@ typedef struct{
 	int32_t tam_entradas;
 } Dimensiones_Inst;
 
+typedef struct{
+	int inst_ID;
+	int socket;
+}Nodo_Instancia;
+
+
 Configuracion* cargar_configuracion(char* ruta);
 int estan_todos_los_campos(t_config* config, char** campos);
 void mostrar_por_pantalla_config(Configuracion* config);
