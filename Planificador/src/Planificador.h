@@ -15,6 +15,7 @@ typedef struct {
 //hay que revisar si está bien esto
 typedef struct {
 	int id;
+	int cola_actual;
 	int estimacion_anterior; //la inicial esta dada por arch de config
 	int rafaga_anterior;
 	int cant_rafagas;
@@ -31,9 +32,9 @@ typedef struct {
 } Configuracion;
 
 //POR AHORA VAN A SER LISTAS, luego vemos si lo metemos en otra estructura
-t_list* cola_de_listos;
-t_list* cola_de_bloqueados;
-t_list* cola_de_finalizados;
+t_list* cola_de_listos; //1
+t_list* cola_de_bloqueados; //2
+t_list* cola_de_finalizados; //3
 t_list* lista_claves_bloqueadas;
 ////////////////////
 
@@ -56,5 +57,13 @@ Configuracion* leer_archivo_configuracion(t_config* archivo);
 void separar_claves(char** claves);
 void RecibirConecciones();
 void ingreso_cola_de_listos();
-void movimiento_entre_estados(ESI esi, int);
+void movimiento_entre_estados(ESI* esi, int);
 void cargar_datos_de_esi(ESI* esi);
+
+int _es_esi(ESI* a, ESI* b);
+void mover_esi(ESI* esi, t_list* nueva_lista);
+t_list* lista_por_numero(int numero);
+void inicializar_listas();
+void destruir_listas();
+
+

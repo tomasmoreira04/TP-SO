@@ -14,7 +14,7 @@
 #include "../../Bibliotecas/src/Socket.c"
 #include <commons/config.h>
 #include <commons/string.h>
-
+#include <commons/collections/list.h>
 
 void sentencia_ejecutada() {
 	//evento
@@ -38,14 +38,14 @@ ESI* esi_resp_ratio_mas_corto(ESI** esis) {
 }
 
 int main() {
-	cola_de_listos = list_create();
+	inicializar_listas();
 	Configuracion* planif_cfg = cargar_configuracion("Configuracion.cfg");
 	//pthread_t thread_consola, thread_escucha;
 	//pthread_create(&thread_consola, NULL, iniciar_consola, NULL);
 	ultimo_id = 0;
 	RecibirConexiones(planif_cfg->puerto_escucha);
 	//pthread_join(thread_consola, NULL);
-	list_destroy(cola_de_listos);
+	destruir_listas();
 	config_destroy(planif_cfg);
 }
 
@@ -157,24 +157,61 @@ void ingreso_cola_de_listos(ESI* esi) {
 	list_add(cola_de_listos, &esi);
 }
 
-void movimiento_entre_estados(ESI esi, int movimiento) {
-
-	//esqueleto del movimiento
+void movimiento_entre_estados(ESI* esi, int movimiento) {
 	switch(movimiento) {
 		case hacia_listos:
-			printf("estoy en la cola de listos!");
-			//hacer algo
+			mover_esi(esi, cola_de_listos);
 			break;
-
 		case hacia_ejecutando:
-			printf("estoy ejecutando!");
+			//ejecutar
 			break;
-
 		case hacia_bloqueado:
-			printf("estoy en la coal de blqueados!");
+			mover_esi(esi, cola_de_bloqueados);
 			break;
-
 		case hacia_finalizado:
-			printf("finalice!! :D");
+			mover_esi(esi, cola_de_finalizados);
+			break;
 	}
 }
+
+int _es_esi(ESI* a, ESI* b) {
+	return a->id == b->id;
+}
+
+void mover_esi(ESI* esi, t_list* nueva_lista) {
+	t_list* lista_anterior = lista_por_numero(esi->cola_actual);
+	list_remove_by_condition(lista_anterior, (void*) _es_esi);
+	list_add(nueva_lista, esi);
+}
+
+t_list* lista_por_numero(int numero) {
+	switch (numero){
+		case 1:
+			return cola_de_listos;
+			break;
+		case 2:
+			return cola_de_bloqueados;
+			break;
+		case 3:
+			return cola_de_finalizados;
+			break;
+		default:
+			return NULL; //no se
+	}
+}
+
+void inicializar_listas() {
+	cola_de_listos = list_create();
+	cola_de_bloqueados = list_create();
+	cola_de_finalizados = list_create();
+	lista_claves_bloqueadas = list_create();
+}
+
+void destruir_listas() {
+	list_destroy(cola_de_listos);
+	list_destroy(cola_de_bloqueados);
+	list_destroy(cola_de_finalizados);
+	list_destroy(lista_claves_bloqueadas);
+}
+
+
