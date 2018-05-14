@@ -22,14 +22,14 @@ int main() {
 	int socketPlanificador= conexion_con_servidor("127.0.0.1","9034");
 	int socketCoordinador= conexion_con_servidor("127.0.0.1","9035");
 	handShake(socketCoordinador,esi);
-	int* rafagas = malloc(sizeof(int));
-	*rafagas = cantidadDeSentencias();
+	//int* rafagas = malloc(sizeof(int));
+	int rafagas = cantidadDeSentencias();
 	//strcpy(rafagas, "noni");
-	printf("\n\nLa cantidad de rafagas es de %d\n\n", *rafagas);
+	printf("\n\nLa cantidad de rafagas es de %d\n\n", rafagas);
 	//char* aux=list_get(listaDeComandos,0);
 	//te lo comento porque esto me tira seg fault
 	//printf("\n\nLISTA CHEN: %s\n\n", aux);
-	enviarMensaje(socketPlanificador,100,rafagas,sizeof(int));//FALTA DEFINIR ACCION Y EL RECV
+	enviarMensaje(socketPlanificador,100,&rafagas,sizeof(int));//FALTA DEFINIR ACCION Y EL RECV
 	//DESTRUIR LISTA
 	return 0;
 }

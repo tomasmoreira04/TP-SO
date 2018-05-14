@@ -80,15 +80,16 @@ void RecibirConexiones(int puerto) {
 						//ACCIONES Coordinador
 					}
 					else { // Este es el ESI
+						//printf("LLEGO ESI\n");
 						void* stream;
 						ESI esi;
 						int accion = recibirMensaje(i, &stream);
-						int valor_recibido = stream;
-						printf("accion nro: %d", accion);
+						//int valor_recibido = stream;
+						//printf("accion nro: %d", accion);
 						switch(accion) {
 							case 100: //accion = 1 entonces el proceso es NUEVO
-								printf("me llego1: %d \n", valor_recibido);
-								printf("me llego2: %d \n", (int)stream);
+								//printf("me llego1: %d \n", valor_recibido);
+								printf("me llego2: %d \n", *((int*)stream));
 								ingreso_cola_de_listos(esi);
 								break;
 							case 2://accion = 2 ME BLOQUEO
