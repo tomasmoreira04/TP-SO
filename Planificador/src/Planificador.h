@@ -1,5 +1,6 @@
 #include <commons/config.h>
 #include <commons/collections/list.h>
+#include <commons/collections/dictionary.h>
 
 #define LARGO_CLAVE 20
 #define MAX_CLAVES 50
@@ -36,6 +37,7 @@ t_list* cola_de_listos; //1
 t_list* cola_de_bloqueados; //2
 t_list* cola_de_finalizados; //3
 t_list* lista_claves_bloqueadas;
+t_dictionary* estimaciones_actuales;
 ////////////////////
 
 enum movimientos_entre_estados {
@@ -55,7 +57,7 @@ int estan_todos_los_campos(t_config* config, char** campos);
 int parsear_algoritmo(char* valor);
 Configuracion* leer_archivo_configuracion(t_config* archivo);
 void separar_claves(char** claves);
-void RecibirConecciones();
+void RecibirConexiones();
 void ingreso_cola_de_listos();
 void movimiento_entre_estados(ESI* esi, int);
 void cargar_datos_de_esi(ESI* esi);
@@ -63,7 +65,7 @@ void cargar_datos_de_esi(ESI* esi);
 int _es_esi(ESI* a, ESI* b);
 void mover_esi(ESI* esi, t_list* nueva_lista);
 t_list* lista_por_numero(int numero);
-void inicializar_listas();
-void destruir_listas();
+void inicializar_estructuras();
+void destruir_estructuras();
 
 

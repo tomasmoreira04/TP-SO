@@ -14,15 +14,14 @@
 #include "../../Bibliotecas/src/Socket.c"
 #include <commons/config.h>
 #include <commons/string.h>
-#include <commons/collections/list.h>
 
 void sentencia_ejecutada() {
 	//evento
 }
 
 float estimar(ESI esi, float alfa) {
-	return alfa * esi.rafaga_anterior + (1 - alfa) * esi.estimacion_anterior;
-}
+	return (alfa/100) * esi.rafaga_anterior + (1 - (alfa/100)) * esi.estimacion_anterior;
+} //alfa entre 0 y 100
 /*
 ESI* esi_rafaga_mas_corta(ESI** esis, float alfa) {
 	ESI* esi_mas_corto = esis[0];
@@ -38,14 +37,14 @@ ESI* esi_resp_ratio_mas_corto(ESI** esis) {
 }
 
 int main() {
-	inicializar_listas();
+	inicializar_estructuras();
 	Configuracion* planif_cfg = cargar_configuracion("Configuracion.cfg");
 	//pthread_t thread_consola, thread_escucha;
 	//pthread_create(&thread_consola, NULL, iniciar_consola, NULL);
 	ultimo_id = 0;
 	RecibirConexiones(planif_cfg->puerto_escucha);
 	//pthread_join(thread_consola, NULL);
-	destruir_listas();
+	destruir_estructuras();
 	config_destroy(planif_cfg);
 }
 
@@ -77,20 +76,23 @@ void RecibirConexiones(int puerto) {
 					aceptar_nueva_conexion(listener);
 				}
 				else {
-					//Y SI PONEMOS TOoDO EN UN SWITCH?
 					if(i==socketCoordinador){
 						//ACCIONES Coordinador
 					}
-					else{ // Este es el ESI
-						void *stream;
-						ESI esi; //<--luego vemos como manejar esto, seguro que con ids
-						int accion = recibirMensaje(i,&stream);
+					else { // Este es el ESI
+						void* stream;
+						ESI esi;
+						int accion = recibirMensaje(i, &stream);
+						int valor_recibido = stream;
+						printf("accion nro: %d", accion);
 						switch(accion) {
-							case 1: //accion = 1 entonces el proceso es NUEVO
-								printf("me llego: %s \n",(char*) stream);
+							case 100: //accion = 1 entonces el proceso es NUEVO
+								printf("me llego1: %d \n", valor_recibido);
+								printf("me llego2: %d \n", (int)stream);
 								ingreso_cola_de_listos(esi);
 								break;
-							case 2: //accion = 2 ME BLOQUEO
+							case 2://accion = 2 ME BLOQUEO
+								puts("dsasdasda");
 							break;
 							case 0: //accion = 0 me desconecto
 								close(socket);
@@ -148,7 +150,7 @@ t_config* crear_prueba_configuracion(char* algoritmo_planificacion) {
 
 void cargar_datos_de_esi(ESI* esi) {
 	esi->id = ultimo_id;
-	//luego hay que agregar otros campos
+	//mesi->
 }
 
 void ingreso_cola_de_listos(ESI* esi) {
@@ -200,18 +202,20 @@ t_list* lista_por_numero(int numero) {
 	}
 }
 
-void inicializar_listas() {
+void inicializar_estructuras() {
 	cola_de_listos = list_create();
 	cola_de_bloqueados = list_create();
 	cola_de_finalizados = list_create();
 	lista_claves_bloqueadas = list_create();
+	estimaciones_actuales = dictionary_create();
 }
 
-void destruir_listas() {
+void destruir_estructuras() {
 	list_destroy(cola_de_listos);
 	list_destroy(cola_de_bloqueados);
 	list_destroy(cola_de_finalizados);
 	list_destroy(lista_claves_bloqueadas);
+	dictionary_destroy(estimaciones_actuales);
 }
 
 
