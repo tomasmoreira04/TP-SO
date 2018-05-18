@@ -42,13 +42,13 @@ int main() {
 	//pthread_t thread_consola, thread_escucha;
 	//pthread_create(&thread_consola, NULL, iniciar_consola, NULL);
 	ultimo_id = 0;
-	RecibirConexiones(planif_cfg->puerto_escucha);
+	RecibirConexiones(planif_cfg);
 	//pthread_join(thread_consola, NULL);
 	destruir_estructuras();
 	config_destroy(planif_cfg);
 }
 
-void RecibirConexiones(int puerto) {
+void RecibirConexiones(Configuracion* cfg) {
 	int listener;
 	char buf[256];
 	int nbytes;
@@ -59,7 +59,7 @@ void RecibirConexiones(int puerto) {
 
 	int socketCoordinador=9999;
 
-	listener = crear_socket_de_escucha(puerto);
+	listener = crear_socket_de_escucha(cfg->puerto_escucha);
 
 
 	FD_SET(listener, &master);
@@ -76,23 +76,29 @@ void RecibirConexiones(int puerto) {
 					aceptar_nueva_conexion(listener);
 				}
 				else {
-					if(i==socketCoordinador){
+					if(i==socketCoordinador) {
 						//ACCIONES Coordinador
 					}
 					else { // Este es el ESI
-						//printf("LLEGO ESI\n");
+						/*HACER EL FREE-todavia no se donde ponerlo xdxdxdxdxdxx
+						 *y falta hacer validaciones en el malloc
+						 */
+						ESI* esi = malloc(sizeof(ESI));
 						void* stream;
-						ESI esi;
 						int accion = recibirMensaje(i, &stream);
 						//int valor_recibido = stream;
 						//printf("accion nro: %d", accion);
 						switch(accion) {
-							case 100: //accion = 1 entonces el proceso es NUEVO
-								//printf("me llego1: %d \n", valor_recibido);
+							case 100: //proceso NUEVO
 								printf("me llego2: %d \n", *((int*)stream));
+								esi->estimacion_anterior = cfg->estimacion_inicial;
+								puts("aca esta");
 								ingreso_cola_de_listos(esi);
+								printf("mi est es %d\n", esi->estimacion_anterior);
+								printf("soy el esi con id: %d\n", esi->id);
+								accion = 101;
 								break;
-							case 2://accion = 2 ME BLOQUEO
+							case 101: //
 								puts("dsasdasda");
 							break;
 							case 0: //accion = 0 me desconecto
@@ -149,15 +155,12 @@ t_config* crear_prueba_configuracion(char* algoritmo_planificacion) {
 	return config;
 }
 
-void cargar_datos_de_esi(ESI* esi) {
-	esi->id = ultimo_id;
-	//mesi->
-}
-
 void ingreso_cola_de_listos(ESI* esi) {
 	//agregar validaciones
-	cargar_datos_de_esi(esi);
-	list_add(cola_de_listos, &esi);
+	esi->id = ultimo_id;
+	puts("pase");
+	list_add(cola_de_listos, esi);
+	ultimo_id++;
 }
 
 void movimiento_entre_estados(ESI* esi, int movimiento) {
@@ -166,7 +169,7 @@ void movimiento_entre_estados(ESI* esi, int movimiento) {
 			mover_esi(esi, cola_de_listos);
 			break;
 		case hacia_ejecutando:
-			//ejecutar
+			ejecutar_por_fifo();
 			break;
 		case hacia_bloqueado:
 			mover_esi(esi, cola_de_bloqueados);
@@ -219,4 +222,10 @@ void destruir_estructuras() {
 	dictionary_destroy(estimaciones_actuales);
 }
 
-
+//para el prox checkpoint esta funcion va a ser mas generica
+void ejecutar_por_fifo() {
+	ESI* esi = malloc(sizeof(ESI));
+	esi = list_remove(cola_de_listos, 0);
+	//enviarMensaje(); habra enviarle mensaje al esi correspondiente
+	puts("executing..");
+}

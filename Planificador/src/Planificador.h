@@ -67,5 +67,5 @@ void mover_esi(ESI* esi, t_list* nueva_lista);
 t_list* lista_por_numero(int numero);
 void inicializar_estructuras();
 void destruir_estructuras();
-
+void ejecutar_por_fifo();
 
