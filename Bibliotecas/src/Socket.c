@@ -14,18 +14,10 @@
 #include "commons/collections/list.h"
 #include <sys/wait.h>
 #include <signal.h>
+#include "Socket.h"
 
 #define MAXDATASIZE 100
 #define BACKLOG 10
-
-
-enum {
-	coordinador=1,
-	planificador=2,
-	esi=3,
-	instancia=4
-};
-
 
 fd_set master;
 fd_set read_fds;
@@ -128,7 +120,9 @@ void *getSin_Addr(struct sockaddr *sa) {
 	return &(((struct sockaddr_in*)sa)->sin_addr); //IPV4
 }
 
-int conexion_con_servidor(char* ip, char* puerto) {
+int conexion_con_servidor(char* ip, int port) {
+	char puerto[10];
+	sprintf(puerto, "%d", port);
 	int sockfd;
 	struct addrinfo hints;
 	struct addrinfo *servinfo;

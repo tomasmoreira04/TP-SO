@@ -9,6 +9,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include "../../Bibliotecas/src/Socket.c"
+#include "../../Bibliotecas/src/Configuracion.c"
 #include "commons/string.h"
 #include "commons/collections/list.h"
 #include "ESI.h"
@@ -18,10 +19,10 @@ int cantidadDeSentencias();
 t_list *listaDeComandos;
 
 int main() {
-	Configuracion* configuracion = cargar_configuracion("Configuracion.cfg");
-	int socketPlanificador= conexion_con_servidor("127.0.0.1","9034");
-	int socketCoordinador= conexion_con_servidor("127.0.0.1","9035");
-	handShake(socketCoordinador,esi);
+	ConfigESI config = cargar_config_esi();
+	int socketPlanificador = conexion_con_servidor(config.ip_planificador, config.puerto_planificador);
+	int socketCoordinador = conexion_con_servidor(config.ip_coordinador, config.puerto_coordinador);
+	handShake(socketCoordinador, esi);
 	//int* rafagas = malloc(sizeof(int));
 	int rafagas = cantidadDeSentencias();
 	//strcpy(rafagas, "noni");
@@ -36,14 +37,13 @@ int main() {
 
 int cantidadDeSentencias(){
 	//ARCHIVO
-	FILE * f;
-	f=fopen("Script.txt","r");
+	FILE * f = fopen("Script.txt","r");
 	char *valor=malloc(5);
 	char *aux=malloc(5);
 	char *contenidopri=malloc(200);
 	strcpy(valor," ");
 	strcpy(aux," ");
-	strcpy(contenidopri,"");//TURBIO
+	strcpy(contenidopri,"");//TURBIO <- xD
 	int i=0;
 	int contador=0;
 	//LISTA
@@ -83,42 +83,5 @@ int cantidadDeSentencias(){
 }
 
 
-
-Configuracion* cargar_configuracion(char* ruta) {
-	char* campos[4] = { "IP_PLANIFICADOR","PUERTO_PLANIFICADOR", "IP_COORDINADOR", "PUERTO_COORDINADOR" };
-	t_config* archivo = crear_archivo_configuracion(ruta, campos);
-	Configuracion* configuracion = malloc(sizeof(Configuracion));
-	strcpy(configuracion->ip_planificador, config_get_string_value(archivo,"IP_PLANIFICADOR"));
-	configuracion->puerto_planificador = config_get_int_value(archivo, "PUERTO_PLANIFICADOR");
-	strcpy(configuracion->ip_coordinador, config_get_string_value(archivo,"IP_COORDINADOR"));
-	configuracion->puerto_coordinador = config_get_int_value(archivo,"PUERTO_COORDINADOR");
-	return configuracion;
-}
-
-int estan_todos_los_campos(t_config* config, char** campos) {
-	for (int i = 0; i < config_keys_amount(config); i++)
-		if(!config_has_property(config, campos[i]))
-			return 0;
-	return 1;
-}
-
-t_config* crear_archivo_configuracion(char* ruta, char** campos) {
-	t_config* config = config_create(ruta);
-	if(config == NULL /*|| !estan_todos_los_campos(config, campos)*/)
-		return crear_prueba_configuracion();
-	return config;
-}
-
-t_config* crear_prueba_configuracion() {
-	char* ruta = "Configuracion.cfg";
-	fclose(fopen(ruta, "w"));
-	t_config *config = config_create(ruta);
-	config_set_value(config, "IP_COORDINADOR", "127.0.0.1");
-	config_set_value(config, "PUERTO_COORDINADOR", "8000");
-	config_set_value(config, "IP_PLANIFICADOR", "127.0.0.2");
-	config_set_value(config, "PUERTO_PLANIFICADOR", "9034");
-	config_save(config);
-	return config;
-}
 
 

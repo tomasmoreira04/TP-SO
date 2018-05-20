@@ -1,6 +1,7 @@
 #include <commons/config.h>
 #include <commons/collections/list.h>
 #include <commons/collections/dictionary.h>
+#include "../../Bibliotecas/src/Configuracion.h"
 
 #define LARGO_CLAVE 20
 #define MAX_CLAVES 50
@@ -23,15 +24,6 @@ typedef struct {
 	char* claves[LARGO_CLAVE];
 } ESI;
 
-typedef struct {
-	int32_t puerto_escucha;
-	char algoritmo_planificacion[MAX_ALG];
-	int32_t estimacion_inicial;
-	char ip_coordinador[LARGO_IP];
-	int32_t puerto_coordinador;
-	char* claves_bloqueadas[LARGO_CLAVE];
-} Configuracion;
-
 //POR AHORA VAN A SER LISTAS, luego vemos si lo metemos en otra estructura
 t_list* cola_de_listos; //1
 t_list* cola_de_bloqueados; //2
@@ -50,14 +42,9 @@ enum movimientos_entre_estados {
 int ultimo_id;
 
 void* conectar_coordinador();
-Configuracion* cargar_configuracion(char* ruta);
-t_config* crear_prueba_configuracion(char* algoritmo_planificacion);
-t_config* crear_archivo_configuracion(char* ruta, char** campos);
-int estan_todos_los_campos(t_config* config, char** campos);
 int parsear_algoritmo(char* valor);
-Configuracion* leer_archivo_configuracion(t_config* archivo);
 void separar_claves(char** claves);
-void RecibirConexiones();
+void recibir_conexiones(ConfigPlanificador config);
 void ingreso_cola_de_listos();
 void movimiento_entre_estados(ESI* esi, int);
 void cargar_datos_de_esi(ESI* esi);
