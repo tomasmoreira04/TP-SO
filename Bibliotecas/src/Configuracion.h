@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "Socket.h"
+#include <commons/config.h>
 
 typedef struct {
 	int puerto_escucha, estimacion_inicial, puerto_coordinador, alfa_planif;

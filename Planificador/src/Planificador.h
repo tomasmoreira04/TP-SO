@@ -1,4 +1,3 @@
-#include <commons/config.h>
 #include <commons/collections/list.h>
 #include <commons/collections/dictionary.h>
 #include "../../Bibliotecas/src/Configuracion.h"
@@ -41,18 +40,24 @@ enum movimientos_entre_estados {
 
 int ultimo_id;
 
-void* conectar_coordinador();
-int parsear_algoritmo(char* valor);
-void separar_claves(char** claves);
-void recibir_conexiones(ConfigPlanificador config);
-void ingreso_cola_de_listos();
-void movimiento_entre_estados(ESI* esi, int);
-void cargar_datos_de_esi(ESI* esi);
-
+void recibir_conexiones();
+void proceso_nuevo(ESI* esi, int mensaje);
+void ingreso_cola_de_listos(ESI* esi);
+void replanificar();
+void movimiento_entre_estados(ESI* esi, int movimiento);
+int hay_desalojo(int algoritmo);
+void ejecutar(char* algoritmo);
+int numero_algoritmo(char* nombre);
 int _es_esi(ESI* a, ESI* b);
 void mover_esi(ESI* esi, t_list* nueva_lista);
 t_list* lista_por_numero(int numero);
 void inicializar_estructuras();
 void destruir_estructuras();
 void ejecutar_por_fifo();
+void ejecutar_por_sjf();
+void sentencia_ejecutada();
+float estimar(ESI* esi, float alfa);
+ESI* esi_rafaga_mas_corta();
+int _es_mas_corto(ESI* a, ESI* b);
+ESI* esi_resp_ratio_mas_corto();
 
