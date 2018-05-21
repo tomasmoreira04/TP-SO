@@ -1,6 +1,7 @@
 #include <commons/collections/list.h>
 #include <commons/collections/dictionary.h>
 #include "../../Bibliotecas/src/Configuracion.h"
+#include "../../ESI/src/ESI.h"
 
 #define LARGO_CLAVE 20
 #define MAX_CLAVES 50
@@ -41,6 +42,7 @@ enum movimientos_entre_estados {
 int ultimo_id;
 
 void recibir_conexiones();
+void procesar_instruccion_esi(int id_esi, t_esi_operacion mensaje);
 void proceso_nuevo(ESI* esi, int mensaje);
 void ingreso_cola_de_listos(ESI* esi);
 void replanificar();
@@ -60,4 +62,3 @@ float estimar(ESI* esi, float alfa);
 ESI* esi_rafaga_mas_corta();
 int _es_mas_corto(ESI* a, ESI* b);
 ESI* esi_resp_ratio_mas_corto();
-

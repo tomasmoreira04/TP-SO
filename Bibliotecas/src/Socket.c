@@ -39,7 +39,7 @@ int recibirMensaje(int socket,void** stream){
 			return 0;
 		}
 		else
-			perror("Error en el recv");
+			perror("\nError en el recv");
 	}
 	*stream=malloc(heder.tamano);
 	if((verificador=recv(socket,*stream,heder.tamano,0))<=0){
@@ -47,7 +47,7 @@ int recibirMensaje(int socket,void** stream){
 			return 0;
 		}
 		else
-			perror("Error al recibir el stream");
+			perror("\nError al recibir el stream");
 	}
 
 
@@ -103,7 +103,7 @@ int aceptar_nueva_conexion(int listener) {
 		if (newfd > fdmax) {
 			fdmax = newfd;
 		}
-		printf("selectserver: new connection from %s on "
+		printf("\nselectserver: new connection from %s on "
 				"socket %d\n", inet_ntoa(remoteaddr.sin_addr), newfd);
 	}
 	return newfd;
@@ -133,7 +133,7 @@ int conexion_con_servidor(char* ip, int port) {
 	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype = SOCK_STREAM;
 	if ((rv = getaddrinfo(ip, puerto, &hints, &servinfo)) != 0) {
-		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
+		fprintf(stderr, "\ngetaddrinfo: %s\n", gai_strerror(rv));
 		return 1;
 	}
 	for(p = servinfo; p != NULL; p = p->ai_next) {
@@ -151,12 +151,12 @@ int conexion_con_servidor(char* ip, int port) {
 		break;
 	}
 	if (p == NULL) {
-		fprintf(stderr, "failed to connect\n");
+		fprintf(stderr, "\nfailed to connect\n");
 		return 2;
 	}
 	inet_ntop(p->ai_family, getSin_Addr((struct sockaddr *)p->ai_addr),
 			s, sizeof s);
-	printf("Conexion con ip %s - ", s);
+	printf("\nConexion con ip %s - \n", s);
 	freeaddrinfo(servinfo); // all done with this structure
 	return sockfd;
 }

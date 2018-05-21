@@ -15,6 +15,8 @@
 #include "../../Bibliotecas/src/Socket.c"
 #include "../../Bibliotecas/src/Configuracion.c"
 #include <commons/collections/list.h>
+#include "../../ESI/src/ESI.h"
+#include <parsi/parser.h> //para el struct t_operacion_esi
 
 typedef enum { sjf_sd, sjf_cd, hrrn, fifo } Algoritmo;
 
@@ -58,26 +60,23 @@ void recibir_conexiones() {
 					aceptar_nueva_conexion(listener);
 				}
 				else {
-					if(i==socketCoordinador) {
+					if(i == socketCoordinador) {
 						//ACCIONES Coordinador
 					}
 					else { // Este es el ESI
-						/*HACER EL FREE-todavia no se donde ponerlo xdxdxdxdxdxx
-						 *y falta hacer validaciones en el malloc
-						 */
+
+						void* mensaje;
+						int accion = recibirMensaje(i, &mensaje);
 						ESI* esi = malloc(sizeof(ESI));
-						void* stream;
-						int accion = recibirMensaje(i, &stream);
-						int mensaje = *(int*)stream;
+						esi->id = ultimo_id;
 						switch(accion) {
-							case 100: //proceso NUEVO
-								proceso_nuevo(esi, mensaje);
-								accion = 101;
+							case nuevo_esi:
+								proceso_nuevo(esi, *(int*)mensaje);
 								break;
-							case 101: //
-								puts("dsasdasda");
-							break;
-							case 0: //accion = 0 me desconecto
+							case instruccion_esi:
+								procesar_instruccion_esi(esi->id, *(t_esi_operacion*)mensaje);
+								break;
+							default:
 								close(socket);
 								FD_CLR(i,&master);
 								break;
@@ -89,22 +88,40 @@ void recibir_conexiones() {
 	}
 }
 
-void proceso_nuevo(ESI* esi, int mensaje) {
-	printf( "\nMe llego: " GREEN "%d" RESET, mensaje);
+//no se como castear a la struct desde el void pointer, y mantener los char* de la clave valor de la estructura :(
+void procesar_instruccion_esi(int id_esi, t_esi_operacion op) { //el casteo desde puntero void no me devuelve los char* de clave o valor
+	switch (op.keyword) {
+	case GET:
+		printf("El esi %d quiere hacer un GET\n", id_esi);
+		//printf("\nEl ESI " GREEN "%d" RESET " me pide la clave " GREEN"<%s>" RESET, id_esi, op.argumentos.GET.clave);
+		break;
+	case STORE:
+		printf("El esi %d quiere hacer un STORE\n", id_esi);
+		//printf("\nEl ESI " GREEN "%d" RESET " me pide hacer store de la clave " GREEN"<%s>" RESET, id_esi, op.argumentos.STORE.clave);
+		break;
+	case SET:
+		printf("El esi %d quiere hacer un SET\n", id_esi);
+		//printf("\nEl ESI " GREEN "%d" RESET " me pide setear la clave " GREEN"<%s> " RESET "con el valor" GREEN "<%s>", id_esi, op.argumentos.SET.clave, op.argumentos.SET.valor);
+		break;
+
+	}
+}
+
+void proceso_nuevo(ESI* esi, int rafagas) {
+	printf( "\nNuevo ESI con" GREEN " %d rafagas " RESET, rafagas);
+	ultimo_id++;
 	esi->estimacion_anterior = config.estimacion_inicial;
+	esi->id = ultimo_id;
 	ingreso_cola_de_listos(esi);
-	printf(" del ESI %d con estimacion %d\n", esi->id, esi->estimacion_anterior);
+	printf("(ID: %d, ESTIMACION: %d)\n", esi->id, esi->estimacion_anterior);
 }
 
 void ingreso_cola_de_listos(ESI* esi) {
 	/*if (hay_desalojo(algoritmo)) //llega uno a listo, y hay desalojo -> ver
 		replanificar();*/
-	esi->id = ultimo_id;
 	mover_esi(esi, cola_de_listos);
-	ultimo_id++;
-}
 
-void replanificar();
+}
 
 void movimiento_entre_estados(ESI* esi, int movimiento) {
 	switch(movimiento) {

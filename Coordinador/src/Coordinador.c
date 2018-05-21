@@ -24,7 +24,7 @@ int main() {
 	lista_Instancias = list_create();
 
 	int listener = crear_socket_de_escucha(configuracion.puerto_escucha);
-	int socket_server = conexion_con_servidor("127.0.0.1", "9034");
+	int socket_server = conexion_con_servidor("127.0.0.1", 9034);
 
 	int bytes = enviar("ESI", socket_server);
 	int nuevo_socket, modulo;

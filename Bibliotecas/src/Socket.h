@@ -3,4 +3,5 @@
 
 typedef enum { planificador, coordinador, esi, instancia } Modulo;
 
+
 #endif
