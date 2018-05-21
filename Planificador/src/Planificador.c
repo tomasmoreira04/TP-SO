@@ -73,9 +73,10 @@ void recibir_conexiones() {
 							case nuevo_esi:
 								proceso_nuevo(esi, *(int*)mensaje);
 								break;
-							case instruccion_esi:
-								procesar_instruccion_esi(esi->id, *(t_esi_operacion*)mensaje);
+							case instruccion_esi: {
+								procesar_instruccion_esi(esi->id, *(t_operacion*)mensaje);
 								break;
+							}
 							default:
 								close(socket);
 								FD_CLR(i,&master);
@@ -88,22 +89,18 @@ void recibir_conexiones() {
 	}
 }
 
-//no se como castear a la struct desde el void pointer, y mantener los char* de la clave valor de la estructura :(
-void procesar_instruccion_esi(int id_esi, t_esi_operacion op) { //el casteo desde puntero void no me devuelve los char* de clave o valor
-	switch (op.keyword) {
+
+void procesar_instruccion_esi(int id_esi, t_operacion op) {
+	switch (op.tipo) {
 	case GET:
-		printf("El esi %d quiere hacer un GET\n", id_esi);
-		//printf("\nEl ESI " GREEN "%d" RESET " me pide la clave " GREEN"<%s>" RESET, id_esi, op.argumentos.GET.clave);
+		printf("El ESI " GREEN "%d" RESET " necesita la clave " CYAN "<%s>\n" RESET, id_esi, op.clave);
 		break;
 	case STORE:
-		printf("El esi %d quiere hacer un STORE\n", id_esi);
-		//printf("\nEl ESI " GREEN "%d" RESET " me pide hacer store de la clave " GREEN"<%s>" RESET, id_esi, op.argumentos.STORE.clave);
+		printf("El ESI " GREEN "%d" RESET " necesita hacer store de la clave " CYAN "<%s>\n" RESET, id_esi, op.clave);
 		break;
 	case SET:
-		printf("El esi %d quiere hacer un SET\n", id_esi);
-		//printf("\nEl ESI " GREEN "%d" RESET " me pide setear la clave " GREEN"<%s> " RESET "con el valor" GREEN "<%s>", id_esi, op.argumentos.SET.clave, op.argumentos.SET.valor);
+		printf("El ESI " GREEN "%d" RESET " necesita setear la clave " CYAN "<%s> " RESET "con el valor " MAGENTA "<%s>\n" RESET, id_esi, op.clave, op.valor);
 		break;
-
 	}
 }
 

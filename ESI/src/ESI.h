@@ -6,6 +6,12 @@
 #include <stdlib.h>
 #include <parsi/parser.h>
 
+typedef struct {
+	char clave[40];
+	char valor[40];
+	int tipo;
+} t_operacion;
+
 typedef enum {
 	nuevo_esi = 100,
 	instruccion_esi

@@ -42,7 +42,7 @@ enum movimientos_entre_estados {
 int ultimo_id;
 
 void recibir_conexiones();
-void procesar_instruccion_esi(int id_esi, t_esi_operacion mensaje);
+void procesar_instruccion_esi(int id_esi, t_operacion op);
 void proceso_nuevo(ESI* esi, int mensaje);
 void ingreso_cola_de_listos(ESI* esi);
 void replanificar();

@@ -35,6 +35,25 @@ void informar_nuevo_esi(int socket, int rafagas) {
 	enviarMensaje(socket, nuevo_esi, &rafagas, sizeof(rafagas));
 }
 
+//hago esto porque el struct que te dan en el parser es una mierda :)
+t_operacion convertir_operacion(t_esi_operacion a) { //necesario porque los char* estan en un union de structs y son inaccesibles si casteo desde void*
+	t_operacion b;
+	if (a.keyword == GET) {
+		b.tipo = GET;
+		strcpy(b.clave, a.argumentos.GET.clave);
+	}
+	else if (a.keyword == STORE) {
+		b.tipo = STORE;
+		strcpy(b.clave, a.argumentos.STORE.clave);
+	}
+	else {
+		b.tipo = SET;
+		strcpy(b.clave, a.argumentos.SET.clave);
+		strcpy(b.valor, a.argumentos.SET.valor);
+	}
+	return b;
+}
+
 void leer_sentencias(int planificador, char* ruta) {
 	FILE* script = cargar_script(ruta);
 	char* linea = NULL;
@@ -43,8 +62,9 @@ void leer_sentencias(int planificador, char* ruta) {
 	while ((leidas = getline(&linea, &largo, script)) != -1) {
 		t_esi_operacion operacion = parse(linea);
 		if(operacion.valido){
+			t_operacion op_planif = convertir_operacion(operacion);
 			ejecutar_operacion(operacion);
-			enviarMensaje(planificador, instruccion_esi, &operacion, sizeof(operacion));
+			enviarMensaje(planificador, instruccion_esi, &op_planif, sizeof(op_planif));
 			destruir_operacion(operacion);
 		} else {
 			printf(RED "\nNo se pudo interpretar " CYAN "%s\n" RESET, linea);
