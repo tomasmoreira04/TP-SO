@@ -69,13 +69,11 @@ void *rutina_instancia(void * arg) {
 }
 
 void configurar_instancia(int socket){
-	configuracion = cargar_config_coordinador();
-
-	int* dim = malloc(sizeof(int)*2);
-	memcpy(dim,&configuracion.cant_entradas,sizeof(int));
-	memcpy(dim+1,&configuracion.tamanio_entrada,sizeof(int));
-
-	enviarMensaje(socket,1,dim,sizeof(int)*2);
+	ConfigCoordinador configuracion = cargar_config_coordinador();
+	Dimensiones_Inst* dim = malloc(sizeof(dim));
+	dim->cant_entradas = configuracion.cant_entradas;
+	dim->tam_entradas = configuracion.tamanio_entrada;
+	enviarMensaje(socket,1,(void*)dim,sizeof(Dimensiones_Inst));
 }
 
 
