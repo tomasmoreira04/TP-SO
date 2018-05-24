@@ -5,25 +5,26 @@
 #include <stdlib.h>
 #include "Socket.h"
 #include <commons/config.h>
+#include "Macros.h"
 
 typedef struct {
 	int puerto_escucha, estimacion_inicial, puerto_coordinador, alfa_planif;
-	char algoritmo_planif[7], ip_coordinador[16];
+	char algoritmo_planif[LARGO_ALG], ip_coordinador[LARGO_IP];
 	char** claves_bloqueadas;
 } ConfigPlanificador;
 
 typedef struct {
 	int puerto_escucha, cant_entradas, tamanio_entrada, retardo;
-	char algoritmo_distrib[7];
+	char algoritmo_distrib[LARGO_ALG];
 } ConfigCoordinador;
 
 typedef struct {
 	int puerto_coordinador, puerto_planificador;
-	char ip_coordinador[16], ip_planificador[16];
+	char ip_coordinador[LARGO_IP], ip_planificador[LARGO_IP];
 } ConfigESI;
 
 typedef struct {
-	char ip_coordinador[16], algoritmo_reemp[7], punto_montaje[50], nombre_instancia[20];
+	char ip_coordinador[LARGO_IP], algoritmo_reemp[LARGO_ALG], punto_montaje[LARGO_RUTA], nombre_instancia[LARGO_NINSTANCIA];
 	int puerto_coordinador, intervalo_dump;
 } ConfigInstancia;
 

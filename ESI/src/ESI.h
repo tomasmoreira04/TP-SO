@@ -5,19 +5,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <parsi/parser.h>
-
-typedef struct {
-	char clave[40];
-	char valor[40];
-	int tipo;
-} t_operacion;
-
-typedef enum {
-	nuevo_esi = 100,
-	instruccion_esi
-} Accion; //para que reciba el planificador
+#include "../../Bibliotecas/src/Estructuras.h"
 
 void leer_sentencias(int planificador, char* ruta);
+char* ruta_script(char* argumento);
 void GET_CLAVE(t_esi_operacion operacion);
 void SET_CLAVE_VALOR(t_esi_operacion operacion);
 void STORE_CLAVE(t_esi_operacion operacion);

@@ -7,6 +7,7 @@
 #include <arpa/inet.h>
 #include "../../Bibliotecas/src/Socket.c"
 #include "../../Bibliotecas/src/Configuracion.c"
+#include "../../Bibliotecas/src/Estructuras.h"
 #include "commons/string.h"
 #include "commons/collections/list.h"
 #include "ESI.h"
@@ -15,20 +16,31 @@
 //Clonen repo y instalen el parsi en su VM: https://github.com/sisoputnfrba/parsi
 //VER https://github.com/sisoputnfrba/parsi/blob/master/src/parsi/parser.h para entender funciones
 
-int main() {
+int main(int argc, char* argv[]) {
 	ConfigESI config = cargar_config_esi();
+	char* ruta = ruta_script(argv[1]);
+
 	int planificador = conexion_con_servidor(config.ip_planificador, config.puerto_planificador);
 	int coordinador = conexion_con_servidor(config.ip_coordinador, config.puerto_coordinador);
+
 	handShake(coordinador, esi);
 
-	FILE* script = cargar_script("./script.esi");
+	FILE* script = cargar_script(ruta);
 	int rafagas = cantidad_de_sentencias(script);
 	informar_nuevo_esi(planificador, rafagas);
 
-	leer_sentencias(planificador, "./script.esi"); //si paso puntero a FILE no me anda el getline xD, asi que abro de nuevo
+	leer_sentencias(planificador, ruta); //si paso puntero a FILE no me anda el getline xD, asi que abro de nuevo
 
 	fclose(script);
 	return EXIT_SUCCESS;
+}
+
+char* ruta_script(char* argumento) { //se pasa solo el nombre del archivo, sin el .esi ni la carpeta
+	char* ruta = malloc(LARGO_RUTA);
+	string_append(&ruta, "../scripts/");
+	string_append(&ruta, argumento);
+	string_append(&ruta, ".esi");
+	return ruta;
 }
 
 void informar_nuevo_esi(int socket, int rafagas) {
@@ -36,8 +48,8 @@ void informar_nuevo_esi(int socket, int rafagas) {
 }
 
 //hago esto porque el struct que te dan en el parser es una mierda :)
-t_operacion convertir_operacion(t_esi_operacion a) { //necesario porque los char* estan en un union de structs y son inaccesibles si casteo desde void*
-	t_operacion b;
+t_sentencia convertir_operacion(t_esi_operacion a) { //necesario porque los char* estan en un union de structs y son inaccesibles si casteo desde void*
+	t_sentencia b;
 	if (a.keyword == GET) {
 		b.tipo = GET;
 		strcpy(b.clave, a.argumentos.GET.clave);
@@ -62,9 +74,11 @@ void leer_sentencias(int planificador, char* ruta) {
 	while ((leidas = getline(&linea, &largo, script)) != -1) {
 		t_esi_operacion operacion = parse(linea);
 		if(operacion.valido){
-			t_operacion op_planif = convertir_operacion(operacion);
-			ejecutar_operacion(operacion);
-			enviarMensaje(planificador, instruccion_esi, &op_planif, sizeof(op_planif));
+			t_sentencia sentencia = convertir_operacion(operacion);
+			//le mando esta sentencia al coord
+
+			//ahora esperar OK para ejecutar sentencia
+			ejecutar_operacion(operacion); //imprime nada mas en el ESI
 			destruir_operacion(operacion);
 		} else {
 			printf(RED "\nNo se pudo interpretar " CYAN "%s\n" RESET, linea);
@@ -77,15 +91,15 @@ void leer_sentencias(int planificador, char* ruta) {
 }
 
 void GET_CLAVE(t_esi_operacion operacion) {
-	printf("GET\tclave: <%s>\n", operacion.argumentos.GET.clave);
+	printf("GET\t" GREEN "%s\n" RESET, operacion.argumentos.GET.clave);
 }
 
 void SET_CLAVE_VALOR(t_esi_operacion operacion) {
-	printf("SET\tclave: <%s>\tvalor: <%s>\n", operacion.argumentos.SET.clave, operacion.argumentos.SET.valor);
+	printf("SET\t" GREEN "%s\t" CYAN "%s\n" RESET, operacion.argumentos.SET.clave, operacion.argumentos.SET.valor);
 }
 
 void STORE_CLAVE(t_esi_operacion operacion) {
-	printf("STORE\tclave: <%s>\n", operacion.argumentos.STORE.clave);
+	printf("STORE\t" GREEN "%s\n" RESET, operacion.argumentos.STORE.clave);
 }
 
 void ejecutar_operacion(t_esi_operacion operacion) {

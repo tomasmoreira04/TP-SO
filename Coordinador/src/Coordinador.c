@@ -8,6 +8,7 @@
 #include <arpa/inet.h>
 #include "../../Bibliotecas/src/Socket.c"
 #include "../../Bibliotecas/src/Configuracion.c"
+#include "../../Bibliotecas/src/Estructuras.h"
 #include <errno.h>
 #include <netdb.h>
 #include <pthread.h>
@@ -26,7 +27,8 @@ int main() {
 	int listener = crear_socket_de_escucha(configuracion.puerto_escucha);
 	int socket_server = conexion_con_servidor("127.0.0.1", 9034);
 
-	int bytes = enviar("ESI", socket_server);
+	conectar_con_planificador(socket_server);
+
 	int nuevo_socket, modulo;
 
 	while(1){
@@ -35,6 +37,11 @@ int main() {
 		crear_hilo(nuevo_socket, modulo);
 	}
 	return 0;
+}
+
+void conectar_con_planificador(int planificador) {
+	//handShake(planificador, coordinador); no usar esto
+	enviarMensaje(planificador, conectar_coord_planif, NULL, 0);
 }
 
 //ACCIONES DE LOS HILOS
@@ -93,12 +100,6 @@ void crear_hilo(int nuevo_socket, int modulo) {
 		printf("Error en la creacion del hilo");
 	}
 	pthread_attr_destroy(&attr);
-}
-
-int enviar(char* mensaje, int socket) {
-	int longitud = strlen(mensaje) + 1;
-	send(socket, &longitud, sizeof(int), 0);
-	return send(socket, mensaje, longitud, 0);
 }
 
 void mostrar_por_pantalla_config(ConfigCoordinador config) {

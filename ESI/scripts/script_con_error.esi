@@ -1,0 +1,4 @@
+GET jugador1
+SET jugador1 messi
+SET jugador2 ronaldo
+STORE jugador2

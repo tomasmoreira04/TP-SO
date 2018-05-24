@@ -14,8 +14,8 @@
 #include "../../Bibliotecas/src/Color.h"
 #include "../../Bibliotecas/src/Socket.c"
 #include "../../Bibliotecas/src/Configuracion.c"
+#include "../../Bibliotecas/src/Estructuras.h"
 #include <commons/collections/list.h>
-#include "../../ESI/src/ESI.h"
 #include <parsi/parser.h> //para el struct t_operacion_esi
 
 typedef enum { sjf_sd, sjf_cd, hrrn, fifo } Algoritmo;
@@ -25,6 +25,8 @@ ConfigPlanificador config;
 int main() {
 	inicializar_estructuras();
 	config = cargar_config_planificador();
+	setbuf(stdout, NULL); //a veces el printf no andaba, se puede hacer esto o un fflush
+
 	pthread_t thread_consola;
 	pthread_create(&thread_consola, NULL, iniciar_consola, NULL);
 	ultimo_id = 0;
@@ -34,83 +36,66 @@ int main() {
 }
 
 void recibir_conexiones() {
-	int listener;
-	char buf[256];
-	int nbytes;
-
-	int i, j;
 	FD_ZERO(&master);
 	FD_ZERO(&read_fds);
 
-	int socketCoordinador = 9999;
-	listener = crear_socket_de_escucha(config.puerto_escucha);
-
+	int listener = crear_socket_de_escucha(config.puerto_escucha);
+	int coordinador = conectar_con_coordinador(listener);
 
 	FD_SET(listener, &master);
-	fdmax = listener;
-	while (1) {
+	fdmax = coordinador;
+	while (true) {
 		read_fds = master;
 		if (select(fdmax + 1, &read_fds, NULL, NULL, NULL) == -1) {
 			perror("select");
 			exit(1);
 		}
-		for (i = 3; i <= fdmax; i++) {
-			if (FD_ISSET(i, &read_fds)) {
-				if (i == listener) {
-					aceptar_nueva_conexion(listener);
-				}
-				else {
-					if(i == socketCoordinador) {
-						//ACCIONES Coordinador
-					}
-					else { // Este es el ESI
-
-						void* mensaje;
-						int accion = recibirMensaje(i, &mensaje);
-						ESI* esi = malloc(sizeof(ESI));
-						esi->id = ultimo_id;
-						switch(accion) {
-							case nuevo_esi:
-								proceso_nuevo(esi, *(int*)mensaje);
-								break;
-							case instruccion_esi: {
-								procesar_instruccion_esi(esi->id, *(t_operacion*)mensaje);
-								break;
-							}
-							default:
-								close(socket);
-								FD_CLR(i,&master);
-								break;
-						}
-					}
-				}
-			}
-		}
+		for (int i = 0; i <= fdmax; i++)
+			if (FD_ISSET(i, &read_fds))
+				recibir_mensajes(i, listener, coordinador);
 	}
 }
 
+int conectar_con_coordinador(int listener) { //fijarse bien esto, conectar siempre primero el coordinador
+	int socket_coord = aceptar_nueva_conexion(listener);
+	printf(MAGENTA "\nCOORDINADOR " RESET "conectado en socket " GREEN "%d" RESET, socket_coord);
+	return socket_coord;
+}
 
-void procesar_instruccion_esi(int id_esi, t_operacion op) {
-	switch (op.tipo) {
-	case GET:
-		printf("El ESI " GREEN "%d" RESET " necesita la clave " CYAN "<%s>\n" RESET, id_esi, op.clave);
-		break;
-	case STORE:
-		printf("El ESI " GREEN "%d" RESET " necesita hacer store de la clave " CYAN "<%s>\n" RESET, id_esi, op.clave);
-		break;
-	case SET:
-		printf("El ESI " GREEN "%d" RESET " necesita setear la clave " CYAN "<%s> " RESET "con el valor " MAGENTA "<%s>\n" RESET, id_esi, op.clave, op.valor);
-		break;
+void recibir_mensajes(int socket, int listener, int coordinador) {
+	if (socket == listener)
+		aceptar_nueva_conexion(listener);
+	else if (socket == coordinador)
+		procesar_mensaje_coordinador(socket);
+	else procesar_mensaje_esi(socket);
+}
+
+void procesar_mensaje_coordinador(int coordinador) {
+	//FD_CLR(coordinador, &master);
+}
+
+void procesar_mensaje_esi(int socket) {
+	void* mensaje;
+	int accion = recibirMensaje(socket, &mensaje);
+
+	switch(accion) {
+		case nuevo_esi:
+			proceso_nuevo(*(int*)mensaje);
+			break;
+		default:
+			FD_CLR(socket, &master);
+			break;
 	}
 }
 
-void proceso_nuevo(ESI* esi, int rafagas) {
-	printf( "\nNuevo ESI con" GREEN " %d rafagas " RESET, rafagas);
-	ultimo_id++;
-	esi->estimacion_anterior = config.estimacion_inicial;
-	esi->id = ultimo_id;
-	ingreso_cola_de_listos(esi);
-	printf("(ID: %d, ESTIMACION: %d)\n", esi->id, esi->estimacion_anterior);
+void proceso_nuevo(int rafagas) {
+	ESI* nuevo_esi = malloc(sizeof(ESI));
+	nuevo_esi->estimacion_anterior = config.estimacion_inicial;
+	nuevo_esi->id = ++ultimo_id;
+	nuevo_esi->cant_rafagas = rafagas;
+	ingreso_cola_de_listos(nuevo_esi);
+	printf( "\nNuevo ESI con" GREEN " %d rafagas " RESET, nuevo_esi->cant_rafagas);
+	printf("(ID: %d, ESTIMACION: %d)\n", nuevo_esi->id, nuevo_esi->estimacion_anterior);
 }
 
 void ingreso_cola_de_listos(ESI* esi) {
@@ -120,22 +105,6 @@ void ingreso_cola_de_listos(ESI* esi) {
 
 }
 
-void movimiento_entre_estados(ESI* esi, int movimiento) {
-	switch(movimiento) {
-		case hacia_listos:
-			mover_esi(esi, cola_de_listos);
-			break;
-		case hacia_ejecutando:
-			ejecutar(config.algoritmo_planif);
-			break;
-		case hacia_bloqueado:
-			mover_esi(esi, cola_de_bloqueados);
-			break;
-		case hacia_finalizado:
-			mover_esi(esi, cola_de_finalizados);
-			break;
-	}
-}
 
 int hay_desalojo(int algoritmo) {
 	return 0;
@@ -174,23 +143,9 @@ int _es_esi(ESI* a, ESI* b) {
 }
 
 void mover_esi(ESI* esi, t_list* nueva_lista) {
-	if (esi->cola_actual != 0) { //si el esi es nuevo me tiraria segm fault xD
-		t_list* lista_anterior = lista_por_numero(esi->cola_actual);
-		list_remove_by_condition(lista_anterior, (void*) _es_esi);
-	}
-	list_add(nueva_lista, esi);
-}
-
-t_list* lista_por_numero(int numero) {
-	switch (numero){
-		case 1:
-			return cola_de_listos;
-		case 2:
-			return cola_de_bloqueados;
-		case 3:
-			return cola_de_finalizados;
-	}
-	return NULL;
+	if (esi->cola_actual != NULL)
+		list_remove(esi->cola_actual, esi->posicion);
+	esi->posicion = list_add(nueva_lista, esi);
 }
 
 void inicializar_estructuras() {
