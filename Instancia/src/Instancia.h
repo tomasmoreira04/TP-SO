@@ -14,4 +14,12 @@ typedef struct{
 	int32_t tam_entradas;
 } Dimensiones_Inst;
 
+typedef struct{
+	char* entrada;
+	int tamanio;
+}Reg_TablaEntradas;
+
+void setValor(char* clave, char* valor, int tamEnBytes);
+void almacenarNuevo(char* clave, char* valor, int tamEnBytes);
+
 #endif /* INSTANCIA_H_ */
