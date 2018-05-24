@@ -10,11 +10,6 @@
 #define MAX_NOMBRE 20
 
 typedef struct{
-	int32_t cant_entradas;
-	int32_t tam_entradas;
-} Dimensiones_Inst;
-
-typedef struct{
 	char* entrada;
 	int tamanio;
 }Reg_TablaEntradas;

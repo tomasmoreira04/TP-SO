@@ -6,15 +6,9 @@
 #include "commons/config.h"
 
 typedef struct{
-	int32_t cant_entradas;
-	int32_t tam_entradas;
-} Dimensiones_Inst;
-
-typedef struct{
 	int inst_ID;
 	int socket;
 }Nodo_Instancia;
-
 
 void mostrar_por_pantalla_config(ConfigCoordinador config);
 void crear_log_operacion();

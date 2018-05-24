@@ -25,11 +25,8 @@ int32_t cantEntradasDisp;
 int main() {
 	ConfigInstancia config = cargar_config_inst();
 
-
 	int socketServer = conexion_con_servidor(config.ip_coordinador, config.puerto_coordinador); //usar conf->puerto_coordinador
 	handShake(socketServer, instancia);
-
-	//Esto esta mal.. hay que cambiar que lo reciba como stream directamente sin usar la estructura de por medio, proximamente (?
 
 	int* dim;
 	recibirMensaje(socketServer,(void*)&dim);
