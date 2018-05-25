@@ -1,3 +1,4 @@
+#include "Planificador.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -10,29 +11,38 @@
 #include <pthread.h>
 #include <string.h>
 #include "Consola.h"
-#include "Planificador.h"
 #include "../../Bibliotecas/src/Color.h"
 #include "../../Bibliotecas/src/Socket.c"
 #include "../../Bibliotecas/src/Configuracion.c"
 #include "../../Bibliotecas/src/Estructuras.h"
 #include <commons/collections/list.h>
-
-typedef enum { sjf_sd, sjf_cd, hrrn, fifo } Algoritmo;
+#include <sys/stat.h>
+#include <sys/wait.h>
+#include <fcntl.h>
 
 ConfigPlanificador config;
+t_list* cola_de_listos;
+t_list* cola_de_bloqueados;
+t_list* cola_de_finalizados;
+t_list* lista_claves_bloqueadas;
+ESI* esi_ejecutando;
+t_dictionary* estimaciones_actuales;
+int ultimo_id;
+int planificar = 1;
+
 
 int main() {
 	inicializar_estructuras();
 	config = cargar_config_planificador();
 	setbuf(stdout, NULL); //a veces el printf no andaba, se puede hacer esto o un fflush
-
-	//pthread_t thread_consola;
-	//pthread_create(&thread_consola, NULL, iniciar_consola, NULL);
+	pthread_t thread_consola;
+	pthread_create(&thread_consola, NULL, iniciar_consola, NULL);
 	ultimo_id = 0;
-	recibir_conexiones(config);
-	//pthread_join(thread_consola, NULL);
+	recibir_conexiones();
+	pthread_join(thread_consola, NULL);
 	destruir_estructuras();
 }
+
 
 void recibir_conexiones() {
 	FD_ZERO(&master);
@@ -69,7 +79,6 @@ void recibir_mensajes(int socket, int listener, int coordinador) {
 }
 
 void procesar_mensaje_coordinador(int coordinador) {
-	printf("mensaje del coord");
 	void* mensaje;
 	Accion accion = recibirMensaje(coordinador, &mensaje);
 	//int accion = 999;
@@ -100,7 +109,7 @@ void procesar_mensaje_esi(int socket) {
 	switch(accion) {
 		case nuevo_esi:
 			proceso_nuevo(*(int*)mensaje, socket);
-			ejecutar_esi(); //por ahora, cada vez que me llega uno nuevo lo ejecuto
+			//ejecutar_esi(); //por ahora, cada vez que me llega uno nuevo lo ejecuto
 			break;
 		default:
 			FD_CLR(socket, &master);
@@ -111,6 +120,7 @@ void procesar_mensaje_esi(int socket) {
 void ejecutar_esi() { //ESTO SERIA FIFO, POR AHORA DEJALO ASI
 	ESI* esi = list_remove(cola_de_listos, 0); //criterio primero en la lista
 	enviarMensaje(esi->socket_p, ejecutar_proxima_sentencia, NULL, 0);
+	esi_ejecutando = esi;
 }
 
 void nueva_sentencia(t_sentencia sentencia) {
@@ -237,10 +247,12 @@ void nueva_solicitud_clave(char* clave, ESI* esi) {
 
 void liberar_clave(char* clave) {
 	t_clave* c = buscar_clave_bloqueada(clave);
-	c->bloqueada = 0;
-	c->esi_duenio = NULL;
-	ESI* esi_a_desbloquear = list_remove(c->esis_esperando, 0); //el primero en haberse bloqueado, y lo saco
-	desbloquear_esi(esi_a_desbloquear);
+	if (c != NULL) {
+		c->bloqueada = 0;
+		c->esi_duenio = NULL;
+		ESI* esi_a_desbloquear = list_remove(c->esis_esperando, 0); //el primero en haberse bloqueado, y lo saco
+		desbloquear_esi(esi_a_desbloquear);
+	}
 }
 
 int esta_bloqueada(char* clave) {
@@ -311,6 +323,7 @@ int _es_esi(ESI* a, ESI* b) {
 void mover_esi(ESI* esi, t_list* nueva_lista) {
 	if (esi->cola_actual != NULL)
 		list_remove(esi->cola_actual, esi->posicion);
+	esi->cola_actual = nueva_lista;
 	esi->posicion = list_add(nueva_lista, esi);
 }
 
@@ -328,6 +341,7 @@ void destruir_estructuras() {
 	list_destroy(cola_de_finalizados);
 	list_destroy(lista_claves_bloqueadas);
 	dictionary_destroy(estimaciones_actuales);
+	close(file_descriptors[1]);
 }
 
 //para el prox checkpoint esta funcion va a ser mas generica

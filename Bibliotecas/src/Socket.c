@@ -16,21 +16,6 @@
 #include <signal.h>
 #include "Socket.h"
 
-#define MAXDATASIZE 100
-#define BACKLOG 10
-
-fd_set master;
-fd_set read_fds;
-struct sockaddr_in remoteaddr;
-//int addrlen;
-socklen_t addrlen;
-int fdmax;
-
-typedef struct{
-	int accion;
-	int tamano;
-}header;
-
 int recibirMensaje(int socket,void** stream){
 	header heder;//MODIFICAR FLAG
 	int verificador;

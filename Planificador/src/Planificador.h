@@ -1,13 +1,13 @@
+#ifndef PLANIFICADOR_H
+#define PLANIFICADOR_H
+
 #include <commons/collections/list.h>
 #include <commons/collections/dictionary.h>
 #include "../../Bibliotecas/src/Configuracion.h"
 #include "../../Bibliotecas/src/Estructuras.h"
+#include "../../Bibliotecas/src/Socket.h"
 
-t_list* cola_de_listos;
-t_list* cola_de_bloqueados;
-t_list* cola_de_finalizados;
-t_list* lista_claves_bloqueadas;
-t_dictionary* estimaciones_actuales;
+typedef enum { sjf_sd, sjf_cd, hrrn, fifo } Algoritmo;
 
 typedef enum {
 	error_tamanio_clave,
@@ -17,7 +17,15 @@ typedef enum {
 	error_clave_no_bloqueada
 } ErrorOperacion;
 
-int ultimo_id;
+extern ConfigPlanificador config;
+extern t_list* cola_de_listos;
+extern t_list* cola_de_bloqueados;
+extern t_list* cola_de_finalizados;
+extern t_list* lista_claves_bloqueadas;
+extern ESI* esi_ejecutando;
+extern t_dictionary* estimaciones_actuales;
+extern int ultimo_id;
+extern int planificar; //parametro para pausar/continuar la planificacion por comando
 
 //funciones del servidor
 void recibir_conexiones();
@@ -54,6 +62,7 @@ void ejecutar(char* algoritmo);
 int numero_algoritmo(char* nombre);
 int _es_esi(ESI* a, ESI* b);
 void mover_esi(ESI* esi, t_list* nueva_lista);
+
 t_list* lista_por_numero(int numero);
 void inicializar_estructuras();
 void destruir_estructuras();
@@ -64,3 +73,5 @@ float estimar(ESI* esi, float alfa);
 ESI* esi_rafaga_mas_corta();
 int _es_mas_corto(ESI* a, ESI* b);
 ESI* esi_resp_ratio_mas_corto();
+
+#endif
