@@ -9,6 +9,7 @@
 #include "../../Bibliotecas/src/Socket.c"
 #include "../../Bibliotecas/src/Configuracion.c"
 #include "../../Bibliotecas/src/Estructuras.h"
+#include "../../Bibliotecas/src/Color.h"
 #include <errno.h>
 #include <netdb.h>
 #include <pthread.h>
@@ -18,6 +19,7 @@
 
 t_list *lista_Instancias;
 ConfigCoordinador configuracion;
+int socket_plan; //esto cambiar tal vez
 
 int main() {
 	configuracion = cargar_config_coordinador();
@@ -25,9 +27,11 @@ int main() {
 	lista_Instancias = list_create();
 
 	int listener = crear_socket_de_escucha(configuracion.puerto_escucha);
-	int socket_server = conexion_con_servidor("127.0.0.1", 9034);
+	int socket_server = conexion_con_servidor(configuracion.ip_planificador, configuracion.puerto_planificador);
 
-	conectar_con_planificador(socket_server);
+	socket_plan = socket_server; //pasar ocmo parametro, no global, pero por ahora lo hago asi
+
+	handShake(socket_server, coordinador);
 
 	int nuevo_socket, modulo;
 
@@ -37,11 +41,6 @@ int main() {
 		crear_hilo(nuevo_socket, modulo);
 	}
 	return 0;
-}
-
-void conectar_con_planificador(int planificador) {
-	//handShake(planificador, coordinador); no usar esto
-	enviarMensaje(planificador, conectar_coord_planif, NULL, 0);
 }
 
 //ACCIONES DE LOS HILOS
@@ -77,8 +76,30 @@ void configurar_instancia(int socket){
 }
 
 
-void *rutina_ESI(void * arg) {
-	int socket_CPU = (int)arg;
+void *rutina_ESI(void* argumento) {
+	int socket_esi = *(int*)(&argumento);
+	void* stream;
+	printf(BLUE "\nEjecutando ESI (socket %d)..." RESET, socket_esi);
+
+	while (recibirMensaje(socket_esi, &stream) == ejecutar_sentencia_coordinador) {
+
+		t_sentencia* sentencia = (t_sentencia*)stream;
+		char* recurso = (char*)sentencia->clave;
+
+		enviarMensaje(socket_plan, preguntar_recursos_planificador, recurso, sizeof(recurso));
+		int resultado_ejecucion = 0;
+		int respuesta = recibirMensaje(socket_plan, &stream); //el planif me da el OK, entonces ejecuto una sentencia del esi
+		if (respuesta == recurso_disponible) {
+		//aca ejecutar sentencia esi en instancia
+		//.
+		//.
+			resultado_ejecucion = 1; //1 = ok se ejecuto bien
+		}
+
+		enviarMensaje(socket_plan, ejecucion_ok, (void*)resultado_ejecucion, sizeof(int));
+	}
+	//sale del while -> no hay mas sentencias
+	enviarMensaje(socket_plan, terminar_esi, NULL, 0);
 	return NULL;
 }
 
@@ -95,7 +116,7 @@ void crear_hilo(int nuevo_socket, int modulo) {
 		printf("Error en el seteado del estado de detached");
 	}
 	res = (modulo == instancia) ? pthread_create (&hilo ,&attr, rutina_instancia , (void *)nuevo_socket)
-			:pthread_create (&hilo ,&attr, rutina_ESI , (void *)nuevo_socket);
+			:pthread_create (&hilo ,&attr, rutina_ESI, (void*)nuevo_socket);
 	if (res != 0) {
 		printf("Error en la creacion del hilo");
 	}

@@ -7,7 +7,7 @@
 #include <parsi/parser.h>
 #include "../../Bibliotecas/src/Estructuras.h"
 
-void leer_sentencias(int planificador, char* ruta);
+void leer_sentencias(int planificador, int coordinador, char* ruta);
 char* ruta_script(char* argumento);
 void GET_CLAVE(t_esi_operacion operacion);
 void SET_CLAVE_VALOR(t_esi_operacion operacion);

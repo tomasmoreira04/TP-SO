@@ -25,16 +25,18 @@ ConfigPlanificador cargar_config_planificador() {
 }
 
 ConfigCoordinador cargar_config_coordinador() {
-	char* campos[] = { "PUERTO_ESCUCHA","ALGORITMO_DISTRIBUCION", "CANTIDAD_ENTRADAS", "TAMANIO_ENTRADAS", "RETARDO" };
+	char* campos[] = { "PUERTO_ESCUCHA","ALGORITMO_DISTRIBUCION", "CANTIDAD_ENTRADAS", "TAMANIO_ENTRADAS", "RETARDO", "IP_PLANIFICADOR", "PUERTO_PLANIFICADOR" };
 	t_config* config = cargar_archivo(coordinador, campos);
 	if (config == NULL)
 		return config_predeterminada_coord();
 	ConfigCoordinador configuracion;
 	configuracion.puerto_escucha = config_get_int_value(config, "PUERTO_ESCUCHA");
+	configuracion.puerto_planificador = config_get_int_value(config, "PUERTO_PLANIFICADOR");
 	configuracion.retardo = config_get_int_value(config, "RETARDO");
 	configuracion.cant_entradas = config_get_int_value(config, "CANTIDAD_ENTRADAS");
 	configuracion.tamanio_entrada = config_get_int_value(config, "TAMANIO_ENTRADAS");
 	strcpy(configuracion.algoritmo_distrib, config_get_string_value(config, "ALGORITMO_DISTRIBUCION"));
+	strcpy(configuracion.ip_planificador, config_get_string_value(config, "IP_PLANIFICADOR"));
 	config_destroy(config);
 	return configuracion;
 }
@@ -84,6 +86,8 @@ ConfigPlanificador config_predeterminada_planif() {
 ConfigCoordinador config_predeterminada_coord() {
 	ConfigCoordinador config;
 	config.puerto_escucha = 9035;
+	config.puerto_planificador = 9034;
+	strcpy(config.ip_planificador, "127.0.0.1");
 	config.cant_entradas = 20;
 	config.tamanio_entrada = 100;
 	config.retardo = 300;

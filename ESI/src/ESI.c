@@ -29,13 +29,15 @@ int main(int argc, char* argv[]) {
 	int rafagas = cantidad_de_sentencias(script);
 	informar_nuevo_esi(planificador, rafagas);
 
-	leer_sentencias(planificador, ruta); //si paso puntero a FILE no me anda el getline xD, asi que abro de nuevo
+	leer_sentencias(planificador, coordinador, ruta); //si paso puntero a FILE no me anda el getline xD, asi que abro de nuevo
 
 	fclose(script);
 	return EXIT_SUCCESS;
 }
 
 char* ruta_script(char* argumento) { //se pasa solo el nombre del archivo, sin el .esi ni la carpeta
+	if (argumento == NULL)
+		return "scripts/script.esi"; //default
 	char* ruta = malloc(LARGO_RUTA);
 	string_append(&ruta, "../scripts/");
 	string_append(&ruta, argumento);
@@ -66,25 +68,33 @@ t_sentencia convertir_operacion(t_esi_operacion a) { //necesario porque los char
 	return b;
 }
 
-void leer_sentencias(int planificador, char* ruta) {
+void leer_sentencias(int planificador, int coordinador, char* ruta) {
 	FILE* script = cargar_script(ruta);
+	void* stream;
 	char* linea = NULL;
 	size_t largo = 0;
 	ssize_t leidas = 0;
-	while ((leidas = getline(&linea, &largo, script)) != -1) {
-		t_esi_operacion operacion = parse(linea);
-		if(operacion.valido){
-			t_sentencia sentencia = convertir_operacion(operacion);
-			//le mando esta sentencia al coord
 
-			//ahora esperar OK para ejecutar sentencia
-			ejecutar_operacion(operacion); //imprime nada mas en el ESI
-			destruir_operacion(operacion);
-		} else {
-			printf(RED "\nNo se pudo interpretar " CYAN "%s\n" RESET, linea);
-			exit(EXIT_FAILURE);
-		}
+	//esperar que el planif me ejecute
+	//int accion = recibirMensaje(planificador, NULL);
+
+	while ((leidas = getline(&linea, &largo, script)) != -1) {
+
+			t_esi_operacion operacion = parse(linea);
+			if(operacion.valido){
+				t_sentencia sentencia = convertir_operacion(operacion);;
+				//le aviso al coord que tengo que ejecutar mi sentencia
+				enviarMensaje(coordinador, ejecutar_sentencia_coordinador, &sentencia, sizeof(sentencia));
+
+				ejecutar_operacion(operacion); //imprime nada mas en el ESI
+				destruir_operacion(operacion);
+			} else {
+				printf(RED "\nNo se pudo interpretar " CYAN "%s\n" RESET, linea);
+				exit(EXIT_FAILURE);
+			}
+
 	}
+	enviarMensaje(coordinador, no_hay_mas_sentencias, NULL, 0);
 	fclose(script);
 	if (linea)
 		free(linea);

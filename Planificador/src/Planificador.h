@@ -9,21 +9,43 @@ t_list* cola_de_finalizados;
 t_list* lista_claves_bloqueadas;
 t_dictionary* estimaciones_actuales;
 
-enum movimientos_entre_estados {
-	hacia_listos = 1,
-	hacia_ejecutando = 2,
-	hacia_bloqueado = 3,
-	hacia_finalizado = 4
-};
+typedef enum {
+	error_tamanio_clave,
+	error_clave_no_identificada,
+	error_comunicacion,
+	error_clave_inaccesible,
+	error_clave_no_bloqueada
+} ErrorOperacion;
 
 int ultimo_id;
 
+//funciones del servidor
 void recibir_conexiones();
 int conectar_con_coordinador(int listener);
 void recibir_mensajes(int socket, int listener, int coordinador);
 void procesar_mensaje_coordinador(int coordinador);
 void procesar_mensaje_esi(int socket);
-void proceso_nuevo(int rafagas);
+void proceso_nuevo(int rafagas, int socket);
+void nueva_sentencia(t_sentencia sentencia);
+
+//funciones de logica de esi
+void ejecutar_esi();
+ESI* obtener_esi(int id);
+void bloquear_esi(ESI* esi);
+void desbloquear_esi(ESI* esi);
+t_clave* buscar_clave_bloqueada(char* clave);
+int esta_bloqueada(char* clave);
+void liberar_clave(char* clave);
+void nueva_solicitud_clave(char* clave, ESI* esi);
+void bloquear_clave(char* clave, ESI* esi);
+void liberar_recursos(ESI* esi);
+void finalizar_esi(ESI* esi);
+void STORE(char* clave, ESI* esi);
+void SET(char* clave, char* valor, ESI* esi);
+void GET(char* clave, ESI* esi);
+void error_operacion(ErrorOperacion tipo, char* clave, int esi);
+char* mensaje_error(ErrorOperacion tipo);
+
 void ingreso_cola_de_listos(ESI* esi);
 void replanificar();
 void movimiento_entre_estados(ESI* esi, int movimiento);

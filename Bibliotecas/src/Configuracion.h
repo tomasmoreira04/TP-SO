@@ -14,8 +14,8 @@ typedef struct {
 } ConfigPlanificador;
 
 typedef struct {
-	int puerto_escucha, cant_entradas, tamanio_entrada, retardo;
-	char algoritmo_distrib[LARGO_ALG];
+	int puerto_escucha, cant_entradas, tamanio_entrada, retardo, puerto_planificador;
+	char algoritmo_distrib[LARGO_ALG], ip_planificador[LARGO_IP];
 } ConfigCoordinador;
 
 typedef struct {

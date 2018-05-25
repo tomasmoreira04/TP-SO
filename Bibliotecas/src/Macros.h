@@ -1,6 +1,7 @@
 #ifndef MACROS_H
 #define MACROS_H
 
+#define MAX_CLAVES 500
 #define LARGO_CLAVE 40
 #define LARGO_VALOR 40
 #define LARGO_IP 16
