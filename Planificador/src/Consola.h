@@ -25,6 +25,11 @@ typedef struct Operacion {
 	char* param2;
 } Operacion;
 
+typedef struct {
+	int esi_bloqueante;
+	int esi_bloqueado;
+	char clave_necesaria[LARGO_CLAVE];
+} t_deadlock;
 
 
 void iniciar_terminal();
@@ -36,7 +41,13 @@ void validar_operacion(Operacion operacion);
 void ejecutar_comando(Operacion comando);
 void pausar_planificacion();
 void continuar_planificacion();
+
+t_deadlock* clave_que_necesita(ESI* a, ESI* b);
+void imprimir_deadlock(t_deadlock* deadlock);
 void mostrar_deadlocks();
+t_list* buscar_deadlocks();
+
+
 void desbloquear_clave(char* clave);
 void listar_esis_recurso(char* clave);
 void matar_esi(char* id);

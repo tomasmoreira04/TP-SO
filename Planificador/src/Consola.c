@@ -6,6 +6,7 @@
 #include "Planificador.h"
 #include "../../Bibliotecas/src/Estructuras.h"
 #include "../../Bibliotecas/src/Macros.h"
+#include "../../Bibliotecas/src/Color.h"
 #include <stddef.h>
 #include <limits.h>
 #include <unistd.h>
@@ -149,8 +150,55 @@ void continuar_planificacion() {
 	printf("\nSe ha reanudado la planificacion");
 }
 
-void mostrar_deadlocks() {
+t_list* buscar_deadlocks() {
+	t_list* lista = cola_de_bloqueados;
+	int cant = list_size(lista);
+	t_list* deadlocks = list_create();
 
+	for (int i = 0; i < cant; i++) {
+		ESI* esi = list_get(lista, i);
+		for (int j = 0; j < cant; i++) {
+			ESI* otro_esi = list_get(lista, j);
+			t_deadlock* deadlock = clave_que_necesita(esi, otro_esi);
+			if (deadlock != NULL)
+				list_add(deadlocks, deadlock);
+		}
+	}
+	return deadlocks;
+}
+
+void mostrar_deadlocks() {
+	t_list* deadlocks = buscar_deadlocks();
+	int num_d = list_size(deadlocks);
+	if (num_d == 0)
+		printf(GREEN "\nNO SE HA ENCONTRADO DEADLOCK ENTRE LOS ESIS BLOQUEADOS" RESET);
+	else {
+		printf(RED "\nSE HAN ENCONTRADO DEADLOCKS" RESET);
+		for (int i = 0; i < num_d; i++)
+			imprimir_deadlock(list_get(deadlocks, i));
+	}
+}
+
+void imprimir_deadlock(t_deadlock* deadlock) {
+	printf(GREEN"\nESI %d" RESET " esperando clave" MAGENTA " %s " RESET " bloqueada por "GREEN "ESI %d"RESET,
+			deadlock->esi_bloqueado, deadlock->clave_necesaria, deadlock->esi_bloqueante);
+}
+
+t_deadlock* clave_que_necesita(ESI* a, ESI* b) {
+	for (int i = 0; i < sizeof(a->claves) / LARGO_CLAVE; i++) {
+		t_clave* clave = buscar_clave_bloqueada(a->claves[i]);
+		for (int j = 0; j < list_size(clave->esis_esperando); j++){
+			ESI* esi_esperando = list_get(clave->esis_esperando, j);
+			if (esi_esperando->id == b->id) {
+				t_deadlock* deadlock = malloc(sizeof(t_deadlock));
+				deadlock->esi_bloqueado = b->id;
+				deadlock->esi_bloqueante = a->id;
+				strcpy(deadlock->clave_necesaria, clave->clave);
+				return deadlock;
+			}
+		}
+	}
+	return NULL;
 }
 
 void desbloquear_clave(char* clave) {
@@ -178,6 +226,8 @@ void matar_esi(char* id) {
 		printf("\nNo existe el ESI %d en ninguna cola ni ejecutando !!111!!1!", id_esi);
 	}
 }
+
+
 
 void estado_clave(char* clave){
 	//este es un quilombo
