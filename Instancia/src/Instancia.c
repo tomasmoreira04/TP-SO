@@ -8,6 +8,7 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include "../../Bibliotecas/src/Estructuras.h"
 #include "../../Bibliotecas/src/Socket.c"
 #include "../../Bibliotecas/src/Configuracion.c"
 #include "commons/string.h"
@@ -27,30 +28,45 @@ int main() {
 
 	int socketServer = conexion_con_servidor(config.ip_coordinador, config.puerto_coordinador); //usar conf->puerto_coordinador
 	handShake(socketServer, instancia);
+	tablaEntradas = dictionary_create();
+	t_sentencia sentencia;
+
 
 	int* dim;
-	recibirMensaje(socketServer,(void*)&dim);
-	memcpy(&cantEntradas,dim,sizeof(int));
-	memcpy(&tamEntradas,dim+1,sizeof(int));
 
-	printf("\n------INSTANCIA------\n");
-	printf("\nCANT ENTRADAS: %i \nTAM ENTRADAS: %i \n",cantEntradas, tamEntradas);
-	cantEntradasDisp = cantEntradas;
-	storage = malloc(cantEntradas*tamEntradas);
+	if (config_inst == recibirMensaje(socketServer,(void*)&dim)){
+		memcpy(&cantEntradas,dim,sizeof(int));
+		memcpy(&tamEntradas,dim+1,sizeof(int));
 
-	return 0;
-}
+		printf(BLUE "\n------INSTANCIA------\n");
+		printf(BLUE "\nCANT ENTRADAS: %i \nTAM ENTRADAS: %i \n",cantEntradas, tamEntradas);
 
-void setValor(char* clave, char* valor, int tamEnBytes){
+		cantEntradasDisp = cantEntradas;
+		storage = malloc(cantEntradas*tamEntradas);
+	} else {
+		printf(RED "\nFATAL ERROR AL CONFIGURAR INSTANCIA\n");
+		exit(0);
+		}
 
-	if(dictionary_has_key(tablaEntradas,clave)){
+	while(ejecutar_sentencia_instancia == recibirMensaje(socketServer,(void*)&sentencia)){
 
-		//proximamente
+		switch(sentencia.tipo){
 
-	}else{
-		almacenarNuevo(clave,valor,tamEnBytes);
+		case S_SET:
+			if(dictionary_has_key(tablaEntradas,sentencia.clave)){
+				//proximamente
+				}else{
+				//almacenar nuevo
+				}
+			break;
+
+		case S_STORE:
+			break;
+		}
+
 	}
 
+	return 0;
 }
 
 void almacenarNuevo(char* clave, char* valor, int tamEnBytes){

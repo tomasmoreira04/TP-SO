@@ -74,7 +74,7 @@ void configurar_instancia(int socket){
 	memcpy(dim,&configuracion.cant_entradas,sizeof(int));
 	memcpy(dim+1,&configuracion.tamanio_entrada,sizeof(int));
 
-	enviarMensaje(socket,1,dim,sizeof(int)*2);
+	enviarMensaje(socket,config_inst,dim,sizeof(int)*2);
 }
 
 

@@ -47,6 +47,8 @@ typedef enum {
 	ejecucion_ok,
 	no_hay_mas_sentencias, //el esi le avisa al coordinador
 	terminar_esi, //coord -> planif
+	config_inst, //coord -> inst
+	ejecutar_sentencia_instancia, //envia SET o STORE a la instancia
 } Accion;
 
 #endif
