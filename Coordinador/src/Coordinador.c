@@ -21,7 +21,7 @@
 // Diferenciacion de operacion ESI
 // Direnciar quien se conecta
 // Guardar con ID instancia
-// TOMI SE LA COME
+// TOMI SE LA COME Y LUCY TAMBIEN
 
 
 t_list *lista_Instancias;
@@ -31,6 +31,8 @@ int socket_plan; //esto cambiar tal vez
 int main() {
 	int banderaPlanificador=0;
 	configuracion = cargar_config_coordinador();
+	crear_log_operacion();
+	log_info(log_operaciones, "Se ha cargado la configuracion inicial del Coordinador");
 	mostrar_por_pantalla_config(configuracion);
 	lista_Instancias = list_create();
 
@@ -55,6 +57,8 @@ int main() {
 		recv(nuevo_socket, &modulo, sizeof(int), 0);//HS
 		crear_hilo(nuevo_socket, modulo);
 	}
+
+	destruir_log_operacion();
 	return 0;
 }
 
@@ -124,17 +128,18 @@ void crear_hilo(int nuevo_socket, int modulo) {
 	//Hilos detachables con manejo de errores tienen que ser logs
 	int  res = pthread_attr_init(&attr);
 	if (res != 0) {
-		printf("Error en los atributos del hilo");
+		log_error(log_operaciones, "Error en los atributos del hilo");
 	}
 	res = pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 	if (res != 0) {
-		printf("Error en el seteado del estado de detached");
+		log_error(log_operaciones, "Error en el seteado del estado de detached");
 	}
 	res = (modulo == instancia) ? pthread_create (&hilo ,&attr, rutina_instancia , (void *)nuevo_socket)
 			:pthread_create (&hilo ,&attr, rutina_ESI, (void*)nuevo_socket);
 	if (res != 0) {
-		printf("Error en la creacion del hilo");
+		log_error(log_operaciones, "Error en la creacion del hilo");
 	}
+	log_info(log_operaciones, "Se ha creado un hilo con la rutina ESI");
 	pthread_attr_destroy(&attr);
 }
 
@@ -165,7 +170,7 @@ void mostrar_archivo(char* path) {
 
 
 void crear_log_operacion() {
-	log_operaciones = log_create("operaciones_coordinador.log", "coordinador", 0, 1);
+	log_operaciones = log_create("operaciones_coordinador.log", "coordinador", 1, 1);
 }
 
 void destruir_log_operacion() {
