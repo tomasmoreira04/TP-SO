@@ -17,6 +17,13 @@
 #include "Coordinador.h"
 #include "commons/collections/list.h"
 
+
+// Diferenciacion de operacion ESI
+// Direnciar quien se conecta
+// Guardar con ID instancia
+// TOMI SE LA COME
+
+
 t_list *lista_Instancias;
 ConfigCoordinador configuracion;
 int socket_plan; //esto cambiar tal vez
