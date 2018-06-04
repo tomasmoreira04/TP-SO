@@ -22,20 +22,28 @@ ConfigCoordinador configuracion;
 int socket_plan; //esto cambiar tal vez
 
 int main() {
+	int banderaPlanificador=0;
 	configuracion = cargar_config_coordinador();
 	mostrar_por_pantalla_config(configuracion);
 	lista_Instancias = list_create();
 
 	int listener = crear_socket_de_escucha(configuracion.puerto_escucha);
-	int socket_server = conexion_con_servidor(configuracion.ip_planificador, configuracion.puerto_planificador);
 
-	socket_plan = socket_server; //pasar ocmo parametro, no global, pero por ahora lo hago asi
-
-	handShake(socket_server, coordinador);
 
 	int nuevo_socket, modulo;
 
 	while(1){
+		if(banderaPlanificador==0){
+			nuevo_socket = aceptar_nueva_conexion(listener);
+			recv(nuevo_socket, &modulo, sizeof(int), 0);//HS
+			crear_hilo(nuevo_socket, modulo);
+
+			int socket_server = conexion_con_servidor(configuracion.ip_planificador, configuracion.puerto_planificador);
+			socket_plan = socket_server; //pasar ocmo parametro, no global, pero por ahora lo hago asi
+			handShake(socket_server, coordinador);
+
+			banderaPlanificador++;
+		}
 		nuevo_socket = aceptar_nueva_conexion(listener);
 		recv(nuevo_socket, &modulo, sizeof(int), 0);//HS
 		crear_hilo(nuevo_socket, modulo);
@@ -68,8 +76,6 @@ void *rutina_instancia(void * arg) {
 }
 
 void configurar_instancia(int socket){
-	configuracion = cargar_config_coordinador();
-
 	int* dim = malloc(sizeof(int)*2);
 	memcpy(dim,&configuracion.cant_entradas,sizeof(int));
 	memcpy(dim+1,&configuracion.tamanio_entrada,sizeof(int));
@@ -150,9 +156,11 @@ void mostrar_archivo(char* path) {
 	fclose(f);
 }
 
+
 void crear_log_operacion() {
-	FILE* log_operacion = fopen(LOG_PATH, "a+");
-	fprintf(log_operacion, "%s", "ESI		OPERACION\n\n");
-	fclose(log_operacion);
+	log_operaciones = log_create("operaciones_coordinador.log", "coordinador", 0, 1);
 }
 
+void destruir_log_operacion() {
+	log_destroy(log_operaciones);
+}
