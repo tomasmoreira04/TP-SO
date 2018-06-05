@@ -27,6 +27,6 @@ void *rutina_instancia(void * arg);
 void *rutina_ESI(void * arg);
 void crear_hilo(int nuevo_socket, int modulo);
 
-void configurar_instancia(int socket);
+void configurar_instancia(int socket,int id);
 
 #endif /* COORDINADOR_H_ */
