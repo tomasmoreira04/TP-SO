@@ -7,8 +7,6 @@
 #include "../../Bibliotecas/src/Estructuras.h"
 #include "../../Bibliotecas/src/Socket.h"
 
-typedef enum { sjf_sd, sjf_cd, hrrn, fifo } Algoritmo;
-
 typedef enum {
 	error_tamanio_clave,
 	error_clave_no_identificada,
@@ -57,9 +55,8 @@ char* mensaje_error(ErrorOperacion tipo);
 void ingreso_cola_de_listos(ESI* esi);
 void replanificar();
 void movimiento_entre_estados(ESI* esi, int movimiento);
-int hay_desalojo(int algoritmo);
-void ejecutar(char* algoritmo);
-int numero_algoritmo(char* nombre);
+int hay_desalojo(AlgoritmoPlanif algoritmo);
+void ejecutar(AlgoritmoPlanif algoritmo);
 int _es_esi(ESI* a, ESI* b);
 void mover_esi(ESI* esi, t_list* nueva_lista);
 
@@ -69,7 +66,7 @@ void destruir_estructuras();
 void ejecutar_por_fifo();
 void ejecutar_por_sjf();
 void sentencia_ejecutada();
-float estimar(ESI* esi, float alfa);
+float estimar(ESI* esi);
 ESI* esi_rafaga_mas_corta();
 int _es_mas_corto(ESI* a, ESI* b);
 ESI* esi_resp_ratio_mas_corto();

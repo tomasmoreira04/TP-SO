@@ -17,11 +17,21 @@ ConfigPlanificador cargar_config_planificador() {
 	configuracion.estimacion_inicial = config_get_int_value(config, "ESTIMACION_INICIAL");
 	configuracion.puerto_coordinador = config_get_int_value(config, "PUERTO_COORDINADOR");
 	configuracion.alfa_planif = config_get_int_value(config, "ALFA_PLANIFICACION");
-	strcpy(configuracion.algoritmo_planif, config_get_string_value(config, "ALGORITMO_PLANIFICACION"));
+	configuracion.algoritmo = numero_algoritmo(config_get_string_value(config, "ALGORITMO_PLANIFICACION"));
 	strcpy(configuracion.ip_coordinador, config_get_string_value(config, "IP_COORDINADOR"));
 	configuracion.claves_bloqueadas = config_get_array_value(config, "CLAVES_BLOQUEADAS");
 	config_destroy(config);
 	return configuracion;
+}
+
+AlgoritmoPlanif numero_algoritmo(char* nombre) {
+	if (strcmp(nombre, "SJF-CD") == 0)
+		return sjf_cd;
+	if (strcmp(nombre, "SJF-SD") == 0)
+		return sjf_sd;
+	if (strcmp(nombre, "HRRN") == 0)
+		return hrrn;
+	return fifo;
 }
 
 ConfigCoordinador cargar_config_coordinador() {
@@ -77,7 +87,7 @@ ConfigPlanificador config_predeterminada_planif() {
 	config.estimacion_inicial = 5;
 	config.puerto_coordinador = 9035;
 	config.alfa_planif = 50;
-	strcpy(config.algoritmo_planif, "FIFO");
+	config.algoritmo = fifo;
 	strcpy(config.ip_coordinador, "127.0.0.1");
 	config.claves_bloqueadas = NULL;
 	return config;

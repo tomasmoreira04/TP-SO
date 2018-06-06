@@ -86,10 +86,11 @@ void procesar_mensaje_coordinador(int coordinador) {
 		case sentencia_coordinador:
 			nueva_sentencia(*(t_sentencia*)mensaje);
 			break;
-		case preguntar_recursos_planificador:
-			//ver_disponibilidad_clave((char*)mensaje);
-			enviarMensaje(coordinador, recurso_disponible, NULL, 0); //por ahora le digo que si siempre
+		case preguntar_recursos_planificador: {
+			int respuesta = ver_disponibilidad_clave((char*)mensaje);
+			enviarMensaje(coordinador, recurso_disponible, respuesta, 0);
 			break;
+		}
 		case ejecucion_ok:
 			//logear que esta ok
 			break;
@@ -100,6 +101,12 @@ void procesar_mensaje_coordinador(int coordinador) {
 			FD_CLR(coordinador, &master);
 			break;
 	}
+}
+
+int ver_disponibilidad_clave(char* clave) { //0: no, 1: disponible
+	if (esta_bloqueada(clave))
+		return 0;
+	return 1;
 }
 
 void procesar_mensaje_esi(int socket) {
@@ -117,9 +124,9 @@ void procesar_mensaje_esi(int socket) {
 	}
 }
 
-void ejecutar_esi() { //ESTO SERIA FIFO, POR AHORA DEJALO ASI
-	ESI* esi = list_remove(cola_de_listos, 0); //criterio primero en la lista
+void ejecutar_esi(ESI* esi) {
 	enviarMensaje(esi->socket_p, ejecutar_proxima_sentencia, NULL, 0);
+	//y avisar al coordinador ?
 	esi_ejecutando = esi;
 }
 
@@ -289,31 +296,35 @@ void proceso_nuevo(int rafagas, int socket) {
 }
 
 void ingreso_cola_de_listos(ESI* esi) {
-	/*if (hay_desalojo(algoritmo)) //llega uno a listo, y hay desalojo -> ver
-		replanificar();*/
+	if (hay_desalojo(config.algoritmo)) //llega uno a listo, y hay desalojo -> ver
+		replanificar();
 	mover_esi(esi, cola_de_listos);
 }
 
-int hay_desalojo(int algoritmo) {
+void replanificar() {
+	ejecutar(config.algoritmo);
+}
+
+int hay_desalojo(AlgoritmoPlanif algoritmo) {
+	if (algoritmo == sjf_cd || algoritmo == hrrn || algoritmo == rr || algoritmo == vrr)
+		return 1;
 	return 0;
 }
 
-void ejecutar(char* algoritmo) {
-	/*algo = procesar algoritmo
-	switch(algo) {
+void ejecutar(AlgoritmoPlanif algoritmo) {
+	switch(algoritmo) {
 	case fifo:
 		ejecutar_por_fifo();
 		break;
 	case sjf_sd:
-		//implementar
-		break;
 	case sjf_cd:
-		//implementar
+		ejecutar_por_sjf();
 		break;
 	case hrrn:
-		//implementar
+	case rr:
+	case vrr:
 		break;
-	}*/
+	}
 }
 
 int _es_esi(ESI* a, ESI* b) {
@@ -347,31 +358,36 @@ void destruir_estructuras() {
 //para el prox checkpoint esta funcion va a ser mas generica
 void ejecutar_por_fifo() {
 	ESI* esi = list_remove(cola_de_listos , 0);
-	//enviarMensaje(); habra enviarle mensaje al esi correspondiente
-	puts("executing..");
+	mover_esi(esi_ejecutando, cola_de_listos);
+	ejecutar_esi(esi);
 }
 
 void ejecutar_por_sjf() {
 	ESI* esi = esi_rafaga_mas_corta();
-	puts("executing..");
+	mover_esi(esi_ejecutando, cola_de_listos);
+	ejecutar_esi(esi);
 }
 
 void sentencia_ejecutada() {
 	//evento
 }
 
-float estimar(ESI* esi, float alfa) {
-	return (alfa/100) * esi->rafaga_anterior + (1 - (alfa/100)) * esi->estimacion_anterior;
+float estimar(ESI* esi) {
+	return (config.alfa_planif/100) * esi->rafaga_anterior + (1 - (config.alfa_planif/100)) * esi->estimacion_anterior;
 } //alfa entre 0 y 100
 
 
 ESI* esi_rafaga_mas_corta() {
-	list_sort(cola_de_listos, (void*) _es_mas_corto);
-	return list_remove(cola_de_listos, 0);
-}
-
-int _es_mas_corto(ESI* a, ESI* b) {
-	return estimar(a, config.alfa_planif) < estimar(b, config.alfa_planif);
+	int cant_esis = list_size(cola_de_listos); //antes hacia un sort de lista, esto es mas performante (??
+	for (int i = 0; i < cant_esis; i++) {
+		ESI* a = list_get(cola_de_listos, i);
+		for (int j = 0; j < cant_esis; j++) {
+			ESI* b = list_get(cola_de_listos, j);
+			if (estimar(a) < estimar(b)	&& a != esi_ejecutando) //si se estaba ejecutando no puedo devolver el mismo
+				return a;
+		}
+	}
+	return NULL;
 }
 
 ESI* esi_resp_ratio_mas_corto() {

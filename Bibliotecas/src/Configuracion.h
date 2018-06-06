@@ -7,9 +7,11 @@
 #include <commons/config.h>
 #include "Macros.h"
 
+typedef enum { sjf_sd, sjf_cd, hrrn, fifo, rr, vrr } AlgoritmoPlanif;
+
 typedef struct {
-	int puerto_escucha, estimacion_inicial, puerto_coordinador, alfa_planif;
-	char algoritmo_planif[LARGO_ALG], ip_coordinador[LARGO_IP];
+	int puerto_escucha, estimacion_inicial, puerto_coordinador, alfa_planif, algoritmo;
+	char ip_coordinador[LARGO_IP];
 	char** claves_bloqueadas;
 } ConfigPlanificador;
 
@@ -38,6 +40,7 @@ ConfigCoordinador config_predeterminada_coord();
 ConfigESI config_predeterminada_esi();
 ConfigInstancia config_predeterminada_inst();
 char* ruta_modulo(Modulo modulo);
+AlgoritmoPlanif numero_algoritmo(char* nombre);
 int faltan_campos(t_config* config, char** campos);
 
 #endif
