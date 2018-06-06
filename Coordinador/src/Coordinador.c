@@ -29,7 +29,7 @@ ConfigCoordinador configuracion;
 int socket_plan; //esto cambiar tal vez
 t_dictionary *instancias_Claves;
 
-
+int buscarEnLista(int valor);
 
 int main() {
 	int banderaPlanificador=0;
@@ -65,6 +65,20 @@ int main() {
 	}
 	destruir_log_operacion();
 	return 0;
+}
+
+int buscarEnLista(int valor){
+	int socket;
+	Nodo_Instancia instancia=maloc( sizeof(Nodo_Instancia) );
+	for( int i=0;i<  (list_size(&lista_Instancias));i++ ){
+		instancia=list_get(&lista_Instancias , i);
+		if(instancia->inst_ID==valor){
+			socket=valor;
+			break;
+		}
+	}
+	free( instancia );
+	return socket;
 }
 
 //ACCIONES DE LOS HILOS
@@ -124,22 +138,27 @@ void *rutina_ESI(void* argumento) {
 						//Persistir
 						dictionary_put(instancias_Claves, sentencia->clave , (-1) );//VERIFICAR SI ES EN VARIABLE
 					}
-
-
-
 					break;
 				}
 				case S_SET:
 				{
-					if( (int*) (dictionary_get(instancias_Claves , sentencia->clave))== (-1)  ){
-						//ALGORITMO Y ASIGNAR
+					int claveSentencia=(int*) (dictionary_get(instancias_Claves , sentencia->clave));
+					if( claveSentencia == (-1)  ){
+						//ALGORITMO Y ASIGNAR, modificar claveSentencia
 					}
+
+					int socketEncontrado=buscarEnLista(sentencia->clave);
+					//VALIDAR INSTANCIA CONECTADA
 					//MANDAR A INSTANCIA
+
+					enviarMensaje(socketEncontrado,S_SET,sentencia,sizeof(t_sentencia));
 					break;
 				}
 				case S_STORE:
 				{
-					//VALIDADAR
+					int claveSentencia=(int*) (dictionary_get(instancias_Claves , sentencia->clave));
+					//VALIDADA
+					enviarMensaje(socket,S_STORE,sentencia,sizeof(t_sentencia));
 					//MANDAR A INSTANCIA
 					break;
 				}
