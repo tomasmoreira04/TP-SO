@@ -49,6 +49,7 @@ typedef enum {
 	terminar_esi, //coord -> planif
 	config_inst, //coord -> inst
 	ejecutar_sentencia_instancia, //envia SET o STORE a la instancia
+	compactar,
 } Accion;
 
 #endif
