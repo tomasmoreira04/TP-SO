@@ -34,7 +34,7 @@ ConfigPlanificador cargar_config_planificador();
 ConfigCoordinador cargar_config_coordinador();
 ConfigESI cargar_config_esi();
 ConfigInstancia cargar_config_inst();
-t_config* cargar_archivo(Modulo modulo, char** campos);
+t_config* cargar_archivo(char* ruta, char** campos);
 ConfigPlanificador config_predeterminada_planif();
 ConfigCoordinador config_predeterminada_coord();
 ConfigESI config_predeterminada_esi();

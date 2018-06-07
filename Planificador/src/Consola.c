@@ -208,10 +208,13 @@ void desbloquear_clave(char* clave) {
 
 void listar_esis_recurso(char* clave) {
 	t_clave* c = buscar_clave_bloqueada(clave);
-	t_list* esis = c->esis_esperando;
-	printf("\nLista de procesos esperando la clave %s:\n", clave);
-	for (int i = 0; i < list_size(esis); i++)
-		printf("ESI %d, ", ((ESI*)list_get(esis, i))->id);
+	if (c != NULL) {
+		t_list* esis = c->esis_esperando;
+		printf("\nLista de procesos esperando la clave %s:\n", clave);
+		for (int i = 0; i < list_size(esis); i++)
+			printf("ESI %d, ", ((ESI*)list_get(esis, i))->id);
+	}
+	else printf("\nLa clave %s no esta bloqueada\n", clave);
 }
 
 void matar_esi(char* id) {

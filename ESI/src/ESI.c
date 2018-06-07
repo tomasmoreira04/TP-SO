@@ -17,8 +17,8 @@
 //VER https://github.com/sisoputnfrba/parsi/blob/master/src/parsi/parser.h para entender funciones
 
 int main(int argc, char* argv[]) {
-	ConfigESI config = cargar_config_esi();
-	char* ruta = ruta_script(argv[1]);
+	ConfigESI config = cargar_config_esi(argv[1]);
+	char* ruta = ruta_script(argv[2]);
 
 	int planificador = conexion_con_servidor(config.ip_planificador, config.puerto_planificador);
 	int coordinador = conexion_con_servidor(config.ip_coordinador, config.puerto_coordinador);
@@ -75,15 +75,17 @@ void leer_sentencias(int planificador, int coordinador, char* ruta) {
 	size_t largo = 0;
 	ssize_t leidas = 0;
 
-	//esperar que el planif me ejecute
-	//int accion = recibirMensaje(planificador, NULL);
-
 	while ((leidas = getline(&linea, &largo, script)) != -1) {
 
+			esperar(planificador, ejecutar_proxima_sentencia);
+
 			t_esi_operacion operacion = parse(linea);
+
 			if(operacion.valido){
 				t_sentencia sentencia = convertir_operacion(operacion);;
+
 				//le aviso al coord que tengo que ejecutar mi sentencia
+
 				enviarMensaje(coordinador, ejecutar_sentencia_coordinador, &sentencia, sizeof(sentencia));
 
 				ejecutar_operacion(operacion); //imprime nada mas en el ESI

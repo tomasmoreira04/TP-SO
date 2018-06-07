@@ -31,9 +31,9 @@ int ultimo_id;
 int planificar = 1;
 
 
-int main() {
+int main(int argc, char* argv[]) {
 	inicializar_estructuras();
-	config = cargar_config_planificador();
+	config = cargar_config_planificador(argv[1]);
 	setbuf(stdout, NULL); //a veces el printf no andaba, se puede hacer esto o un fflush
 	pthread_t thread_consola;
 	pthread_create(&thread_consola, NULL, iniciar_consola, NULL);
@@ -81,7 +81,7 @@ void recibir_mensajes(int socket, int listener, int coordinador) {
 void procesar_mensaje_coordinador(int coordinador) {
 	void* mensaje;
 	Accion accion = recibirMensaje(coordinador, &mensaje);
-	//int accion = 999;
+
 	switch(accion) {
 		case sentencia_coordinador:
 			nueva_sentencia(*(t_sentencia*)mensaje);
@@ -91,9 +91,6 @@ void procesar_mensaje_coordinador(int coordinador) {
 			enviarMensaje(coordinador, recurso_disponible, respuesta, 0);
 			break;
 		}
-		case ejecucion_ok:
-			//logear que esta ok
-			break;
 		case terminar_esi:
 			finalizar_esi((ESI*)mensaje);
 			break;
@@ -118,6 +115,9 @@ void procesar_mensaje_esi(int socket) {
 			proceso_nuevo(*(int*)mensaje, socket);
 			//ejecutar_esi(); //por ahora, cada vez que me llega uno nuevo lo ejecuto
 			break;
+		case ejecucion_ok:
+			//logear que esta ok
+			break;
 		default:
 			FD_CLR(socket, &master);
 			break;
@@ -125,8 +125,7 @@ void procesar_mensaje_esi(int socket) {
 }
 
 void ejecutar_esi(ESI* esi) {
-	enviarMensaje(esi->socket_p, ejecutar_proxima_sentencia, NULL, 0);
-	//y avisar al coordinador ?
+	avisar(esi->socket_p, ejecutar_proxima_sentencia);
 	esi_ejecutando = esi;
 }
 

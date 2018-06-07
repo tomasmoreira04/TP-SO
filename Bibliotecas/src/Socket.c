@@ -15,6 +15,15 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include "Socket.h"
+#include "Estructuras.h"
+
+void avisar(int socket, Accion accion) {
+	enviarMensaje(socket, accion, NULL, 0);
+}
+
+void esperar(int socket, Accion accion) {
+	while (recibirMensaje(socket, NULL) != accion);
+}
 
 int recibirMensaje(int socket,void** stream){
 	header heder;//MODIFICAR FLAG

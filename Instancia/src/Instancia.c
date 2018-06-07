@@ -23,11 +23,17 @@ int32_t cantEntradas;
 int32_t tamEntradas;
 int32_t cantEntradasDisp;
 
-int main() {
-	ConfigInstancia config = cargar_config_inst();
+int main(int argc, char* argv[]) {
+	char* nombre = argv[1];
+	ConfigInstancia config = cargar_config_inst(nombre);
+	printf("%s", config.nombre_instancia);
 
 	int socketServer = conexion_con_servidor(config.ip_coordinador, config.puerto_coordinador); //usar conf->puerto_coordinador
+
+
+	//enviar nombre
 	handShake(socketServer, instancia);
+
 	tablaEntradas = dictionary_create();
 	t_sentencia sentencia;
 
@@ -41,8 +47,9 @@ int main() {
 
 		printf("ID INSTANCIA WACHO: %d\n\n",id_instancia);
 
-		printf(BLUE "\n------INSTANCIA------\n");
-		printf(BLUE "\nCANT ENTRADAS: %i \nTAM ENTRADAS: %i \n",cantEntradas, tamEntradas);
+		printf(CYAN "\n------INSTANCIA------\n");
+		printf(GREEN "\nCANT ENTRADAS: %i \nTAM ENTRADAS: %i \n",cantEntradas, tamEntradas);
+		printf(GREEN "\nNombre instancia: %s \n", config.nombre_instancia);
 
 		cantEntradasDisp = cantEntradas;
 		storage = malloc(cantEntradas*tamEntradas);

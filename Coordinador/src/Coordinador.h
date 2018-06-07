@@ -26,6 +26,7 @@ void guardar_en_log(int id_esi, char* sentencia);
 void *rutina_instancia(void * arg);
 void *rutina_ESI(void * arg);
 void crear_hilo(int nuevo_socket, int modulo);
+int buscarEnLista(int valor);
 
 void configurar_instancia(int socket,int id);
 

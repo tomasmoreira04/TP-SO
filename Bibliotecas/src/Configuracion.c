@@ -7,9 +7,11 @@
 #include "Color.h"
 #include "Configuracion.h"
 
-ConfigPlanificador cargar_config_planificador() {
+ConfigPlanificador cargar_config_planificador(char* ruta) {
+	if (ruta == NULL)
+		return config_predeterminada_planif();
 	char* campos[] = { "PUERTO_ESCUCHA", "ESTIMACION_INICIAL", "PUERTO_COORDINADOR", "ALFA_PLANIFICACION", "ALGORITMO_PLANIFICACION", "IP_COORDINADOR", "CLAVES_BLOQUEADAS"};
-	t_config* config = cargar_archivo(planificador, campos);
+	t_config* config = cargar_archivo(ruta, campos);
 	if (config == NULL)
 		return config_predeterminada_planif();
 	ConfigPlanificador configuracion;
@@ -34,9 +36,11 @@ AlgoritmoPlanif numero_algoritmo(char* nombre) {
 	return fifo;
 }
 
-ConfigCoordinador cargar_config_coordinador() {
+ConfigCoordinador cargar_config_coordinador(char* ruta) {
+	if (ruta == NULL)
+		return config_predeterminada_coord();
 	char* campos[] = { "PUERTO_ESCUCHA","ALGORITMO_DISTRIBUCION", "CANTIDAD_ENTRADAS", "TAMANIO_ENTRADAS", "RETARDO", "IP_PLANIFICADOR", "PUERTO_PLANIFICADOR" };
-	t_config* config = cargar_archivo(coordinador, campos);
+	t_config* config = cargar_archivo(ruta, campos);
 	if (config == NULL)
 		return config_predeterminada_coord();
 	ConfigCoordinador configuracion;
@@ -51,9 +55,11 @@ ConfigCoordinador cargar_config_coordinador() {
 	return configuracion;
 }
 
-ConfigESI cargar_config_esi() {
+ConfigESI cargar_config_esi(char* ruta) {
+	if (ruta == NULL)
+		return config_predeterminada_esi();
 	char* campos[] = { "PUERTO_COORDINADOR", "PUERTO_PLANIFICADOR", "IP_COORDINADOR", "IP_PLANIFICADOR" };
-	t_config* config = cargar_archivo(esi, campos);
+	t_config* config = cargar_archivo(ruta, campos);
 	if (config == NULL)
 		return config_predeterminada_esi();
 	ConfigESI configuracion;
@@ -65,9 +71,12 @@ ConfigESI cargar_config_esi() {
 	return configuracion;
 }
 
-ConfigInstancia cargar_config_inst() {
-	char* campos[] = { "IP_COORDINADOR","PUERTO_COORDINADOR","ALGORITMO_REEMPLAZO", "PUNTO_MONTAJE", "NOMBRE_INSTANCIA", "INTERVALO_DUMP" };
-	t_config* config = cargar_archivo(instancia, campos);
+ConfigInstancia cargar_config_inst(char* ruta) {
+	if (ruta == NULL)
+		return config_predeterminada_inst();
+	char* campos[] = { "IP_COORDINADOR","PUERTO_COORDINADOR","ALGORITMO_REEMPLAZO", "NOMBRE_INSTANCIA", "PUNTO_MONTAJE", "INTERVALO_DUMP" };
+	t_config* config = cargar_archivo(ruta, campos);
+
 	if (config == NULL)
 		return config_predeterminada_inst();
 	ConfigInstancia configuracion;
@@ -75,8 +84,8 @@ ConfigInstancia cargar_config_inst() {
 	configuracion.intervalo_dump = config_get_int_value(config, "INTERVALO_DUMP");
 	strcpy(configuracion.ip_coordinador, config_get_string_value(config,"IP_COORDINADOR"));
 	strcpy(configuracion.algoritmo_reemp, config_get_string_value(config, "ALGORITMO_REEMPLAZO"));
-	strcpy(configuracion.punto_montaje, config_get_string_value(config,"PUNTO_MONTAJE"));
 	strcpy(configuracion.nombre_instancia, config_get_string_value(config, "NOMBRE_INSTANCIA"));
+	strcpy(configuracion.punto_montaje, config_get_string_value(config,"PUNTO_MONTAJE"));
 	config_destroy(config);
 	return configuracion;
 }
@@ -90,6 +99,7 @@ ConfigPlanificador config_predeterminada_planif() {
 	config.algoritmo = fifo;
 	strcpy(config.ip_coordinador, "127.0.0.1");
 	config.claves_bloqueadas = NULL;
+	imprimir_default();
 	return config;
 }
 
@@ -102,6 +112,7 @@ ConfigCoordinador config_predeterminada_coord() {
 	config.tamanio_entrada = 100;
 	config.retardo = 300;
 	strcpy(config.algoritmo_distrib, "EL");
+	imprimir_default();
 	return config;
 }
 
@@ -111,6 +122,7 @@ ConfigESI config_predeterminada_esi() {
 	config.puerto_planificador = 9034;
 	strcpy(config.ip_coordinador, "127.0.0.1");
 	strcpy(config.ip_planificador, "127.0.0.1");
+	imprimir_default();
 	return config;
 }
 
@@ -118,30 +130,34 @@ ConfigInstancia config_predeterminada_inst() {
 	ConfigInstancia config;
 	config.puerto_coordinador = 9035;
 	config.intervalo_dump = 10;
+	strcpy(config.nombre_instancia, "Instancia1");
 	strcpy(config.algoritmo_reemp, "BSU");
 	strcpy(config.punto_montaje, "/home/utnso/instancias/");
-	strcpy(config.nombre_instancia, "Instancia");
 	strcpy(config.ip_coordinador, "127.0.0.1");
+	imprimir_default();
 	return config;
 }
 
-t_config* cargar_archivo(Modulo modulo, char** campos) {
-	char* ruta = ruta_modulo(modulo);
+char* ruta_config(char* nombre) {
+	char* ruta = malloc(LARGO_RUTA);
+	string_append(&ruta, "../../Configuraciones/");
+	string_append(&ruta, nombre);
+	return ruta;
+}
+
+void imprimir_default(){
+	printf(YELLOW "\n¡ARCHIVO DE CONFIGURACIÓN INCORRECTO! (faltan campos o no existe el archivo)");
+	printf("\nSe ha cargado la configuracion por default\n" RESET);
+}
+
+t_config* cargar_archivo(char* nombre_archivo, char** campos) {
+	char* ruta = ruta_config(nombre_archivo);
 	t_config* config = config_create(ruta);
 	if(config == NULL || faltan_campos(config, campos)) {
-		printf(YELLOW "\n¡ARCHIVO DE CONFIGURACIÓN INCORRECTO! (faltan campos o no existe el archivo)");
-		printf("\nSe ha cargado la configuracion por default\n" RESET);
 		return NULL;
 	}
 	printf(GREEN "\nConfiguración cargada con exito.\n" RESET);
 	return config;
-}
-
-char* ruta_modulo(Modulo modulo) {
-	if (modulo == planificador)	return "ConfigPlanificador.cfg";
-	if (modulo == coordinador)	return "ConfigCoordinador.cfg";
-	if (modulo == esi)			return "ConfigESI.cfg";
-								return "ConfigInstancia.cfg";
 }
 
 int faltan_campos(t_config* config, char** campos) {

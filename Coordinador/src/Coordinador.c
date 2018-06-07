@@ -29,15 +29,15 @@ ConfigCoordinador configuracion;
 int socket_plan; //esto cambiar tal vez
 t_dictionary *instancias_Claves;
 
-int buscarEnLista(int valor);
 
-int main() {
+
+int main(int argc, char* argv[]) {
 	int banderaPlanificador=0;
 
 	instancias_Claves= dictionary_create();
 
 
-	configuracion = cargar_config_coordinador();
+	configuracion = cargar_config_coordinador(argv[1]);
 	crear_log_operacion();
 	log_info(log_operaciones, "Se ha cargado la configuracion inicial del Coordinador");
 	mostrar_por_pantalla_config(configuracion);
@@ -69,9 +69,9 @@ int main() {
 
 int buscarEnLista(int valor){
 	int socket;
-	Nodo_Instancia instancia=maloc( sizeof(Nodo_Instancia) );
-	for( int i=0;i<  (list_size(&lista_Instancias));i++ ){
-		instancia=list_get(&lista_Instancias , i);
+	Nodo_Instancia* instancia = malloc( sizeof(Nodo_Instancia) );
+	for( int i=0;i<  (list_size(lista_Instancias));i++ ){
+		instancia = list_get(lista_Instancias , i);
 		if(instancia->inst_ID==valor){
 			socket=valor;
 			break;
@@ -128,8 +128,10 @@ void *rutina_ESI(void* argumento) {
 		//ENVIAR SENTENCIA
 		enviarMensaje(socket_plan, preguntar_recursos_planificador, recurso, sizeof(recurso));
 		int resultado_ejecucion = 0;
-		int respuesta = recibirMensaje(socket_plan, &stream); //el planif me da el OK, entonces ejecuto una sentencia del esi
-		if (respuesta == recurso_disponible) {
+
+		int disponible = recibirMensaje(socket_plan, &stream); //el planif me da el OK, entonces ejecuto una sentencia del esi
+
+		if (disponible) {
 		//aca ejecutar sentencia esi en instancia
 			switch(sentencia->tipo){
 				case S_GET:
