@@ -31,12 +31,15 @@ int main() {
 	tablaEntradas = dictionary_create();
 	t_sentencia sentencia;
 
-
+	int id_instancia;
 	int* dim;
 
 	if (config_inst == recibirMensaje(socketServer,(void*)&dim)){
 		memcpy(&cantEntradas,dim,sizeof(int));
 		memcpy(&tamEntradas,dim+1,sizeof(int));
+		memcpy(&id_instancia,dim+2,sizeof(int));
+
+		printf("ID INSTANCIA WACHO: %d\n\n",id_instancia);
 
 		printf(BLUE "\n------INSTANCIA------\n");
 		printf(BLUE "\nCANT ENTRADAS: %i \nTAM ENTRADAS: %i \n",cantEntradas, tamEntradas);
