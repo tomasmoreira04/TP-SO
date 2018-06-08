@@ -45,11 +45,13 @@ int main(int argc, char* argv[]) {
 	int id_instancia;
 	int* dim;
 
+
+	enviarMensaje(socketServer, 8, &config.nombre_instancia , 20);
+
 		if (config_inst == recibirMensaje(socketServer,(void*)&dim)){
 
 			memcpy(&cantEntradas,dim,sizeof(int));
 			memcpy(&tamEntrada,dim+1,sizeof(int));
-			memcpy(&id_instancia,dim+2,sizeof(int));
 			free(dim);
 
 			printf(BLUE "\n------INSTANCIA------\n");

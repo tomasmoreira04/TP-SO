@@ -24,24 +24,24 @@
 // TOMI SE LA COME
 
 
-t_list *lista_Instancias;
+//t_list *lista_Instancias;
 ConfigCoordinador configuracion;
 int socket_plan; //esto cambiar tal vez
 t_dictionary *instancias_Claves;
-
-
+t_dictionary *lista_Instancias;
+t_list *listaSoloInstancias;
+int contadorEquitativeLoad;
 
 int main(int argc, char* argv[]) {
 	int banderaPlanificador=0;
-
+	contadorEquitativeLoad=0;
 	instancias_Claves= dictionary_create();
-
-
+	listaSoloInstancias=list_create();
 	configuracion = cargar_config_coordinador(argv[1]);
 	crear_log_operacion();
 	log_info(log_operaciones, "Se ha cargado la configuracion inicial del Coordinador");
 	mostrar_por_pantalla_config(configuracion);
-	lista_Instancias = list_create();
+	lista_Instancias =dictionary_create();
 
 	int listener = crear_socket_de_escucha(configuracion.puerto_escucha);
 
@@ -67,50 +67,34 @@ int main(int argc, char* argv[]) {
 	return 0;
 }
 
-int buscarEnLista(int valor){
-	int socket;
-	Nodo_Instancia* instancia = malloc( sizeof(Nodo_Instancia) );
-	for( int i=0;i<  (list_size(lista_Instancias));i++ ){
-		instancia = list_get(lista_Instancias , i);
-		if(instancia->inst_ID==valor){
-			socket=valor;
-			break;
-		}
-	}
-	free( instancia );
-	return socket;
-}
-
 //ACCIONES DE LOS HILOS
 void *rutina_instancia(void * arg) {
 	int socket_INST = (int)arg;
 	printf("\n------------------------------------\n");
 	printf("NUEVA INSTANCIA EJECUTADA || ");
 
-	Nodo_Instancia* nuevaInstancia = malloc(sizeof(Nodo_Instancia));
-	nuevaInstancia->socket = socket_INST;
+	void * stream;
+	//RECIBIR NOMBRE DE INSTACIA
+	recibirMensaje(socket_INST,&stream);
 
-	if(list_is_empty(lista_Instancias)){
-		nuevaInstancia->inst_ID = 5;
-	} else {
-		Nodo_Instancia* aux = list_get(lista_Instancias, (lista_Instancias->elements_count-1));
-		nuevaInstancia->inst_ID = (aux->inst_ID)+1;
-		free(aux);
+	//list_add(lista_Instancias,(void*)nuevaInstancia);
+	printf("ID:%s || SOCKET: %d\n", ((char*)stream) , socket_INST);
+
+	//VALIDAR QUE SEA EL UNICO EN EL DICCIONARIO
+	if( (dictionary_has_key(lista_Instancias , ((char*)stream) ) )==false ){
+		dictionary_put(lista_Instancias, ((char*)stream) ,& socket_INST );
+		list_add(listaSoloInstancias, ((char*)stream) );
 	}
 
-	list_add(lista_Instancias,(void*)nuevaInstancia);
-	printf("ID:%d || SOCKET: %d\n", nuevaInstancia->inst_ID, nuevaInstancia->socket);
+	configurar_instancia(socket_INST);
 
-
-	configurar_instancia(socket_INST,nuevaInstancia->inst_ID);
 	return NULL;
 }
 
-void configurar_instancia(int socket,int id){
-	int* dim = malloc(sizeof(int)*3);//RECIBE 3
+void configurar_instancia(int socket){
+	int* dim = malloc(sizeof(int)*2);//RECIBE 3
 	memcpy(dim,&configuracion.cant_entradas,sizeof(int));
 	memcpy(dim+1,&configuracion.tamanio_entrada,sizeof(int));
-	memcpy(dim+2,&id,sizeof(int));
 
 	enviarMensaje(socket,config_inst,dim,sizeof(int)*3);
 	printf("\nputo el que lee\n");
@@ -138,18 +122,44 @@ void *rutina_ESI(void* argumento) {
 				{
 					if( (dictionary_has_key(instancias_Claves , sentencia->clave) )==false ){
 						//Persistir
-						dictionary_put(instancias_Claves, sentencia->clave , (-1) );//VERIFICAR SI ES EN VARIABLE
+						dictionary_put(instancias_Claves, sentencia->clave , "0" );//VERIFICAR SI ES EN VARIABLE
 					}
 					break;
 				}
 				case S_SET:
 				{
-					int claveSentencia=(int*) (dictionary_get(instancias_Claves , sentencia->clave));
-					if( claveSentencia == (-1)  ){
+					int largoSentencia= strlen((char*) (dictionary_get(instancias_Claves , sentencia->clave)));
+					char* instanciaGuardada=malloc(largoSentencia);
+					strcpy(instanciaGuardada, (char*) (dictionary_get(instancias_Claves , sentencia->clave)) );
+
+
+					if( ( strcmp(instanciaGuardada,"0") ) == 0 ){
 						//ALGORITMO Y ASIGNAR, modificar claveSentencia
+						if(  (strcmp(configuracion.algoritmo_distrib,"EL"))==0 ){
+							EquitativeLoad(sentencia->clave);
+							free(instanciaGuardada);
+							largoSentencia= strlen((char*) (dictionary_get(instancias_Claves , sentencia->clave)));
+							char* instanciaGuardada=malloc(largoSentencia);
+							strcpy(instanciaGuardada, (char*) (dictionary_get(instancias_Claves , sentencia->clave)) );
+						}
+						else{
+							if( (strcmp(configuracion.algoritmo_distrib,"CE"))==0 ) {
+								//CE
+							}
+							else{
+								if((strcmp(configuracion.algoritmo_distrib,"LSU"))==0){
+									//LSU
+								}
+								else{
+									//LOG DE ERROR DE ALGORITMO
+								}
+							}
+						}
 					}
 
-					int socketEncontrado=buscarEnLista(sentencia->clave);
+					int socketEncontrado= (int) (dictionary_get(lista_Instancias , instanciaGuardada));
+					printf("\n\nSOCKET: %d\n\n",socketEncontrado);
+
 					//VALIDAR INSTANCIA CONECTADA
 					//MANDAR A INSTANCIA
 
@@ -158,9 +168,14 @@ void *rutina_ESI(void* argumento) {
 				}
 				case S_STORE:
 				{
-					int claveSentencia=(int*) (dictionary_get(instancias_Claves , sentencia->clave));
+					int largoSentencia= strlen((char*) (dictionary_get(instancias_Claves , sentencia->clave)));
+					char* instanciaGuardada=malloc(largoSentencia);
+					strcpy(instanciaGuardada, (char*) (dictionary_get(instancias_Claves , sentencia->clave)) );
+
+
 					//VALIDADA
-					enviarMensaje(socket,S_STORE,sentencia,sizeof(t_sentencia));
+					int socketEncontrado= (int) (dictionary_get(lista_Instancias , instanciaGuardada));
+					enviarMensaje(socketEncontrado,S_STORE,sentencia,sizeof(t_sentencia));
 					//MANDAR A INSTANCIA
 					break;
 				}
@@ -231,3 +246,16 @@ void crear_log_operacion() {
 void destruir_log_operacion() {
 	log_destroy(log_operaciones);
 }
+
+
+void EquitativeLoad(char* claveSentencia){
+	int cantidadInstancias=dictionary_size(lista_Instancias)-1;
+	dictionary_put(instancias_Claves, claveSentencia , ((char*)list_get(listaSoloInstancias,contadorEquitativeLoad)) );
+	if(contadorEquitativeLoad+1>cantidadInstancias){
+		contadorEquitativeLoad=0;
+	}
+	else{
+		contadorEquitativeLoad=contadorEquitativeLoad+1;
+	}
+}
+
