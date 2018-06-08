@@ -28,6 +28,7 @@ void *rutina_ESI(void * arg);
 void crear_hilo(int nuevo_socket, int modulo);
 int buscarEnLista(int valor);
 void EquitativeLoad(char* claveSentencia);
+char* formatear_mensaje_esi(int, TipoSentencia, char*, char*);
 
 void configurar_instancia(int socket);
 

@@ -120,9 +120,13 @@ void *rutina_ESI(void* argumento) {
 			switch(sentencia->tipo){
 				case S_GET:
 				{
-					if( (dictionary_has_key(instancias_Claves , sentencia->clave) )==false ){
+					if( (dictionary_has_key(instancias_Claves , sentencia->clave) )==false ) {
 						//Persistir
 						dictionary_put(instancias_Claves, sentencia->clave , "0" );//VERIFICAR SI ES EN VARIABLE
+						//char* msg_get = formatear_mensaje_esi(1, S_SET, sentencia->clave, NULL);
+						//no se si funcionara lo de abajo, sino pasarle msg_get
+						//el primer parametro debe ser el id del ESI, pongo 1 para que no rompa
+						log_info(log_operaciones, formatear_mensaje_esi(1, S_SET, sentencia->clave, NULL));
 					}
 					break;
 				}
@@ -136,22 +140,27 @@ void *rutina_ESI(void* argumento) {
 					if( ( strcmp(instanciaGuardada,"0") ) == 0 ){
 						//ALGORITMO Y ASIGNAR, modificar claveSentencia
 						if(  (strcmp(configuracion.algoritmo_distrib,"EL"))==0 ){
+							log_info(log_operaciones, "Aplicando Equitative Load..");
 							EquitativeLoad(sentencia->clave);
 							free(instanciaGuardada);
 							largoSentencia= strlen((char*) (dictionary_get(instancias_Claves , sentencia->clave)));
 							char* instanciaGuardada=malloc(largoSentencia);
 							strcpy(instanciaGuardada, (char*) (dictionary_get(instancias_Claves , sentencia->clave)) );
+							log_info(log_operaciones, formatear_mensaje_esi(1, S_SET, sentencia->clave, NULL));
 						}
 						else{
-							if( (strcmp(configuracion.algoritmo_distrib,"CE"))==0 ) {
-								//CE
+							if( (strcmp(configuracion.algoritmo_distrib,"LSU"))==0 ) {
+								//KE
+								//log_info(log_operaciones, "Aplicando Least Space Used..");
 							}
 							else{
-								if((strcmp(configuracion.algoritmo_distrib,"LSU"))==0){
+								if((strcmp(configuracion.algoritmo_distrib,"KE"))==0){
 									//LSU
+									//log_info(log_operaciones, "Aplicando Key Explicit..");
 								}
 								else{
 									//LOG DE ERROR DE ALGORITMO
+									log_error(log_operaciones, "Se envio un algoritmo invalido");
 								}
 							}
 						}
@@ -223,11 +232,11 @@ void mostrar_por_pantalla_config(ConfigCoordinador config) {
 	printf("RETARDO: %i\n", config.retardo);
 }
 
-void guardar_en_log(int id_esi, char* sentencia) {
+/*void guardar_en_log(int id_esi, char* sentencia) {
 	FILE* log_operacion = fopen(LOG_PATH, "a+");
 	fprintf(log_operacion,"%d %s %s %s",id_esi,"		",sentencia,"\n");
 	fclose(log_operacion);
-}
+}*/
 
 void mostrar_archivo(char* path) {
 	FILE *f = fopen(path, "r");
@@ -259,3 +268,31 @@ void EquitativeLoad(char* claveSentencia){
 	}
 }
 
+char* formatear_mensaje_esi(int id, TipoSentencia t, char* clave, char* valor) {
+	puts("asd");
+	char* formato_string = string_new();
+	char* str_id = string_itoa(id);
+	string_append(&formato_string, "El ESI ");
+	string_append(&formato_string, str_id);
+	string_append(&formato_string, " hizo un");
+	printf("%d", t);
+	switch(t) {
+		case S_SET:
+			string_append(&formato_string, " SET sobre ");
+			string_append(&formato_string, clave);
+			string_append(&formato_string, ":");
+			string_append(&formato_string, valor);
+			break;
+		case S_GET:
+			string_append(&formato_string, " GET de la clave ");
+			string_append(&formato_string, clave);
+			break;
+		case S_STORE:
+			string_append(&formato_string, " STORE de la clave ");
+			string_append(&formato_string, clave);
+			break;
+		default:
+			log_error(log_operaciones, "Error al formatear el log");
+	}
+	return formato_string;
+}
