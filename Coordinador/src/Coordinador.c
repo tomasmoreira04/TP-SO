@@ -100,16 +100,19 @@ void *rutina_ESI(void* argumento) {
 
 	while (recibirMensaje(socket_esi, &stream) == ejecutar_sentencia_coordinador) {
 
-		printf(CYAN"\nrecibiendo sentencia del esi.."RESET);
+		printf("MEGA PUTO EL QUE LEE 1\n");
+		fflush(stdin);
+		printf(CYAN"\nrecibiendo sentencia del esi..\n"RESET);
 		t_sentencia* sentencia = (t_sentencia*)stream;
 
 		//ENVIAR SENTENCIA
 		enviarMensaje(socket_plan, sentencia_coordinador, sentencia, sizeof(sentencia));
-		int resultado_ejecucion = 0;
+		//int resultado_ejecucion = 0;
 
 		int sentencia_okey = recibirMensaje(socket_plan, &stream); //el planif me da el OK, entonces ejecuto una sentencia del esi
 
 		if (sentencia_okey == sentencia_coordinador) {
+			printf("MEGA PUTO EL QUE LEE CORRECTAMENTE\n");
 		//aca ejecutar sentencia esi en instancia
 			switch(sentencia->tipo){
 				case S_GET:
@@ -165,6 +168,7 @@ void *rutina_ESI(void* argumento) {
 					void* mensajeInstancia;
 					int operacionPedidaInstacia = recibirMensaje(socketEncontrado, &mensajeInstancia);
 					//COMPACTAR
+
 					int sentencia_okey = recibirMensaje(socketEncontrado, &stream);
 					break;
 				}
@@ -186,14 +190,16 @@ void *rutina_ESI(void* argumento) {
 					break;
 				}
 			}
-			resultado_ejecucion = 1; //1 = ok se ejecuto bien
-			enviarMensaje(socket_esi, ejecucion_ok, exitoso, sizeof(int));
+			int variable=exitoso;
+			enviarMensaje(socket_esi, ejecucion_ok, &variable, sizeof(int));
 		}
 		else if(sentencia_okey== esi_bloqueado){
 
 		}
 		else{
-			enviarMensaje(socket_esi, ejecucion_no_ok, no_exitoso, sizeof(int));
+			int variable=no_exitoso;
+			printf("MEGA PUTO EL QUE LEE NOOO CORRECTAMENTE\n");
+			enviarMensaje(socket_esi, ejecucion_no_ok, &variable, sizeof(int));
 			break;
 		}
 	}

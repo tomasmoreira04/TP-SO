@@ -100,7 +100,7 @@ void leer_sentencias(int planificador, int coordinador, char* ruta) {
 	}
 	int* resultado;
 	enviarMensaje(coordinador, no_hay_mas_sentencias, NULL, 0);
-	recibirMensaje(coordinador, resultado);
+	recibirMensaje(coordinador, &resultado);
 	enviarMensaje(coordinador, resultado_ejecucion, resultado, sizeof(resultado));
 	fclose(script);
 	if (linea)

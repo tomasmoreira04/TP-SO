@@ -53,15 +53,18 @@ void recibir_conexiones() {
 	FD_SET(listener, &master);
 	int coordinador = conectar_con_coordinador(listener);
 
-	while (planificar) {
-		read_fds = master;
-		if (select(fdmax + 1, &read_fds, NULL, NULL, NULL) == -1) {
-			perror("select");
-			exit(1);
+	while (1) {
+		if(planificar)
+		{
+			read_fds = master;
+			if (select(fdmax + 1, &read_fds, NULL, NULL, NULL) == -1) {
+				perror("select");
+				exit(1);
+			}
+			for (int i = 0; i <= fdmax; i++)
+				if (FD_ISSET(i, &read_fds))
+					recibir_mensajes(i, listener, coordinador);
 		}
-		for (int i = 0; i <= fdmax; i++)
-			if (FD_ISSET(i, &read_fds))
-				recibir_mensajes(i, listener, coordinador);
 	}
 }
 
@@ -82,11 +85,13 @@ void recibir_mensajes(int socket, int listener, int socket_coordinador) {
 void* procesar_mensaje_coordinador(void* sock) {
 	int coordinador = (int)sock;
 	void* mensaje;
-
+	printf("\nESTOY RE DURO\n");
 	Accion accion = recibirMensaje(coordinador, &mensaje);
 
 	switch(accion) {
 		case sentencia_coordinador:
+			fflush(stdin);
+			printf("IVAN SALVANOS\n");
 			nueva_sentencia(*(t_sentencia*)mensaje, coordinador);
 			break;
 		case preguntar_recursos_planificador: {
@@ -98,6 +103,8 @@ void* procesar_mensaje_coordinador(void* sock) {
 			finalizar_esi((ESI*)mensaje);
 			break;
 		default:
+			printf("\nACCION :%d \nCerrando conexion con el coordinador\n",accion);
+			close(coordinador);
 			FD_CLR(coordinador, &master);
 			break;
 	}
