@@ -84,7 +84,7 @@ void procesar_mensaje_coordinador(int coordinador) {
 
 	switch(accion) {
 		case sentencia_coordinador:
-			nueva_sentencia(*(t_sentencia*)mensaje);
+			nueva_sentencia(*(t_sentencia*)mensaje, coordinador);
 			break;
 		case preguntar_recursos_planificador: {
 			int respuesta = ver_disponibilidad_clave((char*)mensaje);
@@ -115,8 +115,8 @@ void procesar_mensaje_esi(int socket) {
 			proceso_nuevo(*(int*)mensaje, socket);
 			//ejecutar_esi(); //por ahora, cada vez que me llega uno nuevo lo ejecuto
 			break;
-		case ejecucion_ok:
-			//logear que esta ok
+		case resultado_ejecucion:
+			procesar_resultado(*(int*)mensaje);
 			break;
 		default:
 			FD_CLR(socket, &master);
@@ -124,22 +124,36 @@ void procesar_mensaje_esi(int socket) {
 	}
 }
 
+void procesar_resultado(ResultadoEjecucion resultado) {
+	switch (resultado) {
+	case no_exitoso:
+		printf(RED "\nEl esi %d termino su ejecucion de forma no existosa.\n" RESET, esi_ejecutando->id);
+		break;
+	case exitoso:
+		printf(GREEN "\nEl esi %d termino su ejecucion de forma exitosa.\n" RESET, esi_ejecutando->id);
+		break;
+	case dudoso:
+		break;
+	}
+	finalizar_esi(esi_ejecutando);
+}
+
 void ejecutar_esi(ESI* esi) {
 	avisar(esi->socket_p, ejecutar_proxima_sentencia);
 	esi_ejecutando = esi;
 }
 
-void nueva_sentencia(t_sentencia sentencia) {
+void nueva_sentencia(t_sentencia sentencia, int coordinador) {
 	ESI* esi = obtener_esi(sentencia.id_esi);
 	switch (sentencia.tipo) {
 	case S_GET:
-		GET(sentencia.clave, esi);
+		GET(sentencia.clave, esi, coordinador);
 		break;
 	case S_SET:
-		SET(sentencia.clave, sentencia.valor, esi);
+		SET(sentencia.clave, sentencia.valor, esi, coordinador);
 		break;
 	case S_STORE:
-		STORE(sentencia.clave, esi);
+		STORE(sentencia.clave, esi, coordinador);
 		break;
 	}
 }
@@ -176,59 +190,63 @@ void error_operacion(ErrorOperacion tipo, char* clave, int esi) {
 	printf(RED "%s" YELLOW "%s " GREEN "%d" RESET, mensaje_error(tipo), clave, esi);
 }
 
-void GET(char* clave, ESI* esi) {
+void GET(char* clave, ESI* esi, int coordinador) {
 	if (esta_bloqueada(clave)) {
 		printf(YELLOW"\nLa clave "GREEN"%s "YELLOW"se encuentra bloqueada, se bloqueará el "GREEN"ESI %d"RESET, clave, esi->id);
 		nueva_solicitud_clave(clave, esi);
 		bloquear_esi(esi);
+		avisar(coordinador, error_sentencia);
 	}
 	else {
 		bloquear_clave(clave, esi);
 		printf("\nLa clave "GREEN"%s "RESET"se asigno a "GREEN"ESI %d"RESET, clave, esi->id);
+		avisar(coordinador, sentencia_coordinador);
 	}
 }
 
-void SET(char* clave, char* valor, ESI* esi) {
+void SET(char* clave, char* valor, ESI* esi, int coordinador) {
 	t_clave* c = buscar_clave_bloqueada(clave);
 	if (c == NULL) {
 		error_operacion(error_clave_no_identificada, clave, esi->id);
 		finalizar_esi(esi);
+		avisar(coordinador, error_sentencia);
 	}
 	else if (!c->bloqueada && c->esi_duenio != esi) {
 		error_operacion(error_clave_no_bloqueada, clave, esi->id);
 		finalizar_esi(esi);
+		avisar(coordinador, error_sentencia);
 	}
 	else { //puedo hacer store
 		strcpy(c->valor, valor);
-
-		//avisarle al coordinador: operacion set OK
-
 		printf("\nSe ha seteado la clave" GREEN " %s" RESET " con valor" MAGENTA " %s" RESET, c->clave, c->valor);
+		avisar(coordinador, sentencia_coordinador);
 	}
 }
 
-void STORE(char* clave, ESI* esi) { //esi: esi que hace el pedido de store
+void STORE(char* clave, ESI* esi, int coordinador) { //esi: esi que hace el pedido de store
 	t_clave* c = buscar_clave_bloqueada(clave);
 	if (c == NULL) {
 		error_operacion(error_clave_no_identificada, clave, esi->id);
 		finalizar_esi(esi);
+		avisar(coordinador, error_sentencia);
 	}
 	else if (!c->bloqueada && c->esi_duenio != esi) {
 		error_operacion(error_clave_no_bloqueada, clave, esi->id);
 		finalizar_esi(esi);
+		avisar(coordinador, error_sentencia);
 	}
 	else { //puedo hacer store
 		liberar_clave(clave);
-
-		//avisarle al coordinador: operacion store OK
-
 		printf("\nSe ha liberado la clave" GREEN " %s" RESET, c->clave);
+		avisar(coordinador, sentencia_coordinador);
 	}
 }
 
 void finalizar_esi(ESI* esi) {
 	mover_esi(esi, cola_de_finalizados);
 	liberar_recursos(esi);
+	if (hay_desalojo(config.algoritmo)) //llega uno a listo, y hay desalojo -> ver
+		replanificar();
 }
 
 void liberar_recursos(ESI* esi) {
@@ -244,6 +262,7 @@ void bloquear_clave(char* clave, ESI* esi) {
 	entrada->esi_duenio = esi;
 	entrada->esis_esperando = list_create();
 	list_add(lista_claves_bloqueadas, entrada);
+	replanificar();
 }
 
 void nueva_solicitud_clave(char* clave, ESI* esi) {
@@ -295,9 +314,9 @@ void proceso_nuevo(int rafagas, int socket) {
 }
 
 void ingreso_cola_de_listos(ESI* esi) {
+	mover_esi(esi, cola_de_listos);
 	if (hay_desalojo(config.algoritmo)) //llega uno a listo, y hay desalojo -> ver
 		replanificar();
-	mover_esi(esi, cola_de_listos);
 }
 
 void replanificar() {

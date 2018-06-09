@@ -32,7 +32,7 @@ void recibir_mensajes(int socket, int listener, int coordinador);
 void procesar_mensaje_coordinador(int coordinador);
 void procesar_mensaje_esi(int socket);
 void proceso_nuevo(int rafagas, int socket);
-void nueva_sentencia(t_sentencia sentencia);
+void nueva_sentencia(t_sentencia sentencia, int coordinador);
 
 //funciones de logica de esi
 void ejecutar_esi();
@@ -46,9 +46,9 @@ void nueva_solicitud_clave(char* clave, ESI* esi);
 void bloquear_clave(char* clave, ESI* esi);
 void liberar_recursos(ESI* esi);
 void finalizar_esi(ESI* esi);
-void STORE(char* clave, ESI* esi);
-void SET(char* clave, char* valor, ESI* esi);
-void GET(char* clave, ESI* esi);
+void STORE(char* clave, ESI* esi, int coordinador);
+void SET(char* clave, char* valor, ESI* esi, int coordinador);
+void GET(char* clave, ESI* esi, int coordinador);
 void error_operacion(ErrorOperacion tipo, char* clave, int esi);
 char* mensaje_error(ErrorOperacion tipo);
 

@@ -39,6 +39,7 @@ typedef enum {
 	error = 0,
 	conectar_coord_planif,
 	sentencia_coordinador,
+	error_sentencia,
 	nuevo_esi,
 	ejecutar_proxima_sentencia,
 	ejecutar_sentencia_coordinador,
@@ -50,6 +51,7 @@ typedef enum {
 	config_inst, //coord -> inst
 	ejecutar_sentencia_instancia, //envia SET o STORE a la instancia
 	compactar,
+	resultado_ejecucion
 } Accion;
 
 #endif

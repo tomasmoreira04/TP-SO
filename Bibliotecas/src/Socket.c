@@ -25,7 +25,7 @@ void esperar(int socket, Accion accion) {
 	while (recibirMensaje(socket, NULL) != accion);
 }
 
-int recibirMensaje(int socket,void** stream){
+int recibirMensaje(int socket, void** stream){
 	header heder;//MODIFICAR FLAG
 	int verificador;
 	if((verificador=recv(socket,&heder,sizeof(header),0))<=0){
