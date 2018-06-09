@@ -26,7 +26,6 @@ typedef struct {
 } t_sentencia;
 
 
-
 typedef struct {
 	int bloqueada;
 	char clave[LARGO_CLAVE];
@@ -36,23 +35,32 @@ typedef struct {
 } t_clave;
 
 typedef enum {
+	no_exitoso=0,
+	exitoso,
+	dudoso
+} ResultadoEjecucion;
+
+typedef enum {
 	error = 0,
 	conectar_coord_planif,
 	sentencia_coordinador,
-	error_sentencia,
 	nuevo_esi,
 	ejecutar_proxima_sentencia,
 	ejecutar_sentencia_coordinador,
 	preguntar_recursos_planificador,
 	recurso_disponible,
 	ejecucion_ok,
+	ejecucion_no_ok,
 	no_hay_mas_sentencias, //el esi le avisa al coordinador
 	terminar_esi, //coord -> planif
 	config_inst, //coord -> inst
 	ejecutar_sentencia_instancia, //envia SET o STORE a la instancia
 	compactar,
+	esi_bloqueado,
+	error_sentencia,
 	resultado_ejecucion
 } Accion;
 
 #endif
+
 

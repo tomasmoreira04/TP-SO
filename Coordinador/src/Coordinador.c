@@ -42,21 +42,16 @@ int main(int argc, char* argv[]) {
 	log_info(log_operaciones, "Se ha cargado la configuracion inicial del Coordinador");
 	mostrar_por_pantalla_config(configuracion);
 	lista_Instancias =dictionary_create();
-
 	int listener = crear_socket_de_escucha(configuracion.puerto_escucha);
-
 	int nuevo_socket, modulo;
-
 	while(1){
 		if(banderaPlanificador==0){
 			nuevo_socket = aceptar_nueva_conexion(listener);
 			recv(nuevo_socket, &modulo, sizeof(int), 0);//HS
 			crear_hilo(nuevo_socket, modulo);
-
 			int socket_server = conexion_con_servidor(configuracion.ip_planificador, configuracion.puerto_planificador);
 			socket_plan = socket_server; //pasar ocmo parametro, no global, pero por ahora lo hago asi
 			handShake(socket_server, coordinador);
-
 			banderaPlanificador++;
 		}
 		nuevo_socket = aceptar_nueva_conexion(listener);
@@ -72,22 +67,17 @@ void *rutina_instancia(void * arg) {
 	int socket_INST = (int)arg;
 	printf("\n------------------------------------\n");
 	printf("NUEVA INSTANCIA EJECUTADA || ");
-
 	void * stream;
 	//RECIBIR NOMBRE DE INSTACIA
 	recibirMensaje(socket_INST,&stream);
-
 	//list_add(lista_Instancias,(void*)nuevaInstancia);
 	printf("ID:%s || SOCKET: %d\n", ((char*)stream) , socket_INST);
-
 	//VALIDAR QUE SEA EL UNICO EN EL DICCIONARIO
 	if( (dictionary_has_key(lista_Instancias , ((char*)stream) ) )==false ){
 		dictionary_put(lista_Instancias, ((char*)stream) ,& socket_INST );
 		list_add(listaSoloInstancias, ((char*)stream) );
 	}
-
 	configurar_instancia(socket_INST);
-
 	return NULL;
 }
 
@@ -95,7 +85,6 @@ void configurar_instancia(int socket){
 	int* dim = malloc(sizeof(int)*2);//RECIBE 3
 	memcpy(dim,&configuracion.cant_entradas,sizeof(int));
 	memcpy(dim+1,&configuracion.tamanio_entrada,sizeof(int));
-
 	enviarMensaje(socket,config_inst,dim,sizeof(int)*3);
 	printf("\nputo el que lee\n");
 }
@@ -110,12 +99,12 @@ void *rutina_ESI(void* argumento) {
 		t_sentencia* sentencia = (t_sentencia*)stream;
 		char* recurso = (char*)sentencia->clave;
 		//ENVIAR SENTENCIA
-		enviarMensaje(socket_plan, preguntar_recursos_planificador, recurso, sizeof(recurso));
+		enviarMensaje(socket_plan, sentencia_coordinador, sentencia, sizeof(recurso));
 		int resultado_ejecucion = 0;
 
-		int disponible = recibirMensaje(socket_plan, &stream); //el planif me da el OK, entonces ejecuto una sentencia del esi
+		int sentencia_okey = recibirMensaje(socket_plan, &stream); //el planif me da el OK, entonces ejecuto una sentencia del esi
 
-		if (disponible) {
+		if (sentencia_okey == sentencia_coordinador) {
 		//aca ejecutar sentencia esi en instancia
 			switch(sentencia->tipo){
 				case S_GET:
@@ -133,10 +122,8 @@ void *rutina_ESI(void* argumento) {
 				case S_SET:
 				{
 					int largoSentencia= strlen((char*) (dictionary_get(instancias_Claves , sentencia->clave)));
-					char* instanciaGuardada=malloc(largoSentencia);
+					char* instanciaGuardada=malloc (largoSentencia);
 					strcpy(instanciaGuardada, (char*) (dictionary_get(instancias_Claves , sentencia->clave)) );
-
-
 					if( ( strcmp(instanciaGuardada,"0") ) == 0 ){
 						//ALGORITMO Y ASIGNAR, modificar claveSentencia
 						if(  (strcmp(configuracion.algoritmo_distrib,"EL"))==0 ){
@@ -165,14 +152,15 @@ void *rutina_ESI(void* argumento) {
 							}
 						}
 					}
-
 					int socketEncontrado= (int) (dictionary_get(lista_Instancias , instanciaGuardada));
 					printf("\n\nSOCKET: %d\n\n",socketEncontrado);
-
 					//VALIDAR INSTANCIA CONECTADA
 					//MANDAR A INSTANCIA
-
 					enviarMensaje(socketEncontrado,S_SET,sentencia,sizeof(t_sentencia));
+					void* mensajeInstancia;
+					int operacionPedidaInstacia = recibirMensaje(socketEncontrado, &mensajeInstancia);
+					//COMPACTAR
+					int sentencia_okey = recibirMensaje(socketEncontrado, &stream);
 					break;
 				}
 				case S_STORE:
@@ -194,8 +182,15 @@ void *rutina_ESI(void* argumento) {
 				}
 			}
 			resultado_ejecucion = 1; //1 = ok se ejecuto bien
+			enviarMensaje(socket_esi, ejecucion_ok, exitoso, sizeof(int));
 		}
-		enviarMensaje(socket_plan, ejecucion_ok, (void *)resultado_ejecucion, sizeof(int));
+		else if(sentencia_okey== esi_bloqueado){
+
+		}
+		else{
+			enviarMensaje(socket_esi, ejecucion_no_ok, no_exitoso, sizeof(int));
+			break;
+		}
 	}
 	//sale del while -> no hay mas sentencias
 	enviarMensaje(socket_plan, terminar_esi, NULL, 0);

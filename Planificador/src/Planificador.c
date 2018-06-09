@@ -195,7 +195,7 @@ void GET(char* clave, ESI* esi, int coordinador) {
 		printf(YELLOW"\nLa clave "GREEN"%s "YELLOW"se encuentra bloqueada, se bloqueará el "GREEN"ESI %d"RESET, clave, esi->id);
 		nueva_solicitud_clave(clave, esi);
 		bloquear_esi(esi);
-		avisar(coordinador, error_sentencia);
+		avisar(coordinador, esi_bloqueado);
 	}
 	else {
 		bloquear_clave(clave, esi);
