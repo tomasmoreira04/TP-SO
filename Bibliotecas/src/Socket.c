@@ -30,7 +30,7 @@ void esperar(int socket, Accion accion) {
 int recibirMensaje(int socket, void** stream){
 	header heder;//MODIFICAR FLAG
 	int verificador;
-	if((verificador=recv(socket,&heder,sizeof(header),0))<=0){
+	if((verificador = recv(socket, &heder, sizeof(header), MSG_WAITALL)) <= 0){
 		if(verificador==0){
 			return 0;
 		}
@@ -38,8 +38,8 @@ int recibirMensaje(int socket, void** stream){
 			perror("\nError en el recv");
 	}
 	*stream=malloc(heder.tamano);
-	if((verificador=recv(socket,*stream,heder.tamano,0))<=0){
-		if(verificador==0){
+	if((verificador = recv(socket, *stream, heder.tamano, MSG_WAITALL))<=0){
+		if(verificador == 0){
 			return 0;
 		}
 		else

@@ -45,14 +45,18 @@ int main(int argc, char* argv[]) {
 	int listener = crear_socket_de_escucha(configuracion.puerto_escucha);
 	int nuevo_socket, modulo;
 	while(1){
-		if(banderaPlanificador==0){
+		if(banderaPlanificador == 0){
 			nuevo_socket = aceptar_nueva_conexion(listener);
 			recv(nuevo_socket, &modulo, sizeof(int), 0);//HS
 			crear_hilo(nuevo_socket, modulo);
+
 			int socket_server = conexion_con_servidor(configuracion.ip_planificador, configuracion.puerto_planificador);
 			socket_plan = socket_server; //pasar ocmo parametro, no global, pero por ahora lo hago asi
+			printf("haciendo handshake con planif");
 			handShake(socket_server, coordinador);
-			banderaPlanificador++;
+			//handShake(socket_server, coordinador);
+
+			banderaPlanificador = 1;
 		}
 		nuevo_socket = aceptar_nueva_conexion(listener);
 		recv(nuevo_socket, &modulo, sizeof(int), 0);//HS
@@ -86,7 +90,7 @@ void configurar_instancia(int socket){
 	memcpy(dim,&configuracion.cant_entradas,sizeof(int));
 	memcpy(dim+1,&configuracion.tamanio_entrada,sizeof(int));
 	enviarMensaje(socket,config_inst,dim,sizeof(int)*3);
-	printf("\nputo el que lee\n");
+	printf(YELLOW"\nNueva instancia configurada\n"RESET);
 }
 
 void *rutina_ESI(void* argumento) {
@@ -96,6 +100,7 @@ void *rutina_ESI(void* argumento) {
 
 	while (recibirMensaje(socket_esi, &stream) == ejecutar_sentencia_coordinador) {
 
+		printf(CYAN"\nrecibiendo sentencia del esi.."RESET);
 		t_sentencia* sentencia = (t_sentencia*)stream;
 
 		//ENVIAR SENTENCIA

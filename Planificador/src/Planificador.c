@@ -82,6 +82,7 @@ void recibir_mensajes(int socket, int listener, int socket_coordinador) {
 void* procesar_mensaje_coordinador(void* sock) {
 	int coordinador = (int)sock;
 	void* mensaje;
+
 	Accion accion = recibirMensaje(coordinador, &mensaje);
 
 	switch(accion) {
@@ -335,7 +336,8 @@ void proceso_nuevo(int rafagas, int socket) {
 	nuevo_esi->id = ++ultimo_id;
 	nuevo_esi->cant_rafagas = rafagas;
 	nuevo_esi->socket_p = socket;
-	printf("socket esi %d", socket);
+	nuevo_esi->socket_c = 0;
+	nuevo_esi->cola_actual = NULL;
 	ingreso_cola_de_listos(nuevo_esi);
 	printf( "\nNuevo ESI con" GREEN " %d rafagas " RESET, nuevo_esi->cant_rafagas);
 	printf("(ID: %d, ESTIMACION: %d)\n", nuevo_esi->id, nuevo_esi->estimacion_anterior);
