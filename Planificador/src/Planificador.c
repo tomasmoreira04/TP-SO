@@ -29,6 +29,7 @@ ESI* esi_ejecutando;
 t_dictionary* estimaciones_actuales;
 int ultimo_id;
 int planificar = 1;
+int hayEsis = 0;
 
 
 int main(int argc, char* argv[]) {
@@ -52,7 +53,7 @@ void recibir_conexiones() {
 	FD_SET(listener, &master);
 	int coordinador = conectar_con_coordinador(listener);
 
-	while (true) {
+	while (planificar) {
 		read_fds = master;
 		if (select(fdmax + 1, &read_fds, NULL, NULL, NULL) == -1) {
 			perror("select");
@@ -70,15 +71,16 @@ int conectar_con_coordinador(int listener) { //fijarse bien esto, conectar siemp
 	return socket_coord;
 }
 
-void recibir_mensajes(int socket, int listener, int coordinador) {
+void recibir_mensajes(int socket, int listener, int socket_coordinador) {
 	if (socket == listener)
 		aceptar_nueva_conexion(listener);
-	else if (socket == coordinador)
-		procesar_mensaje_coordinador(socket);
-	else procesar_mensaje_esi(socket);
+	else if (socket == socket_coordinador)
+		crear_hilo(socket_coordinador, coordinador);
+	else crear_hilo(socket, esi);
 }
 
-void procesar_mensaje_coordinador(int coordinador) {
+void* procesar_mensaje_coordinador(void* sock) {
+	int coordinador = (int)sock;
 	void* mensaje;
 	Accion accion = recibirMensaje(coordinador, &mensaje);
 
@@ -88,7 +90,7 @@ void procesar_mensaje_coordinador(int coordinador) {
 			break;
 		case preguntar_recursos_planificador: {
 			int respuesta = ver_disponibilidad_clave((char*)mensaje);
-			enviarMensaje(coordinador, recurso_disponible, respuesta, 0);
+			enviarMensaje(coordinador, recurso_disponible, &respuesta, sizeof(respuesta));
 			break;
 		}
 		case terminar_esi:
@@ -98,6 +100,7 @@ void procesar_mensaje_coordinador(int coordinador) {
 			FD_CLR(coordinador, &master);
 			break;
 	}
+	return NULL;
 }
 
 int ver_disponibilidad_clave(char* clave) { //0: no, 1: disponible
@@ -106,14 +109,18 @@ int ver_disponibilidad_clave(char* clave) { //0: no, 1: disponible
 	return 1;
 }
 
-void procesar_mensaje_esi(int socket) {
+void* procesar_mensaje_esi(void* sock) {
+	int socket = (int)sock;
 	void* mensaje;
 	int accion = recibirMensaje(socket, &mensaje);
 
 	switch(accion) {
 		case nuevo_esi:
 			proceso_nuevo(*(int*)mensaje, socket);
-			//ejecutar_esi(); //por ahora, cada vez que me llega uno nuevo lo ejecuto
+			if (hayEsis == 0) {
+				ejecutar(config.algoritmo);
+				hayEsis = 1;
+			}
 			break;
 		case resultado_ejecucion:
 			procesar_resultado(*(int*)mensaje);
@@ -122,6 +129,23 @@ void procesar_mensaje_esi(int socket) {
 			FD_CLR(socket, &master);
 			break;
 	}
+	return NULL;
+}
+
+void crear_hilo(int nuevo_socket, Modulo modulo) {
+	pthread_attr_t attr;
+	pthread_t hilo;
+	int  res = pthread_attr_init(&attr);
+	res = pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+
+	if (modulo == esi) {
+		res = pthread_create (&hilo ,&attr, procesar_mensaje_esi, (void*)nuevo_socket);
+	}
+	else if (modulo == coordinador) {
+		pthread_create (&hilo ,&attr, procesar_mensaje_coordinador , (void *)nuevo_socket);
+	}
+
+	pthread_attr_destroy(&attr);
 }
 
 void procesar_resultado(ResultadoEjecucion resultado) {
@@ -139,7 +163,10 @@ void procesar_resultado(ResultadoEjecucion resultado) {
 }
 
 void ejecutar_esi(ESI* esi) {
-	avisar(esi->socket_p, ejecutar_proxima_sentencia);
+	printf("mandando para q ejecute");
+	int i = 1;
+	enviarMensaje(esi->socket_p, ejecutar_proxima_sentencia, &i, sizeof(int));
+	//avisar(esi->socket_p, ejecutar_proxima_sentencia);
 	esi_ejecutando = esi;
 }
 
@@ -308,6 +335,7 @@ void proceso_nuevo(int rafagas, int socket) {
 	nuevo_esi->id = ++ultimo_id;
 	nuevo_esi->cant_rafagas = rafagas;
 	nuevo_esi->socket_p = socket;
+	printf("socket esi %d", socket);
 	ingreso_cola_de_listos(nuevo_esi);
 	printf( "\nNuevo ESI con" GREEN " %d rafagas " RESET, nuevo_esi->cant_rafagas);
 	printf("(ID: %d, ESTIMACION: %d)\n", nuevo_esi->id, nuevo_esi->estimacion_anterior);
@@ -352,8 +380,9 @@ int _es_esi(ESI* a, ESI* b) {
 void mover_esi(ESI* esi, t_list* nueva_lista) {
 	if (esi->cola_actual != NULL)
 		list_remove(esi->cola_actual, esi->posicion);
+	list_add(nueva_lista, esi);
 	esi->cola_actual = nueva_lista;
-	esi->posicion = list_add(nueva_lista, esi);
+	esi->posicion = list_size(nueva_lista) - 1;
 }
 
 void inicializar_estructuras() {
@@ -376,13 +405,13 @@ void destruir_estructuras() {
 //para el prox checkpoint esta funcion va a ser mas generica
 void ejecutar_por_fifo() {
 	ESI* esi = list_remove(cola_de_listos , 0);
-	mover_esi(esi_ejecutando, cola_de_listos);
+	mover_esi(esi, cola_de_listos);
 	ejecutar_esi(esi);
 }
 
 void ejecutar_por_sjf() {
 	ESI* esi = esi_rafaga_mas_corta();
-	mover_esi(esi_ejecutando, cola_de_listos);
+	mover_esi(esi, cola_de_listos);
 	ejecutar_esi(esi);
 }
 

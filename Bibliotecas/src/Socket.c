@@ -18,11 +18,13 @@
 #include "Estructuras.h"
 
 void avisar(int socket, Accion accion) {
-	enviarMensaje(socket, accion, NULL, 0);
+	int i = 1;
+	enviarMensaje(socket, accion, &i, sizeof(i));
 }
 
 void esperar(int socket, Accion accion) {
-	while (recibirMensaje(socket, NULL) != accion);
+	void* s;
+	while (recibirMensaje(socket, s) != accion);
 }
 
 int recibirMensaje(int socket, void** stream){

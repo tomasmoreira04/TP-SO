@@ -29,10 +29,11 @@ extern int planificar; //parametro para pausar/continuar la planificacion por co
 void recibir_conexiones();
 int conectar_con_coordinador(int listener);
 void recibir_mensajes(int socket, int listener, int coordinador);
-void procesar_mensaje_coordinador(int coordinador);
-void procesar_mensaje_esi(int socket);
+void* procesar_mensaje_coordinador(void*);
+void* procesar_mensaje_esi(void*);
 void proceso_nuevo(int rafagas, int socket);
 void nueva_sentencia(t_sentencia sentencia, int coordinador);
+void crear_hilo(int nuevo_socket, Modulo modulo);
 
 //funciones de logica de esi
 void ejecutar_esi();
@@ -49,6 +50,7 @@ void finalizar_esi(ESI* esi);
 void STORE(char* clave, ESI* esi, int coordinador);
 void SET(char* clave, char* valor, ESI* esi, int coordinador);
 void GET(char* clave, ESI* esi, int coordinador);
+void procesar_resultado(ResultadoEjecucion resultado);
 void error_operacion(ErrorOperacion tipo, char* clave, int esi);
 char* mensaje_error(ErrorOperacion tipo);
 
@@ -59,6 +61,7 @@ int hay_desalojo(AlgoritmoPlanif algoritmo);
 void ejecutar(AlgoritmoPlanif algoritmo);
 int _es_esi(ESI* a, ESI* b);
 void mover_esi(ESI* esi, t_list* nueva_lista);
+int ver_disponibilidad_clave(char* clave);
 
 t_list* lista_por_numero(int numero);
 void inicializar_estructuras();

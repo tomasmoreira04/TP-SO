@@ -18,13 +18,13 @@
 
 int main(int argc, char* argv[]) {
 	ConfigESI config = cargar_config_esi(argv[1]);
-	char* ruta = ruta_script(argv[2]);
-
+	//char* ruta = ruta_script(argv[2]);
+	setbuf(stdout, NULL);
 	int planificador = conexion_con_servidor(config.ip_planificador, config.puerto_planificador);
 	int coordinador = conexion_con_servidor(config.ip_coordinador, config.puerto_coordinador);
 
 	handShake(coordinador, esi);
-
+	char* ruta = "scripts/script.esi";
 	FILE* script = cargar_script(ruta);
 	int rafagas = cantidad_de_sentencias(script);
 	informar_nuevo_esi(planificador, rafagas);
@@ -69,14 +69,16 @@ t_sentencia convertir_operacion(t_esi_operacion a) { //necesario porque los char
 }
 
 void leer_sentencias(int planificador, int coordinador, char* ruta) {
-	FILE* script = cargar_script(ruta);
 	void* stream;
+	FILE* script = cargar_script(ruta);
 	char* linea = NULL;
 	size_t largo = 0;
 	ssize_t leidas = 0;
 
+
 	while ((leidas = getline(&linea, &largo, script)) != -1) {
 
+			//int asd = recibirMensaje(planificador, stream);
 			esperar(planificador, ejecutar_proxima_sentencia);
 
 			t_esi_operacion operacion = parse(linea);

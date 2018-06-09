@@ -97,9 +97,9 @@ void *rutina_ESI(void* argumento) {
 	while (recibirMensaje(socket_esi, &stream) == ejecutar_sentencia_coordinador) {
 
 		t_sentencia* sentencia = (t_sentencia*)stream;
-		char* recurso = (char*)sentencia->clave;
+
 		//ENVIAR SENTENCIA
-		enviarMensaje(socket_plan, sentencia_coordinador, sentencia, sizeof(recurso));
+		enviarMensaje(socket_plan, sentencia_coordinador, sentencia, sizeof(sentencia));
 		int resultado_ejecucion = 0;
 
 		int sentencia_okey = recibirMensaje(socket_plan, &stream); //el planif me da el OK, entonces ejecuto una sentencia del esi
