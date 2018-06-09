@@ -29,22 +29,20 @@ char* storage;
 int32_t cantEntradas;
 int32_t tamEntrada;
 int32_t cantEntradasDisp;
-
+ConfigInstancia config;
 
 int main(int argc, char* argv[]) {
 	char* nombre = argv[1];
-	ConfigInstancia config = cargar_config_inst(nombre);
+	config = cargar_config_inst(nombre);
 
 	int socketServer = conexion_con_servidor(config.ip_coordinador, config.puerto_coordinador); //usar conf->puerto_coordinador
 
 	//enviar nombre
 	handShake(socketServer, instancia);
 
-	//------------Recibir dimensiones y crear espacio de almacenamiento
+	//------------RECIBIR DIMENSIONES Y CREAR STORAGE
 
-	int id_instancia;
 	int* dim;
-
 
 	enviarMensaje(socketServer, 8, &config.nombre_instancia , 20);
 
@@ -54,8 +52,9 @@ int main(int argc, char* argv[]) {
 			memcpy(&tamEntrada,dim+1,sizeof(int));
 			free(dim);
 
-			printf(BLUE "\n------INSTANCIA------\n");
-			printf(BLUE "\nCANT ENTRADAS: %i \nTAM ENTRADAS: %i \n",cantEntradas, tamEntrada);
+			printf(CYAN "\n------------INSTANCIA------------\n");
+			printf("\nCANT ENTRADAS: %i \nTAM ENTRADAS: %i \n",cantEntradas, tamEntrada);
+
 
 			cantEntradasDisp = cantEntradas;
 			storage = malloc(sizeof(char)*cantEntradas*tamEntrada);
@@ -66,7 +65,7 @@ int main(int argc, char* argv[]) {
 			}
 	//------------------------------------------------------
 
-	//-------------CREAR E INICIALIZAR ARRAY
+	//-------------INICIALIZAR
 
 	char* bitarray = malloc(sizeof(char)*cantEntradas);
 	tablaEntradas = dictionary_create();
@@ -74,18 +73,38 @@ int main(int argc, char* argv[]) {
 	disponibles = bitarray_create(bitarray,cantEntradas);
 	limpiarArray(0,cantEntradas);
 
-	//-----------------------------------------
+	//--------------------------------------
+
+	//------------INGORAR..PRUEBA (?
+
+	/*
+	t_sentencia* sentencia = malloc(sizeof(sentencia));
+		strcpy(sentencia->clave,"K400");
+		sentencia->id_esi=3;
+		sentencia->tipo=S_STORE;
+		strcpy(sentencia->valor,"H000000H");
+
+		almacenarValor(sentencia->clave, sentencia->valor);
+
+		mostrarArray(disponibles->bitarray);
+		mostrarValor(sentencia->clave);
+	*/
+
+	//--------------------------------
 
 	//------------RECIBIR MENSAJES
 
 		while(1){
 			t_sentencia* sentencia;
+			printf(GREEN "\nEsperando ordenes pacificamente...\n");
+
 			Accion accion = recibirMensaje(socketServer,&sentencia);
 
 			switch(accion){
 
 				case ejecutar_sentencia_instancia:
 					ejecutarSentencia(sentencia);
+					enviarMensaje(socketServer,ejecucion_ok,NULL,0);
 					break;
 
 				case compactar:
@@ -96,31 +115,84 @@ int main(int argc, char* argv[]) {
 	//---------------------------------------------------
 
 	bitarray_destroy(disponibles);
+	free(storage);
 	return 0;
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//------PARA PRUEBAS NOMAS
+void mostrarArray(char* bitarray){
+	int i;
+	for(i=0;i<cantEntradas;i++){
+		int bit = bitarray_test_bit(disponibles,i);
+		printf("%d ", bit);
+	}
+}
+
+void mostrarValor(char* clave){
+	Reg_TablaEntradas* registro;
+	registro = dictionary_get(tablaEntradas,clave);
+
+	char* valor=malloc(sizeof(registro->tamanio+1));
+	memcpy(valor, storage+(tamEntrada*registro->entrada),registro->tamanio);
+
+	printf("\nEl valor de la clave %s es: %s",clave,valor);
+	printf("\n");
+	free(valor);
+}
+
+
+//------------------------
 
 void ejecutarSentencia(t_sentencia* sentencia){
 
 	switch(sentencia->tipo){
 
 	case S_SET:
+		almacenarValor(sentencia->clave,sentencia->valor);
 		break;
 
 	case S_STORE:
+		persistirValor(sentencia->clave);
 		break;
-
 	}
 }
+
+void persistirValor(char* clave){
+
+	char* path = malloc(string_length(clave)+strlen(config.punto_montaje)+4);
+	strcpy(path,config.punto_montaje);
+	strcat(path,clave);
+	strcat(path,".txt");
+
+	FILE* arch = fopen(path,"w+");
+	char* valor = devolverValor(clave);
+	fputs(valor,arch);
+	fclose(arch);
+
+	free(valor);
+	free(path);
+}
+
+char* devolverValor(char* clave){								//devuelve valor acordarse de liberarlo
+	Reg_TablaEntradas* registro;
+	registro = dictionary_get(tablaEntradas,clave);
+
+	char* valor=malloc(sizeof(registro->tamanio+1));
+	memcpy(valor, storage+(tamEntrada*registro->entrada),registro->tamanio);
+
+	return valor;
+}
+
 
 void almacenarValor(char* clave, char* valor){
 
 	int tamEnBytes = string_length(valor);
-
 	int tamEnEntradas = 1+((tamEnBytes-1)/tamEntrada);			//supuesto redondeo para arriba
 
 	if(dictionary_has_key(tablaEntradas,clave)){
-		eliminarEntradas(clave);
+		liberarEntradas(clave);
 	}
 
 	if(tamEnEntradas <= cantEntradasDisp){
@@ -130,7 +202,8 @@ void almacenarValor(char* clave, char* valor){
 
 		Reg_TablaEntradas* registro = malloc(sizeof(Reg_TablaEntradas));
 		registro->entrada = posInicialLibre;
-		registro->tamanio = tamEnEntradas;
+		registro->tamanio = tamEnBytes;
+		memcpy(registro->clave,clave,40);
 		dictionary_put(tablaEntradas,clave,registro);
 		cantEntradasDisp-=tamEnEntradas;
 
@@ -141,27 +214,20 @@ void almacenarValor(char* clave, char* valor){
 
 }
 
-//esto esta para probar nomas
-void mostrarArray(char* bitarray){
-	int i;
-	for(i=0;i<cantEntradas;i++){
-		int bit = bitarray_test_bit(disponibles,i);
-		printf("%d ", bit);
-	}
+void liberarEntradas(char* clave){
+	Reg_TablaEntradas* registro  = dictionary_remove(tablaEntradas,clave);
+	int tamEnEntradas = 1+((registro->tamanio-1)/tamEntrada);
+	int desde= registro->entrada;
+	int hasta= registro->entrada+tamEnEntradas;
+	limpiarArray(desde,hasta);
+	cantEntradasDisp+=tamEnEntradas;
 }
 
 void limpiarArray(int desde, int hasta){
 	int i;
-	for(i=desde;i<=hasta;i++){
+	for(i=desde;i<hasta;i++){
 		bitarray_clean_bit(disponibles,i);
 	}
-}
-
-void eliminarEntradas(char* clave){
-	Reg_TablaEntradas* registro  = dictionary_remove(tablaEntradas,clave);
-	int desde= registro->entrada;
-	int hasta= registro->entrada+registro->tamanio;
-	limpiarArray(desde,hasta);
 }
 
 
@@ -192,10 +258,6 @@ int buscarEspacioLibre(int entradasNecesarias){
 
 	return posInicialLibre;
 }
-
-
-
-
 
 
 
