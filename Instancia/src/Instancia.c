@@ -77,71 +77,7 @@ int main(int argc, char* argv[]) {
 
 	//------------INGORAR..PRUEBA (?
 
-	printf("\n\n");
 	/*
-	char* clave = malloc(sizeof(char)*10);
-	strcpy(clave,"K10");
-
-	char* valor = malloc(sizeof(char)*100);
-	strcpy(valor,"HAAAH");
-
-
-	char* clave2 = malloc(sizeof(char)*10);
-	strcpy(clave2,"K20");
-
-	char* valor2 = malloc(sizeof(char)*100);
-	strcpy(valor2,"HBBBH");
-
-
-	char* clave3 = malloc(sizeof(char)*10);
-	strcpy(clave3,"K30");
-
-	char* valor3 = malloc(sizeof(char)*100);
-	strcpy(valor3,"HCCCH");
-
-	almacenarValor(clave,valor);
-	almacenarValor(clave2,valor2);
-	almacenarValor(clave3,valor3);
-
-	mostrarArray(disponibles->bitarray);
-	printf("\n\n");
-
-	Reg_TablaEntradas* registro1;
-	Reg_TablaEntradas* registro2;
-	Reg_TablaEntradas* registro3;
-
-	registro1 = dictionary_get(tablaEntradas,clave);
-	registro2 = dictionary_get(tablaEntradas,clave2);
-	registro3 = dictionary_get(tablaEntradas,clave3);
-
-	printf("%d %d\n", registro1->entrada, registro1->tamanio);
-	printf("%d %d\n", registro2->entrada, registro2->tamanio);
-	printf("%d %d\n", registro3->entrada, registro3->tamanio);
-
-	mostrarValor(clave);
-	mostrarValor(clave2);
-	mostrarValor(clave3);
-	printf("- Cantidad de Entradas disp: %d\n", cantEntradasDisp);
-
-	printf("\n\n----Lo mismo pero borrando la clave2 K20:\n\n");
-	liberarEntradas(clave2);
-	mostrarArray(disponibles->bitarray);
-	printf("\n\n");
-	registro1 = dictionary_get(tablaEntradas,clave);
-	registro3 = dictionary_get(tablaEntradas,clave3);
-
-	printf("%d %d\n", registro1->entrada, registro1->tamanio);
-	printf("%d %d\n", registro3->entrada, registro3->tamanio);
-	mostrarValor(clave);
-	mostrarValor(clave3);
-
-	printf("- Cantidad de Entradas disp: %d\n", cantEntradasDisp);
-
-	persistirValor(clave);
-	persistirValor(clave3);
-
-	*/
-
 	t_sentencia* sentencia = malloc(sizeof(sentencia));
 		strcpy(sentencia->clave,"K400");
 		sentencia->id_esi=3;
@@ -152,8 +88,7 @@ int main(int argc, char* argv[]) {
 
 		mostrarArray(disponibles->bitarray);
 		mostrarValor(sentencia->clave);
-
-
+	*/
 
 	//--------------------------------
 
