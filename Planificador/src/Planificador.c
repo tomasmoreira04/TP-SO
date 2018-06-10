@@ -193,7 +193,8 @@ void procesar_resultado(ResultadoEjecucion resultado) {
 	case dudoso:
 		break;
 	}
-	finalizar_esi(esi_ejecutando);
+	replanificar();
+	//finalizar_esi(esi_ejecutando);
 }
 
 void ejecutar_esi(ESI* esi) {
@@ -486,8 +487,14 @@ void destruir_estructuras() {
 
 //para el prox checkpoint esta funcion va a ser mas generica
 void ejecutar_por_fifo() {
-	ESI* esi = list_remove(cola_de_listos , 0);
-	printf("voy a jecutar el esi %d", esi->id);
+	ESI* esi;
+	if(esi_ejecutando==NULL){
+		esi = list_remove(cola_de_listos , 0);
+	}
+	else{
+		esi=esi_ejecutando;
+	}
+	printf("voy a ejecutar el esi %d", esi->id);
 	//mover_esi(esi, cola_de_listos);
 	ejecutar_esi(esi);
 }

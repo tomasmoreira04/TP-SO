@@ -90,7 +90,7 @@ void configurar_instancia(int socket){
 	int* dim = malloc(sizeof(int)*2);//RECIBE 3
 	memcpy(dim,&configuracion.cant_entradas,sizeof(int));
 	memcpy(dim+1,&configuracion.tamanio_entrada,sizeof(int));
-	enviarMensaje(socket,config_inst,dim,sizeof(int)*3);
+	enviarMensaje(socket,config_inst,dim,sizeof(int)*2);
 	printf(YELLOW"\nNueva instancia configurada\n"RESET);
 }
 
@@ -123,13 +123,14 @@ void *rutina_ESI(void* argumento) {
 			switch(sentencia.tipo){
 				case S_GET:
 				{
+
 					if( (dictionary_has_key(instancias_Claves , sentencia.clave) )==false ) {
 						//Persistir
 						dictionary_put(instancias_Claves, sentencia.clave , "0" );//VERIFICAR SI ES EN VARIABLE
 						//char* msg_get = formatear_mensaje_esi(1, S_SET, sentencia->clave, NULL);
 						//no se si funcionara lo de abajo, sino pasarle msg_get
 						//el primer parametro debe ser el id del ESI, pongo 1 para que no rompa
-						log_info(log_operaciones, formatear_mensaje_esi(1, S_SET, sentencia.clave, NULL));
+						log_info(log_operaciones, formatear_mensaje_esi(1, S_GET, sentencia.clave, NULL));
 					}
 					break;
 				}
@@ -147,7 +148,7 @@ void *rutina_ESI(void* argumento) {
 							largoSentencia= strlen((char*) (dictionary_get(instancias_Claves , sentencia.clave)));
 							char* instanciaGuardada=malloc(largoSentencia);
 							strcpy(instanciaGuardada, (char*) (dictionary_get(instancias_Claves , sentencia.clave)) );
-							log_info(log_operaciones, formatear_mensaje_esi(1, S_SET, sentencia.clave, NULL));
+							log_info(log_operaciones, formatear_mensaje_esi(1, S_SET, sentencia.clave, sentencia.valor));
 						}
 						else{
 							if( (strcmp(configuracion.algoritmo_distrib,"LSU"))==0 ) {
@@ -281,7 +282,7 @@ void EquitativeLoad(char* claveSentencia){
 }
 
 char* formatear_mensaje_esi(int id, TipoSentencia t, char* clave, char* valor) {
-	puts("asd");
+
 	char* formato_string = string_new();
 	char* str_id = string_itoa(id);
 	string_append(&formato_string, "El ESI ");

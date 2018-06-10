@@ -90,6 +90,11 @@ void leer_sentencias(int planificador, int coordinador, char* ruta) {
 				sentencia.id_esi = id_esi;
 				enviarMensaje(coordinador, ejecutar_sentencia_coordinador, &sentencia, sizeof(sentencia));
 				ejecutar_operacion(operacion); //imprime nada mas en el ESI
+
+				void* resultado;
+				recibirMensaje(coordinador, &resultado);
+
+				enviarMensaje(planificador, resultado_ejecucion, (int*)resultado, sizeof(resultado));
 			}
 			else {
 				printf(RED "\nNo se pudo interpretar " CYAN "%s\n" RESET, linea);
@@ -98,10 +103,9 @@ void leer_sentencias(int planificador, int coordinador, char* ruta) {
 			destruir_operacion(operacion);
 			//hacer los free
 	}
-	void* resultado;
+
 	enviarMensaje(coordinador, no_hay_mas_sentencias, NULL, 0);
-	recibirMensaje(coordinador, &resultado);
-	enviarMensaje(coordinador, resultado_ejecucion, (int*)resultado, sizeof(resultado));
+
 	fclose(script);
 	if (linea)
 		free(linea);
