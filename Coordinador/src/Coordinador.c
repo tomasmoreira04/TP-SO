@@ -10,6 +10,7 @@
 #include "../../Bibliotecas/src/Configuracion.c"
 #include "../../Bibliotecas/src/Estructuras.h"
 #include "../../Bibliotecas/src/Color.h"
+#include "../../Bibliotecas/src/Semaforo.c"
 #include <errno.h>
 #include <netdb.h>
 #include <pthread.h>
@@ -39,13 +40,10 @@ int main(int argc, char* argv[]) {
 	instancias_Claves= dictionary_create();
 	listaSoloInstancias=list_create();
 
-
 	//arreglar race condiciton con el planif
 	//sida
 	configuracion = cargar_config_coordinador(argv[1]);
 	configuracion.retardo = 10 * 10*10*10*10*10*10;
-
-
 
 	crear_log_operacion();
 	log_info(log_operaciones, "Se ha cargado la configuracion inicial del Coordinador");
@@ -61,10 +59,7 @@ int main(int argc, char* argv[]) {
 
 			int socket_server = conexion_con_servidor(configuracion.ip_planificador, configuracion.puerto_planificador);
 			socket_plan = socket_server; //pasar ocmo parametro, no global, pero por ahora lo hago asi
-			printf("haciendo handshake con planif");
 			avisar(socket_plan, conectar_coord_planif);
-			//handShake(socket_server, coordinador);
-			//handShake(socket_server, coordinador);
 
 			banderaPlanificador = 1;
 		}
@@ -110,27 +105,18 @@ void *rutina_ESI(void* argumento) {
 
 	while (recibirMensaje(socket_esi, &stream) == ejecutar_sentencia_coordinador) {
 
-		printf("MEGA PUTO EL QUE LEE 1\n");
-		printf(CYAN"\nrecibiendo sentencia del esi..\n"RESET);
 		t_sentencia sentencia = *(t_sentencia*)stream;
 
-		printf("\nsentencia: tipo:%d -esi:%d -clave:%s\n", sentencia.tipo, sentencia.id_esi, sentencia.clave);
+		printf("\nSentencia: tipo:%d -esi:%d -clave:%s\n", sentencia.tipo, sentencia.id_esi, sentencia.clave);
 
-		//ENVIAR SENTENCIA
 		enviarMensaje(socket_plan, sentencia_coordinador, &sentencia, sizeof(t_sentencia));
-		printf("\nsentencia enviada al planificador\n");
-
 
 		int sentencia_okey = recibirMensaje(socket_plan, &stream); //el planif me da el OK, entonces ejecuto una sentencia del esi
-		printf("\nrecibi del planif. si puedo o no ejecutar la sentencia:\n");
 
 		usleep(configuracion.retardo);
 
 		if (sentencia_okey == sentencia_coordinador) {
 
-			printf("el planif me dijo que ejecute la sentencia :)\n");
-
-		//aca ejecutar sentencia esi en instancia
 			switch(sentencia.tipo){
 				case S_GET:
 				{
@@ -147,12 +133,11 @@ void *rutina_ESI(void* argumento) {
 				}
 				case S_SET:
 				{
-					printf("\nHOLA ESTOY HACIENDO SET\n");
 					int largoSentencia= strlen((char*) (dictionary_get(instancias_Claves , sentencia.clave)));
 					char* instanciaGuardada=malloc (largoSentencia);
 					strcpy(instanciaGuardada, (char*) (dictionary_get(instancias_Claves , sentencia.clave)) );
 					if( ( strcmp(instanciaGuardada,"0") ) == 0 ){
-						printf("\nHOLA ESTOY adentro del strcmp\n");
+
 						//ALGORITMO Y ASIGNAR, modificar claveSentencia
 						if(  (strcmp(configuracion.algoritmo_distrib,"EL"))==0 ){
 							log_info(log_operaciones, "Aplicando Equitative Load..");
@@ -218,7 +203,6 @@ void *rutina_ESI(void* argumento) {
 		}
 		else{
 			int variable=no_exitoso;
-			printf("MEGA PUTO EL QUE LEE NOOO CORRECTAMENTE\n");
 			enviarMensaje(socket_esi, ejecucion_no_ok, &variable, sizeof(int));
 			break;
 		}

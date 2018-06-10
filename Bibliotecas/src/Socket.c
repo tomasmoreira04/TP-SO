@@ -23,7 +23,7 @@ void avisar(int socket, Accion accion) {
 }
 
 void esperar(int socket, Accion accion) {
-	void* s;
+	void* s = NULL;
 	while (recibirMensaje(socket, s) != accion);
 }
 

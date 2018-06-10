@@ -42,5 +42,6 @@ ConfigInstancia config_predeterminada_inst();
 char* ruta_modulo(Modulo modulo);
 AlgoritmoPlanif numero_algoritmo(char* nombre);
 int faltan_campos(t_config* config, char** campos);
+void imprimir_default();
 
 #endif

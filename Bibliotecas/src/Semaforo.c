@@ -1,16 +1,11 @@
-#ifndef H_SEMAFORO
-#define H_SEMAFORO
-
 #include <stdio.h>
 #include <stdlib.h>
+#include <pthread.h>
 
-void s_wait(int* semaforo) {
-	while (*semaforo != 1);
-	*semaforo = 0;
+void s_wait(pthread_mutex_t* mutex) {
+	pthread_mutex_lock(mutex);
 }
 
-void s_signal(int* semaforo) {
-	*semaforo = 1;
+void s_signal(pthread_mutex_t* mutex) {
+	pthread_mutex_unlock(mutex);
 }
-
-#endif

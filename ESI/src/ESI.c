@@ -80,8 +80,6 @@ void leer_sentencias(int planificador, int coordinador, char* ruta) {
 
 			while (recibirMensaje(planificador, &stream) != ejecutar_proxima_sentencia);
 			id_esi = *(int*)stream;
-			printf("esi %d", id_esi);
-
 			t_esi_operacion operacion = parse(linea);
 
 			if(operacion.valido){
@@ -111,15 +109,15 @@ void leer_sentencias(int planificador, int coordinador, char* ruta) {
 }
 
 void GET_CLAVE(t_esi_operacion operacion) {
-	printf("GET\t" GREEN "%s\n" RESET, operacion.argumentos.GET.clave);
+	printf("Envio al coordinador -> GET\t" GREEN "%s\n" RESET, operacion.argumentos.GET.clave);
 }
 
 void SET_CLAVE_VALOR(t_esi_operacion operacion) {
-	printf("SET\t" GREEN "%s\t" CYAN "%s\n" RESET, operacion.argumentos.SET.clave, operacion.argumentos.SET.valor);
+	printf("Envio al coordinador -> SET\t" GREEN "%s\t" CYAN "%s\n" RESET, operacion.argumentos.SET.clave, operacion.argumentos.SET.valor);
 }
 
 void STORE_CLAVE(t_esi_operacion operacion) {
-	printf("STORE\t" GREEN "%s\n" RESET, operacion.argumentos.STORE.clave);
+	printf("Envio al coordinador -> STORE\t" GREEN "%s\n" RESET, operacion.argumentos.STORE.clave);
 }
 
 void ejecutar_operacion(t_esi_operacion operacion) {

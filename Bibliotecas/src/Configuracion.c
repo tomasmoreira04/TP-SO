@@ -145,7 +145,7 @@ char* ruta_config(char* nombre) {
 	return ruta;
 }
 
-void imprimir_default(){
+void imprimir_default() {
 	printf(YELLOW "\n¡ARCHIVO DE CONFIGURACIÓN INCORRECTO! (faltan campos o no existe el archivo)");
 	printf("\nSe ha cargado la configuracion por default\n" RESET);
 }
