@@ -16,6 +16,7 @@
 #include "commons/string.h"
 #include "Coordinador.h"
 #include "commons/collections/list.h"
+#include <unistd.h>
 
 
 // Diferenciacion de operacion ESI
@@ -37,7 +38,15 @@ int main(int argc, char* argv[]) {
 	contadorEquitativeLoad=0;
 	instancias_Claves= dictionary_create();
 	listaSoloInstancias=list_create();
+
+
+	//arreglar race condiciton con el planif
+	//sida
 	configuracion = cargar_config_coordinador(argv[1]);
+	configuracion.retardo = 10 * 10*10*10*10*10*10;
+
+
+
 	crear_log_operacion();
 	log_info(log_operaciones, "Se ha cargado la configuracion inicial del Coordinador");
 	mostrar_por_pantalla_config(configuracion);
@@ -115,6 +124,8 @@ void *rutina_ESI(void* argumento) {
 		int sentencia_okey = recibirMensaje(socket_plan, &stream); //el planif me da el OK, entonces ejecuto una sentencia del esi
 		printf("\nrecibi del planif. si puedo o no ejecutar la sentencia:\n");
 
+		usleep(configuracion.retardo);
+
 		if (sentencia_okey == sentencia_coordinador) {
 
 			printf("el planif me dijo que ejecute la sentencia :)\n");
@@ -136,10 +147,12 @@ void *rutina_ESI(void* argumento) {
 				}
 				case S_SET:
 				{
+					printf("\nHOLA ESTOY HACIENDO SET\n");
 					int largoSentencia= strlen((char*) (dictionary_get(instancias_Claves , sentencia.clave)));
 					char* instanciaGuardada=malloc (largoSentencia);
 					strcpy(instanciaGuardada, (char*) (dictionary_get(instancias_Claves , sentencia.clave)) );
 					if( ( strcmp(instanciaGuardada,"0") ) == 0 ){
+						printf("\nHOLA ESTOY adentro del strcmp\n");
 						//ALGORITMO Y ASIGNAR, modificar claveSentencia
 						if(  (strcmp(configuracion.algoritmo_distrib,"EL"))==0 ){
 							log_info(log_operaciones, "Aplicando Equitative Load..");

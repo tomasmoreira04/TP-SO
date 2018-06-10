@@ -110,7 +110,7 @@ ConfigCoordinador config_predeterminada_coord() {
 	strcpy(config.ip_planificador, "127.0.0.1");
 	config.cant_entradas = 20;
 	config.tamanio_entrada = 100;
-	config.retardo = 300;
+	config.retardo = 3000;
 	strcpy(config.algoritmo_distrib, "EL");
 	imprimir_default();
 	return config;

@@ -36,6 +36,7 @@ int coordinador_conectado = 0;
 //semaforos
 int lista_disponible = 1;
 int siguiente_sentencia = 1;
+int ejecucion = 1;
 
 
 
@@ -98,32 +99,40 @@ void recibir_mensajes(int socket, int listener, int socket_coordinador) {
 
 }
 
+int mensaje_coord = 1;
+
 void* procesar_mensaje_coordinador(void* sock) {
 
 	int coordinador = (int)sock;
 	void* mensaje;
 	printf("\nESTOY RE DURO\n");
 	Accion accion;
+	s_wait(&mensaje_coord);
 	while((accion = recibirMensaje(coordinador, &mensaje)) != cerrar_conexion_coord) {
 		printf("\nentre al while\n");
 		switch(accion) {
 				case conectar_coord_planif:
 					printf("\nfruta\n");
 					coordinador_conectado = 1;
+					s_signal(&mensaje_coord);
 					break;
 				case sentencia_coordinador:
 					printf("\nIVAN SALVANOS\n");
 					nueva_sentencia(*(t_sentencia*)mensaje, coordinador);
+					s_signal(&mensaje_coord);
 					break;
 				case preguntar_recursos_planificador: {
 					int respuesta = ver_disponibilidad_clave((char*)mensaje);
 					enviarMensaje(coordinador, recurso_disponible, &respuesta, sizeof(respuesta));
+					s_signal(&mensaje_coord);
 					break;
 				}
 				case terminar_esi:
 					finalizar_esi((ESI*)mensaje);
+					s_signal(&mensaje_coord);
 					break;
 				default:
+					s_signal(&mensaje_coord);
 					break;
 			}
 		//accion = 0;
@@ -132,7 +141,6 @@ void* procesar_mensaje_coordinador(void* sock) {
 	close(coordinador);
 	FD_CLR(coordinador, &master);
 
-	hay_hilo_coordinador = 0;
 	return NULL;
 }
 
@@ -169,7 +177,7 @@ void* procesar_mensaje_esi(void* sock) {
 void crear_hilo(int nuevo_socket, Modulo modulo) {
 	pthread_attr_t attr;
 	pthread_t hilo;
-	int  res = pthread_attr_init(&attr);
+	int res = pthread_attr_init(&attr);
 	res = pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 
 	if (modulo == esi) {
@@ -199,7 +207,7 @@ void procesar_resultado(ResultadoEjecucion resultado) {
 
 void ejecutar_esi(ESI* esi) {
 
-
+	s_wait(&ejecucion);
 
 	printf("\nestoy ejecutando el esi %d", esi->id);
 	int id = esi->id;
@@ -208,6 +216,8 @@ void ejecutar_esi(ESI* esi) {
 	printf("\nmoriré\n");
 	//aca muere
 	esi_ejecutando = (ESI*)esi;
+
+	s_signal(&ejecucion);
 
 }
 
@@ -488,14 +498,10 @@ void destruir_estructuras() {
 //para el prox checkpoint esta funcion va a ser mas generica
 void ejecutar_por_fifo() {
 	ESI* esi;
-	if(esi_ejecutando==NULL){
+	if(esi_ejecutando == NULL)
 		esi = list_remove(cola_de_listos , 0);
-	}
-	else{
-		esi=esi_ejecutando;
-	}
+	else esi = esi_ejecutando;
 	printf("voy a ejecutar el esi %d", esi->id);
-	//mover_esi(esi, cola_de_listos);
 	ejecutar_esi(esi);
 }
 
