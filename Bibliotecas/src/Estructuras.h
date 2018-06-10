@@ -42,8 +42,9 @@ typedef enum {
 
 typedef enum {
 	error = 0,
-	//conectar_coord_planif,
-	sentencia_coordinador=3,
+	conectar_coord_planif,
+	conectar_esi_planif,
+	sentencia_coordinador,
 	nuevo_esi,
 	ejecutar_proxima_sentencia,
 	ejecutar_sentencia_coordinador,
@@ -58,7 +59,10 @@ typedef enum {
 	compactar,
 	esi_bloqueado,
 	error_sentencia,
-	resultado_ejecucion
+	resultado_ejecucion,
+	cerrar_conexion_coord,
+	cerrar_conexion_esi
+
 } Accion;
 
 #endif

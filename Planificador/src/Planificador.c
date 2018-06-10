@@ -19,17 +19,24 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <fcntl.h>
+#include "../../Bibliotecas/src/Semaforo.c"
 
 ConfigPlanificador config;
 t_list* cola_de_listos;
 t_list* cola_de_bloqueados;
 t_list* cola_de_finalizados;
 t_list* lista_claves_bloqueadas;
-ESI* esi_ejecutando;
+ESI* esi_ejecutando = NULL;
 t_dictionary* estimaciones_actuales;
 int ultimo_id;
 int planificar = 1;
 int hayEsis = 0;
+int coordinador_conectado = 0;
+
+//semaforos
+int lista_disponible = 1;
+int siguiente_sentencia = 1;
+
 
 
 int main(int argc, char* argv[]) {
@@ -56,17 +63,20 @@ void recibir_conexiones() {
 	while (1) {
 		if(planificar)
 		{
+			int n = fdmax + 1;
 			read_fds = master;
-			if (select(fdmax + 1, &read_fds, NULL, NULL, NULL) == -1) {
+			if (select(n, &read_fds, NULL, NULL, NULL) == -1) {
 				perror("select");
 				exit(1);
 			}
-			for (int i = 0; i <= fdmax; i++)
+			for (int i = listener; i < n; i++)
 				if (FD_ISSET(i, &read_fds))
 					recibir_mensajes(i, listener, coordinador);
 		}
 	}
 }
+
+int hay_hilo_coordinador = 0;
 
 int conectar_con_coordinador(int listener) { //fijarse bien esto, conectar siempre primero el coordinador
 	int socket_coord = aceptar_nueva_conexion(listener);
@@ -77,37 +87,52 @@ int conectar_con_coordinador(int listener) { //fijarse bien esto, conectar siemp
 void recibir_mensajes(int socket, int listener, int socket_coordinador) {
 	if (socket == listener)
 		aceptar_nueva_conexion(listener);
-	else if (socket == socket_coordinador)
+	else if (socket == socket_coordinador && hay_hilo_coordinador == 0) {
+		hay_hilo_coordinador = 1;
 		crear_hilo(socket_coordinador, coordinador);
-	else crear_hilo(socket, esi);
+	}
+	else {
+		if (coordinador_conectado == 1)
+			crear_hilo(socket, esi);
+	}
+
 }
 
 void* procesar_mensaje_coordinador(void* sock) {
+
 	int coordinador = (int)sock;
 	void* mensaje;
 	printf("\nESTOY RE DURO\n");
-	Accion accion = recibirMensaje(coordinador, &mensaje);
-
-	switch(accion) {
-		case sentencia_coordinador:
-			fflush(stdin);
-			printf("IVAN SALVANOS\n");
-			nueva_sentencia(*(t_sentencia*)mensaje, coordinador);
-			break;
-		case preguntar_recursos_planificador: {
-			int respuesta = ver_disponibilidad_clave((char*)mensaje);
-			enviarMensaje(coordinador, recurso_disponible, &respuesta, sizeof(respuesta));
-			break;
-		}
-		case terminar_esi:
-			finalizar_esi((ESI*)mensaje);
-			break;
-		default:
-			printf("\nACCION :%d \nCerrando conexion con el coordinador\n",accion);
-			close(coordinador);
-			FD_CLR(coordinador, &master);
-			break;
+	Accion accion;
+	while((accion = recibirMensaje(coordinador, &mensaje)) != cerrar_conexion_coord) {
+		printf("\nentre al while\n");
+		switch(accion) {
+				case conectar_coord_planif:
+					printf("\nfruta\n");
+					coordinador_conectado = 1;
+					break;
+				case sentencia_coordinador:
+					printf("\nIVAN SALVANOS\n");
+					nueva_sentencia(*(t_sentencia*)mensaje, coordinador);
+					break;
+				case preguntar_recursos_planificador: {
+					int respuesta = ver_disponibilidad_clave((char*)mensaje);
+					enviarMensaje(coordinador, recurso_disponible, &respuesta, sizeof(respuesta));
+					break;
+				}
+				case terminar_esi:
+					finalizar_esi((ESI*)mensaje);
+					break;
+				default:
+					break;
+			}
+		//accion = 0;
 	}
+	printf("\nACCION :%d \nCerrando conexion con el coordinador\n",accion);
+	close(coordinador);
+	FD_CLR(coordinador, &master);
+
+	hay_hilo_coordinador = 0;
 	return NULL;
 }
 
@@ -120,23 +145,24 @@ int ver_disponibilidad_clave(char* clave) { //0: no, 1: disponible
 void* procesar_mensaje_esi(void* sock) {
 	int socket = (int)sock;
 	void* mensaje;
-	int accion = recibirMensaje(socket, &mensaje);
+	Accion accion;
+	while((accion = recibirMensaje(socket, &mensaje)) != cerrar_conexion_esi) {
 
-	switch(accion) {
-		case nuevo_esi:
-			proceso_nuevo(*(int*)mensaje, socket);
-			if (hayEsis == 0) {
-				ejecutar(config.algoritmo);
-				hayEsis = 1;
-			}
-			break;
-		case resultado_ejecucion:
-			procesar_resultado(*(int*)mensaje);
-			break;
-		default:
-			FD_CLR(socket, &master);
-			break;
+		switch(accion) {
+			case nuevo_esi:
+				proceso_nuevo(*(int*)mensaje, socket);
+				break;
+			case resultado_ejecucion:
+				procesar_resultado(*(int*)mensaje);
+				break;
+			default:
+				FD_CLR(socket, &master);
+				break;
+		}
 	}
+	printf("\nACCION :%d \nCerrando conexion con el esi\n", accion);
+	close(socket);
+	FD_CLR(socket, &master);
 	return NULL;
 }
 
@@ -171,15 +197,26 @@ void procesar_resultado(ResultadoEjecucion resultado) {
 }
 
 void ejecutar_esi(ESI* esi) {
-	printf("mandando para q ejecute");
-	int i = 1;
-	enviarMensaje(esi->socket_p, ejecutar_proxima_sentencia, &i, sizeof(int));
-	//avisar(esi->socket_p, ejecutar_proxima_sentencia);
-	esi_ejecutando = esi;
+
+
+
+	printf("\nestoy ejecutando el esi %d", esi->id);
+	int id = esi->id;
+	printf("\nmandando para q ejecute el esi %d", id);
+	enviarMensaje(esi->socket_p, ejecutar_proxima_sentencia, &id, sizeof(int));
+	printf("\nmoriré\n");
+	//aca muere
+	esi_ejecutando = (ESI*)esi;
+
 }
 
 void nueva_sentencia(t_sentencia sentencia, int coordinador) {
+
+	printf("sentencia de esi %d recibida", sentencia.id_esi);
+
+	s_wait(&siguiente_sentencia);
 	ESI* esi = obtener_esi(sentencia.id_esi);
+	printf("obtenido esi %d", esi->id);
 	switch (sentencia.tipo) {
 	case S_GET:
 		GET(sentencia.clave, esi, coordinador);
@@ -191,9 +228,13 @@ void nueva_sentencia(t_sentencia sentencia, int coordinador) {
 		STORE(sentencia.clave, esi, coordinador);
 		break;
 	}
+	s_signal(&siguiente_sentencia);
 }
 
 ESI* obtener_esi(int id) { //al menos una vez voy a tener que filtrar en todo el planificador
+
+	s_wait(&lista_disponible);
+
 	int n = list_size(cola_de_listos);
 	ESI* esi;
 	for (int i = 0; i < n; i++){
@@ -201,6 +242,12 @@ ESI* obtener_esi(int id) { //al menos una vez voy a tener que filtrar en todo el
 		if (esi->id == id)
 			return esi;
 	}
+	s_signal(&lista_disponible);
+
+	if (esi_ejecutando != NULL)
+		if (esi_ejecutando->id == id)
+			return esi_ejecutando;
+
 	return NULL;
 }
 
@@ -226,14 +273,18 @@ void error_operacion(ErrorOperacion tipo, char* clave, int esi) {
 }
 
 void GET(char* clave, ESI* esi, int coordinador) {
-	if (esta_bloqueada(clave)) {
+	printf("evaluando GET");
+
+	if (esta_bloqueada(clave) == 1) {
 		printf(YELLOW"\nLa clave "GREEN"%s "YELLOW"se encuentra bloqueada, se bloqueará el "GREEN"ESI %d"RESET, clave, esi->id);
 		nueva_solicitud_clave(clave, esi);
 		bloquear_esi(esi);
+		printf("pepito");
 		avisar(coordinador, esi_bloqueado);
 	}
 	else {
 		bloquear_clave(clave, esi);
+		printf("%d", esi->id);
 		printf("\nLa clave "GREEN"%s "RESET"se asigno a "GREEN"ESI %d"RESET, clave, esi->id);
 		avisar(coordinador, sentencia_coordinador);
 	}
@@ -297,7 +348,6 @@ void bloquear_clave(char* clave, ESI* esi) {
 	entrada->esi_duenio = esi;
 	entrada->esis_esperando = list_create();
 	list_add(lista_claves_bloqueadas, entrada);
-	replanificar();
 }
 
 void nueva_solicitud_clave(char* clave, ESI* esi) {
@@ -316,16 +366,26 @@ void liberar_clave(char* clave) {
 }
 
 int esta_bloqueada(char* clave) {
-	return buscar_clave_bloqueada(clave) != NULL;
+	printf("\nbuscando clave bloqueada");
+	t_clave* bloq = buscar_clave_bloqueada(clave);
+	if (bloq == NULL) {
+		printf("voy a retornar 0");
+		return 0;
+	}
+	printf("voy a retornar 1");
+	return 1;
 }
 
 t_clave* buscar_clave_bloqueada(char* clave) {
 	t_list* lista = lista_claves_bloqueadas;
+	printf("\nahora entro al for\n");
 	for (int i = 0; i < list_size(lista); i++) {
 		t_clave* c = list_get(lista, i);
+		printf("\npepito\n");
 		if (strcmp(clave, c->clave) == 0)
 			return c;
 	}
+	printf("\nvoy a retornar null\n");
 	return NULL;
 }
 
@@ -352,8 +412,10 @@ void proceso_nuevo(int rafagas, int socket) {
 
 void ingreso_cola_de_listos(ESI* esi) {
 	mover_esi(esi, cola_de_listos);
-	if (hay_desalojo(config.algoritmo)) //llega uno a listo, y hay desalojo -> ver
+	if (hay_desalojo(config.algoritmo) || hayEsis == 0) {
+		hayEsis = 1;
 		replanificar();
+	}
 }
 
 void replanificar() {
@@ -367,6 +429,9 @@ int hay_desalojo(AlgoritmoPlanif algoritmo) {
 }
 
 void ejecutar(AlgoritmoPlanif algoritmo) {
+
+	s_wait(&siguiente_sentencia);
+
 	switch(algoritmo) {
 	case fifo:
 		ejecutar_por_fifo();
@@ -380,6 +445,8 @@ void ejecutar(AlgoritmoPlanif algoritmo) {
 	case vrr:
 		break;
 	}
+
+	s_signal(&siguiente_sentencia);
 }
 
 int _es_esi(ESI* a, ESI* b) {
@@ -387,11 +454,17 @@ int _es_esi(ESI* a, ESI* b) {
 }
 
 void mover_esi(ESI* esi, t_list* nueva_lista) {
+
+	s_wait(&lista_disponible);
+
 	if (esi->cola_actual != NULL)
 		list_remove(esi->cola_actual, esi->posicion);
 	list_add(nueva_lista, esi);
 	esi->cola_actual = nueva_lista;
 	esi->posicion = list_size(nueva_lista) - 1;
+
+	s_signal(&lista_disponible);
+
 }
 
 void inicializar_estructuras() {
@@ -414,7 +487,8 @@ void destruir_estructuras() {
 //para el prox checkpoint esta funcion va a ser mas generica
 void ejecutar_por_fifo() {
 	ESI* esi = list_remove(cola_de_listos , 0);
-	mover_esi(esi, cola_de_listos);
+	printf("voy a jecutar el esi %d", esi->id);
+	//mover_esi(esi, cola_de_listos);
 	ejecutar_esi(esi);
 }
 

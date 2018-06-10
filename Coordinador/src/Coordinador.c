@@ -53,7 +53,8 @@ int main(int argc, char* argv[]) {
 			int socket_server = conexion_con_servidor(configuracion.ip_planificador, configuracion.puerto_planificador);
 			socket_plan = socket_server; //pasar ocmo parametro, no global, pero por ahora lo hago asi
 			printf("haciendo handshake con planif");
-			handShake(socket_server, coordinador);
+			avisar(socket_plan, conectar_coord_planif);
+			//handShake(socket_server, coordinador);
 			//handShake(socket_server, coordinador);
 
 			banderaPlanificador = 1;
@@ -101,47 +102,52 @@ void *rutina_ESI(void* argumento) {
 	while (recibirMensaje(socket_esi, &stream) == ejecutar_sentencia_coordinador) {
 
 		printf("MEGA PUTO EL QUE LEE 1\n");
-		fflush(stdin);
 		printf(CYAN"\nrecibiendo sentencia del esi..\n"RESET);
-		t_sentencia* sentencia = (t_sentencia*)stream;
+		t_sentencia sentencia = *(t_sentencia*)stream;
+
+		printf("\nsentencia: tipo:%d -esi:%d -clave:%s\n", sentencia.tipo, sentencia.id_esi, sentencia.clave);
 
 		//ENVIAR SENTENCIA
-		enviarMensaje(socket_plan, sentencia_coordinador, sentencia, sizeof(sentencia));
-		//int resultado_ejecucion = 0;
+		enviarMensaje(socket_plan, sentencia_coordinador, &sentencia, sizeof(t_sentencia));
+		printf("\nsentencia enviada al planificador\n");
+
 
 		int sentencia_okey = recibirMensaje(socket_plan, &stream); //el planif me da el OK, entonces ejecuto una sentencia del esi
+		printf("\nrecibi del planif. si puedo o no ejecutar la sentencia:\n");
 
 		if (sentencia_okey == sentencia_coordinador) {
-			printf("MEGA PUTO EL QUE LEE CORRECTAMENTE\n");
+
+			printf("el planif me dijo que ejecute la sentencia :)\n");
+
 		//aca ejecutar sentencia esi en instancia
-			switch(sentencia->tipo){
+			switch(sentencia.tipo){
 				case S_GET:
 				{
-					if( (dictionary_has_key(instancias_Claves , sentencia->clave) )==false ) {
+					if( (dictionary_has_key(instancias_Claves , sentencia.clave) )==false ) {
 						//Persistir
-						dictionary_put(instancias_Claves, sentencia->clave , "0" );//VERIFICAR SI ES EN VARIABLE
+						dictionary_put(instancias_Claves, sentencia.clave , "0" );//VERIFICAR SI ES EN VARIABLE
 						//char* msg_get = formatear_mensaje_esi(1, S_SET, sentencia->clave, NULL);
 						//no se si funcionara lo de abajo, sino pasarle msg_get
 						//el primer parametro debe ser el id del ESI, pongo 1 para que no rompa
-						log_info(log_operaciones, formatear_mensaje_esi(1, S_SET, sentencia->clave, NULL));
+						log_info(log_operaciones, formatear_mensaje_esi(1, S_SET, sentencia.clave, NULL));
 					}
 					break;
 				}
 				case S_SET:
 				{
-					int largoSentencia= strlen((char*) (dictionary_get(instancias_Claves , sentencia->clave)));
+					int largoSentencia= strlen((char*) (dictionary_get(instancias_Claves , sentencia.clave)));
 					char* instanciaGuardada=malloc (largoSentencia);
-					strcpy(instanciaGuardada, (char*) (dictionary_get(instancias_Claves , sentencia->clave)) );
+					strcpy(instanciaGuardada, (char*) (dictionary_get(instancias_Claves , sentencia.clave)) );
 					if( ( strcmp(instanciaGuardada,"0") ) == 0 ){
 						//ALGORITMO Y ASIGNAR, modificar claveSentencia
 						if(  (strcmp(configuracion.algoritmo_distrib,"EL"))==0 ){
 							log_info(log_operaciones, "Aplicando Equitative Load..");
-							EquitativeLoad(sentencia->clave);
+							EquitativeLoad(sentencia.clave);
 							free(instanciaGuardada);
-							largoSentencia= strlen((char*) (dictionary_get(instancias_Claves , sentencia->clave)));
+							largoSentencia= strlen((char*) (dictionary_get(instancias_Claves , sentencia.clave)));
 							char* instanciaGuardada=malloc(largoSentencia);
-							strcpy(instanciaGuardada, (char*) (dictionary_get(instancias_Claves , sentencia->clave)) );
-							log_info(log_operaciones, formatear_mensaje_esi(1, S_SET, sentencia->clave, NULL));
+							strcpy(instanciaGuardada, (char*) (dictionary_get(instancias_Claves , sentencia.clave)) );
+							log_info(log_operaciones, formatear_mensaje_esi(1, S_SET, sentencia.clave, NULL));
 						}
 						else{
 							if( (strcmp(configuracion.algoritmo_distrib,"LSU"))==0 ) {
@@ -164,7 +170,7 @@ void *rutina_ESI(void* argumento) {
 					printf("\n\nSOCKET: %d\n\n",socketEncontrado);
 					//VALIDAR INSTANCIA CONECTADA
 					//MANDAR A INSTANCIA
-					enviarMensaje(socketEncontrado,S_SET,sentencia,sizeof(t_sentencia));
+					enviarMensaje(socketEncontrado,S_SET, &sentencia,sizeof(t_sentencia));
 					void* mensajeInstancia;
 					int operacionPedidaInstacia = recibirMensaje(socketEncontrado, &mensajeInstancia);
 					//COMPACTAR
@@ -174,14 +180,14 @@ void *rutina_ESI(void* argumento) {
 				}
 				case S_STORE:
 				{
-					int largoSentencia= strlen((char*) (dictionary_get(instancias_Claves , sentencia->clave)));
+					int largoSentencia= strlen((char*) (dictionary_get(instancias_Claves , sentencia.clave)));
 					char* instanciaGuardada=malloc(largoSentencia);
-					strcpy(instanciaGuardada, (char*) (dictionary_get(instancias_Claves , sentencia->clave)) );
+					strcpy(instanciaGuardada, (char*) (dictionary_get(instancias_Claves , sentencia.clave)) );
 
 
 					//VALIDADA
 					int socketEncontrado= (int) (dictionary_get(lista_Instancias , instanciaGuardada));
-					enviarMensaje(socketEncontrado,S_STORE,sentencia,sizeof(t_sentencia));
+					enviarMensaje(socketEncontrado,S_STORE,  &sentencia,sizeof(t_sentencia));
 					//MANDAR A INSTANCIA
 					break;
 				}

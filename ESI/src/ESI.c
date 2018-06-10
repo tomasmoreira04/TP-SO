@@ -20,10 +20,11 @@ int main(int argc, char* argv[]) {
 	ConfigESI config = cargar_config_esi(argv[1]);
 	//char* ruta = ruta_script(argv[2]);
 	setbuf(stdout, NULL);
-	int planificador = conexion_con_servidor(config.ip_planificador, config.puerto_planificador);
 	int coordinador = conexion_con_servidor(config.ip_coordinador, config.puerto_coordinador);
-
 	handShake(coordinador, esi);
+
+	int planificador = conexion_con_servidor(config.ip_planificador, config.puerto_planificador);
+
 	char* ruta = "scripts/script.esi";
 	FILE* script = cargar_script(ruta);
 	int rafagas = cantidad_de_sentencias(script);
@@ -74,34 +75,33 @@ void leer_sentencias(int planificador, int coordinador, char* ruta) {
 	char* linea = NULL;
 	size_t largo = 0;
 	ssize_t leidas = 0;
-
+	int id_esi = 0;
 
 	while ((leidas = getline(&linea, &largo, script)) != -1) {
 
-			//int asd = recibirMensaje(planificador, stream);
-			esperar(planificador, ejecutar_proxima_sentencia);
+			while (recibirMensaje(planificador, &stream) != ejecutar_proxima_sentencia);
+			id_esi = *(int*)stream;
+			printf("esi %d", id_esi);
 
 			t_esi_operacion operacion = parse(linea);
 
 			if(operacion.valido){
 				t_sentencia sentencia = convertir_operacion(operacion);;
-
-				//le aviso al coord que tengo que ejecutar mi sentencia
-
+				sentencia.id_esi = id_esi;
 				enviarMensaje(coordinador, ejecutar_sentencia_coordinador, &sentencia, sizeof(sentencia));
-
 				ejecutar_operacion(operacion); //imprime nada mas en el ESI
-				destruir_operacion(operacion);
-			} else {
+			}
+			else {
 				printf(RED "\nNo se pudo interpretar " CYAN "%s\n" RESET, linea);
 				exit(EXIT_FAILURE);
 			}
-
+			destruir_operacion(operacion);
+			//hacer los free
 	}
-	int* resultado;
+	void* resultado;
 	enviarMensaje(coordinador, no_hay_mas_sentencias, NULL, 0);
 	recibirMensaje(coordinador, &resultado);
-	enviarMensaje(coordinador, resultado_ejecucion, resultado, sizeof(resultado));
+	enviarMensaje(coordinador, resultado_ejecucion, (int*)resultado, sizeof(resultado));
 	fclose(script);
 	if (linea)
 		free(linea);
