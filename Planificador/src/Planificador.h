@@ -37,6 +37,7 @@ void crear_hilo(int nuevo_socket, Modulo modulo);
 
 //funciones de logica de esi
 void ejecutar_esi();
+void esperar_que_exista(int id_esi);
 ESI* obtener_esi(int id);
 void bloquear_esi(ESI* esi);
 void desbloquear_esi(ESI* esi);

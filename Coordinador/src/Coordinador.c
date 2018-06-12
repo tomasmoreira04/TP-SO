@@ -40,10 +40,7 @@ int main(int argc, char* argv[]) {
 	instancias_Claves= dictionary_create();
 	listaSoloInstancias=list_create();
 
-	//arreglar race condiciton con el planif
-	//sida
 	configuracion = cargar_config_coordinador(argv[1]);
-	configuracion.retardo = 10 * 10*10*10*10*10*10;
 
 	crear_log_operacion();
 	log_info(log_operaciones, "Se ha cargado la configuracion inicial del Coordinador");
@@ -60,7 +57,6 @@ int main(int argc, char* argv[]) {
 			int socket_server = conexion_con_servidor(configuracion.ip_planificador, configuracion.puerto_planificador);
 			socket_plan = socket_server; //pasar ocmo parametro, no global, pero por ahora lo hago asi
 			avisar(socket_plan, conectar_coord_planif);
-
 			banderaPlanificador = 1;
 		}
 		nuevo_socket = aceptar_nueva_conexion(listener);
@@ -110,17 +106,21 @@ void *rutina_ESI(void* argumento) {
 		printf("\nSentencia: tipo:%d -esi:%d -clave:%s\n", sentencia.tipo, sentencia.id_esi, sentencia.clave);
 
 		enviarMensaje(socket_plan, sentencia_coordinador, &sentencia, sizeof(t_sentencia));
+		printf("\nesperando respuesta planif\n");
 
 		int sentencia_okey = recibirMensaje(socket_plan, &stream); //el planif me da el OK, entonces ejecuto una sentencia del esi
 
-		usleep(configuracion.retardo);
+
+		//usleep(configuracion.retardo);
 
 		if (sentencia_okey == sentencia_coordinador) {
+
+			printf("\nestoy haciendo la sentencia\n");
 
 			switch(sentencia.tipo){
 				case S_GET:
 				{
-
+					printf("\nestoy un get\n");
 					if( (dictionary_has_key(instancias_Claves , sentencia.clave) )==false ) {
 						//Persistir
 						dictionary_put(instancias_Claves, sentencia.clave , "0" );//VERIFICAR SI ES EN VARIABLE
@@ -133,6 +133,7 @@ void *rutina_ESI(void* argumento) {
 				}
 				case S_SET:
 				{
+					printf(RED"\n%s\n"RESET, sentencia.valor);
 					int largoSentencia= strlen((char*) (dictionary_get(instancias_Claves , sentencia.clave)));
 					char* instanciaGuardada=malloc (largoSentencia);
 					strcpy(instanciaGuardada, (char*) (dictionary_get(instancias_Claves , sentencia.clave)) );
@@ -195,14 +196,18 @@ void *rutina_ESI(void* argumento) {
 					break;
 				}
 			}
-			int variable=exitoso;
+			int variable = exitoso;
+			printf("\nestoy mandando el exec ok al planif\n");
 			enviarMensaje(socket_esi, ejecucion_ok, &variable, sizeof(int));
+			printf("\nya mande el exec ok al planifa\n");
+
 		}
 		else if(sentencia_okey== esi_bloqueado){
 
 		}
 		else{
-			int variable=no_exitoso;
+			printf(RED "\nERROR\n" RESET);
+			int variable = no_exitoso;
 			enviarMensaje(socket_esi, ejecucion_no_ok, &variable, sizeof(int));
 			break;
 		}

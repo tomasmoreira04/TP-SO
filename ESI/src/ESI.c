@@ -20,10 +20,11 @@ int main(int argc, char* argv[]) {
 	ConfigESI config = cargar_config_esi(argv[2]);
 	char* ruta = ruta_script(argv[1]);
 	setbuf(stdout, NULL);
+	int planificador = conexion_con_servidor(config.ip_planificador, config.puerto_planificador);
 	int coordinador = conexion_con_servidor(config.ip_coordinador, config.puerto_coordinador);
 	handShake(coordinador, esi);
 
-	int planificador = conexion_con_servidor(config.ip_planificador, config.puerto_planificador);
+
 
 	FILE* script = cargar_script(ruta);
 	int rafagas = cantidad_de_sentencias(script);

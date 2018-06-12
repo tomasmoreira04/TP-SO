@@ -61,7 +61,8 @@ typedef enum {
 	error_sentencia,
 	resultado_ejecucion,
 	cerrar_conexion_coord,
-	cerrar_conexion_esi
+	cerrar_conexion_esi,
+	podes_seguir
 
 } Accion;
 
