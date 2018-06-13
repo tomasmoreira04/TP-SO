@@ -95,20 +95,23 @@ int main(int argc, char* argv[]) {
 	//------------RECIBIR MENSAJES
 
 		while(1){
-			t_sentencia* sentencia;
+			void* stream;
 			printf(GREEN "\nEsperando ordenes pacificamente...\n");
 
-			Accion accion = recibirMensaje(socketServer,&sentencia);
+			Accion accion = recibirMensaje(socketServer, &stream);
 
 			switch(accion){
-
 				case ejecutar_sentencia_instancia:
-					ejecutarSentencia(sentencia);
-					enviarMensaje(socketServer,ejecucion_ok,NULL,0);
+					ejecutarSentencia((t_sentencia*)stream);
+					avisar(socketServer, ejecucion_ok);
 					break;
 
 				case compactar:
 					break;
+			}
+			if (accion == error) {
+				printf("\nse desconecto el coordinador\n");
+				break;
 			}
 		}
 
@@ -161,7 +164,7 @@ void ejecutarSentencia(t_sentencia* sentencia){
 
 void persistirValor(char* clave){
 
-	char* path = malloc(string_length(clave)+strlen(config.punto_montaje)+4);
+	char* path = malloc(string_length(clave)+strlen(config.punto_montaje)+5);
 	strcpy(path,config.punto_montaje);
 	strcat(path,clave);
 	strcat(path,".txt");

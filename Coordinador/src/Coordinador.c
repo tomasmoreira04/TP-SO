@@ -75,12 +75,16 @@ void *rutina_instancia(void * arg) {
 	void * stream;
 	//RECIBIR NOMBRE DE INSTACIA
 	recibirMensaje(socket_INST,&stream);
+	char* nombre_inst = (char*)stream;
 	//list_add(lista_Instancias,(void*)nuevaInstancia);
-	printf("ID:%s || SOCKET: %d\n", ((char*)stream) , socket_INST);
+	printf("ID:%s || SOCKET: %d\n", nombre_inst , socket_INST);
 	//VALIDAR QUE SEA EL UNICO EN EL DICCIONARIO
-	if( (dictionary_has_key(lista_Instancias , ((char*)stream) ) )==false ){
-		dictionary_put(lista_Instancias, ((char*)stream) ,& socket_INST );
-		list_add(listaSoloInstancias, ((char*)stream) );
+	if( (dictionary_has_key(lista_Instancias , nombre_inst ) ) == false ){
+		printf("socket %d agregado a instancia %s", socket_INST, nombre_inst);
+
+		int* sock = (int*)socket_INST;
+		dictionary_put(lista_Instancias, nombre_inst , sock);
+		list_add(listaSoloInstancias, nombre_inst );
 	}
 	configurar_instancia(socket_INST);
 	return NULL;
@@ -134,23 +138,24 @@ void *rutina_ESI(void* argumento) {
 				case S_SET:
 				{
 					printf(RED"\n%s\n"RESET, sentencia.valor);
-					int largoSentencia= strlen((char*) (dictionary_get(instancias_Claves , sentencia.clave)));
-					char* instanciaGuardada=malloc (largoSentencia);
-					strcpy(instanciaGuardada, (char*) (dictionary_get(instancias_Claves , sentencia.clave)) );
-					if( ( strcmp(instanciaGuardada,"0") ) == 0 ){
+					char* valor = (char*) dictionary_get(instancias_Claves , sentencia.clave);
+					char* instancia = valor;
+					printf("\nvalor del diction: %s\n", valor);
 
+					if( ( strcmp(valor, "0") ) == 0 ){
+						printf("\nentraste al strcmp de 0\n");
 						//ALGORITMO Y ASIGNAR, modificar claveSentencia
-						if(  (strcmp(configuracion.algoritmo_distrib,"EL"))==0 ){
-							log_info(log_operaciones, "Aplicando Equitative Load..");
+						if(  strcmp(configuracion.algoritmo_distrib, "EL") == 0 ){
+							printf("\nhaciendo equitav load\n");
+							//log_info(log_operaciones, "Aplicando Equitative Load..");
 							EquitativeLoad(sentencia.clave);
-							free(instanciaGuardada);
-							largoSentencia= strlen((char*) (dictionary_get(instancias_Claves , sentencia.clave)));
-							char* instanciaGuardada=malloc(largoSentencia);
-							strcpy(instanciaGuardada, (char*) (dictionary_get(instancias_Claves , sentencia.clave)) );
-							log_info(log_operaciones, formatear_mensaje_esi(1, S_SET, sentencia.clave, sentencia.valor));
+							//free(instanciaGuardada);
+							instancia = (char*) dictionary_get(instancias_Claves , sentencia.clave);
+							printf("%s", instancia);
+							//log_info(log_operaciones, formatear_mensaje_esi(1, S_SET, sentencia.clave, sentencia.valor));
 						}
 						else{
-							if( (strcmp(configuracion.algoritmo_distrib,"LSU"))==0 ) {
+							if( strcmp(configuracion.algoritmo_distrib,"LSU") == 0 ) {
 								//KE
 								//log_info(log_operaciones, "Aplicando Least Space Used..");
 							}
@@ -166,16 +171,16 @@ void *rutina_ESI(void* argumento) {
 							}
 						}
 					}
-					int socketEncontrado= (int) (dictionary_get(lista_Instancias , instanciaGuardada));
-					printf("\n\nSOCKET: %d\n\n",socketEncontrado);
+					printf("\nbuscando socket de instancia %s\n", instancia);
+					int socket = (int) dictionary_get(lista_Instancias , instancia);
+					printf("\nSOCKET: %d\n", socket);
+
 					//VALIDAR INSTANCIA CONECTADA
 					//MANDAR A INSTANCIA
-					enviarMensaje(socketEncontrado,S_SET, &sentencia,sizeof(t_sentencia));
+					enviarMensaje(socket, ejecutar_sentencia_instancia, &sentencia, sizeof(t_sentencia));
 					void* mensajeInstancia;
-					int operacionPedidaInstacia = recibirMensaje(socketEncontrado, &mensajeInstancia);
+					int operacionPedidaInstacia = recibirMensaje(socket, &mensajeInstancia);
 					//COMPACTAR
-
-					int sentencia_okey = recibirMensaje(socketEncontrado, &stream);
 					break;
 				}
 				case S_STORE:
@@ -187,7 +192,7 @@ void *rutina_ESI(void* argumento) {
 
 					//VALIDADA
 					int socketEncontrado= (int) (dictionary_get(lista_Instancias , instanciaGuardada));
-					enviarMensaje(socketEncontrado,S_STORE,  &sentencia,sizeof(t_sentencia));
+					enviarMensaje(socketEncontrado, ejecutar_sentencia_instancia,  &sentencia,sizeof(t_sentencia));
 					//MANDAR A INSTANCIA
 					break;
 				}
@@ -213,7 +218,8 @@ void *rutina_ESI(void* argumento) {
 		}
 	}
 	//sale del while -> no hay mas sentencias
-	enviarMensaje(socket_plan, terminar_esi, NULL, 0);
+	printf(YELLOW"\nfinalizando esi\n"RESET);
+	avisar(socket_plan, terminar_esi);
 	return NULL;
 }
 
@@ -271,12 +277,20 @@ void destruir_log_operacion() {
 	log_destroy(log_operaciones);
 }
 
+void modificar_clave(char* clave, char* instancia) {
+	dictionary_remove(instancias_Claves, clave);
+	dictionary_put(instancias_Claves, clave, instancia);
+}
 
 void EquitativeLoad(char* claveSentencia){
-	int cantidadInstancias=dictionary_size(lista_Instancias)-1;
-	dictionary_put(instancias_Claves, claveSentencia , ((char*)list_get(listaSoloInstancias,contadorEquitativeLoad)) );
+	int cantidadInstancias = dictionary_size(lista_Instancias)-1;
+	char* instancia = list_get(listaSoloInstancias, contadorEquitativeLoad);
+	printf("\nEQLOAD obtuvo instancia: %s\n", instancia);
+
+	modificar_clave(claveSentencia, instancia);
+
 	if(contadorEquitativeLoad+1>cantidadInstancias){
-		contadorEquitativeLoad=0;
+		contadorEquitativeLoad = 0;
 	}
 	else{
 		contadorEquitativeLoad=contadorEquitativeLoad+1;

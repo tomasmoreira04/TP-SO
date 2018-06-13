@@ -45,6 +45,8 @@ pthread_mutex_t recibir = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t fds_disponibles = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t mutex_coord_con = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t coord_ok = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t numero_esi = PTHREAD_MUTEX_INITIALIZER;
+
 
 
 int main(int argc, char* argv[]) {
@@ -100,13 +102,18 @@ void recibir_mensajes(int socket, int listener, int socket_coordinador) {
 		aceptar_nueva_conexion(listener);
 	else if (socket == socket_coordinador && hay_hilo_coordinador == 0) {
 		hay_hilo_coordinador = 1;
+		FD_CLR(socket, &master);
 		crear_hilo(socket_coordinador, coordinador);
 	}
 	else {
 		s_wait(&mutex_coord_con);
-		if (coordinador_conectado == 1)
+		if (coordinador_conectado == 1) {
+			s_signal(&mutex_coord_con);
+			FD_CLR(socket, &master);
 			crear_hilo(socket, esi);
+		}
 		s_signal(&mutex_coord_con);
+
 	}
 }
 
@@ -114,13 +121,14 @@ void recibir_mensajes(int socket, int listener, int socket_coordinador) {
 void* procesar_mensaje_coordinador(void* sock) {
 
 	int coordinador = (int)sock;
+
 	void* mensaje;
 	Accion accion;
 
 	while(1) {
 		accion = recibirMensaje(coordinador, &mensaje);
 		s_wait(&coord_ok);
-		printf("%d", accion);
+
 		switch(accion) {
 				case conectar_coord_planif:
 					s_wait(&mutex_coord_con);
@@ -140,13 +148,13 @@ void* procesar_mensaje_coordinador(void* sock) {
 				default:
 					break;
 			}
+		if (accion == error) {
+			printf("EL COORDINADOR SE HA DESCONECTADO");
+			break;
+		}
 		s_signal(&coord_ok);
 	}
 	free(mensaje);
-
-	s_wait(&fds_disponibles);
-	FD_CLR(coordinador, &master);
-	s_signal(&fds_disponibles);
 	return NULL;
 }
 
@@ -355,8 +363,10 @@ void STORE(char* clave, ESI* esi, int coordinador) { //esi: esi que hace el pedi
 }
 
 void finalizar_esi(ESI* esi) {
+	printf(YELLOW"\nFinalizando ESI %d", esi->id);
 	mover_esi(esi, cola_de_finalizados);
-	liberar_recursos(esi);
+	hayEsis--;
+	//liberar_recursos(esi);
 	if (hay_desalojo(config.algoritmo)) //llega uno a listo, y hay desalojo -> ver
 		replanificar();
 }
@@ -420,7 +430,9 @@ void desbloquear_esi(ESI* esi) {
 void proceso_nuevo(int rafagas, int socket) {
 	ESI* nuevo_esi = malloc(sizeof(ESI));
 	nuevo_esi->estimacion_anterior = config.estimacion_inicial;
+	s_wait(&numero_esi);
 	nuevo_esi->id = ++ultimo_id;
+	s_signal(&numero_esi);
 	nuevo_esi->cant_rafagas = rafagas;
 	nuevo_esi->socket_p = socket;
 	nuevo_esi->socket_c = 0;
@@ -432,8 +444,9 @@ void proceso_nuevo(int rafagas, int socket) {
 
 void ingreso_cola_de_listos(ESI* esi) {
 	mover_esi(esi, cola_de_listos);
+	replanificar();
 	if (hay_desalojo(config.algoritmo) || hayEsis == 0) {
-		hayEsis = 1;
+		hayEsis++;
 		replanificar();
 	}
 }
