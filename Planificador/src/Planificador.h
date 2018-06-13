@@ -47,7 +47,7 @@ void liberar_clave(char* clave);
 void nueva_solicitud_clave(char* clave, ESI* esi);
 void bloquear_clave(char* clave, ESI* esi);
 void liberar_recursos(ESI* esi);
-void finalizar_esi(ESI* esi);
+void finalizar_esi(int id_esi);
 void STORE(char* clave, ESI* esi, int coordinador);
 void SET(char* clave, char* valor, ESI* esi, int coordinador);
 void GET(char* clave, ESI* esi, int coordinador);

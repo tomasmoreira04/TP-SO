@@ -100,12 +100,14 @@ void configurar_instancia(int socket){
 
 void *rutina_ESI(void* argumento) {
 	int socket_esi = *(int*)(&argumento);
+	int id_esi;
 	void* stream;
 	printf(BLUE "\nEjecutando ESI (socket %d)..." RESET, socket_esi);
 
 	while (recibirMensaje(socket_esi, &stream) == ejecutar_sentencia_coordinador) {
 
 		t_sentencia sentencia = *(t_sentencia*)stream;
+		id_esi = sentencia.id_esi;
 
 		printf("\nSentencia: tipo:%d -esi:%d -clave:%s\n", sentencia.tipo, sentencia.id_esi, sentencia.clave);
 
@@ -219,7 +221,7 @@ void *rutina_ESI(void* argumento) {
 	}
 	//sale del while -> no hay mas sentencias
 	printf(YELLOW"\nfinalizando esi\n"RESET);
-	avisar(socket_plan, terminar_esi);
+	enviarMensaje(socket_plan, terminar_esi, &id_esi, sizeof(id_esi));
 	return NULL;
 }
 

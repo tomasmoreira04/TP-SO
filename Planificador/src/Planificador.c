@@ -143,7 +143,7 @@ void* procesar_mensaje_coordinador(void* sock) {
 					break;
 				}
 				case terminar_esi:
-					finalizar_esi((ESI*)mensaje);
+					finalizar_esi(*(int*)mensaje);
 					break;
 				default:
 					break;
@@ -307,7 +307,7 @@ char* mensaje_error(ErrorOperacion tipo) {
 }
 
 void error_operacion(ErrorOperacion tipo, char* clave, int esi) {
-	printf(RED "%s" YELLOW "%s " GREEN "%d" RESET, mensaje_error(tipo), clave, esi);
+	printf(RED "%s" YELLOW "%s "RESET "por parte del" GREEN " ESI %d" RESET, mensaje_error(tipo), clave, esi);
 }
 
 void GET(char* clave, ESI* esi, int coordinador) {
@@ -331,7 +331,7 @@ void SET(char* clave, char* valor, ESI* esi, int coordinador) {
 		finalizar_esi(esi);
 		avisar(coordinador, error_sentencia);
 	}
-	else if (!c->bloqueada && c->esi_duenio != esi) {
+	else if (c->bloqueada == 0 || c->esi_duenio != esi) {
 		error_operacion(error_clave_no_bloqueada, clave, esi->id);
 		finalizar_esi(esi);
 		avisar(coordinador, error_sentencia);
@@ -350,7 +350,7 @@ void STORE(char* clave, ESI* esi, int coordinador) { //esi: esi que hace el pedi
 		finalizar_esi(esi);
 		avisar(coordinador, error_sentencia);
 	}
-	else if (!c->bloqueada && c->esi_duenio != esi) {
+	else if (c->bloqueada == 0 || c->esi_duenio != esi) {
 		error_operacion(error_clave_no_bloqueada, clave, esi->id);
 		finalizar_esi(esi);
 		avisar(coordinador, error_sentencia);
@@ -362,10 +362,12 @@ void STORE(char* clave, ESI* esi, int coordinador) { //esi: esi que hace el pedi
 	}
 }
 
-void finalizar_esi(ESI* esi) {
+void finalizar_esi(int id_esi) {
+	ESI* esi = obtener_esi(id_esi);
 	printf(YELLOW"\nFinalizando ESI %d", esi->id);
 	mover_esi(esi, cola_de_finalizados);
 	hayEsis--;
+	esi_ejecutando = NULL;
 	//liberar_recursos(esi);
 	if (hay_desalojo(config.algoritmo)) //llega uno a listo, y hay desalojo -> ver
 		replanificar();
@@ -393,6 +395,7 @@ void nueva_solicitud_clave(char* clave, ESI* esi) {
 
 void liberar_clave(char* clave) {
 	t_clave* c = buscar_clave_bloqueada(clave);
+	printf("\nclave a liberar %s\n", c->clave);
 	if (c != NULL) {
 		c->bloqueada = 0;
 		c->esi_duenio = NULL;
@@ -404,9 +407,9 @@ void liberar_clave(char* clave) {
 
 int esta_bloqueada(char* clave) {
 	t_clave* bloq = buscar_clave_bloqueada(clave);
-	if (bloq == NULL)
-		return 0;
-	return 1;
+	if (bloq != NULL)
+		return bloq->bloqueada;
+	return 0;
 }
 
 t_clave* buscar_clave_bloqueada(char* clave) {
