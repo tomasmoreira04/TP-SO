@@ -72,6 +72,7 @@ int main(int argc, char* argv[]) {
 
 	disponibles = bitarray_create(bitarray,cantEntradas);
 	limpiarArray(0,cantEntradas);
+	printf(GREEN "\nEsperando ordenes pacificamente...\n");
 
 	//--------------------------------------
 
@@ -96,8 +97,6 @@ int main(int argc, char* argv[]) {
 
 		while(1){
 			void* stream;
-			printf(GREEN "\nEsperando ordenes pacificamente...\n");
-
 			Accion accion = recibirMensaje(socketServer, &stream);
 
 			switch(accion){
@@ -154,10 +153,12 @@ void ejecutarSentencia(t_sentencia* sentencia){
 
 	case S_SET:
 		almacenarValor(sentencia->clave,sentencia->valor);
+		printf("\nSe ejecuto un SET correctamente\n");
 		break;
 
 	case S_STORE:
 		persistirValor(sentencia->clave);
+		printf("\nSe ejecuto un STORE correctamente\n");
 		break;
 	}
 }
@@ -169,12 +170,17 @@ void persistirValor(char* clave){
 	strcat(path,clave);
 	strcat(path,".txt");
 
-	FILE* arch = fopen(path,"w+");
+
+
 	char* valor = devolverValor(clave);
-	fputs(valor,arch);
+
+	FILE* arch = fopen(path,"w+");
+
+		fputs(valor,arch);
+
 	fclose(arch);
 
-	free(valor);
+	//free(valor);
 	free(path);
 }
 
@@ -182,7 +188,7 @@ char* devolverValor(char* clave){								//devuelve valor acordarse de liberarlo
 	Reg_TablaEntradas* registro;
 	registro = dictionary_get(tablaEntradas,clave);
 
-	char* valor=malloc(sizeof(registro->tamanio+1));
+	char* valor=malloc(sizeof(char)*registro->tamanio);
 	memcpy(valor, storage+(tamEntrada*registro->entrada),registro->tamanio);
 
 	return valor;
@@ -191,7 +197,7 @@ char* devolverValor(char* clave){								//devuelve valor acordarse de liberarlo
 
 void almacenarValor(char* clave, char* valor){
 
-	int tamEnBytes = string_length(valor);
+	int tamEnBytes = string_length(valor)+1;
 	int tamEnEntradas = 1+((tamEnBytes-1)/tamEntrada);			//supuesto redondeo para arriba
 
 	if(dictionary_has_key(tablaEntradas,clave)){
