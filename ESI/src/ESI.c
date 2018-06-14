@@ -24,8 +24,6 @@ int main(int argc, char* argv[]) {
 	int coordinador = conexion_con_servidor(config.ip_coordinador, config.puerto_coordinador);
 	handShake(coordinador, esi);
 
-
-
 	FILE* script = cargar_script(ruta);
 	int rafagas = cantidad_de_sentencias(script);
 	informar_nuevo_esi(planificador, rafagas);
@@ -79,6 +77,7 @@ void leer_sentencias(int planificador, int coordinador, char* ruta) {
 
 	while ((leidas = getline(&linea, &largo, script)) != -1) {
 
+			printf(YELLOW"\nEsperando pedido del planificador..."RESET);
 			while (recibirMensaje(planificador, &stream) != ejecutar_proxima_sentencia);
 			id_esi = *(int*)stream;
 			t_esi_operacion operacion = parse(linea);

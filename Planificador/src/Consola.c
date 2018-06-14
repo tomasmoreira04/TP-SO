@@ -185,8 +185,8 @@ void imprimir_deadlock(t_deadlock* deadlock) {
 }
 
 t_deadlock* clave_que_necesita(ESI* a, ESI* b) {
-	for (int i = 0; i < sizeof(a->claves) / LARGO_CLAVE; i++) {
-		t_clave* clave = buscar_clave_bloqueada(a->claves[i]);
+	for (int i = 0; i < list_size(a->claves); i++) {
+		t_clave* clave = buscar_clave_bloqueada(list_get(a->claves, i));
 		for (int j = 0; j < list_size(clave->esis_esperando); j++){
 			ESI* esi_esperando = list_get(clave->esis_esperando, j);
 			if (esi_esperando->id == b->id) {

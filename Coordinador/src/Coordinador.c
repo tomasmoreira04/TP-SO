@@ -116,7 +116,7 @@ void *rutina_ESI(void* argumento) {
 
 		int sentencia_okey = recibirMensaje(socket_plan, &stream); //el planif me da el OK, entonces ejecuto una sentencia del esi
 
-
+		usleep(1000000); //1 segundo
 		//usleep(configuracion.retardo);
 
 		if (sentencia_okey == sentencia_coordinador) {

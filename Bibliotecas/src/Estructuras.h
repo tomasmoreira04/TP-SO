@@ -11,7 +11,8 @@ typedef struct {
 	int estimacion_anterior; //la inicial esta dada por arch de config
 	int rafaga_anterior;
 	int cant_rafagas;
-	char* claves[MAX_CLAVES];
+	t_list* claves;
+	//char* claves[MAX_CLAVES];
 	t_list* cola_actual;
 	int posicion; //en la cola, en vez de filtrar la lista, ya se el indice -> mas rapido
 	int socket_p;
