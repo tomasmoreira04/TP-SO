@@ -16,7 +16,7 @@ ConfigPlanificador cargar_config_planificador(char* ruta) {
 		return config_predeterminada_planif();
 	ConfigPlanificador configuracion;
 	configuracion.puerto_escucha = config_get_int_value(config, "PUERTO_ESCUCHA");
-	configuracion.estimacion_inicial = config_get_int_value(config, "ESTIMACION_INICIAL");
+	configuracion.estimacion_inicial = (float)config_get_double_value(config, "ESTIMACION_INICIAL");
 	configuracion.puerto_coordinador = config_get_int_value(config, "PUERTO_COORDINADOR");
 	configuracion.alfa_planif = config_get_int_value(config, "ALFA_PLANIFICACION");
 	configuracion.algoritmo = numero_algoritmo(config_get_string_value(config, "ALGORITMO_PLANIFICACION"));
@@ -93,7 +93,7 @@ ConfigInstancia cargar_config_inst(char* ruta) {
 ConfigPlanificador config_predeterminada_planif() {
 	ConfigPlanificador config;
 	config.puerto_escucha = 9034;
-	config.estimacion_inicial = 5;
+	config.estimacion_inicial = 5.0;
 	config.puerto_coordinador = 9035;
 	config.alfa_planif = 50;
 	config.algoritmo = fifo;

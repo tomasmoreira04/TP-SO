@@ -8,15 +8,15 @@ typedef enum { S_GET, S_SET, S_STORE } TipoSentencia;
 
 typedef struct {
 	int id;
-	int estimacion_anterior; //la inicial esta dada por arch de config
-	int rafaga_anterior;
-	int cant_rafagas;
+	float estimacion_anterior; //la inicial esta dada por arch de config
+	int rafagas_totales;
+	int tiempo_esperado; //para hrrn
+	float rafagas_restantes; //para sjf
+	float response_ratio; //para hrrn
 	t_list* claves;
-	//char* claves[MAX_CLAVES];
 	t_list* cola_actual;
 	int posicion; //en la cola, en vez de filtrar la lista, ya se el indice -> mas rapido
-	int socket_p;
-	int socket_c;
+	int socket_planif;
 } ESI;
 
 typedef struct {

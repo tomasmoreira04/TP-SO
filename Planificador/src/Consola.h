@@ -53,7 +53,7 @@ void listar_esis_recurso(char* clave);
 void matar_esi(char* id);
 void estado_clave(char* clave);
 void bloquear_esi_en_clave(char* clave, char* id_esi);
-void _imprimir_claves_esi(char** claves);
+void _imprimir_claves_esi(t_list* claves);
 ESI* _obtener_esi(int id);
 ESI* _buscar_esi(t_list* lista, int id);
 

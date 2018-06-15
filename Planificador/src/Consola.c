@@ -142,12 +142,12 @@ void ejecutar_comando(Operacion comando) {
 
 void pausar_planificacion() {
 	planificar = 0;
-	printf("\nSe ha pausado la planificacion");
+	printf(RED"\n\nSE HA PAUSADO LA PLANIFICACION\n\n"RESET);
 }
 
 void continuar_planificacion() {
 	planificar = 1;
-	printf("\nSe ha reanudado la planificacion");
+	printf(GREEN"\n\nSE HA REANUDADO LA PLANIFICACION\n\n"RESET);
 }
 
 t_list* buscar_deadlocks() {
@@ -203,7 +203,7 @@ t_deadlock* clave_que_necesita(ESI* a, ESI* b) {
 
 void desbloquear_clave(char* clave) {
 	liberar_clave(clave);
-	printf("\nSe ha liberado la clave %s", clave);
+	printf(GREEN"\nSe ha liberado la clave"RED" %s"RESET, clave);
 }
 
 void listar_esis_recurso(char* clave) {
@@ -219,14 +219,17 @@ void listar_esis_recurso(char* clave) {
 
 void matar_esi(char* id) {
 	int id_esi = atoi(id);
-	ESI* esi = _obtener_esi(id_esi);
+	ESI* esi = obtener_esi(id_esi);
 	if (esi != NULL) {
-		finalizar_esi(esi);
-		printf("\nSe ha finalizado el ESI %d, liberando las claves ", esi->id);
-		_imprimir_claves_esi(esi->claves);
+		t_list *claves_liberadas = esi->claves;
+		//s_wait(&ejecucion);
+		finalizar_esi(esi->id);
+		printf(GREEN"\nSe ha finalizado el ESI %d, liberando las claves "RESET, esi->id);
+		_imprimir_claves_esi(claves_liberadas);
+		//s_signal(&ejecucion);
 	}
 	else {
-		printf("\nNo existe el ESI %d en ninguna cola ni ejecutando !!111!!1!", id_esi);
+		printf(RED"\nNo existe el ESI %d en ninguna cola ni ejecutando\n"GREEN, id_esi);
 	}
 }
 
@@ -238,24 +241,15 @@ void estado_clave(char* clave){
 
 void bloquear_esi_en_clave(char* clave, char* id_esi) {
 	int id = atoi(id_esi);
-	t_clave* c = buscar_clave_bloqueada(clave);
-	ESI* esi = _obtener_esi(id);
-	list_add(c->esis_esperando, esi);
+	ESI* esi = obtener_esi(id);
+	nueva_solicitud_clave(clave, esi);
 	bloquear_esi(esi);
+	printf(YELLOW"\nESI %d bloqueado por clave"RED" %s"RESET, id_esi, clave);
 }
 
-void _imprimir_claves_esi(char** claves) {
-	for (int i = 0; i < sizeof(claves) / sizeof(claves[0]); i++)
-		printf("%s, ", claves[i]);
-}
-
-ESI* _obtener_esi(int id) {
-	ESI* esi = _buscar_esi(cola_de_listos, id);
-	if (esi == NULL)
-		esi = _buscar_esi(cola_de_bloqueados, id);
-	/*if (esi == NULL && id == esi_ejecutando->id)
-		esi = esi_ejecutando;*/
-	return esi;
+void _imprimir_claves_esi(t_list* claves) {
+	for (int i = 0; i < list_size(claves); i++)
+		printf(RED"%s, "RESET, (char*)list_get(claves, i));
 }
 
 ESI* _buscar_esi(t_list* lista, int id) {

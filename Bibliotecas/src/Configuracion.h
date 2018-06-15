@@ -10,7 +10,8 @@
 typedef enum { sjf_sd, sjf_cd, hrrn, fifo, rr, vrr } AlgoritmoPlanif;
 
 typedef struct {
-	int puerto_escucha, estimacion_inicial, puerto_coordinador, alfa_planif, algoritmo;
+	int puerto_escucha,puerto_coordinador, alfa_planif, algoritmo;
+	float estimacion_inicial;
 	char ip_coordinador[LARGO_IP];
 	char** claves_bloqueadas;
 } ConfigPlanificador;

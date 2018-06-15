@@ -6,6 +6,7 @@
 #include "../../Bibliotecas/src/Configuracion.h"
 #include "../../Bibliotecas/src/Estructuras.h"
 #include "../../Bibliotecas/src/Socket.h"
+#include <pthread.h>
 
 typedef enum {
 	error_tamanio_clave,
@@ -24,6 +25,7 @@ extern ESI* esi_ejecutando;
 extern t_dictionary* estimaciones_actuales;
 extern int ultimo_id;
 extern int planificar; //parametro para pausar/continuar la planificacion por comando
+
 
 //funciones del servidor
 void recibir_conexiones();
@@ -56,12 +58,13 @@ void GET(char* clave, ESI* esi, int coordinador);
 void procesar_resultado(ResultadoEjecucion resultado);
 void error_operacion(ErrorOperacion tipo, char* clave, int esi);
 char* mensaje_error(ErrorOperacion tipo);
+void imprimir_nuevo_esi(ESI* esi);
 
 void ingreso_cola_de_listos(ESI* esi);
 void replanificar();
 void movimiento_entre_estados(ESI* esi, int movimiento);
 int hay_desalojo(AlgoritmoPlanif algoritmo);
-void ejecutar(AlgoritmoPlanif algoritmo);
+void ejecutar(int desalojar);
 int _es_esi(ESI* a, ESI* b);
 void mover_esi(ESI* esi, t_list* nueva_lista);
 int ver_disponibilidad_clave(char* clave);
