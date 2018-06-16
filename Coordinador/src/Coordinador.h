@@ -11,11 +11,12 @@ typedef struct{
 } Dimensiones_Inst;
 
 typedef struct{
-	int inst_ID;
+	char* inst_ID;
 	int socket;
+	int entradas_desocupadas;
 }Nodo_Instancia;
 
-t_log * log_operaciones;
+t_log* log_operaciones;
 
 void conectar_con_planificador(int planificador);
 void mostrar_por_pantalla_config(ConfigCoordinador config);
@@ -28,8 +29,9 @@ void *rutina_ESI(void * arg);
 void crear_hilo(int nuevo_socket, int modulo);
 int buscarEnLista(int valor);
 void EquitativeLoad(char* claveSentencia);
+void least_space_used(char*);
 char* formatear_mensaje_esi(int, TipoSentencia, char*, char*);
-
 void configurar_instancia(int socket);
+void destruir_estructuras_globales();
 
 #endif /* COORDINADOR_H_ */

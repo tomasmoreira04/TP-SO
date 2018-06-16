@@ -31,6 +31,7 @@ ConfigCoordinador configuracion;
 int socket_plan; //esto cambiar tal vez
 t_dictionary *instancias_Claves;
 t_dictionary *lista_Instancias;
+t_list* lista_instancias_new;
 t_list *listaSoloInstancias;
 int contadorEquitativeLoad;
 
@@ -39,6 +40,7 @@ int main(int argc, char* argv[]) {
 	contadorEquitativeLoad=0;
 	instancias_Claves= dictionary_create();
 	listaSoloInstancias=list_create();
+	lista_instancias_new = list_create();
 
 	configuracion = cargar_config_coordinador(argv[1]);
 
@@ -63,7 +65,7 @@ int main(int argc, char* argv[]) {
 		recv(nuevo_socket, &modulo, sizeof(int), 0);//HS
 		crear_hilo(nuevo_socket, modulo);
 	}
-	destruir_log_operacion();
+	destruir_estructuras_globales();
 	return 0;
 }
 
@@ -73,6 +75,7 @@ void *rutina_instancia(void * arg) {
 	printf("\n------------------------------------\n");
 	printf("NUEVA INSTANCIA EJECUTADA || ");
 	void * stream;
+	Nodo_Instancia* nodo = NULL;
 	//RECIBIR NOMBRE DE INSTACIA
 	recibirMensaje(socket_INST,&stream);
 	char* nombre_inst = (char*)stream;
@@ -84,7 +87,15 @@ void *rutina_instancia(void * arg) {
 
 		int* sock = (int*)socket_INST;
 		dictionary_put(lista_Instancias, nombre_inst , sock);
-		list_add(listaSoloInstancias, nombre_inst );
+		/*>>>propuesta tomi
+		 * para que sea mas facil el lsu
+		nodo->socket = sock;
+		strcpy(nodo->inst_ID, nombre_inst);
+		nodo->entradas_desocupadas = configuracion.cant_entradas;
+		list_add(lista_instancias_new, nodo);
+		*
+		 <<<*/
+		list_add(listaSoloInstancias, nombre_inst);
 	}
 	configurar_instancia(socket_INST);
 	return NULL;
@@ -275,9 +286,9 @@ void crear_log_operacion() {
 	log_operaciones = log_create("operaciones_coordinador.log", "coordinador", 0, 1);
 }
 
-void destruir_log_operacion() {
+/*void destruir_log_operacion() {
 	log_destroy(log_operaciones);
-}
+}*/
 
 void modificar_clave(char* clave, char* instancia) {
 	dictionary_remove(instancias_Claves, clave);
@@ -297,6 +308,22 @@ void EquitativeLoad(char* claveSentencia){
 	else{
 		contadorEquitativeLoad=contadorEquitativeLoad+1;
 	}
+}
+
+//ESTO FUNCIONA PARA LA LISTA PROPUESTA lista_instancias_new
+void least_space_used(char* claveSentencia) {
+
+	bool comparator_entradas_max(Nodo_Instancia* m, Nodo_Instancia* n) {
+			return m->entradas_desocupadas >= n->entradas_desocupadas;
+		}
+
+	t_list* lista_aux = list_create();
+	lista_aux = list_duplicate(lista_instancias_new);
+	list_sort(lista_aux, (void*) comparator_entradas_max);
+	Nodo_Instancia* nodo_maximo = list_get(lista_aux, 0);
+	char* instancia_max;
+	strcpy(instancia_max, nodo_maximo->inst_ID);
+	modificar_clave(claveSentencia, instancia_max);
 }
 
 char* formatear_mensaje_esi(int id, TipoSentencia t, char* clave, char* valor) {
@@ -326,4 +353,12 @@ char* formatear_mensaje_esi(int id, TipoSentencia t, char* clave, char* valor) {
 			log_error(log_operaciones, "Error al formatear el log");
 	}
 	return formato_string;
+}
+
+void destruir_estructuras_globales() {
+	log_destroy(log_operaciones);
+	dictionary_destroy(instancias_Claves);
+	dictionary_destroy(lista_Instancias);
+	list_destroy(listaSoloInstancias);
+	list_destroy(lista_instancias_new);
 }
