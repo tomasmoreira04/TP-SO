@@ -48,14 +48,10 @@ pthread_mutex_t numero_esi = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t num_esis = PTHREAD_MUTEX_INITIALIZER;
 
 int main(int argc, char* argv[]) {
+	setbuf(stdout, NULL); //a veces el printf no andaba, se puede hacer esto o un fflush
 	inicializar_estructuras();
 	config = cargar_config_planificador(argv[1]);
-
-
-	config.algoritmo = sjf_sd;
-
-
-	setbuf(stdout, NULL); //a veces el printf no andaba, se puede hacer esto o un fflush
+	bloquear_claves_iniciales(config.claves_bloqueadas, config.n_claves);
 	pthread_t thread_consola;
 	pthread_create(&thread_consola, NULL, iniciar_consola, NULL);
 	ultimo_id = 0;
@@ -64,6 +60,20 @@ int main(int argc, char* argv[]) {
 	destruir_estructuras();
 }
 
+
+void bloquear_claves_iniciales(char** claves, int n) {
+	char** bloqueadas = (char**)malloc(sizeof(char*) * (n + 1));
+	for (int i = 0; i < n; i++) {
+		char* copia = claves[i];
+		bloqueadas[i] = malloc(sizeof(char*) * strlen(claves[i]));
+		strcpy(bloqueadas[i], copia);
+	}
+	printf(GREEN"\nClaves inicialmente bloqueadas:"RESET);
+	for (int i = 0; i < n; i++) {
+		bloquear_clave(bloqueadas[i], NULL);
+		printf(RED"\n%s"RESET, bloqueadas[i]);
+	}
+}
 
 void recibir_conexiones() {
 	FD_ZERO(&master);
@@ -241,8 +251,16 @@ void ejecutar_esi(ESI* esi) {
 
 	s_wait(&ejecucion);
 	esi_ejecutando = esi;
+	if (config.algoritmo == hrrn)
+		sumar_tiempo_hrrn();
 	s_signal(&ejecucion);
 
+}
+
+void sumar_tiempo_hrrn() {
+	t_list* lista = cola_de_listos;
+	for (int i = 0; i < list_size(lista); i++)
+		((ESI*)list_get(lista, i))->tiempo_esperado++;
 }
 
 void nueva_sentencia(t_sentencia sentencia, int coordinador) {
@@ -399,18 +417,19 @@ void liberar_recursos(ESI* esi) {
 		liberar_clave(list_get(esi->claves, i));
 }
 
-void bloquear_clave(char* clave, ESI* esi) {
-	t_clave* c = buscar_clave_bloqueada(clave);
-	if (c == NULL) {
-		t_clave* nueva_entrada = malloc(sizeof(t_clave));
-		nueva_entrada->bloqueada = 1;
-		strcpy(nueva_entrada->clave, clave);
-		nueva_entrada->esi_duenio = esi;
-		nueva_entrada->esis_esperando = list_create();
-		list_add(lista_claves_bloqueadas, nueva_entrada);
+void bloquear_clave(const char* clave, ESI* esi) {
+	t_clave* entrada = buscar_clave_bloqueada(clave);
+	if (entrada == NULL) { //no existe -> la creo
+		entrada = malloc(sizeof(t_clave));
+		entrada->bloqueada = 1;
+		entrada->esi_duenio = esi;
+		entrada->esis_esperando = list_create();
+		strcpy(entrada->clave, clave);
+		strcpy(entrada->valor, "");
+		list_add(lista_claves_bloqueadas, entrada);
 	} else {
-		c->bloqueada = 1;
-		c->esi_duenio = esi;
+		entrada->bloqueada = 1;
+		entrada->esi_duenio = esi;
 	}
 }
 
@@ -422,7 +441,7 @@ void nueva_solicitud_clave(char* clave, ESI* esi) {
 		bloquear_clave(clave, esi);
 }
 
-void liberar_clave(char* clave) {
+int liberar_clave(char* clave) {
 	t_clave* c = buscar_clave_bloqueada(clave);
 	if (c != NULL) {
 		c->bloqueada = 0;
@@ -430,7 +449,9 @@ void liberar_clave(char* clave) {
 		ESI* esi_a_desbloquear = list_remove(c->esis_esperando, 0); //el primero en haberse bloqueado, y lo saco
 		if (esi_a_desbloquear != NULL)
 			desbloquear_esi(esi_a_desbloquear);
+		return 1;
 	}
+	return 0; //error
 }
 
 int esta_bloqueada(char* clave) {
@@ -440,10 +461,9 @@ int esta_bloqueada(char* clave) {
 	return 0;
 }
 
-t_clave* buscar_clave_bloqueada(char* clave) {
-	t_list* lista = lista_claves_bloqueadas;
-	for (int i = 0; i < list_size(lista); i++) {
-		t_clave* c = list_get(lista, i);
+t_clave* buscar_clave_bloqueada(const char* clave) {
+	for (int i = 0; i < list_size(lista_claves_bloqueadas); i++) {
+		t_clave* c = list_get(lista_claves_bloqueadas, i);
 		if (strcmp(clave, c->clave) == 0)
 			return c;
 	}
@@ -468,6 +488,7 @@ void proceso_nuevo(int rafagas, int socket) {
 	s_signal(&numero_esi);
 	nuevo_esi->rafagas_totales = rafagas;
 	nuevo_esi->rafagas_restantes = estimar(nuevo_esi);
+	nuevo_esi->tiempo_esperado = 0;
 	nuevo_esi->socket_planif = socket;
 	nuevo_esi->cola_actual = NULL;
 	nuevo_esi->claves = list_create();
@@ -477,12 +498,10 @@ void proceso_nuevo(int rafagas, int socket) {
 
 void imprimir_nuevo_esi(ESI* esi) {
 	printf( "\nNuevo ESI " GREEN "%d" RESET " con ", esi->id);
-	if (config.algoritmo == fifo)
+	if (config.algoritmo == fifo || config.algoritmo == hrrn)
+		printf(RED"%d"RESET" de rafagas totales", esi->rafagas_totales);
+	else //sjf
 		printf(RED"%.2f"RESET" de tiempo estimado.", esi->rafagas_restantes);
-	else if (config.algoritmo == sjf_cd || config.algoritmo == sjf_sd )
-		printf(RED"%.2f"RESET" de tiempo estimado.", esi->rafagas_restantes);
-	else if (config.algoritmo == hrrn)
-		printf(RED"%.2f"RESET" de RR.", esi->rafagas_restantes);
 }
 
 
@@ -511,7 +530,7 @@ void ejecutar(int desalojar) {
 
 	switch(config.algoritmo) {
 	case fifo:
-		ejecutar_por_fifo(false);
+		ejecutar_por_fifo();
 		break;
 	case sjf_sd:
 		ejecutar_por_sjf(false);
@@ -520,8 +539,7 @@ void ejecutar(int desalojar) {
 		ejecutar_por_sjf(desalojar);
 		break;
 	case hrrn:
-	case rr:
-	case vrr:
+		ejecutar_por_hrrn();
 		break;
 	}
 
@@ -534,11 +552,13 @@ int _es_esi(ESI* a, ESI* b) {
 
 void mover_esi(ESI* esi, t_list* nueva_lista) {
 	//s_wait(&lista_disponible);
-	if (esi->cola_actual != NULL)
-		list_remove(esi->cola_actual, esi->posicion);
-	list_add(nueva_lista, esi);
-	esi->cola_actual = nueva_lista;
-	esi->posicion = list_size(nueva_lista) - 1;
+	if (esi != NULL) {
+		if (esi->cola_actual != NULL)
+			list_remove(esi->cola_actual, esi->posicion);
+		list_add(nueva_lista, esi);
+		esi->cola_actual = nueva_lista;
+		esi->posicion = list_size(nueva_lista) - 1;
+	}
 
 //	s_signal(&lista_disponible);
 
@@ -590,6 +610,26 @@ void ejecutar_por_sjf(int desalojar) {
 		ejecutar_esi(esi);
 }
 
+void ejecutar_por_hrrn() {
+	ESI* esi;
+	s_wait(&ejecucion);
+	if (esi_ejecutando == NULL) {
+		s_wait(&lista_disponible); //cambiar a otro semaforo para cola de listos
+
+		calcular_response_ratios();
+		esi = esi_resp_ratio_mas_alto();
+
+		s_signal(&lista_disponible); //cambiar a otro semaforo para cola de listos
+	}
+	else
+		esi = esi_ejecutando;
+	s_signal(&ejecucion);
+	if (esi != NULL)
+		ejecutar_esi(esi);
+}
+
+
+
 float estimar(ESI* esi) {
 	float a = config.alfa_planif / 100.0;
 	int raf = esi->rafagas_totales;
@@ -598,6 +638,42 @@ float estimar(ESI* esi) {
 	return a * raf + (1 - a) * est;
 }
 
+float response_ratio(ESI* esi) {
+	int raf = esi->rafagas_totales;
+	int esp = esi->tiempo_esperado;
+	return (float)(raf + esp)/raf;
+}
+
+void calcular_response_ratios() {
+	printf(GREEN"\nCalculando response ratios...\n"RESET);
+	for (int i = 0; i < list_size(cola_de_listos); i++) {
+		ESI* esi = list_get(cola_de_listos, i);
+		esi->response_ratio = response_ratio(esi);
+		printf(GREEN"\nESI %d: "RED"%f", esi->id, esi->response_ratio);
+	}
+}
+
+ESI* esi_resp_ratio_mas_alto() {
+	ESI* mas_alto;
+	int indice = 0;
+	int cant = list_size(cola_de_listos);
+	if (cant != 0) {
+		mas_alto = list_get(cola_de_listos, 0);
+		for (int i = 1; i < cant; i++) {
+			ESI* otro_esi = list_get(cola_de_listos, i);
+			if (otro_esi->response_ratio > mas_alto->response_ratio) {
+				mas_alto = otro_esi;
+				indice = i;
+			}
+		}
+	}
+	else {
+		printf(RED"\nNo hay esis listos para calcular RR\n"RESET);
+		return NULL;
+	}
+	printf(GREEN"\nESI elegido -> "RED"%d\n"RESET, mas_alto->id);
+	return list_remove(cola_de_listos, indice);
+}
 
 ESI* esi_rafaga_mas_corta() {
 	ESI* mas_corto = list_get(cola_de_listos, 0);
@@ -629,9 +705,5 @@ ESI* primero_llegado() {
 			return list_remove(cola_de_listos, i);
 		}
 	}
-	return NULL;
-}
-
-ESI* esi_resp_ratio_mas_corto() {
 	return NULL;
 }

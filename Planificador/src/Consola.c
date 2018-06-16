@@ -202,8 +202,11 @@ t_deadlock* clave_que_necesita(ESI* a, ESI* b) {
 }
 
 void desbloquear_clave(char* clave) {
-	liberar_clave(clave);
-	printf(GREEN"\nSe ha liberado la clave"RED" %s"RESET, clave);
+	int ok = liberar_clave(clave);
+	if (ok)
+		printf(GREEN"\nSe ha liberado la clave"RED" %s"RESET, clave);
+	else
+		printf(RED"\nNo se ha podido liberar la clave"CYAN" %s"RESET, clave);
 }
 
 void listar_esis_recurso(char* clave) {
@@ -236,15 +239,55 @@ void matar_esi(char* id) {
 
 
 void estado_clave(char* clave){
-	//este es un quilombo
+	//listar estado y valor
+	//instancia en la que se encuentra
+	//instancia en la que se guardaria
+	//esis esperando liberacion
+	t_clave* clave_bloqueada = buscar_clave_bloqueada(clave);
+	if (clave_bloqueada != NULL) {
+		printf(YELLOW"\nLa clave"RED" %s "YELLOW"se encuentra bloqueada", clave);
+		//---------------VERIFICAR VALOR-----------------
+		if (clave_bloqueada->valor[0] != '\0')
+			printf(", con valor"GREEN" %s."RESET, clave_bloqueada->valor);
+		else
+			printf(", pero sin valor asignado."RESET);
+		//---------------VERIFICAR ESI DUEÑO-----------------
+		if (clave_bloqueada->esi_duenio != NULL)
+			printf("\nLa clave pertenece al ESI"GREEN" %d.", clave_bloqueada->esi_duenio->id);
+		else
+			printf("\nLa clave no pertenece a ningun ESI, es una clave bloqueada por configuracion.");
+		//---------------VERIFICAR ESIS ESPERANDO-----------------
+		int esis_esperando = list_size(clave_bloqueada->esis_esperando);
+		if (esis_esperando == 0)
+			printf("\nNingun ESI esta esperando la liberacion de esta clave."RESET);
+		else {
+			printf("\nLos siguientes ESIS estan bloqueados por esta clave:"RESET);
+			for (int i = 0; i < esis_esperando; i++) {
+				ESI* esi = list_get(clave_bloqueada->esis_esperando, i);
+				printf(CYAN"\nESI %d"RESET, esi->id);
+			}
+		}
+		printf("\nY aca ver lo de las instancias...");
+	}
+	else {
+		printf(GREEN"\nLa clave"RED" %s "GREEN"no se encuentra bloqueada", clave);
+		if (clave_bloqueada->valor != NULL)
+			printf(", pero tiene valor"GREEN" %s."RESET, clave_bloqueada->valor);
+		else
+			printf(", y no tiene valor asignado."RESET);
+	}
 }
 
 void bloquear_esi_en_clave(char* clave, char* id_esi) {
 	int id = atoi(id_esi);
 	ESI* esi = obtener_esi(id);
-	nueva_solicitud_clave(clave, esi);
-	bloquear_esi(esi);
-	printf(YELLOW"\nESI %d bloqueado por clave"RED" %s"RESET, id_esi, clave);
+	if (esi != NULL) {
+		nueva_solicitud_clave(clave, esi);
+		bloquear_esi(esi);
+		printf(YELLOW"\nESI %d bloqueado por clave"RED" %s"RESET, id, clave);
+	}
+	else printf(RED"\nNo existe el ESI"CYAN" %d"RESET, id);
+
 }
 
 void _imprimir_claves_esi(t_list* claves) {

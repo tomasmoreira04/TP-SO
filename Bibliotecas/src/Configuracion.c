@@ -22,8 +22,26 @@ ConfigPlanificador cargar_config_planificador(char* ruta) {
 	configuracion.algoritmo = numero_algoritmo(config_get_string_value(config, "ALGORITMO_PLANIFICACION"));
 	strcpy(configuracion.ip_coordinador, config_get_string_value(config, "IP_COORDINADOR"));
 	configuracion.claves_bloqueadas = config_get_array_value(config, "CLAVES_BLOQUEADAS");
+
+	char* linea_con_claves = config_get_string_value(config, "CLAVES_BLOQUEADAS");
+	configuracion.n_claves = numero_claves(linea_con_claves);
+
 	config_destroy(config);
 	return configuracion;
+}
+
+int numero_claves(char* linea) { //estilo: [clave1,clave2,clave3]
+	int comas = 0; //veces que aparece la coma
+	int hay_clave = 0;
+	for (int i = 0; i < linea[i] != '\0'; i++) {
+		if (linea[i] == ',')
+			comas++;
+		if (linea[i] != '[' && linea[i] != ']')
+			hay_clave = 1;
+	}
+	if (hay_clave)
+		return comas + 1;
+	return 0;
 }
 
 AlgoritmoPlanif numero_algoritmo(char* nombre) {
@@ -98,7 +116,8 @@ ConfigPlanificador config_predeterminada_planif() {
 	config.alfa_planif = 50;
 	config.algoritmo = fifo;
 	strcpy(config.ip_coordinador, "127.0.0.1");
-	config.claves_bloqueadas = NULL;
+	config.claves_bloqueadas = (char*[]){ "materias:K2015", "pepito", "materias:K3000" };
+	config.n_claves = 3;
 	imprimir_default();
 	return config;
 }

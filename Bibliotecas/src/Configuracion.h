@@ -7,13 +7,14 @@
 #include <commons/config.h>
 #include "Macros.h"
 
-typedef enum { sjf_sd, sjf_cd, hrrn, fifo, rr, vrr } AlgoritmoPlanif;
+typedef enum { sjf_sd, sjf_cd, hrrn, fifo } AlgoritmoPlanif;
 
 typedef struct {
 	int puerto_escucha,puerto_coordinador, alfa_planif, algoritmo;
 	float estimacion_inicial;
 	char ip_coordinador[LARGO_IP];
 	char** claves_bloqueadas;
+	int n_claves; //necesario porque es un ** :):):):):):):)
 } ConfigPlanificador;
 
 typedef struct {
