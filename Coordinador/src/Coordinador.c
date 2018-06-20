@@ -46,7 +46,6 @@ int main(int argc, char* argv[]) {
 
 	crear_log_operacion();
 	log_info(log_operaciones, "Se ha cargado la configuracion inicial del Coordinador");
-	mostrar_por_pantalla_config(configuracion);
 	lista_Instancias =dictionary_create();
 	int listener = crear_socket_de_escucha(configuracion.puerto_escucha);
 	int nuevo_socket, modulo;
@@ -151,39 +150,14 @@ void *rutina_ESI(void* argumento) {
 				case S_SET:
 				{
 					printf(RED"\n%s\n"RESET, sentencia.valor);
-					char* valor = (char*) dictionary_get(instancias_Claves , sentencia.clave);
-					char* instancia = valor;
-					printf("\nvalor del diction: %s\n", valor);
 
-					if( ( strcmp(valor, "0") ) == 0 ){
-						printf("\nentraste al strcmp de 0\n");
-						//ALGORITMO Y ASIGNAR, modificar claveSentencia
-						if(  strcmp(configuracion.algoritmo_distrib, "EL") == 0 ){
-							printf("\nhaciendo equitav load\n");
-							//log_info(log_operaciones, "Aplicando Equitative Load..");
-							EquitativeLoad(sentencia.clave);
-							//free(instanciaGuardada);
-							instancia = (char*) dictionary_get(instancias_Claves , sentencia.clave);
-							printf("%s", instancia);
-							//log_info(log_operaciones, formatear_mensaje_esi(1, S_SET, sentencia.clave, sentencia.valor));
-						}
-						else{
-							if( strcmp(configuracion.algoritmo_distrib,"LSU") == 0 ) {
-								//KE
-								//log_info(log_operaciones, "Aplicando Least Space Used..");
-							}
-							else{
-								if((strcmp(configuracion.algoritmo_distrib,"KE"))==0){
-									//LSU
-									//log_info(log_operaciones, "Aplicando Key Explicit..");
-								}
-								else{
-									//LOG DE ERROR DE ALGORITMO
-									log_error(log_operaciones, "Se envio un algoritmo invalido");
-								}
-							}
-						}
-					}
+					char* instancia = "0";
+
+					if(!clave_tiene_instancia(sentencia.clave)) //atencion al !
+						instancia = aplicar_algoritmo(sentencia.clave, sentencia.valor);
+					else
+						printf(RED"\nLa clave ya esta seteada en una instancia\ncapo arreglame el STORe para liberarlaaaaaaaaaaaaaaaaaaaaaaaaaaa"RESET);
+
 					printf("\nbuscando socket de instancia %s\n", instancia);
 					int socket = (int) dictionary_get(lista_Instancias , instancia);
 					printf("\nSOCKET: %d\n", socket);
@@ -191,6 +165,10 @@ void *rutina_ESI(void* argumento) {
 					//VALIDAR INSTANCIA CONECTADA
 					//MANDAR A INSTANCIA
 					enviarMensaje(socket, ejecutar_sentencia_instancia, &sentencia, sizeof(t_sentencia));
+
+					//VER BIEN DONDE VA ESTO, le envio al planif la instancia que esta la clave
+					avisar_guardado_planif(instancia, sentencia.clave);
+
 					void* mensajeInstancia;
 					int operacionPedidaInstacia = recibirMensaje(socket, &mensajeInstancia);
 					//COMPACTAR
@@ -215,9 +193,9 @@ void *rutina_ESI(void* argumento) {
 				}
 			}
 			int variable = exitoso;
-			printf("\nestoy mandando el exec ok al planif\n");
+			printf("\nestoy mandando el exec ok al esi\n");
 			enviarMensaje(socket_esi, ejecucion_ok, &variable, sizeof(int));
-			printf("\nya mande el exec ok al planifa\n");
+			printf("\nya mande el exec ok al esi\n");
 
 		}
 		else if(sentencia_okey== esi_bloqueado){
@@ -234,6 +212,29 @@ void *rutina_ESI(void* argumento) {
 	printf(YELLOW"\nfinalizando esi\n"RESET);
 	enviarMensaje(socket_plan, terminar_esi, &id_esi, sizeof(id_esi));
 	return NULL;
+}
+
+void avisar_guardado_planif(char* instancia, char* clave) {
+	t_clave respuesta;
+	strcpy(respuesta.clave, clave);
+	strcpy(respuesta.instancia, instancia);
+	enviarMensaje(socket_plan, clave_guardada_en_instancia, &respuesta, sizeof(t_clave));
+}
+
+int clave_tiene_instancia(char* clave) {
+	return strcmp((char*)dictionary_get(instancias_Claves, clave), "0") == 0 ? 0 : 1; //xd
+}
+
+
+char* aplicar_algoritmo(char* clave, char* valor) { //DEVUELVE EL NOMBRE DE LA INSTANCIA ASIGNADA
+	switch(configuracion.algoritmo) {
+		case el:	equitative_load(clave); break;
+		case lsu:	least_space_used(clave); break;
+		case ke:	/*kE________________*/	break;
+		default: /*nunca pasa, si carga en config CACA123 te pone default EL*/ break;
+	}
+	log_info(log_operaciones, formatear_mensaje_esi(1, S_SET, clave, valor)); //por qué 1 xd?
+	return (char*) dictionary_get(instancias_Claves , clave);
 }
 
 void crear_hilo(int nuevo_socket, int modulo) {
@@ -255,15 +256,6 @@ void crear_hilo(int nuevo_socket, int modulo) {
 	}
 	log_info(log_operaciones, "Se ha creado un hilo con la rutina ESI");
 	pthread_attr_destroy(&attr);
-}
-
-void mostrar_por_pantalla_config(ConfigCoordinador config) {
-	puts("----------------PROCESO COORDINADOR--------------");
-	printf("PUERTO: %i\n", config.puerto_escucha);
-	printf("ALGORITMO: %s\n", config.algoritmo_distrib);
-	printf("CANTIDAD DE ENTRADAS: %i\n", config.cant_entradas);
-	printf("TAMANIO DE ENTRADAS: %i\n", config.tamanio_entrada);
-	printf("RETARDO: %i\n", config.retardo);
 }
 
 /*void guardar_en_log(int id_esi, char* sentencia) {
@@ -295,7 +287,11 @@ void modificar_clave(char* clave, char* instancia) {
 	dictionary_put(instancias_Claves, clave, instancia);
 }
 
-void EquitativeLoad(char* claveSentencia){
+void equitative_load(char* claveSentencia){
+
+	log_info(log_operaciones, "Aplicando Equitative Load..");
+	printf("\nAplicando Equitative Load..\n");
+
 	int cantidadInstancias = dictionary_size(lista_Instancias)-1;
 	char* instancia = list_get(listaSoloInstancias, contadorEquitativeLoad);
 	printf("\nEQLOAD obtuvo instancia: %s\n", instancia);
@@ -318,10 +314,11 @@ void least_space_used(char* claveSentencia) {
 		}
 
 	t_list* lista_aux = list_create();
-	lista_aux = list_duplicate(lista_instancias_new);
+	//lista_aux = list_duplicate(lista_instancias_new);
+	list_add_all(lista_aux, lista_instancias_new);
 	list_sort(lista_aux, (void*) comparator_entradas_max);
 	Nodo_Instancia* nodo_maximo = list_get(lista_aux, 0);
-	char* instancia_max;
+	char* instancia_max = malloc(strlen(nodo_maximo->inst_ID));
 	strcpy(instancia_max, nodo_maximo->inst_ID);
 	modificar_clave(claveSentencia, instancia_max);
 }

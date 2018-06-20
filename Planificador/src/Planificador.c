@@ -154,6 +154,11 @@ void* procesar_mensaje_coordinador(void* sock) {
 					nueva_sentencia(sentencia, coordinador);
 					break;
 				}
+				case clave_guardada_en_instancia: {
+					t_clave c = *(t_clave*)mensaje;
+					actualizar_clave(c);
+					break;
+				}
 				case terminar_esi:
 					finalizar_esi(*(int*)mensaje);
 					break;
@@ -209,6 +214,13 @@ void* procesar_mensaje_esi(void* sock) {
 	}
 	free(mensaje);
 	return NULL;
+}
+
+void actualizar_clave(t_clave respuesta) { //guardo en qué instancia se guardo esa clave
+	char* clave = respuesta.clave;
+	char* instancia = respuesta.instancia;
+	t_clave* registro = buscar_clave_bloqueada(clave);
+	strcpy(registro->instancia, instancia);
 }
 
 void crear_hilo(int nuevo_socket, Modulo modulo) {

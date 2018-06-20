@@ -62,6 +62,7 @@ void imprimir_nuevo_esi(ESI* esi);
 void calcular_response_ratios();
 void bloquear_claves_iniciales(char** claves, int n);
 void copiar_lista_strings(char** destino, char** claves, int n);
+void actualizar_clave(t_clave respuesta);
 
 void ingreso_cola_de_listos(ESI* esi);
 void sumar_tiempo_hrrn();

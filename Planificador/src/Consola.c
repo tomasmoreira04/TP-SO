@@ -267,7 +267,8 @@ void estado_clave(char* clave){
 				printf(CYAN"\nESI %d"RESET, esi->id);
 			}
 		}
-		printf("\nY aca ver lo de las instancias...");
+		//ACA LO DE LA INSTANCIA
+		printf(CYAN"\nEsta clave se encuentra guardada en "RED"%s."RESET, clave_bloqueada->instancia);
 	}
 	else {
 		printf(GREEN"\nLa clave"RED" %s "GREEN"no se encuentra bloqueada", clave);

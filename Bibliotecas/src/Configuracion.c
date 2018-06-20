@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <commons/string.h>
 #include <commons/collections/list.h>
 #include <commons/config.h>
@@ -19,7 +20,7 @@ ConfigPlanificador cargar_config_planificador(char* ruta) {
 	configuracion.estimacion_inicial = (float)config_get_double_value(config, "ESTIMACION_INICIAL");
 	configuracion.puerto_coordinador = config_get_int_value(config, "PUERTO_COORDINADOR");
 	configuracion.alfa_planif = config_get_int_value(config, "ALFA_PLANIFICACION");
-	configuracion.algoritmo = numero_algoritmo(config_get_string_value(config, "ALGORITMO_PLANIFICACION"));
+	configuracion.algoritmo = numero_algoritmo_p(config_get_string_value(config, "ALGORITMO_PLANIFICACION"));
 	strcpy(configuracion.ip_coordinador, config_get_string_value(config, "IP_COORDINADOR"));
 	configuracion.claves_bloqueadas = config_get_array_value(config, "CLAVES_BLOQUEADAS");
 
@@ -33,7 +34,7 @@ ConfigPlanificador cargar_config_planificador(char* ruta) {
 int numero_claves(char* linea) { //estilo: [clave1,clave2,clave3]
 	int comas = 0; //veces que aparece la coma
 	int hay_clave = 0;
-	for (int i = 0; i < linea[i] != '\0'; i++) {
+	for (int i = 0; linea[i] != '\0'; i++) {
 		if (linea[i] == ',')
 			comas++;
 		if (linea[i] != '[' && linea[i] != ']')
@@ -44,7 +45,7 @@ int numero_claves(char* linea) { //estilo: [clave1,clave2,clave3]
 	return 0;
 }
 
-AlgoritmoPlanif numero_algoritmo(char* nombre) {
+AlgoritmoPlanif numero_algoritmo_p(char* nombre) {
 	if (strcmp(nombre, "SJF-CD") == 0)
 		return sjf_cd;
 	if (strcmp(nombre, "SJF-SD") == 0)
@@ -52,6 +53,14 @@ AlgoritmoPlanif numero_algoritmo(char* nombre) {
 	if (strcmp(nombre, "HRRN") == 0)
 		return hrrn;
 	return fifo;
+}
+
+AlgoritmoCoord numero_algoritmo_c(char* nombre) {
+	if (strcmp(nombre, "KE") == 0)
+		return ke;
+	if (strcmp(nombre, "LSU") == 0)
+		return lsu;
+	return el;
 }
 
 ConfigCoordinador cargar_config_coordinador(char* ruta) {
@@ -67,7 +76,7 @@ ConfigCoordinador cargar_config_coordinador(char* ruta) {
 	configuracion.retardo = config_get_int_value(config, "RETARDO");
 	configuracion.cant_entradas = config_get_int_value(config, "CANTIDAD_ENTRADAS");
 	configuracion.tamanio_entrada = config_get_int_value(config, "TAMANIO_ENTRADAS");
-	strcpy(configuracion.algoritmo_distrib, config_get_string_value(config, "ALGORITMO_DISTRIBUCION"));
+	configuracion.algoritmo = numero_algoritmo_c(config_get_string_value(config, "ALGORITMO_DISTRIBUCION"));
 	strcpy(configuracion.ip_planificador, config_get_string_value(config, "IP_PLANIFICADOR"));
 	config_destroy(config);
 	return configuracion;
@@ -129,8 +138,8 @@ ConfigCoordinador config_predeterminada_coord() {
 	strcpy(config.ip_planificador, "127.0.0.1");
 	config.cant_entradas = 20;
 	config.tamanio_entrada = 100;
-	config.retardo = 2000000; // 2segundos
-	strcpy(config.algoritmo_distrib, "EL");
+	config.retardo = 1000000; // 1segundos
+	config.algoritmo = el;
 	imprimir_default();
 	return config;
 }

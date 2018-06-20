@@ -31,6 +31,7 @@ typedef struct {
 	int bloqueada;
 	char clave[LARGO_CLAVE];
 	char valor[LARGO_VALOR];
+	char instancia[LARGO_INSTANCIA];
 	ESI* esi_duenio;
 	t_list* esis_esperando;
 } t_clave;
@@ -63,7 +64,8 @@ typedef enum {
 	resultado_ejecucion,
 	cerrar_conexion_coord,
 	cerrar_conexion_esi,
-	podes_seguir
+	podes_seguir,
+	clave_guardada_en_instancia //coord -> planif
 
 } Accion;
 
