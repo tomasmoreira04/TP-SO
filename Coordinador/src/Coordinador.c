@@ -25,8 +25,6 @@
 // Guardar con ID instancia
 // TOMI SE LA COME
 
-
-//t_list *lista_Instancias;
 ConfigCoordinador configuracion;
 int socket_plan; //esto cambiar tal vez
 t_dictionary *instancias_Claves;
@@ -74,7 +72,6 @@ void *rutina_instancia(void * arg) {
 	printf("\n------------------------------------\n");
 	printf("NUEVA INSTANCIA EJECUTADA || ");
 	void * stream;
-	Nodo_Instancia* nodo = NULL;
 	//RECIBIR NOMBRE DE INSTACIA
 	recibirMensaje(socket_INST,&stream);
 	char* nombre_inst = (char*)stream;
@@ -84,16 +81,14 @@ void *rutina_instancia(void * arg) {
 	if( (dictionary_has_key(lista_Instancias , nombre_inst ) ) == false ){
 		printf("socket %d agregado a instancia %s", socket_INST, nombre_inst);
 
-		int* sock = (int*)socket_INST;
-		dictionary_put(lista_Instancias, nombre_inst , sock);
-		/*>>>propuesta tomi
-		 * para que sea mas facil el lsu
-		nodo->socket = sock;
-		strcpy(nodo->inst_ID, nombre_inst);
-		nodo->entradas_desocupadas = configuracion.cant_entradas;
-		list_add(lista_instancias_new, nodo);
-		*
-		 <<<*/
+		instancia_Estado_Conexion *instancia_conexion=malloc(sizeof(instancia_Estado_Conexion));
+		instancia_conexion->estadoConexion=conectada;
+		instancia_conexion->socket=socket_INST;
+
+		printf("\nel estado de la instacia es %d y su sockete es %d\n\n",instancia_conexion->estadoConexion,instancia_conexion->socket);
+
+		dictionary_put(lista_Instancias, nombre_inst , instancia_conexion);
+
 		list_add(listaSoloInstancias, nombre_inst);
 	}
 	configurar_instancia(socket_INST);
@@ -159,8 +154,8 @@ void *rutina_ESI(void* argumento) {
 						printf(RED"\nLa clave ya esta seteada en una instancia\ncapo arreglame el STORe para liberarlaaaaaaaaaaaaaaaaaaaaaaaaaaa"RESET);
 
 					printf("\nbuscando socket de instancia %s\n", instancia);
-					int socket = (int) dictionary_get(lista_Instancias , instancia);
-					printf("\nSOCKET: %d\n", socket);
+					int socket = (*(instancia_Estado_Conexion*) dictionary_get(lista_Instancias , instancia)).socket;
+					printf("\nSOCKETEEEEEEEEEEEEEEEEEEEEEEE: %d\n", socket);
 
 					//VALIDAR INSTANCIA CONECTADA
 					//MANDAR A INSTANCIA
@@ -182,7 +177,7 @@ void *rutina_ESI(void* argumento) {
 
 
 					//VALIDADA
-					int socketEncontrado= (int) (dictionary_get(lista_Instancias , instanciaGuardada));
+					int socketEncontrado= (*(instancia_Estado_Conexion*) (dictionary_get(lista_Instancias , instanciaGuardada))).socket;
 					enviarMensaje(socketEncontrado, ejecutar_sentencia_instancia,  &sentencia,sizeof(t_sentencia));
 					//MANDAR A INSTANCIA
 					break;
@@ -288,22 +283,41 @@ void modificar_clave(char* clave, char* instancia) {
 }
 
 void equitative_load(char* claveSentencia){
-
 	log_info(log_operaciones, "Aplicando Equitative Load..");
 	printf("\nAplicando Equitative Load..\n");
 
 	int cantidadInstancias = dictionary_size(lista_Instancias)-1;
+
 	char* instancia = list_get(listaSoloInstancias, contadorEquitativeLoad);
-	printf("\nEQLOAD obtuvo instancia: %s\n", instancia);
 
-	modificar_clave(claveSentencia, instancia);
+	int estadoInstancia=estadoDeInstancia(instancia);
 
-	if(contadorEquitativeLoad+1>cantidadInstancias){
+	if( estadoInstancia==conectada ){
+		printf("\nEQLOAD obtuvo instancia: %s\n", instancia);
+		modificar_clave(claveSentencia, instancia);
+		contador_EQ(cantidadInstancias);
+	}
+	else{
+		if(estadoInstancia==desconectada){
+			equitative_load(claveSentencia);
+		}
+		else{
+			printf("\nERROR 404 LLAME A BRUCE WAYNE\n");
+		}
+	}
+}
+
+void contador_EQ(int cantidadDeInstancias){
+	if(contadorEquitativeLoad+1>cantidadDeInstancias){
 		contadorEquitativeLoad = 0;
 	}
 	else{
 		contadorEquitativeLoad=contadorEquitativeLoad+1;
 	}
+}
+
+int estadoDeInstancia(char * instancia){
+	 return (*(instancia_Estado_Conexion*)dictionary_get(lista_Instancias,instancia)).estadoConexion;
 }
 
 //ESTO FUNCIONA PARA LA LISTA PROPUESTA lista_instancias_new
@@ -322,6 +336,12 @@ void least_space_used(char* claveSentencia) {
 	strcpy(instancia_max, nodo_maximo->inst_ID);
 	modificar_clave(claveSentencia, instancia_max);
 }
+
+void key_explicit(char* claveSentencia){
+
+}
+
+
 
 char* formatear_mensaje_esi(int id, TipoSentencia t, char* clave, char* valor) {
 

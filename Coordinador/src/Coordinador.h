@@ -29,12 +29,21 @@ void *rutina_ESI(void * arg);
 void crear_hilo(int nuevo_socket, int modulo);
 int buscarEnLista(int valor);
 void equitative_load(char* claveSentencia);
+void contador_EQ(int cantidadDeInstancias);
+
 void least_space_used(char*);
+
+void key_explicit(char* claveSentencia);
+
 char* formatear_mensaje_esi(int, TipoSentencia, char*, char*);
 void configurar_instancia(int socket);
 void destruir_estructuras_globales();
 char* aplicar_algoritmo(char* clave, char* valor);
 int clave_tiene_instancia(char* clave);
 void avisar_guardado_planif(char* instancia, char* clave);
+
+int estadoDeInstancia(char * instancia);
+
+
 
 #endif /* COORDINADOR_H_ */
