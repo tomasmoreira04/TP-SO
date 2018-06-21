@@ -63,6 +63,14 @@ AlgoritmoCoord numero_algoritmo_c(char* nombre) {
 	return el;
 }
 
+AlgoritmoInst numero_algoritmo_i(char* nombre) {
+	if (strcmp(nombre, "LRU") == 0)
+		return LRU;
+	if (strcmp(nombre, "BSU") == 0)
+		return BSU;
+	return CIRC;
+}
+
 ConfigCoordinador cargar_config_coordinador(char* ruta) {
 	if (ruta == NULL)
 		return config_predeterminada_coord();
@@ -110,7 +118,7 @@ ConfigInstancia cargar_config_inst(char* ruta) {
 	configuracion.puerto_coordinador = config_get_int_value(config, "PUERTO_COORDINADOR");
 	configuracion.intervalo_dump = config_get_int_value(config, "INTERVALO_DUMP");
 	strcpy(configuracion.ip_coordinador, config_get_string_value(config,"IP_COORDINADOR"));
-	strcpy(configuracion.algoritmo_reemp, config_get_string_value(config, "ALGORITMO_REEMPLAZO"));
+	configuracion.algoritmo_reemp = numero_algoritmo_i(config_get_string_value(config, "ALGORITMO_REEMPLAZO"));
 	strcpy(configuracion.nombre_instancia, config_get_string_value(config, "NOMBRE_INSTANCIA"));
 	strcpy(configuracion.punto_montaje, config_get_string_value(config,"PUNTO_MONTAJE"));
 	config_destroy(config);
@@ -159,7 +167,7 @@ ConfigInstancia config_predeterminada_inst() {
 	config.puerto_coordinador = 9035;
 	config.intervalo_dump = 10;
 	strcpy(config.nombre_instancia, "Instancia1");
-	strcpy(config.algoritmo_reemp, "BSU");
+	config.algoritmo_reemp = BSU;
 	strcpy(config.punto_montaje, "/home/utnso/instancias/");
 	strcpy(config.ip_coordinador, "127.0.0.1");
 	imprimir_default();

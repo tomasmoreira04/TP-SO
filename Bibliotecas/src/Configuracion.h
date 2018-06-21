@@ -9,6 +9,7 @@
 
 typedef enum { sjf_sd, sjf_cd, hrrn, fifo } AlgoritmoPlanif;
 typedef enum { el, lsu, ke } AlgoritmoCoord;
+typedef enum {CIRC, LRU, BSU} AlgoritmoInst;
 
 typedef struct {
 	int puerto_escucha,puerto_coordinador, alfa_planif, algoritmo;
@@ -29,8 +30,8 @@ typedef struct {
 } ConfigESI;
 
 typedef struct {
-	char ip_coordinador[LARGO_IP], algoritmo_reemp[LARGO_ALG], punto_montaje[LARGO_RUTA], nombre_instancia[LARGO_NINSTANCIA];
-	int puerto_coordinador, intervalo_dump;
+	char ip_coordinador[LARGO_IP], punto_montaje[LARGO_RUTA], nombre_instancia[LARGO_NINSTANCIA];
+	int puerto_coordinador, intervalo_dump, algoritmo_reemp;
 } ConfigInstancia;
 
 ConfigPlanificador cargar_config_planificador();
