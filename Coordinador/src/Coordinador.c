@@ -19,12 +19,12 @@
 #include "commons/collections/list.h"
 #include <unistd.h>
 
-
 // Diferenciacion de operacion ESI
 // Direnciar quien se conecta
 // Guardar con ID instancia
 // TOMI SE LA COME
 
+int compresion;
 ConfigCoordinador configuracion;
 int socket_plan; //esto cambiar tal vez
 t_dictionary *instancias_Claves;
@@ -34,6 +34,7 @@ t_list *listaSoloInstancias;
 int contadorEquitativeLoad;
 
 int main(int argc, char* argv[]) {
+	compresion=0;
 	int banderaPlanificador=0;
 	contadorEquitativeLoad=0;
 	instancias_Claves= dictionary_create();
@@ -124,6 +125,8 @@ void *rutina_ESI(void* argumento) {
 		usleep(1000000); //1 segundo
 		//usleep(configuracion.retardo);
 
+		while(compresion!=1){}
+
 		if (sentencia_okey == sentencia_coordinador) {
 
 			printf("\nestoy haciendo la sentencia\n");
@@ -167,6 +170,46 @@ void *rutina_ESI(void* argumento) {
 					void* mensajeInstancia;
 					int operacionPedidaInstacia = recibirMensaje(socket, &mensajeInstancia);
 					//COMPACTAR
+
+					switch(operacionPedidaInstacia){
+						case 0:
+						{
+							int  ESI_bloq= sentencia.id_esi;
+							printf("SE DESCONECTO LA CHINGADA INSTANCIA\n");
+							enviarMensaje(socket_plan, esi_bloqueado, &ESI_bloq, sizeof(int));
+						}
+						break;
+						case ejecucion_ok:
+						{
+							printf("GREAT ejecucion_ok\n");
+						}
+						break;
+
+						case compactar:
+						{
+							compresion=1;
+							void * asd;
+							int finalizacionDeCompresion = recibirMensaje(socket, &asd);
+							if( finalizacionDeCompresion == 0 )
+							{
+								int  ESI_bloq= sentencia.id_esi;
+								printf("SE DESCONECTO LA CHINGADA INSTANCIA\n");
+								enviarMensaje(socket_plan, esi_bloqueado, &ESI_bloq, sizeof(int));
+								compresion=0;
+							}
+							else{
+								printf("IVAN ILUMINANOS AHORA\n");
+							}
+						}
+						break;
+						default:
+						{
+							printf("IVAN ILUMINANOS\n");
+						}
+						break;
+					};
+
+
 					break;
 				}
 				case S_STORE:
@@ -179,6 +222,29 @@ void *rutina_ESI(void* argumento) {
 					//VALIDADA
 					int socketEncontrado= (*(instancia_Estado_Conexion*) (dictionary_get(lista_Instancias , instanciaGuardada))).socket;
 					enviarMensaje(socketEncontrado, ejecutar_sentencia_instancia,  &sentencia,sizeof(t_sentencia));
+
+
+					void* mensajeInstancia;
+					int operacionPedidaInstacia = recibirMensaje(socketEncontrado, &mensajeInstancia);
+					switch(operacionPedidaInstacia){
+						case 0:
+						{
+							int  ESI_bloq= sentencia.id_esi;
+							printf("SE DESCONECTO LA CHINGADA INSTANCIA\n");
+							enviarMensaje(socket_plan, esi_bloqueado, &ESI_bloq, sizeof(int));
+						}
+						break;
+						case ejecucion_ok:
+						{
+							printf("GREAT ejecucion_ok\n");
+						}
+						break;
+						default:
+						{
+							printf("IVAN ILUMINANOS\n");
+						}
+						break;
+					};
 					//MANDAR A INSTANCIA
 					break;
 				}
@@ -220,7 +286,6 @@ int clave_tiene_instancia(char* clave) {
 	return strcmp((char*)dictionary_get(instancias_Claves, clave), "0") == 0 ? 0 : 1; //xd
 }
 
-
 char* aplicar_algoritmo(char* clave, char* valor) { //DEVUELVE EL NOMBRE DE LA INSTANCIA ASIGNADA
 	switch(configuracion.algoritmo) {
 		case el:	equitative_load(clave); break;
@@ -253,12 +318,6 @@ void crear_hilo(int nuevo_socket, int modulo) {
 	pthread_attr_destroy(&attr);
 }
 
-/*void guardar_en_log(int id_esi, char* sentencia) {
-	FILE* log_operacion = fopen(LOG_PATH, "a+");
-	fprintf(log_operacion,"%d %s %s %s",id_esi,"		",sentencia,"\n");
-	fclose(log_operacion);
-}*/
-
 void mostrar_archivo(char* path) {
 	FILE *f = fopen(path, "r");
 	if(f == NULL)
@@ -273,9 +332,6 @@ void crear_log_operacion() {
 	log_operaciones = log_create("operaciones_coordinador.log", "coordinador", 0, 1);
 }
 
-/*void destruir_log_operacion() {
-	log_destroy(log_operaciones);
-}*/
 
 void modificar_clave(char* clave, char* instancia) {
 	dictionary_remove(instancias_Claves, clave);

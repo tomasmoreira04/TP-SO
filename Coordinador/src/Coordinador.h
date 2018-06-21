@@ -29,7 +29,7 @@ void *rutina_ESI(void * arg);
 void crear_hilo(int nuevo_socket, int modulo);
 int buscarEnLista(int valor);
 void equitative_load(char* claveSentencia);
-void contador_EQ(int cantidadDeInstancias);
+void contador_EQ(int cantidadDeInstancias);//ASIGNA EL EQ AL CUAL TIENE QUE ASIGNAR
 
 void least_space_used(char*);
 
@@ -42,7 +42,7 @@ char* aplicar_algoritmo(char* clave, char* valor);
 int clave_tiene_instancia(char* clave);
 void avisar_guardado_planif(char* instancia, char* clave);
 
-int estadoDeInstancia(char * instancia);
+int estadoDeInstancia(char * instancia);//DEVUELVE EL ESTADO DE LA INSTANCIA A LA CUAL SE INTENTA GUARDAR
 
 
 
