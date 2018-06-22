@@ -144,8 +144,8 @@ ConfigCoordinador config_predeterminada_coord() {
 	config.puerto_escucha = 9035;
 	config.puerto_planificador = 9034;
 	strcpy(config.ip_planificador, "127.0.0.1");
-	config.cant_entradas = 20;
-	config.tamanio_entrada = 100;
+	config.cant_entradas = 3;
+	config.tamanio_entrada = 10;
 	config.retardo = 1000000; // 1segundos
 	config.algoritmo = el;
 	imprimir_default();
@@ -167,7 +167,7 @@ ConfigInstancia config_predeterminada_inst() {
 	config.puerto_coordinador = 9035;
 	config.intervalo_dump = 10;
 	strcpy(config.nombre_instancia, "Instancia1");
-	config.algoritmo_reemp = BSU;
+	config.algoritmo_reemp = CIRC;
 	strcpy(config.punto_montaje, "/home/utnso/instancias/");
 	strcpy(config.ip_coordinador, "127.0.0.1");
 	imprimir_default();

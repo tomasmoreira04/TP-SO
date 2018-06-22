@@ -11,17 +11,22 @@
 #include "../../Bibliotecas/src/Estructuras.h"
 #include "../../Bibliotecas/src/Socket.c"
 #include "../../Bibliotecas/src/Configuracion.c"
+#include "Instancia.h"
+
 #include "commons/string.h"
 #include "commons/config.h"
-#include "commons/collections/dictionary.h"
-#include "Instancia.h"
 #include "commons/bitarray.h"
+#include "commons/collections/dictionary.h"
+#include "commons/collections/list.h"
+
+
 
 ConfigInstancia config;
 
 //ESTRUCTURAS----
 t_dictionary* tablaEntradas;
 t_bitarray* disponibles;
+t_list* reemplazos;
 
 
 //VARIABLES GLOBALES----
@@ -35,32 +40,30 @@ int main(int argc, char* argv[]) {
 	char* nombre = argv[1];
 	config = cargar_config_inst(nombre);
 
-	int socketServer = conexion_con_servidor(config.ip_coordinador, config.puerto_coordinador); //usar conf->puerto_coordinador
+	int socketServer = conexion_con_servidor(config.ip_coordinador, config.puerto_coordinador);
 
-	//enviar nombre
 	handShake(socketServer, instancia);
+	enviarMensaje(socketServer, 8, &config.nombre_instancia , 20);
 
 	//------------RECIBIR DIMENSIONES Y CREAR STORAGE
 
-	int* dim;
+		void* dim;
 
-	enviarMensaje(socketServer, 8, &config.nombre_instancia , 20);
+		if (config_inst == recibirMensaje(socketServer,&dim)){
 
-		if (config_inst == recibirMensaje(socketServer,(void*)&dim)){
-
-			memcpy(&cantEntradas,dim,sizeof(int));
-			memcpy(&tamEntrada,dim+1,sizeof(int));
+			memcpy(&cantEntradas,(int*)dim,sizeof(int));
+			memcpy(&tamEntrada,(int*)dim+1,sizeof(int));
 			free(dim);
 
-			printf(CYAN "\n------------INSTANCIA------------\n");
-			printf("\nCANT ENTRADAS: %i \nTAM ENTRADAS: %i \n",cantEntradas, tamEntrada);
+			printf(CYAN "\n------------ INSTANCIA ------------\n");
+			printf("\nCANT ENTRADAS: %i \nTAM ENTRADAS: %i \n"RESET,cantEntradas, tamEntrada);
 
 
 			cantEntradasDisp = cantEntradas;
 			storage = malloc(sizeof(char)*cantEntradas*tamEntrada);
 
 		} else {
-			printf(RED "\nFATAL ERROR AL RECIBIR CONFIG DEL COORDINADOR\n");
+			printf(RED "\nFATAL ERROR AL RECIBIR CONFIG DEL COORDINADOR\n"RESET);
 			exit(0);
 			}
 	//------------------------------------------------------
@@ -68,28 +71,71 @@ int main(int argc, char* argv[]) {
 	//-------------INICIALIZAR
 
 	char* bitarray = malloc(sizeof(char)*cantEntradas);
-	tablaEntradas = dictionary_create();
-
 	disponibles = bitarray_create(bitarray,cantEntradas);
 	limpiarArray(0,cantEntradas);
-	printf(GREEN "\nEsperando ordenes pacificamente...\n");
+
+	tablaEntradas = dictionary_create();
+	reemplazos = list_create();
+
+
+
+
+	printf(GREEN "\nEsperando ordenes pacificamente...\n"RESET);
 
 	//--------------------------------------
 
 	//------------INGORAR..PRUEBA (?
 
-	/*
-	t_sentencia* sentencia = malloc(sizeof(sentencia));
+/*
+	t_sentencia* sentencia = malloc(sizeof(t_sentencia));
 		strcpy(sentencia->clave,"K400");
 		sentencia->id_esi=3;
-		sentencia->tipo=S_STORE;
-		strcpy(sentencia->valor,"H000000H");
+		sentencia->tipo=S_SET;
+		strcpy(sentencia->valor,"AAAAAAAA");
 
-		almacenarValor(sentencia->clave, sentencia->valor);
+		ejecutarSentencia(sentencia);
 
 		mostrarArray(disponibles->bitarray);
 		mostrarValor(sentencia->clave);
-	*/
+		mostrarListaReemplazos();
+
+	t_sentencia* sentencia2 = malloc(sizeof(t_sentencia));
+		strcpy(sentencia2->clave,"K500");
+		sentencia2->id_esi=3;
+		sentencia2->tipo=S_SET;
+		strcpy(sentencia2->valor,"BBBBBBBB");
+
+		ejecutarSentencia(sentencia2);
+
+		mostrarArray(disponibles->bitarray);
+		mostrarValor(sentencia2->clave);
+		mostrarListaReemplazos();
+
+	t_sentencia* sentencia3 = malloc(sizeof(t_sentencia));
+		strcpy(sentencia3->clave,"K600");
+		sentencia3->id_esi=3;
+		sentencia3->tipo=S_SET;
+		strcpy(sentencia3->valor,"CCCCCCC");
+
+		ejecutarSentencia(sentencia3);
+
+		mostrarArray(disponibles->bitarray);
+		mostrarValor(sentencia3->clave);
+		mostrarListaReemplazos();
+
+	t_sentencia* sentencia4 = malloc(sizeof(t_sentencia));
+		strcpy(sentencia4->clave,"K700");
+		sentencia4->id_esi=3;
+		sentencia4->tipo=S_SET;
+		strcpy(sentencia4->valor,"DDDD");
+
+		ejecutarSentencia(sentencia4);
+
+		mostrarArray(disponibles->bitarray);
+		mostrarValor(sentencia4->clave);
+		mostrarListaReemplazos();
+
+*/
 
 	//--------------------------------
 
@@ -116,8 +162,8 @@ int main(int argc, char* argv[]) {
 
 	//---------------------------------------------------
 
-	bitarray_destroy(disponibles);
-	free(storage);
+
+	destruirlo_todo();
 	return 0;
 }
 
@@ -133,10 +179,9 @@ void mostrarArray(char* bitarray){
 }
 
 void mostrarValor(char* clave){
-	Reg_TablaEntradas* registro;
-	registro = dictionary_get(tablaEntradas,clave);
+	Reg_TablaEntradas* registro = dictionary_get(tablaEntradas,clave);
 
-	char* valor=malloc(sizeof(registro->tamanio+1));
+	char* valor=malloc((sizeof(char)*registro->tamanio)+1);
 	memcpy(valor, storage+(tamEntrada*registro->entrada),registro->tamanio);
 
 	printf("\nEl valor de la clave %s es: %s",clave,valor);
@@ -144,6 +189,16 @@ void mostrarValor(char* clave){
 	free(valor);
 }
 
+void mostrarListaReemplazos(){
+
+	int i;
+	printf("Lista de reemplazos:\n");
+	for(i=0;i<list_size(reemplazos);i++){
+	Nodo_Reemplazo* nodo = list_get(reemplazos,i);
+	printf("%s\n",nodo->clave);
+	}
+
+}
 
 //------------------------
 
@@ -153,35 +208,14 @@ void ejecutarSentencia(t_sentencia* sentencia){
 
 	case S_SET:
 		almacenarValor(sentencia->clave,sentencia->valor);
-		printf("\nSe ejecuto un SET correctamente\n");
+		printf(GREEN "\nSe ejecuto un SET correctamente\n"RESET);
 		break;
 
 	case S_STORE:
 		persistirValor(sentencia->clave);
-		printf("\nSe ejecuto un STORE correctamente\n");
+		printf(GREEN "\nSe ejecuto un STORE correctamente\n"RESET);
 		break;
 	}
-}
-
-void persistirValor(char* clave){
-
-	char* path = malloc(string_length(clave)+strlen(config.punto_montaje)+5);
-	strcpy(path,config.punto_montaje);
-	strcat(path,clave);
-	strcat(path,".txt");
-
-
-
-	char* valor = devolverValor(clave);
-
-	FILE* arch = fopen(path,"w+");
-
-		fputs(valor,arch);
-
-	fclose(arch);
-
-	//free(valor);
-	free(path);
 }
 
 char* devolverValor(char* clave){								//devuelve valor acordarse de liberarlo
@@ -194,15 +228,14 @@ char* devolverValor(char* clave){								//devuelve valor acordarse de liberarlo
 	return valor;
 }
 
-
 void almacenarValor(char* clave, char* valor){
 
 	int tamEnBytes = string_length(valor)+1;
 	int tamEnEntradas = 1+((tamEnBytes-1)/tamEntrada);			//supuesto redondeo para arriba
 
-	if(dictionary_has_key(tablaEntradas,clave)){
+	if(dictionary_has_key(tablaEntradas,clave))
 		liberarEntradas(clave);
-	}
+
 
 	if(tamEnEntradas <= cantEntradasDisp){
 
@@ -216,12 +249,82 @@ void almacenarValor(char* clave, char* valor){
 		dictionary_put(tablaEntradas,clave,registro);
 		cantEntradasDisp-=tamEnEntradas;
 
-	} else {
-		//se tiene que reemplazar
+		if (tamEnEntradas == 1){								//Si el valor es atomico, se selecciona como valor de reemplazo
+			Nodo_Reemplazo* remp = malloc(sizeof(Nodo_Reemplazo));
+			remp->clave =clave;
+			remp->tamanio = tamEnBytes;
+			remp->ultimaRef = 0;
+			list_add(reemplazos,remp);
+		}
 
+	} else {
+
+		if(tamEnEntradas<=list_size(reemplazos)){
+			printf(YELLOW "\nEl valor de la clave %s reemplazara %d valor(es) existente(s)\n"RESET,clave,tamEnEntradas);
+			reemplazarValor(clave,valor,tamEnEntradas);
+
+		} else{
+			printf(RED "\nNo existen suficientes entradas de reemplazo para ubicar valor de clave: %s!\n\n"RESET,clave);
+			exit(0); 											//por ahora exit, pero enviar mensaje de fallo supongo
+			return;
+		}
 	}
 
 }
+
+void persistirValor(char* clave){
+	char* path = malloc(string_length(clave)+strlen(config.punto_montaje)+5);
+	strcpy(path,config.punto_montaje);
+	strcat(path,clave);
+	strcat(path,".txt");
+
+
+
+	char* valor = devolverValor(clave);
+
+	FILE* arch = fopen(path,"w+");
+		fputs(valor,arch);
+	fclose(arch);
+
+	free(path);
+	//free(valor); 			//PORQUE ROMPE CON ESTO?!
+}
+
+
+t_list* reemplazoSegunAlgoritmo(int tamEnEntradas){
+
+	switch(config.algoritmo_reemp){
+
+	case CIRC:
+		return list_take_and_remove(reemplazos,tamEnEntradas);
+		break;
+
+	case LRU:
+		return list_take_and_remove(reemplazos,tamEnEntradas);
+		break;
+
+	case BSU:
+		return list_take_and_remove(reemplazos,tamEnEntradas);
+		break;
+	}
+
+	return 0;
+}
+
+void reemplazarValor(char* clave, char* valor, int tamEnEntradas){
+
+	t_list* paraReemplazar = reemplazoSegunAlgoritmo (tamEnEntradas);
+
+	while(list_size(paraReemplazar)!=0){
+	Nodo_Reemplazo* remp = (Nodo_Reemplazo*)list_remove(paraReemplazar,0);
+	liberarEntradas(remp->clave);
+	free(remp);
+	}
+
+	free(paraReemplazar);
+	almacenarValor(clave,valor);
+}
+
 
 void liberarEntradas(char* clave){
 	Reg_TablaEntradas* registro  = dictionary_remove(tablaEntradas,clave);
@@ -230,6 +333,8 @@ void liberarEntradas(char* clave){
 	int hasta= registro->entrada+tamEnEntradas;
 	limpiarArray(desde,hasta);
 	cantEntradasDisp+=tamEnEntradas;
+
+	free(registro);
 }
 
 void limpiarArray(int desde, int hasta){
@@ -268,6 +373,12 @@ int buscarEspacioLibre(int entradasNecesarias){
 	return posInicialLibre;
 }
 
+void destruirlo_todo(){
+	bitarray_destroy(disponibles);
+	free(storage);
+	dictionary_destroy(tablaEntradas);
+	list_destroy(reemplazos);  				//NO LIBERA LOS ELEMENTOS, NECESITO EL DESTROYER QUE NO SE QUE ES
+}
 
 
 
