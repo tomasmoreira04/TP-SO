@@ -34,7 +34,7 @@ t_list *listaSoloInstancias;
 int contadorEquitativeLoad;
 
 int main(int argc, char* argv[]) {
-	compresion=0;
+	compresion=1;
 	int banderaPlanificador=0;
 	contadorEquitativeLoad=0;
 	instancias_Claves= dictionary_create();
@@ -124,6 +124,8 @@ void *rutina_ESI(void* argumento) {
 		printf("\nesperando respuesta planif\n");
 
 		int sentencia_okey = recibirMensaje(socket_plan, &stream); //el planif me da el OK, entonces ejecuto una sentencia del esi
+
+		printf("\nme llego xd\n");
 
 		usleep(1000000); //1 segundo
 		//usleep(configuracion.retardo);

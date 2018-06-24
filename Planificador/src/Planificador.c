@@ -51,6 +51,7 @@ int main(int argc, char* argv[]) {
 	setbuf(stdout, NULL); //a veces el printf no andaba, se puede hacer esto o un fflush
 	inicializar_estructuras();
 	config = cargar_config_planificador(argv[1]);
+	config.algoritmo = fifo;
 	bloquear_claves_iniciales(config.claves_bloqueadas, config.n_claves);
 	pthread_t thread_consola;
 	pthread_create(&thread_consola, NULL, iniciar_consola, NULL);
@@ -356,6 +357,7 @@ void GET(char* clave, ESI* esi, int coordinador) {
 		printf("\nLa clave "GREEN"%s "RESET"se asigno a "GREEN"ESI %d"RESET, clave, esi->id);
 		esi->rafagas_restantes--;
 		avisar(coordinador, sentencia_coordinador);
+		printf("avisado el coord campeonnnnnn");
 	}
 }
 
