@@ -91,8 +91,11 @@ void *rutina_instancia(void * arg) {
 		dictionary_put(lista_Instancias, nombre_inst , instancia_conexion);
 
 		list_add(listaSoloInstancias, nombre_inst);
+		configurar_instancia(socket_INST);
 	}
-	configurar_instancia(socket_INST);
+	else{
+		cambiarEstadoInstancia(nombre_inst,conectada);
+	}
 	return NULL;
 }
 
@@ -145,6 +148,41 @@ void *rutina_ESI(void* argumento) {
 					}
 					break;
 				}
+				case S_STORE:
+				{
+					int largoSentencia= strlen((char*) (dictionary_get(instancias_Claves , sentencia.clave)));
+					char* instanciaGuardada=malloc(largoSentencia);
+					strcpy(instanciaGuardada, (char*) (dictionary_get(instancias_Claves , sentencia.clave)) );
+
+					//VALIDADA
+					int socketEncontrado= (*(instancia_Estado_Conexion*) (dictionary_get(lista_Instancias , instanciaGuardada))).socket;
+					enviarMensaje(socketEncontrado, ejecutar_sentencia_instancia,  &sentencia,sizeof(t_sentencia));
+
+					void* mensajeInstancia;
+					int operacionPedidaInstacia = recibirMensaje(socketEncontrado, &mensajeInstancia);
+					switch(operacionPedidaInstacia){
+						case 0:
+						{
+							int  ESI_bloq= sentencia.id_esi;
+							cambiarEstadoInstancia(instanciaGuardada,desconectada);
+							printf("SE DESCONECTO LA CHINGADA INSTANCIA\n");
+							enviarMensaje(socket_plan, esi_bloqueado, &ESI_bloq, sizeof(int));
+							break;
+						}
+						case ejecucion_ok:
+						{
+							printf("GREAT ejecucion_ok\n");
+							break;
+						}
+						default:
+						{
+							printf("IVAN ILUMINANOS\n");
+							break;
+						}
+					}
+					//MANDAR A INSTANCIA
+					break;
+				}
 				case S_SET:
 				{
 					printf(RED"\n%s\n"RESET, sentencia.valor);
@@ -156,7 +194,13 @@ void *rutina_ESI(void* argumento) {
 					else
 						printf(RED"\nLa clave ya esta seteada en una instancia\ncapo arreglame el STORe para liberarlaaaaaaaaaaaaaaaaaaaaaaaaaaa"RESET);
 
-					printf("\nbuscando socket de instancia %s\n", instancia);
+					printf("\nBuscando socket de instancia %s\n", instancia);
+
+					int largoSentencia= strlen((char*) (dictionary_get(instancias_Claves , sentencia.clave)));
+					char* instanciaGuardada=malloc(largoSentencia);
+					strcpy(instanciaGuardada, (char*) (dictionary_get(instancias_Claves , sentencia.clave)) );
+
+
 					int socket = (*(instancia_Estado_Conexion*) dictionary_get(lista_Instancias , instancia)).socket;
 					printf("\nSOCKETEEEEEEEEEEEEEEEEEEEEEEE: %d\n", socket);
 
@@ -175,16 +219,17 @@ void *rutina_ESI(void* argumento) {
 						case 0:
 						{
 							int  ESI_bloq= sentencia.id_esi;
+							cambiarEstadoInstancia(instanciaGuardada,desconectada);
 							printf("SE DESCONECTO LA CHINGADA INSTANCIA\n");
 							enviarMensaje(socket_plan, esi_bloqueado, &ESI_bloq, sizeof(int));
+							break;
 						}
-						break;
+
 						case ejecucion_ok:
 						{
 							printf("GREAT ejecucion_ok\n");
+							break;
 						}
-						break;
-
 						case compactar:
 						{
 							compresion=1;
@@ -200,52 +245,15 @@ void *rutina_ESI(void* argumento) {
 							else{
 								printf("IVAN ILUMINANOS AHORA\n");
 							}
+							break;
 						}
-						break;
+
 						default:
 						{
 							printf("IVAN ILUMINANOS\n");
+							break;
 						}
-						break;
-					};
-
-
-					break;
-				}
-				case S_STORE:
-				{
-					int largoSentencia= strlen((char*) (dictionary_get(instancias_Claves , sentencia.clave)));
-					char* instanciaGuardada=malloc(largoSentencia);
-					strcpy(instanciaGuardada, (char*) (dictionary_get(instancias_Claves , sentencia.clave)) );
-
-
-					//VALIDADA
-					int socketEncontrado= (*(instancia_Estado_Conexion*) (dictionary_get(lista_Instancias , instanciaGuardada))).socket;
-					enviarMensaje(socketEncontrado, ejecutar_sentencia_instancia,  &sentencia,sizeof(t_sentencia));
-
-
-					void* mensajeInstancia;
-					int operacionPedidaInstacia = recibirMensaje(socketEncontrado, &mensajeInstancia);
-					switch(operacionPedidaInstacia){
-						case 0:
-						{
-							int  ESI_bloq= sentencia.id_esi;
-							printf("SE DESCONECTO LA CHINGADA INSTANCIA\n");
-							enviarMensaje(socket_plan, esi_bloqueado, &ESI_bloq, sizeof(int));
-						}
-						break;
-						case ejecucion_ok:
-						{
-							printf("GREAT ejecucion_ok\n");
-						}
-						break;
-						default:
-						{
-							printf("IVAN ILUMINANOS\n");
-						}
-						break;
-					};
-					//MANDAR A INSTANCIA
+					}
 					break;
 				}
 				default:{
@@ -273,6 +281,14 @@ void *rutina_ESI(void* argumento) {
 	printf(YELLOW"\nfinalizando esi\n"RESET);
 	enviarMensaje(socket_plan, terminar_esi, &id_esi, sizeof(id_esi));
 	return NULL;
+}
+
+void cambiarEstadoInstancia(char *instanciaGuardada,estado_de_la_instancia accion){
+	instancia_Estado_Conexion *aux=malloc(sizeof(instancia_Estado_Conexion));
+	dictionary_remove(lista_Instancias, instanciaGuardada);
+	aux->estadoConexion=accion;
+	aux->socket=0;
+	dictionary_put(instancias_Claves, instanciaGuardada, aux);
 }
 
 void avisar_guardado_planif(char* instancia, char* clave) {
@@ -332,7 +348,6 @@ void crear_log_operacion() {
 	log_operaciones = log_create("operaciones_coordinador.log", "coordinador", 0, 1);
 }
 
-
 void modificar_clave(char* clave, char* instancia) {
 	dictionary_remove(instancias_Claves, clave);
 	dictionary_put(instancias_Claves, clave, instancia);
@@ -341,13 +356,9 @@ void modificar_clave(char* clave, char* instancia) {
 void equitative_load(char* claveSentencia){
 	log_info(log_operaciones, "Aplicando Equitative Load..");
 	printf("\nAplicando Equitative Load..\n");
-
 	int cantidadInstancias = dictionary_size(lista_Instancias)-1;
-
 	char* instancia = list_get(listaSoloInstancias, contadorEquitativeLoad);
-
 	int estadoInstancia=estadoDeInstancia(instancia);
-
 	if( estadoInstancia==conectada ){
 		printf("\nEQLOAD obtuvo instancia: %s\n", instancia);
 		modificar_clave(claveSentencia, instancia);
@@ -376,6 +387,10 @@ int estadoDeInstancia(char * instancia){
 	 return (*(instancia_Estado_Conexion*)dictionary_get(lista_Instancias,instancia)).estadoConexion;
 }
 
+void key_explicit(char* claveSentencia){
+
+}
+
 //ESTO FUNCIONA PARA LA LISTA PROPUESTA lista_instancias_new
 void least_space_used(char* claveSentencia) {
 
@@ -392,12 +407,6 @@ void least_space_used(char* claveSentencia) {
 	strcpy(instancia_max, nodo_maximo->inst_ID);
 	modificar_clave(claveSentencia, instancia_max);
 }
-
-void key_explicit(char* claveSentencia){
-
-}
-
-
 
 char* formatear_mensaje_esi(int id, TipoSentencia t, char* clave, char* valor) {
 

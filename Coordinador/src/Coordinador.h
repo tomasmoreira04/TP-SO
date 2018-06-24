@@ -35,6 +35,8 @@ void least_space_used(char*);
 
 void key_explicit(char* claveSentencia);
 
+void cambiarEstadoInstancia(char *instanciaGuardada,estado_de_la_instancia accion);
+
 char* formatear_mensaje_esi(int, TipoSentencia, char*, char*);
 void configurar_instancia(int socket);
 void destruir_estructuras_globales();
