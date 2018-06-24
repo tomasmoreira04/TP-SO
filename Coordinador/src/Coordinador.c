@@ -388,8 +388,33 @@ int estadoDeInstancia(char * instancia){
 }
 
 void key_explicit(char* claveSentencia){
+	fflush(stdin);
+	t_list *listaKE;
+	listaKE= list_create();
+	printf("\n\n%d\n\n",claveSentencia[0]);
+	int comienzo=(claveSentencia[0])-165;
 
+	int instanciasActivas=0;
+	int tamano_lista_instancias=list_size(listaSoloInstancias);
+
+	for(int i=0;i<tamano_lista_instancias;i++){
+		if(((*(instancia_Estado_Conexion*)dictionary_get(lista_Instancias,((char*)list_get(listaSoloInstancias,i)))).estadoConexion)==desconectada){
+			list_add(listaKE, ((char*)list_get(listaSoloInstancias,i)));
+			instanciasActivas++;
+		}
+	}
+	float asignacion_por_instancia= (float) 26  /  (float)instanciasActivas;
+	float mult=1;
+	for(int j=1;j<=26;j++){
+		if( (asignacion_por_instancia*mult) < comienzo ){
+			mult++;
+		}
+		if(comienzo==j){
+			modificar_clave(claveSentencia, ((char*)list_get(listaSoloInstancias,j)) );
+		}
+	}
 }
+
 
 //ESTO FUNCIONA PARA LA LISTA PROPUESTA lista_instancias_new
 void least_space_used(char* claveSentencia) {
