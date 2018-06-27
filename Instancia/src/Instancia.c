@@ -85,19 +85,20 @@ int main(int argc, char* argv[]) {
 	//--------------------------------------
 
 	//------------INGORAR..PRUEBA (?
-
 /*
+
 	t_sentencia* sentencia = malloc(sizeof(t_sentencia));
 		strcpy(sentencia->clave,"K400");
 		sentencia->id_esi=3;
 		sentencia->tipo=S_SET;
-		strcpy(sentencia->valor,"AAAAAAAA");
+		strcpy(sentencia->valor,"AAAAAAA");
 
 		ejecutarSentencia(sentencia);
 
 		mostrarArray(disponibles->bitarray);
 		mostrarValor(sentencia->clave);
-		mostrarListaReemplazos();
+		mostrarListaReemplazos(reemplazos);
+		free(sentencia);
 
 	t_sentencia* sentencia2 = malloc(sizeof(t_sentencia));
 		strcpy(sentencia2->clave,"K500");
@@ -109,19 +110,21 @@ int main(int argc, char* argv[]) {
 
 		mostrarArray(disponibles->bitarray);
 		mostrarValor(sentencia2->clave);
-		mostrarListaReemplazos();
+		mostrarListaReemplazos(reemplazos);
+		free(sentencia2);
 
 	t_sentencia* sentencia3 = malloc(sizeof(t_sentencia));
-		strcpy(sentencia3->clave,"K600");
+		strcpy(sentencia3->clave,"K500");
 		sentencia3->id_esi=3;
 		sentencia3->tipo=S_SET;
-		strcpy(sentencia3->valor,"CCCCCCC");
+		strcpy(sentencia3->valor,"CCCCCCCCC");
 
 		ejecutarSentencia(sentencia3);
 
 		mostrarArray(disponibles->bitarray);
 		mostrarValor(sentencia3->clave);
-		mostrarListaReemplazos();
+		mostrarListaReemplazos(reemplazos);
+		free(sentencia3);
 
 	t_sentencia* sentencia4 = malloc(sizeof(t_sentencia));
 		strcpy(sentencia4->clave,"K700");
@@ -133,10 +136,24 @@ int main(int argc, char* argv[]) {
 
 		mostrarArray(disponibles->bitarray);
 		mostrarValor(sentencia4->clave);
-		mostrarListaReemplazos();
+		mostrarListaReemplazos(reemplazos);
+		free(sentencia4);
+
+
+	t_sentencia* sentencia5 = malloc(sizeof(t_sentencia));
+		strcpy(sentencia5->clave,"K800");
+		sentencia5->id_esi=3;
+		sentencia5->tipo=S_SET;
+		strcpy(sentencia5->valor,"UUUU");
+
+		ejecutarSentencia(sentencia5);
+
+		mostrarArray(disponibles->bitarray);
+		mostrarValor(sentencia5->clave);
+		mostrarListaReemplazos(reemplazos);
+		free(sentencia5);
 
 */
-
 	//--------------------------------
 
 	//------------RECIBIR MENSAJES
@@ -153,23 +170,28 @@ int main(int argc, char* argv[]) {
 
 				case compactar:
 					break;
+
+				default:
+					printf(RED "\nError!\n"RESET );
+					break;
 			}
-			if (accion == error) {
-				printf("\nse desconecto el coordinador\n");
+
+			if(accion == error){
+				printf(RED "\nSe desconecto el coordinador!\n"RESET);
 				break;
 			}
 		}
 
 	//---------------------------------------------------
 
-
+	free(bitarray);
 	destruirlo_todo();
 	return 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-//------PARA PRUEBAS NOMAS
+//-------------PARA PRUEBAS NOMAS-------------
 void mostrarArray(char* bitarray){
 	int i;
 	for(i=0;i<cantEntradas;i++){
@@ -189,49 +211,120 @@ void mostrarValor(char* clave){
 	free(valor);
 }
 
-void mostrarListaReemplazos(){
-
+void mostrarListaReemplazos(t_list* list){
 	int i;
 	printf("Lista de reemplazos:\n");
-	for(i=0;i<list_size(reemplazos);i++){
-	Nodo_Reemplazo* nodo = list_get(reemplazos,i);
-	printf("%s\n",nodo->clave);
+	for(i=0;i<list_size(list);i++){
+	Nodo_Reemplazo* nodo = list_get(list,i);
+	printf("%s t.ref= %d\n",nodo->clave, nodo->ultimaRef);
 	}
 
 }
+//--------------DESTROYERS-------------------
 
-//------------------------
+void nodoRempDestroyer(Nodo_Reemplazo* nodo){
+	free(nodo->clave);
+	free(nodo);
+}
+
+void regTablaDestroyer(Reg_TablaEntradas* registro){
+	free(registro->clave);
+	free(registro);
+}
+
+//--------------MANEJO LISTAS-------------------
+
+t_list* duplicarLista(t_list* self) {
+	t_list* duplicated = list_create();
+	int i;
+	for(i=0;i<list_size(self);i++){
+		Nodo_Reemplazo* nodo = list_get(self,i);
+
+		Nodo_Reemplazo* nodo2 = malloc(sizeof(Nodo_Reemplazo));
+		nodo2->clave = strdup(nodo->clave);
+		nodo2->tamanio = nodo->tamanio;
+		nodo2->ultimaRef = nodo->ultimaRef;
+		list_add(duplicated,nodo2);
+	}
+
+	return duplicated;
+
+}
+
+bool comparadorMayorTam(Nodo_Reemplazo* nodo1, Nodo_Reemplazo* nodo2){
+	return (nodo1->tamanio>=nodo2->tamanio);
+}
+
+bool comparadorMayorTiempo(Nodo_Reemplazo* nodo1, Nodo_Reemplazo* nodo2){
+	return (nodo1->ultimaRef>=nodo2->ultimaRef);
+}
+
+
+void eliminarDeListaRemp(t_list* listaEliminar){
+	int i,j;
+
+	for(i=0;i<list_size(listaEliminar);i++){
+	Nodo_Reemplazo* nodo = list_get(listaEliminar,i);
+
+		for(j=0;j<list_size(reemplazos);j++){
+		Nodo_Reemplazo* nodo2 = list_get(reemplazos,j);
+			if(string_equals_ignore_case(nodo->clave,nodo2->clave)){
+			list_remove_and_destroy_element(reemplazos,j,(void*) nodoRempDestroyer);
+			}
+		}
+
+	}
+}
+
+void aumentarTiempoRef(){
+	int i;
+	for(i=0;i<list_size(reemplazos);i++){
+		Nodo_Reemplazo* remp = list_get(reemplazos,i);
+		remp->ultimaRef+=1;
+	}
+}
+
+int buscarNodoReemplazo(char* clave){
+	int i;
+	int  IndexBuscado=-1;
+
+	for(i=0;i<list_size(reemplazos);i++){
+		Nodo_Reemplazo* remp = list_get(reemplazos,i);
+		if (string_equals_ignore_case(remp->clave,clave))
+			IndexBuscado = i;
+	}
+	return IndexBuscado;
+}
+
+//---------------------------------------------------------
 
 void ejecutarSentencia(t_sentencia* sentencia){
 
 	switch(sentencia->tipo){
 
 	case S_SET:
+		aumentarTiempoRef();
 		almacenarValor(sentencia->clave,sentencia->valor);
 		printf(GREEN "\nSe ejecuto un SET correctamente\n"RESET);
 		break;
 
 	case S_STORE:
+		aumentarTiempoRef();
 		persistirValor(sentencia->clave);
 		printf(GREEN "\nSe ejecuto un STORE correctamente\n"RESET);
 		break;
+
+	default:
+		printf(RED "\nTipo de sentencia no valida!\n" RESET);
+		exit(0);
+		break;
 	}
-}
-
-char* devolverValor(char* clave){								//devuelve valor acordarse de liberarlo
-	Reg_TablaEntradas* registro;
-	registro = dictionary_get(tablaEntradas,clave);
-
-	char* valor=malloc(sizeof(char)*registro->tamanio);
-	memcpy(valor, storage+(tamEntrada*registro->entrada),registro->tamanio);
-
-	return valor;
 }
 
 void almacenarValor(char* clave, char* valor){
 
 	int tamEnBytes = string_length(valor)+1;
-	int tamEnEntradas = 1+((tamEnBytes-1)/tamEntrada);			//supuesto redondeo para arriba
+	int tamEnEntradas = 1+((tamEnBytes-1)/tamEntrada);			//redondeo para arriba
 
 	if(dictionary_has_key(tablaEntradas,clave))
 		liberarEntradas(clave);
@@ -240,18 +333,19 @@ void almacenarValor(char* clave, char* valor){
 	if(tamEnEntradas <= cantEntradasDisp){
 
 		int posInicialLibre = buscarEspacioLibre(tamEnEntradas);
-		memcpy(storage+(tamEntrada*posInicialLibre),valor,tamEnBytes);
+		strcpy(storage+(tamEntrada*posInicialLibre),valor);
 
 		Reg_TablaEntradas* registro = malloc(sizeof(Reg_TablaEntradas));
 		registro->entrada = posInicialLibre;
 		registro->tamanio = tamEnBytes;
-		memcpy(registro->clave,clave,40);
+		registro->clave = malloc(strlen(clave)+1);
+		strcpy(registro->clave,clave);
 		dictionary_put(tablaEntradas,clave,registro);
 		cantEntradasDisp-=tamEnEntradas;
 
 		if (tamEnEntradas == 1){								//Si el valor es atomico, se selecciona como valor de reemplazo
 			Nodo_Reemplazo* remp = malloc(sizeof(Nodo_Reemplazo));
-			remp->clave =clave;
+			remp->clave = strdup(clave);
 			remp->tamanio = tamEnBytes;
 			remp->ultimaRef = 0;
 			list_add(reemplazos,remp);
@@ -278,8 +372,6 @@ void persistirValor(char* clave){
 	strcat(path,clave);
 	strcat(path,".txt");
 
-
-
 	char* valor = devolverValor(clave);
 
 	FILE* arch = fopen(path,"w+");
@@ -287,42 +379,68 @@ void persistirValor(char* clave){
 	fclose(arch);
 
 	free(path);
-	//free(valor); 			//PORQUE ROMPE CON ESTO?!
 }
 
 
-t_list* reemplazoSegunAlgoritmo(int tamEnEntradas){
+t_list* reemplazoSegunAlgoritmo(int cantNecesita){
+
+	t_list* seleccionados;
+	t_list* duplicada;
 
 	switch(config.algoritmo_reemp){
 
 	case CIRC:
-		return list_take_and_remove(reemplazos,tamEnEntradas);
+		seleccionados = list_take_and_remove(reemplazos,cantNecesita);
 		break;
 
 	case LRU:
-		return list_take_and_remove(reemplazos,tamEnEntradas);
+		duplicada = duplicarLista(reemplazos);
+		list_sort(duplicada,(void*)comparadorMayorTiempo);
+		seleccionados = list_take_and_remove(duplicada,cantNecesita);
+		eliminarDeListaRemp(seleccionados);
+
+		list_clean_and_destroy_elements(duplicada,(void*) nodoRempDestroyer);
+		free(duplicada);
 		break;
 
 	case BSU:
-		return list_take_and_remove(reemplazos,tamEnEntradas);
+		duplicada = duplicarLista(reemplazos);
+		list_sort(duplicada,(void*)comparadorMayorTam);
+		seleccionados = list_take_and_remove(duplicada,cantNecesita);
+		eliminarDeListaRemp(seleccionados);
+
+		list_clean_and_destroy_elements(duplicada,(void*) nodoRempDestroyer);
+		free(duplicada);
 		break;
 	}
 
-	return 0;
+	return seleccionados;
 }
 
 void reemplazarValor(char* clave, char* valor, int tamEnEntradas){
 
 	t_list* paraReemplazar = reemplazoSegunAlgoritmo (tamEnEntradas);
 
-	while(list_size(paraReemplazar)!=0){
-	Nodo_Reemplazo* remp = (Nodo_Reemplazo*)list_remove(paraReemplazar,0);
+	int i;
+	for(i=0;i<list_size(paraReemplazar);i++){
+	Nodo_Reemplazo* remp = list_get(paraReemplazar,i);
 	liberarEntradas(remp->clave);
-	free(remp);
 	}
 
+	list_clean_and_destroy_elements(paraReemplazar,(void*) nodoRempDestroyer);
 	free(paraReemplazar);
 	almacenarValor(clave,valor);
+}
+
+
+char* devolverValor(char* clave){								//devuelve valor acordarse de liberarlo
+	Reg_TablaEntradas* registro;
+	registro = dictionary_get(tablaEntradas,clave);
+
+	char* valor=malloc(sizeof(char)*registro->tamanio);
+	strcpy(valor,storage+(tamEntrada*registro->entrada));
+
+	return valor;
 }
 
 
@@ -334,7 +452,10 @@ void liberarEntradas(char* clave){
 	limpiarArray(desde,hasta);
 	cantEntradasDisp+=tamEnEntradas;
 
-	free(registro);
+	if(buscarNodoReemplazo(clave)>=0)
+		list_remove_and_destroy_element(reemplazos,buscarNodoReemplazo(clave),(void*)nodoRempDestroyer);
+
+	regTablaDestroyer(registro);
 }
 
 void limpiarArray(int desde, int hasta){
@@ -376,8 +497,9 @@ int buscarEspacioLibre(int entradasNecesarias){
 void destruirlo_todo(){
 	bitarray_destroy(disponibles);
 	free(storage);
-	dictionary_destroy(tablaEntradas);
-	list_destroy(reemplazos);  				//NO LIBERA LOS ELEMENTOS, NECESITO EL DESTROYER QUE NO SE QUE ES
+	dictionary_destroy_and_destroy_elements(tablaEntradas,(void*)regTablaDestroyer);
+	list_clean_and_destroy_elements(reemplazos,(void*)nodoRempDestroyer);						//elimina elementos de la lista
+	free(reemplazos); 																			//elimina la lista en si
 }
 
 

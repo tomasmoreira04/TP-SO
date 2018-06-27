@@ -10,7 +10,7 @@
 #define MAX_NOMBRE 20
 
 typedef struct{
-	char clave[40];
+	char* clave;
 	int entrada;
 	int tamanio;		//en Bytes
 }Reg_TablaEntradas;
@@ -33,10 +33,15 @@ void ejecutarSentencia(t_sentencia* sentencia);
 char* devolverValor(char* clave);
 void mostrarValor(char* clave);
 void persistirValor(char* clave);
-
-t_list* reemplazoSegunAlgoritmo(int tamEnEntradas);
+t_list* reemplazoSegunAlgoritmo(int cantNecesita);
 void reemplazarValor(char* clave, char* valor, int tamEnEntradas);
-void mostrarListaReemplazos();
+void mostrarListaReemplazos(t_list* list);
 void destruirlo_todo();
+void nodoRempDestroyer(Nodo_Reemplazo* nodo);
+bool comparadorMayorTam(Nodo_Reemplazo* nodo1, Nodo_Reemplazo* nodo2);
+void eliminarDeListaRemp(t_list* listaEliminar);
+void regTablaDestroyer(Reg_TablaEntradas* registro);
+void aumentarTiempoRef();
+int buscarNodoReemplazo(char* clave);
 
 #endif /* INSTANCIA_H_ */
