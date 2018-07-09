@@ -19,8 +19,6 @@
 #include "commons/collections/dictionary.h"
 #include "commons/collections/list.h"
 
-
-
 ConfigInstancia config;
 
 //ESTRUCTURAS----

@@ -40,7 +40,6 @@ char* ruta_script(char* argumento) { //se pasa solo el nombre del archivo, sin e
 	char* ruta = malloc(LARGO_RUTA);
 	string_append(&ruta, "../scripts/");
 	string_append(&ruta, argumento);
-	string_append(&ruta, ".esi");
 	return ruta;
 }
 
@@ -85,7 +84,10 @@ void leer_sentencias(int planificador, int coordinador, char* ruta) {
 			if(operacion.valido){
 				t_sentencia sentencia = convertir_operacion(operacion);;
 				sentencia.id_esi = id_esi;
+				printf("tengo ID %d", sentencia.id_esi);
+
 				enviarMensaje(coordinador, ejecutar_sentencia_coordinador, &sentencia, sizeof(sentencia));
+
 				ejecutar_operacion(operacion); //imprime nada mas en el ESI
 
 				void* resultado;

@@ -127,7 +127,7 @@ void *rutina_ESI(void* argumento) {
 
 		printf("\nme llego xd\n");
 
-		usleep(1000000); //1 segundo
+		usleep(configuracion.retardo*1000); //1 segundo
 		//usleep(configuracion.retardo);
 
 		while(compresion!=1){}
@@ -192,7 +192,10 @@ void *rutina_ESI(void* argumento) {
 					char* instancia = "0";
 
 					if(!clave_tiene_instancia(sentencia.clave)) //atencion al !
+					{
 						instancia = aplicar_algoritmo(sentencia.clave, sentencia.valor);
+						printf("\n\nALGORITMO APLICADO\n");
+					}
 					else
 						printf(RED"\nLa clave ya esta seteada en una instancia\ncapo arreglame el STORe para liberarlaaaaaaaaaaaaaaaaaaaaaaaaaaa"RESET);
 
@@ -305,11 +308,28 @@ int clave_tiene_instancia(char* clave) {
 }
 
 char* aplicar_algoritmo(char* clave, char* valor) { //DEVUELVE EL NOMBRE DE LA INSTANCIA ASIGNADA
+	fflush(stdin);
+	//puts(configuracion.algoritmo);
+	printf("\n\n");
+	//printf(RED"\nMORDEKAISER %s\n",configuracion.algoritmo);
 	switch(configuracion.algoritmo) {
-		case el:	equitative_load(clave); break;
-		case lsu:	least_space_used(clave); break;
-		case ke:	/*kE________________*/	break;
-		default: /*nunca pasa, si carga en config CACA123 te pone default EL*/ break;
+		case el:
+			{
+				printf("\n\nEQUITATIVA TIO\n\n");
+				equitative_load(clave);
+			}break;
+		case lsu:	{
+			printf("\n\nLSU WACHIN\n\n");
+			least_space_used(clave);
+			}break;
+		case ke:{
+			printf("\n\nKEY EXPLICIT WACHO\n\n");
+			key_explicit(clave);
+			}break;
+		default: {
+			/*nunca pasa, si carga en config CACA123 te pone default EL*/
+			printf("\n\nESTOY DURISIMO WACHO\n\n");
+		}break;
 	}
 	log_info(log_operaciones, formatear_mensaje_esi(1, S_SET, clave, valor)); //por qué 1 xd?
 	return (char*) dictionary_get(instancias_Claves , clave);
@@ -393,28 +413,35 @@ void key_explicit(char* claveSentencia){
 	fflush(stdin);
 	t_list *listaKE;
 	listaKE= list_create();
-	printf("\n\n%d\n\n",claveSentencia[0]);
-	int comienzo=(claveSentencia[0])-165;
+
+	//printf("\n\nclabve    %d\n\n",claveSentencia[0]-96);
+	int comienzo=(claveSentencia[0])-96;
 
 	int instanciasActivas=0;
 	int tamano_lista_instancias=list_size(listaSoloInstancias);
 
 	for(int i=0;i<tamano_lista_instancias;i++){
-		if(((*(instancia_Estado_Conexion*)dictionary_get(lista_Instancias,((char*)list_get(listaSoloInstancias,i)))).estadoConexion)==desconectada){
+		if(((*(instancia_Estado_Conexion*)dictionary_get(lista_Instancias,((char*)list_get(listaSoloInstancias,i)))).estadoConexion)==conectada){
 			list_add(listaKE, ((char*)list_get(listaSoloInstancias,i)));
 			instanciasActivas++;
 		}
 	}
+	printf("\n\n INSTANCIAS CONECTADAS: %.d \n\n",instanciasActivas);
 	float asignacion_por_instancia= (float) 26  /  (float)instanciasActivas;
+	printf("\n\nASIGNACION INSTANCIAS: %.2f  \n\n",asignacion_por_instancia);
 	float mult=1;
 	for(int j=1;j<=26;j++){
 		if( (asignacion_por_instancia*mult) < comienzo ){
 			mult++;
 		}
 		if(comienzo==j){
-			modificar_clave(claveSentencia, ((char*)list_get(listaSoloInstancias,j)) );
+			//printf("\nASIGNACION: %s \n" *((char*)list_get(listaSoloInstancias,mult)));
+			printf("\n\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxx\n\n");
+			modificar_clave(claveSentencia, ((char*)list_get(listaKE, (mult-1) )) );
+			break;
 		}
 	}
+
 }
 
 

@@ -1,9 +1,0 @@
-GET dt
-SET dt sampaoli
-GET arquero
-SET arquero armani
-GET delantero
-SET delantero messi
-STORE dt
-STORE arquero
-STORE delantero
