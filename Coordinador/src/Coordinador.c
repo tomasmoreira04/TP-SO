@@ -183,8 +183,10 @@ void *rutina_ESI(void* argumento) {
 
 					if(!clave_tiene_instancia(sentencia.clave)) //atencion al !
 						instancia = aplicar_algoritmo(sentencia.clave, sentencia.valor);
-					else
+					else {
 						printf(RED"\nLa clave ya esta seteada en una instancia\n"RESET);
+						instancia = buscar_instancia(sentencia.clave);
+					}
 
 					printf("\nBuscando socket de instancia %s\n", instancia);
 
@@ -465,4 +467,8 @@ void imprimir_sentencia(t_sentencia sentencia) {
 		default: tipo = "STORE"; break;
 	}
 	printf("\nSentencia "CYAN"%s"RESET" del "GREEN"ESI %d"RESET" con clave "RED"%s"RESET, tipo, sentencia.id_esi, sentencia.clave);
+}
+
+char* buscar_instancia(char* clave) {
+	return (char*)dictionary_get(instancias_Claves, clave);
 }

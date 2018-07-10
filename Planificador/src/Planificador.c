@@ -475,7 +475,7 @@ int liberar_clave(char* clave) {
 int esta_bloqueada(char* clave) {
 	t_clave* bloq = buscar_clave_bloqueada(clave);
 	if (bloq != NULL)
-		return bloq->bloqueada;
+		return bloq->bloqueada == 1;
 	return 0;
 }
 

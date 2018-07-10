@@ -146,7 +146,7 @@ ConfigCoordinador config_predeterminada_coord() {
 	strcpy(config.ip_planificador, "127.0.0.1");
 	config.cant_entradas = 3;
 	config.tamanio_entrada = 10;
-	config.retardo = 1000000; // 1segundos
+	config.retardo = 1000; // 1 segundo
 	config.algoritmo = el;
 	imprimir_default();
 	return config;
