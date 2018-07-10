@@ -34,6 +34,7 @@ t_list *listaSoloInstancias;
 int contadorEquitativeLoad;
 
 int main(int argc, char* argv[]) {
+	setbuf(stdout, NULL); //a veces el printf no andaba, se puede hacer esto o un fflush
 	compresion=1;
 	int banderaPlanificador=0;
 	contadorEquitativeLoad=0;
@@ -86,7 +87,7 @@ void *rutina_instancia(void * arg) {
 		instancia_conexion->estadoConexion=conectada;
 		instancia_conexion->socket=socket_INST;
 
-		printf("\nel estado de la instacia es %d y su sockete es %d\n\n",instancia_conexion->estadoConexion,instancia_conexion->socket);
+		printf("\nel estado de la instacia es %d y su socket es %d\n\n",instancia_conexion->estadoConexion,instancia_conexion->socket);
 
 		dictionary_put(lista_Instancias, nombre_inst , instancia_conexion);
 
@@ -117,35 +118,24 @@ void *rutina_ESI(void* argumento) {
 
 		t_sentencia sentencia = *(t_sentencia*)stream;
 		id_esi = sentencia.id_esi;
-
-		printf("\nSentencia: tipo:%d -esi:%d -clave:%s\n", sentencia.tipo, sentencia.id_esi, sentencia.clave);
+		imprimir_sentencia(sentencia);
 
 		enviarMensaje(socket_plan, sentencia_coordinador, &sentencia, sizeof(t_sentencia));
-		printf("\nesperando respuesta planif\n");
 
 		int sentencia_okey = recibirMensaje(socket_plan, &stream); //el planif me da el OK, entonces ejecuto una sentencia del esi
 
-		printf("\nme llego xd\n");
-
-		usleep(configuracion.retardo*1000); //1 segundo
-		//usleep(configuracion.retardo);
+		usleep(configuracion.retardo * 1000);
 
 		while(compresion!=1){}
 
 		if (sentencia_okey == sentencia_coordinador) {
 
-			printf("\nestoy haciendo la sentencia\n");
-
 			switch(sentencia.tipo){
 				case S_GET:
 				{
-					printf("\nestoy un get\n");
 					if( (dictionary_has_key(instancias_Claves , sentencia.clave) )==false ) {
 						//Persistir
 						dictionary_put(instancias_Claves, sentencia.clave , "0" );//VERIFICAR SI ES EN VARIABLE
-						//char* msg_get = formatear_mensaje_esi(1, S_SET, sentencia->clave, NULL);
-						//no se si funcionara lo de abajo, sino pasarle msg_get
-						//el primer parametro debe ser el id del ESI, pongo 1 para que no rompa
 						log_info(log_operaciones, formatear_mensaje_esi(1, S_GET, sentencia.clave, NULL));
 					}
 					break;
@@ -165,20 +155,20 @@ void *rutina_ESI(void* argumento) {
 					switch(operacionPedidaInstacia){
 						case 0:
 						{
-							int  ESI_bloq= sentencia.id_esi;
-							cambiarEstadoInstancia(instanciaGuardada,desconectada);
-							printf("SE DESCONECTO LA CHINGADA INSTANCIA\n");
+							int  ESI_bloq = sentencia.id_esi;
+							cambiarEstadoInstancia(instanciaGuardada, desconectada);
+							printf(RED"Se desconecto la Instancia  %s\n"RESET, instanciaGuardada);
 							enviarMensaje(socket_plan, esi_bloqueado, &ESI_bloq, sizeof(int));
 							break;
 						}
 						case ejecucion_ok:
 						{
-							printf("GREAT ejecucion_ok\n");
+							printf(GREEN"Ejecucion OK!\n"RESET);
 							break;
 						}
 						default:
 						{
-							printf("IVAN ILUMINANOS\n");
+							printf(CYAN"IVAN ILUMINANOS\n"RESET);
 							break;
 						}
 					}
@@ -192,12 +182,9 @@ void *rutina_ESI(void* argumento) {
 					char* instancia = "0";
 
 					if(!clave_tiene_instancia(sentencia.clave)) //atencion al !
-					{
 						instancia = aplicar_algoritmo(sentencia.clave, sentencia.valor);
-						printf("\n\nALGORITMO APLICADO\n");
-					}
 					else
-						printf(RED"\nLa clave ya esta seteada en una instancia\ncapo arreglame el STORe para liberarlaaaaaaaaaaaaaaaaaaaaaaaaaaa"RESET);
+						printf(RED"\nLa clave ya esta seteada en una instancia\n"RESET);
 
 					printf("\nBuscando socket de instancia %s\n", instancia);
 
@@ -205,9 +192,7 @@ void *rutina_ESI(void* argumento) {
 					char* instanciaGuardada=malloc(largoSentencia);
 					strcpy(instanciaGuardada, (char*) (dictionary_get(instancias_Claves , sentencia.clave)) );
 
-
 					int socket = (*(instancia_Estado_Conexion*) dictionary_get(lista_Instancias , instancia)).socket;
-					printf("\nSOCKETEEEEEEEEEEEEEEEEEEEEEEE: %d\n", socket);
 
 					//VALIDAR INSTANCIA CONECTADA
 					//MANDAR A INSTANCIA
@@ -267,10 +252,8 @@ void *rutina_ESI(void* argumento) {
 				}
 			}
 			int variable = exitoso;
-			printf("\nestoy mandando el exec ok al esi\n");
-			enviarMensaje(socket_esi, ejecucion_ok, &variable, sizeof(int));
-			printf("\nya mande el exec ok al esi\n");
 
+			enviarMensaje(socket_esi, ejecucion_ok, &variable, sizeof(int));
 		}
 		else if(sentencia_okey== esi_bloqueado){
 
@@ -283,7 +266,7 @@ void *rutina_ESI(void* argumento) {
 		}
 	}
 	//sale del while -> no hay mas sentencias
-	printf(YELLOW"\nfinalizando esi\n"RESET);
+	printf(YELLOW"\nFinalizando ESI %d\n"RESET, id_esi);
 	enviarMensaje(socket_plan, terminar_esi, &id_esi, sizeof(id_esi));
 	return NULL;
 }
@@ -308,28 +291,11 @@ int clave_tiene_instancia(char* clave) {
 }
 
 char* aplicar_algoritmo(char* clave, char* valor) { //DEVUELVE EL NOMBRE DE LA INSTANCIA ASIGNADA
-	fflush(stdin);
-	//puts(configuracion.algoritmo);
-	printf("\n\n");
-	//printf(RED"\nMORDEKAISER %s\n",configuracion.algoritmo);
 	switch(configuracion.algoritmo) {
-		case el:
-			{
-				printf("\n\nEQUITATIVA TIO\n\n");
-				equitative_load(clave);
-			}break;
-		case lsu:	{
-			printf("\n\nLSU WACHIN\n\n");
-			least_space_used(clave);
-			}break;
-		case ke:{
-			printf("\n\nKEY EXPLICIT WACHO\n\n");
-			key_explicit(clave);
-			}break;
-		default: {
-			/*nunca pasa, si carga en config CACA123 te pone default EL*/
-			printf("\n\nESTOY DURISIMO WACHO\n\n");
-		}break;
+		case el:	equitative_load(clave);		break;
+		case lsu:	least_space_used(clave);	break;
+		case ke: 	key_explicit(clave); 		break;
+		default: 								break;
 	}
 	log_info(log_operaciones, formatear_mensaje_esi(1, S_SET, clave, valor)); //por qué 1 xd?
 	return (char*) dictionary_get(instancias_Claves , clave);
@@ -377,12 +343,10 @@ void modificar_clave(char* clave, char* instancia) {
 
 void equitative_load(char* claveSentencia){
 	log_info(log_operaciones, "Aplicando Equitative Load..");
-	printf("\nAplicando Equitative Load..\n");
 	int cantidadInstancias = dictionary_size(lista_Instancias)-1;
 	char* instancia = list_get(listaSoloInstancias, contadorEquitativeLoad);
 	int estadoInstancia=estadoDeInstancia(instancia);
 	if( estadoInstancia==conectada ){
-		printf("\nEQLOAD obtuvo instancia: %s\n", instancia);
 		modificar_clave(claveSentencia, instancia);
 		contador_EQ(cantidadInstancias);
 	}
@@ -391,7 +355,7 @@ void equitative_load(char* claveSentencia){
 			equitative_load(claveSentencia);
 		}
 		else{
-			printf("\nERROR 404 LLAME A BRUCE WAYNE\n");
+			printf(RED"\nERROR\n"RESET);
 		}
 	}
 }
@@ -414,7 +378,6 @@ void key_explicit(char* claveSentencia){
 	t_list *listaKE;
 	listaKE= list_create();
 
-	//printf("\n\nclabve    %d\n\n",claveSentencia[0]-96);
 	int comienzo=(claveSentencia[0])-96;
 
 	int instanciasActivas=0;
@@ -426,17 +389,13 @@ void key_explicit(char* claveSentencia){
 			instanciasActivas++;
 		}
 	}
-	printf("\n\n INSTANCIAS CONECTADAS: %.d \n\n",instanciasActivas);
 	float asignacion_por_instancia= (float) 26  /  (float)instanciasActivas;
-	printf("\n\nASIGNACION INSTANCIAS: %.2f  \n\n",asignacion_por_instancia);
 	float mult=1;
 	for(int j=1;j<=26;j++){
 		if( (asignacion_por_instancia*mult) < comienzo ){
 			mult++;
 		}
 		if(comienzo==j){
-			//printf("\nASIGNACION: %s \n" *((char*)list_get(listaSoloInstancias,mult)));
-			printf("\n\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxx\n\n");
 			modificar_clave(claveSentencia, ((char*)list_get(listaKE, (mult-1) )) );
 			break;
 		}
@@ -469,7 +428,6 @@ char* formatear_mensaje_esi(int id, TipoSentencia t, char* clave, char* valor) {
 	string_append(&formato_string, "El ESI ");
 	string_append(&formato_string, str_id);
 	string_append(&formato_string, " hizo un");
-	printf("%d", t);
 	switch(t) {
 		case S_SET:
 			string_append(&formato_string, " SET sobre ");
@@ -497,4 +455,14 @@ void destruir_estructuras_globales() {
 	dictionary_destroy(lista_Instancias);
 	list_destroy(listaSoloInstancias);
 	list_destroy(lista_instancias_new);
+}
+
+void imprimir_sentencia(t_sentencia sentencia) {
+	char* tipo;
+	switch (sentencia.tipo) {
+		case S_GET: tipo = "GET"; break;
+		case S_SET: tipo = "SET"; break;
+		default: tipo = "STORE"; break;
+	}
+	printf("\nSentencia "CYAN"%s"RESET" del "GREEN"ESI %d"RESET" con clave "RED"%s"RESET, tipo, sentencia.id_esi, sentencia.clave);
 }

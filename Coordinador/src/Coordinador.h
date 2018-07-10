@@ -30,7 +30,7 @@ void crear_hilo(int nuevo_socket, int modulo);
 int buscarEnLista(int valor);
 void equitative_load(char* claveSentencia);
 void contador_EQ(int cantidadDeInstancias);//ASIGNA EL EQ AL CUAL TIENE QUE ASIGNAR
-
+void imprimir_sentencia(t_sentencia sentencia);
 void least_space_used(char*);
 
 void key_explicit(char* claveSentencia);

@@ -82,11 +82,10 @@ void leer_sentencias(int planificador, int coordinador, char* ruta) {
 			t_esi_operacion operacion = parse(linea);
 
 			if(operacion.valido){
-				t_sentencia sentencia = convertir_operacion(operacion);;
+				t_sentencia sentencia = convertir_operacion(operacion);
 				sentencia.id_esi = id_esi;
-				printf("tengo ID %d", sentencia.id_esi);
 
-				enviarMensaje(coordinador, ejecutar_sentencia_coordinador, &sentencia, sizeof(sentencia));
+				enviarMensaje(coordinador, ejecutar_sentencia_coordinador, &sentencia, sizeof(t_sentencia));
 
 				ejecutar_operacion(operacion); //imprime nada mas en el ESI
 

@@ -257,7 +257,6 @@ void procesar_resultado(ResultadoEjecucion resultado) {
 
 void ejecutar_esi(ESI* esi) {
 	int id = esi->id;
-	printf("ID que mando: %d", id);
 	enviarMensaje(esi->socket_planif, ejecutar_proxima_sentencia, &id, sizeof(int));
 
 	esi->cola_actual = NULL;
@@ -347,12 +346,12 @@ void error_operacion(ErrorOperacion tipo, char* clave, int esi) {
 }
 
 void GET(char* clave, ESI* esi, int coordinador) {
-	/*if (strlen(clave) > MAX_LARGO_CLAVE) {
+	if (strlen(clave) > MAX_LARGO_CLAVE) {
 		error_operacion(error_tamanio_clave, clave, esi->id);
 		finalizar_esi_ref(esi);
 		avisar(coordinador, error_sentencia);
 	}
-	else */if (esta_bloqueada(clave) == 1) {
+	else if (esta_bloqueada(clave) == 1) {
 		printf(YELLOW"\nLa clave "GREEN"%s "YELLOW"se encuentra bloqueada, se bloqueará el "GREEN"ESI %d"RESET, clave, esi->id);
 		nueva_solicitud_clave(clave, esi);
 		bloquear_esi(esi);
@@ -363,7 +362,6 @@ void GET(char* clave, ESI* esi, int coordinador) {
 		printf("\nLa clave "GREEN"%s "RESET"se asigno a "GREEN"ESI %d"RESET, clave, esi->id);
 		esi->rafagas_restantes--;
 		avisar(coordinador, sentencia_coordinador);
-		printf("avisado el coord campeonnnnnn");
 	}
 }
 
