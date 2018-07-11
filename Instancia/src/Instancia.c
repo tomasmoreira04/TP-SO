@@ -173,10 +173,12 @@ int main(int argc, char* argv[]) {
 			switch(accion){
 				case ejecutar_sentencia_instancia:
 					ejecutarSentencia((t_sentencia*)stream);
-					avisar(socketServer, ejecucion_ok);
+					enviarMensaje(socketServer,ejecucion_ok,&cantEntradasDisp,sizeof(int));
 					break;
 
 				case compactar:
+					enviarMensaje(socketServer,compactar,&cantEntradasDisp,sizeof(int));
+					//COMPACTAR
 					break;
 
 				default:
