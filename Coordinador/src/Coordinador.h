@@ -44,6 +44,7 @@ void destruir_estructuras_globales();
 char* aplicar_algoritmo(char* clave, char* valor);
 int clave_tiene_instancia(char* clave);
 void avisar_guardado_planif(char* instancia, char* clave);
+void actualizar_instancia(char* instancia, int valor);
 
 int estadoDeInstancia(char * instancia);//DEVUELVE EL ESTADO DE LA INSTANCIA A LA CUAL SE INTENTA GUARDAR
 

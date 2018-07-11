@@ -86,6 +86,7 @@ void *rutina_instancia(void * arg) {
 		instancia_Estado_Conexion *instancia_conexion=malloc(sizeof(instancia_Estado_Conexion));
 		instancia_conexion->estadoConexion=conectada;
 		instancia_conexion->socket=socket_INST;
+		instancia_conexion->entradas_disponibles = configuracion.cant_entradas;
 
 		printf("\nel estado de la instacia es %d y su socket es %d\n\n",instancia_conexion->estadoConexion,instancia_conexion->socket);
 
@@ -150,8 +151,9 @@ void *rutina_ESI(void* argumento) {
 					int socketEncontrado= (*(instancia_Estado_Conexion*) (dictionary_get(lista_Instancias , instanciaGuardada))).socket;
 					enviarMensaje(socketEncontrado, ejecutar_sentencia_instancia,  &sentencia,sizeof(t_sentencia));
 
-					void* mensajeInstancia;
-					int operacionPedidaInstacia = recibirMensaje(socketEncontrado, &mensajeInstancia);
+					void* cantidad_entradas;
+					int operacionPedidaInstacia = recibirMensaje(socketEncontrado, &cantidad_entradas);
+					actualizar_instancia(instanciaGuardada, *((int*)cantidad_entradas));
 					switch(operacionPedidaInstacia){
 						case 0:
 						{
@@ -203,8 +205,8 @@ void *rutina_ESI(void* argumento) {
 					//VER BIEN DONDE VA ESTO, le envio al planif la instancia que esta la clave
 					avisar_guardado_planif(instancia, sentencia.clave);
 
-					void* mensajeInstancia;
-					int operacionPedidaInstacia = recibirMensaje(socket, &mensajeInstancia);
+					void* cantidad_entradas;
+					int operacionPedidaInstacia = recibirMensaje(socket, &cantidad_entradas);
 					//COMPACTAR
 
 					switch(operacionPedidaInstacia){
@@ -273,7 +275,7 @@ void *rutina_ESI(void* argumento) {
 	return NULL;
 }
 
-void cambiarEstadoInstancia(char *instanciaGuardada,estado_de_la_instancia accion){
+void cambiarEstadoInstancia(char *instanciaGuardada, estado_de_la_instancia accion){
 	instancia_Estado_Conexion *aux=malloc(sizeof(instancia_Estado_Conexion));
 	dictionary_remove(lista_Instancias, instanciaGuardada);
 	aux->estadoConexion=accion;
@@ -343,6 +345,13 @@ void modificar_clave(char* clave, char* instancia) {
 	dictionary_put(instancias_Claves, clave, instancia);
 }
 
+void actualizar_instancia(char* instancia, int entradas) {
+	instancia_Estado_Conexion *aux = (instancia_Estado_Conexion*) dictionary_get(lista_Instancias, instancia);
+	aux->entradas_disponibles = entradas;
+	dictionary_remove(lista_Instancias, instancia);
+	dictionary_put(lista_Instancias, instancia, aux);
+}
+
 void equitative_load(char* claveSentencia){
 	log_info(log_operaciones, "Aplicando Equitative Load..");
 	int cantidadInstancias = dictionary_size(lista_Instancias)-1;
@@ -407,20 +416,46 @@ void key_explicit(char* claveSentencia){
 
 
 //ESTO FUNCIONA PARA LA LISTA PROPUESTA lista_instancias_new
-void least_space_used(char* claveSentencia) {
+/*void least_space_used(char* claveSentencia) {
 
 	bool comparator_entradas_max(Nodo_Instancia* m, Nodo_Instancia* n) {
 			return m->entradas_desocupadas >= n->entradas_desocupadas;
 		}
 
 	t_list* lista_aux = list_create();
-	//lista_aux = list_duplicate(lista_instancias_new);
-	list_add_all(lista_aux, lista_instancias_new);
+	lista_aux = list_duplicate(lista_instancias_new);
+	//list_add_all(lista_aux, lista_instancias_new);
 	list_sort(lista_aux, (void*) comparator_entradas_max);
 	Nodo_Instancia* nodo_maximo = list_get(lista_aux, 0);
 	char* instancia_max = malloc(strlen(nodo_maximo->inst_ID));
 	strcpy(instancia_max, nodo_maximo->inst_ID);
 	modificar_clave(claveSentencia, instancia_max);
+}
+*/
+
+void least_space_used(char* clave) {
+	t_list* lista_inst_activa = list_create();
+	int instancias_activas = 0;
+	for(int i=0 ; i < list_size(listaSoloInstancias) ; i++) {
+		if(((*(instancia_Estado_Conexion*)dictionary_get(lista_Instancias,((char*)list_get(listaSoloInstancias,i)))).estadoConexion)==conectada){
+			list_add(lista_inst_activa, ((char*)list_get(listaSoloInstancias,i)));
+			instancias_activas++;
+		}
+	}
+	//char* instancia_elegida = malloc(80);
+
+	for(int j=1; j<instancias_activas; j++) {
+		if((*(instancia_Estado_Conexion*)(dictionary_get(lista_Instancias, (char*)list_get(lista_inst_activa, j)))).entradas_disponibles >
+			(*(instancia_Estado_Conexion*)(dictionary_get(lista_Instancias, (char*)list_get(lista_inst_activa, (j-1))))).entradas_disponibles) {
+			//list_get(lista_inst_activa, j);
+			//strcpy(instancia_elegida, (char*)list_get(lista_inst_activa, j));
+			modificar_clave(clave, (char*)list_get(lista_inst_activa, j));
+		}
+		else {
+			//strcpy(instancia_elegida, (char*)list_get(lista_inst_activa, (j+1)));
+			modificar_clave(clave, (char*)list_get(lista_inst_activa, (j+1)));
+		}
+	}
 }
 
 char* formatear_mensaje_esi(int id, TipoSentencia t, char* clave, char* valor) {

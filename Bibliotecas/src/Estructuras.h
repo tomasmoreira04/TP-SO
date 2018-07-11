@@ -80,6 +80,7 @@ typedef enum {
 typedef struct {
 	int socket;
 	estado_de_la_instancia estadoConexion;//1 Conectado, 2 Se Chingo la wea y se fue al carajo
+	int entradas_disponibles;
 } instancia_Estado_Conexion;
 
 #endif
