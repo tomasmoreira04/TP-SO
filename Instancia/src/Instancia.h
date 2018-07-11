@@ -44,4 +44,12 @@ void regTablaDestroyer(Reg_TablaEntradas* registro);
 void aumentarTiempoRef();
 int buscarNodoReemplazo(char* clave);
 
+//Lucy funciones
+void crear_hilo();
+int laListaLoContiene(char * clave);
+void *rutina_Dump(void * arg);
+void guardarLaWea();
+
+
+
 #endif /* INSTANCIA_H_ */

@@ -39,10 +39,7 @@ int32_t cantEntradasDisp;
 ConfigInstancia config;
 
 
-void crear_hilo();
-int laListaLoContiene(char * clave);
-void *rutina_Dump(void * arg);
-void guardarLaWea();
+
 
 int main(int argc, char* argv[]) {
 
@@ -517,6 +514,7 @@ void destruirlo_todo(){
 	free(reemplazos); 																			//elimina la lista en si
 }
 
+//--------------------------------------------------------------------------------------------------------------------------------------------
 
 void crear_hilo(int vc) {
 	pthread_attr_t attr;
@@ -538,16 +536,13 @@ void crear_hilo(int vc) {
 	pthread_attr_destroy(&attr);
 }
 
-
 void *rutina_Dump(void * arg) {
 	while(1){
-		usleep(10000);
+		usleep(config.intervalo_dump);
 		guardarLaWea();
 	}
 	return NULL;
 }
-
-
 
 int laListaLoContiene(char * clave){
 	int existe=0;
@@ -561,12 +556,19 @@ int laListaLoContiene(char * clave){
 	if(existe==1){
 		return 0;
 	}
-	return 1;
+	else{
+		return 1;
+	}
 }
 
-void guardarLaWea(){
-	//GUARDAR
-	// RECORRER LA LISTA DE TEFFO REESCRIBIR Y PERSISTIR Y ROBAR FUNCION DE TEFFO
+void guardarLaWea()
+{
+	for(int i=0;i<(list_size(lista_Claves));i++)
+	{
+		if( dictionary_has_key( tablaEntradas , (char*)list_get(lista_Claves,i)  ) ){
+			persistirValor( (char*)list_get(lista_Claves,i));
+		}
+	}
 }
 
 
