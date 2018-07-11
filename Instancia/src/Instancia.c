@@ -8,6 +8,7 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <pthread.h>
 #include "../../Bibliotecas/src/Estructuras.h"
 #include "../../Bibliotecas/src/Socket.c"
 #include "../../Bibliotecas/src/Configuracion.c"
@@ -27,6 +28,9 @@ t_bitarray* disponibles;
 t_list* reemplazos;
 
 
+t_list* lista_Claves;
+
+
 //VARIABLES GLOBALES----
 char* storage;
 int32_t cantEntradas;
@@ -34,7 +38,16 @@ int32_t tamEntrada;
 int32_t cantEntradasDisp;
 ConfigInstancia config;
 
+
+void crear_hilo();
+int laListaLoContiene(char * clave);
+void *rutina_Dump(void * arg);
+void guardarLaWea();
+
 int main(int argc, char* argv[]) {
+
+	lista_Claves=list_create();
+
 	char* nombre = argv[1];
 	config = cargar_config_inst(nombre);
 
@@ -304,6 +317,10 @@ void ejecutarSentencia(t_sentencia* sentencia){
 		aumentarTiempoRef();
 		almacenarValor(sentencia->clave,sentencia->valor);
 		printf(GREEN "\nSe ejecuto un SET correctamente\n"RESET);
+
+		if(laListaLoContiene(sentencia->clave)==0 ){
+			list_add(lista_Claves,sentencia->clave);
+		}
 		break;
 
 	case S_STORE:
@@ -499,6 +516,59 @@ void destruirlo_todo(){
 	list_clean_and_destroy_elements(reemplazos,(void*)nodoRempDestroyer);						//elimina elementos de la lista
 	free(reemplazos); 																			//elimina la lista en si
 }
+
+
+void crear_hilo(int vc) {
+	pthread_attr_t attr;
+	pthread_t hilo;
+	//Hilos detachables con manejo de errores tienen que ser logs
+	int  res = pthread_attr_init(&attr);
+	if (res != 0) {
+		printf( "\nError en los atributos del hilo\n");
+	}
+	res = pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+	if (res != 0) {
+		printf("\nError en el seteado del estado de detached\n");
+	}
+	res = pthread_create (&hilo ,&attr, rutina_Dump,NULL);
+	if (res != 0) {
+		printf( "\nError en la creacion del hilo\n");
+	}
+	printf( "\nSe ha creado un hilo\n");
+	pthread_attr_destroy(&attr);
+}
+
+
+void *rutina_Dump(void * arg) {
+	while(1){
+		usleep(10000);
+		guardarLaWea();
+	}
+	return NULL;
+}
+
+
+
+int laListaLoContiene(char * clave){
+	int existe=0;
+	for(int i=0;i< (list_size(lista_Claves));i++   ){
+		int resultado=strcmp(clave,(char*)list_get(lista_Claves,i));
+		if(resultado==0){
+			existe=1;
+			break;
+		}
+	}
+	if(existe==1){
+		return 0;
+	}
+	return 1;
+}
+
+void guardarLaWea(){
+	//GUARDAR
+	// RECORRER LA LISTA DE TEFFO REESCRIBIR Y PERSISTIR Y ROBAR FUNCION DE TEFFO
+}
+
 
 
 
