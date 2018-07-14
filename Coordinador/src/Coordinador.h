@@ -20,8 +20,8 @@ t_log* log_operaciones;
 
 void conectar_con_planificador(int planificador);
 void mostrar_por_pantalla_config(ConfigCoordinador config);
-void crear_log_operacion();
-void destruir_log_operacion();
+void crear_log_operaciones();
+void destruir_log_operaciones();
 void mostrar_archivo(char* path);
 void guardar_en_log(int id_esi, char* sentencia);
 void *rutina_instancia(void * arg);
@@ -47,7 +47,7 @@ void avisar_guardado_planif(char* instancia, char* clave);
 void actualizar_instancia(char* instancia, int valor);
 
 int estadoDeInstancia(char * instancia);//DEVUELVE EL ESTADO DE LA INSTANCIA A LA CUAL SE INTENTA GUARDAR
-
+void nodo_inst_conexion_destroyer(instancia_Estado_Conexion* inst);
 
 
 #endif /* COORDINADOR_H_ */

@@ -40,13 +40,12 @@ int main(int argc, char* argv[]) {
 	contadorEquitativeLoad=0;
 	instancias_Claves= dictionary_create();
 	listaSoloInstancias=list_create();
-	lista_instancias_new = list_create();
+	//lista_instancias_new = list_create(); por ahora, esta deprecada
 
 	configuracion = cargar_config_coordinador(argv[1]);
-
-	crear_log_operacion();
+	crear_log_operaciones();
 	log_info(log_operaciones, "Se ha cargado la configuracion inicial del Coordinador");
-	lista_Instancias =dictionary_create();
+	lista_Instancias = dictionary_create();
 	int listener = crear_socket_de_escucha(configuracion.puerto_escucha);
 	int nuevo_socket, modulo;
 	while(1){
@@ -83,17 +82,17 @@ void *rutina_instancia(void * arg) {
 	if( (dictionary_has_key(lista_Instancias , nombre_inst ) ) == false ){
 		printf("socket %d agregado a instancia %s", socket_INST, nombre_inst);
 
-		instancia_Estado_Conexion *instancia_conexion=malloc(sizeof(instancia_Estado_Conexion));
+		instancia_Estado_Conexion *instancia_conexion = malloc(sizeof(instancia_Estado_Conexion));
 		instancia_conexion->estadoConexion=conectada;
 		instancia_conexion->socket=socket_INST;
 		instancia_conexion->entradas_disponibles = configuracion.cant_entradas;
 
 		printf("\nel estado de la instacia es %d y su socket es %d\n\n",instancia_conexion->estadoConexion,instancia_conexion->socket);
-
 		dictionary_put(lista_Instancias, nombre_inst , instancia_conexion);
-
 		list_add(listaSoloInstancias, nombre_inst);
 		configurar_instancia(socket_INST);
+		nodo_inst_conexion_destroyer(instancia_conexion);
+
 	}
 	else{
 		cambiarEstadoInstancia(nombre_inst,conectada);
@@ -309,11 +308,11 @@ void crear_hilo(int nuevo_socket, int modulo) {
 	//Hilos detachables con manejo de errores tienen que ser logs
 	int  res = pthread_attr_init(&attr);
 	if (res != 0) {
-		log_error(log_operaciones, "Error en los atributos del hilo");
+		log_error(log_operaciones, "Error en los atributos del hilo func: crear_hilo");
 	}
 	res = pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 	if (res != 0) {
-		log_error(log_operaciones, "Error en el seteado del estado de detached");
+		log_error(log_operaciones, "Error en el seteado del estado de detached. func: crear_hilo");
 	}
 	res = (modulo == instancia) ? pthread_create (&hilo ,&attr, rutina_instancia , (void *)nuevo_socket)
 			:pthread_create (&hilo ,&attr, rutina_ESI, (void*)nuevo_socket);
@@ -334,7 +333,7 @@ void mostrar_archivo(char* path) {
 	fclose(f);
 }
 
-void crear_log_operacion() {
+void crear_log_operaciones() {
 	log_operaciones = log_create("operaciones_coordinador.log", "coordinador", 0, 1);
 }
 
@@ -354,7 +353,7 @@ void equitative_load(char* claveSentencia){
 	log_info(log_operaciones, "Aplicando Equitative Load..");
 	int cantidadInstancias = dictionary_size(lista_Instancias)-1;
 	char* instancia = list_get(listaSoloInstancias, contadorEquitativeLoad);
-	int estadoInstancia=estadoDeInstancia(instancia);
+	int estadoInstancia = estadoDeInstancia(instancia);
 	if( estadoInstancia==conectada ){
 		modificar_clave(claveSentencia, instancia);
 		contador_EQ(cantidadInstancias);
@@ -379,7 +378,9 @@ void contador_EQ(int cantidadDeInstancias){
 }
 
 int estadoDeInstancia(char * instancia){
-	 return (*(instancia_Estado_Conexion*)dictionary_get(lista_Instancias,instancia)).estadoConexion;
+	puts("LLEGUE");
+	//printf("das%d", (*(instancia_Estado_Conexion*)dictionary_get(lista_Instancias,instancia)).estadoConexion);
+	return (*(instancia_Estado_Conexion*)dictionary_get(lista_Instancias,instancia)).estadoConexion;
 }
 
 void key_explicit(char* claveSentencia){
@@ -486,10 +487,10 @@ char* formatear_mensaje_esi(int id, TipoSentencia t, char* clave, char* valor) {
 
 void destruir_estructuras_globales() {
 	log_destroy(log_operaciones);
-	dictionary_destroy(instancias_Claves);
-	dictionary_destroy(lista_Instancias);
-	list_destroy(listaSoloInstancias);
-	list_destroy(lista_instancias_new);
+	dictionary_destroy_and_destroy_elements(instancias_Claves, free);
+	dictionary_destroy_and_destroy_elements(lista_Instancias, (void*)nodo_inst_conexion_destroyer);
+	list_destroy_and_destroy_elements(listaSoloInstancias, free);
+	//list_destroy(lista_instancias_new); POR AHORA DEPRECADO, SOLO POR AHORA
 }
 
 void imprimir_sentencia(t_sentencia sentencia) {
@@ -504,4 +505,8 @@ void imprimir_sentencia(t_sentencia sentencia) {
 
 char* buscar_instancia(char* clave) {
 	return (char*)dictionary_get(instancias_Claves, clave);
+}
+
+void nodo_inst_conexion_destroyer(instancia_Estado_Conexion* inst) {
+	free(inst);
 }
