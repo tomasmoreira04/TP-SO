@@ -165,7 +165,7 @@ void *rutina_ESI(void* argumento) {
 						}
 						case ejecucion_ok:
 						{
-							printf(GREEN"Ejecucion OK!\n"RESET);
+							//printf(GREEN"Ejecucion OK!\n"RESET);
 							break;
 						}
 						default:
@@ -179,8 +179,6 @@ void *rutina_ESI(void* argumento) {
 				}
 				case S_SET:
 				{
-					printf(RED"\n%s\n"RESET, sentencia.valor);
-
 					char* instancia = "0";
 
 					if(!clave_tiene_instancia(sentencia.clave)) //atencion al !
@@ -221,7 +219,7 @@ void *rutina_ESI(void* argumento) {
 
 						case ejecucion_ok:
 						{
-							printf("GREAT ejecucion_ok\n");
+							//printf("GREAT ejecucion_ok\n");
 							break;
 						}
 						case compactar:

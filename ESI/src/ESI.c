@@ -18,7 +18,8 @@
 
 int main(int argc, char* argv[]) {
 	ConfigESI config = cargar_config_esi(argv[2]);
-	char* ruta = ruta_script(argv[1]);
+	char* nombre = argv[1];
+	char* ruta = ruta_script(nombre);
 	setbuf(stdout, NULL);
 	int planificador = conexion_con_servidor(config.ip_planificador, config.puerto_planificador);
 	int coordinador = conexion_con_servidor(config.ip_coordinador, config.puerto_coordinador);
@@ -26,7 +27,7 @@ int main(int argc, char* argv[]) {
 
 	FILE* script = cargar_script(ruta);
 	int rafagas = cantidad_de_sentencias(script);
-	informar_nuevo_esi(planificador, rafagas);
+	informar_nuevo_esi(planificador, rafagas, nombre);
 
 	leer_sentencias(planificador, coordinador, ruta); //si paso puntero a FILE no me anda el getline xD, asi que abro de nuevo
 
@@ -43,8 +44,11 @@ char* ruta_script(char* argumento) { //se pasa solo el nombre del archivo, sin e
 	return ruta;
 }
 
-void informar_nuevo_esi(int socket, int rafagas) {
-	enviarMensaje(socket, nuevo_esi, &rafagas, sizeof(rafagas));
+void informar_nuevo_esi(int socket, int rafagas, char* nombre) {
+	t_nuevo_esi* nuevo = malloc(sizeof(t_nuevo_esi));
+	nuevo->rafagas = rafagas;
+	strcpy(nuevo->nombre, nombre);
+	enviarMensaje(socket, nuevo_esi, nuevo, sizeof(t_nuevo_esi));
 }
 
 //hago esto porque el struct que te dan en el parser es una mierda :)

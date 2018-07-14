@@ -46,6 +46,8 @@ pthread_mutex_t mutex_coord_con = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t coord_ok = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t numero_esi = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t num_esis = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t sem_ejecutar = PTHREAD_MUTEX_INITIALIZER;
+
 
 int main(int argc, char* argv[]) {
 	setbuf(stdout, NULL); //a veces el printf no andaba, se puede hacer esto o un fflush
@@ -200,7 +202,7 @@ void* procesar_mensaje_esi(void* sock) {
 		Accion accion = recibirMensaje(socket, &mensaje);
 		switch(accion) {
 			case nuevo_esi:
-				proceso_nuevo(*(int*)mensaje, socket);
+				proceso_nuevo(*(t_nuevo_esi*)mensaje, socket);
 				break;
 			case resultado_ejecucion:
 				procesar_resultado(*(int*)mensaje);
@@ -346,14 +348,14 @@ void error_operacion(ErrorOperacion tipo, char* clave, int esi) {
 }
 
 void GET(char* clave, ESI* esi, int coordinador) {
-	if (strlen(clave) > MAX_LARGO_CLAVE) {
+	/*if (strlen(clave) > MAX_LARGO_CLAVE) {
 		error_operacion(error_tamanio_clave, clave, esi->id);
 		finalizar_esi_ref(esi);
 		avisar(coordinador, error_sentencia);
 	}
-	else if (esta_bloqueada(clave) == 1) {
+	else */if (esta_bloqueada(clave) == 1) {
 		printf(YELLOW"\nLa clave "GREEN"%s "YELLOW"se encuentra bloqueada, se bloqueará el "GREEN"ESI %d"RESET, clave, esi->id);
-		nueva_solicitud_clave(clave, esi);
+		nueva_solicitud_clave(clave, esi); //va bien esto
 		bloquear_esi(esi);
 		avisar(coordinador, esi_bloqueado);
 	}
@@ -490,6 +492,7 @@ t_clave* buscar_clave_bloqueada(const char* clave) {
 
 void bloquear_esi(ESI* esi) {
 	mover_esi(esi, cola_de_bloqueados);
+	esi_ejecutando = NULL;
 	replanificar();
 }
 
@@ -498,36 +501,35 @@ void desbloquear_esi(ESI* esi) {
 	printf(GREEN"\nSE HA DESBLOQUEADO EL ESI %d\n"RESET, esi->id);
 }
 
-void proceso_nuevo(int rafagas, int socket) {
+void proceso_nuevo(t_nuevo_esi esi, int socket) {
 	ESI* nuevo_esi = malloc(sizeof(ESI));
 	nuevo_esi->estimacion_anterior = config.estimacion_inicial;
 	s_wait(&numero_esi);
 	nuevo_esi->id = ++ultimo_id;
 	s_signal(&numero_esi);
-	nuevo_esi->rafagas_totales = rafagas;
+	nuevo_esi->rafagas_totales = esi.rafagas;
 	nuevo_esi->rafagas_restantes = estimar(nuevo_esi);
 	nuevo_esi->tiempo_esperado = 0;
 	nuevo_esi->socket_planif = socket;
 	nuevo_esi->cola_actual = NULL;
 	nuevo_esi->claves = list_create();
-	imprimir_nuevo_esi(nuevo_esi);
+	imprimir_nuevo_esi(nuevo_esi, esi.nombre);
 	ingreso_cola_de_listos(nuevo_esi);
 }
 
-void imprimir_nuevo_esi(ESI* esi) {
+void imprimir_nuevo_esi(ESI* esi, char* nombre) {
 	printf( "\nNuevo ESI " GREEN "%d" RESET " con ", esi->id);
 	if (config.algoritmo == fifo || config.algoritmo == hrrn)
-		printf(RED"%d"RESET" de rafagas totales", esi->rafagas_totales);
+		printf(RED"%d"RESET" de rafagas totales.", esi->rafagas_totales);
 	else //sjf
 		printf(RED"%.2f"RESET" de tiempo estimado.", esi->rafagas_restantes);
+	printf(" Script: "CYAN"%s"RESET, nombre);
 }
 
 
 void ingreso_cola_de_listos(ESI* esi) {
 	mover_esi(esi, cola_de_listos);
 	replanificar();
-	/*if (hay_desalojo(config.algoritmo) || esi_ejecutando == NULL)
-		replanificar();*/
 }
 
 void replanificar() {
@@ -544,7 +546,7 @@ void ejecutar(int desalojar) {
 
 	while (planificar != 1);
 
-	s_wait(&siguiente_sentencia);
+	s_wait(&sem_ejecutar);
 
 	switch(config.algoritmo) {
 	case fifo:
@@ -561,7 +563,7 @@ void ejecutar(int desalojar) {
 		break;
 	}
 
-	s_signal(&siguiente_sentencia);
+	s_signal(&sem_ejecutar);
 }
 
 int _es_esi(ESI* a, ESI* b) {
@@ -569,7 +571,9 @@ int _es_esi(ESI* a, ESI* b) {
 }
 
 void mover_esi(ESI* esi, t_list* nueva_lista) {
-	//s_wait(&lista_disponible);
+
+	s_wait(&lista_disponible);
+
 	if (esi != NULL) {
 		if (esi->cola_actual != NULL)
 			list_remove(esi->cola_actual, esi->posicion);
@@ -578,7 +582,7 @@ void mover_esi(ESI* esi, t_list* nueva_lista) {
 		esi->posicion = list_size(nueva_lista) - 1;
 	}
 
-//	s_signal(&lista_disponible);
+	s_signal(&lista_disponible);
 
 }
 
@@ -598,8 +602,6 @@ void destruir_estructuras() {
 	dictionary_destroy(estimaciones_actuales);
 	close(file_descriptors[1]);
 }
-
-
 
 void ejecutar_por_fifo() {
 	ESI* esi;
@@ -673,12 +675,13 @@ void calcular_response_ratios() {
 
 ESI* esi_resp_ratio_mas_alto() {
 	ESI* mas_alto;
+	ESI* otro_esi;
 	int indice = 0;
 	int cant = list_size(cola_de_listos);
 	if (cant != 0) {
 		mas_alto = list_get(cola_de_listos, 0);
 		for (int i = 1; i < cant; i++) {
-			ESI* otro_esi = list_get(cola_de_listos, i);
+			otro_esi = list_get(cola_de_listos, i);
 			if (otro_esi->response_ratio > mas_alto->response_ratio) {
 				mas_alto = otro_esi;
 				indice = i;

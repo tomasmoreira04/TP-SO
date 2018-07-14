@@ -36,6 +36,11 @@ typedef struct {
 	t_list* esis_esperando;
 } t_clave;
 
+typedef struct {
+	int rafagas;
+	char nombre[40];
+} t_nuevo_esi;
+
 typedef enum {
 	no_exitoso=0,
 	exitoso,

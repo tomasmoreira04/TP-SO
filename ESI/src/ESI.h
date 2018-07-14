@@ -15,6 +15,6 @@ void STORE_CLAVE(t_esi_operacion operacion);
 void ejecutar_operacion(t_esi_operacion operacion);
 FILE* cargar_script(char* ruta);
 int cantidad_de_sentencias(FILE* script);
-void informar_nuevo_esi(int socket, int rafagas);
+void informar_nuevo_esi(int socket, int rafagas, char* nombre);
 
 #endif /* ESI_H_ */

@@ -33,7 +33,7 @@ int conectar_con_coordinador(int listener);
 void recibir_mensajes(int socket, int listener, int coordinador);
 void* procesar_mensaje_coordinador(void*);
 void* procesar_mensaje_esi(void*);
-void proceso_nuevo(int rafagas, int socket);
+void proceso_nuevo(t_nuevo_esi esi, int socket);
 void nueva_sentencia(t_sentencia sentencia, int coordinador);
 void crear_hilo(int nuevo_socket, Modulo modulo);
 
@@ -58,7 +58,7 @@ void GET(char* clave, ESI* esi, int coordinador);
 void procesar_resultado(ResultadoEjecucion resultado);
 void error_operacion(ErrorOperacion tipo, char* clave, int esi);
 char* mensaje_error(ErrorOperacion tipo);
-void imprimir_nuevo_esi(ESI* esi);
+void imprimir_nuevo_esi(ESI* esi, char* nombre);
 void calcular_response_ratios();
 void bloquear_claves_iniciales(char** claves, int n);
 void copiar_lista_strings(char** destino, char** claves, int n);
