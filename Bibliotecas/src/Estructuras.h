@@ -44,6 +44,7 @@ typedef struct {
 typedef enum {
 	no_exitoso=0,
 	exitoso,
+	bloqueado,
 	dudoso
 } ResultadoEjecucion;
 
@@ -58,12 +59,14 @@ typedef enum {
 	preguntar_recursos_planificador,
 	recurso_disponible,
 	ejecucion_ok,
+	ejecucion_bloqueado,
 	ejecucion_no_ok,
 	no_hay_mas_sentencias, //el esi le avisa al coordinador
 	terminar_esi, //coord -> planif
 	config_inst, //coord -> inst
 	ejecutar_sentencia_instancia, //envia SET o STORE a la instancia
 	compactar,
+	compactacion_ok,
 	esi_bloqueado,
 	error_sentencia,
 	resultado_ejecucion,

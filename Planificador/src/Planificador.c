@@ -250,6 +250,9 @@ void procesar_resultado(ResultadoEjecucion resultado) {
 	case exitoso:
 		printf(GREEN "\nEl esi %d pudo ejecutar la sentencia.\n" RESET, esi_ejecutando->id);
 		break;
+	case bloqueado:
+		printf(YELLOW "\nEl esi %d se encuentra bloqueado.\n" RESET, esi_ejecutando->id);
+		break;
 	case dudoso:
 		break;
 	}

@@ -12,6 +12,7 @@
 #include "../../Bibliotecas/src/Estructuras.h"
 #include "../../Bibliotecas/src/Socket.c"
 #include "../../Bibliotecas/src/Configuracion.c"
+#include "../../Bibliotecas/src/Semaforo.c"
 #include "Instancia.h"
 
 #include "commons/string.h"
@@ -37,8 +38,10 @@ int32_t cantEntradas;
 int32_t tamEntrada;
 int32_t cantEntradasDisp;
 ConfigInstancia config;
+int socketServer;
+int compactado = 1;
 
-
+pthread_mutex_t semaforo_compactacion = PTHREAD_MUTEX_INITIALIZER;
 
 
 int main(int argc, char* argv[]) {
@@ -48,7 +51,7 @@ int main(int argc, char* argv[]) {
 	char* nombre = argv[1];
 	config = cargar_config_inst(nombre);
 
-	int socketServer = conexion_con_servidor(config.ip_coordinador, config.puerto_coordinador);
+	socketServer = conexion_con_servidor(config.ip_coordinador, config.puerto_coordinador);
 
 	handShake(socketServer, instancia);
 	enviarMensaje(socketServer, 8, &config.nombre_instancia , 20);
@@ -85,86 +88,25 @@ int main(int argc, char* argv[]) {
 	tablaEntradas = dictionary_create();
 	reemplazos = list_create();
 
+	//aca crear hilo principal
 
+	crear_hilo(hilo_dump, NULL);
+	rutina_principal();
 
+	free(bitarray);
+	destruirlo_todo();
+	return 0;
+}
+
+void* rutina_sentencia(t_sentencia* sentencia) {
+	ejecutarSentencia(sentencia);
+	enviarMensaje(socketServer,ejecucion_ok,&cantEntradasDisp,sizeof(int));
+	return NULL;
+}
+
+void rutina_principal() {
 
 	printf(GREEN "\nEsperando ordenes pacificamente...\n"RESET);
-
-	//--------------------------------------
-
-	//------------INGORAR..PRUEBA (?
-/*
-
-	t_sentencia* sentencia = malloc(sizeof(t_sentencia));
-		strcpy(sentencia->clave,"K400");
-		sentencia->id_esi=3;
-		sentencia->tipo=S_SET;
-		strcpy(sentencia->valor,"AAAAAAA");
-
-		ejecutarSentencia(sentencia);
-
-		mostrarArray(disponibles->bitarray);
-		mostrarValor(sentencia->clave);
-		mostrarListaReemplazos(reemplazos);
-		free(sentencia);
-
-	t_sentencia* sentencia2 = malloc(sizeof(t_sentencia));
-		strcpy(sentencia2->clave,"K500");
-		sentencia2->id_esi=3;
-		sentencia2->tipo=S_SET;
-		strcpy(sentencia2->valor,"BBBBBBBB");
-
-		ejecutarSentencia(sentencia2);
-
-		mostrarArray(disponibles->bitarray);
-		mostrarValor(sentencia2->clave);
-		mostrarListaReemplazos(reemplazos);
-		free(sentencia2);
-
-	t_sentencia* sentencia3 = malloc(sizeof(t_sentencia));
-		strcpy(sentencia3->clave,"K500");
-		sentencia3->id_esi=3;
-		sentencia3->tipo=S_SET;
-		strcpy(sentencia3->valor,"CCCCCCCCC");
-
-		ejecutarSentencia(sentencia3);
-
-		mostrarArray(disponibles->bitarray);
-		mostrarValor(sentencia3->clave);
-		mostrarListaReemplazos(reemplazos);
-		free(sentencia3);
-
-	t_sentencia* sentencia4 = malloc(sizeof(t_sentencia));
-		strcpy(sentencia4->clave,"K700");
-		sentencia4->id_esi=3;
-		sentencia4->tipo=S_SET;
-		strcpy(sentencia4->valor,"DDDD");
-
-		ejecutarSentencia(sentencia4);
-
-		mostrarArray(disponibles->bitarray);
-		mostrarValor(sentencia4->clave);
-		mostrarListaReemplazos(reemplazos);
-		free(sentencia4);
-
-
-	t_sentencia* sentencia5 = malloc(sizeof(t_sentencia));
-		strcpy(sentencia5->clave,"K800");
-		sentencia5->id_esi=3;
-		sentencia5->tipo=S_SET;
-		strcpy(sentencia5->valor,"UUUU");
-
-		ejecutarSentencia(sentencia5);
-
-		mostrarArray(disponibles->bitarray);
-		mostrarValor(sentencia5->clave);
-		mostrarListaReemplazos(reemplazos);
-		free(sentencia5);
-
-*/
-	//--------------------------------
-
-	//------------RECIBIR MENSAJES
 
 		while(1){
 			void* stream;
@@ -172,13 +114,11 @@ int main(int argc, char* argv[]) {
 
 			switch(accion){
 				case ejecutar_sentencia_instancia:
-					ejecutarSentencia((t_sentencia*)stream);
-					enviarMensaje(socketServer,ejecucion_ok,&cantEntradasDisp,sizeof(int));
+					crear_hilo(hilo_sentencia, (t_sentencia*)stream);
 					break;
 
 				case compactar:
-					enviarMensaje(socketServer,compactar,&cantEntradasDisp,sizeof(int));
-					//COMPACTAR
+					crear_hilo(hilo_compactar, NULL);
 					break;
 
 				default:
@@ -191,13 +131,8 @@ int main(int argc, char* argv[]) {
 				break;
 			}
 		}
-
-	//---------------------------------------------------
-
-	free(bitarray);
-	destruirlo_todo();
-	return 0;
 }
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -216,8 +151,7 @@ void mostrarValor(char* clave){
 	char* valor=malloc((sizeof(char)*registro->tamanio)+1);
 	memcpy(valor, storage+(tamEntrada*registro->entrada),registro->tamanio);
 
-	printf("\nEl valor de la clave %s es: %s",clave,valor);
-	printf("\n");
+	printf("\nEl valor de la clave %s es: %s\n",clave,valor);
 	free(valor);
 }
 
@@ -225,8 +159,8 @@ void mostrarListaReemplazos(t_list* list){
 	int i;
 	printf("Lista de reemplazos:\n");
 	for(i=0;i<list_size(list);i++){
-	Nodo_Reemplazo* nodo = list_get(list,i);
-	printf("%s t.ref= %d\n",nodo->clave, nodo->ultimaRef);
+		Nodo_Reemplazo* nodo = list_get(list,i);
+		printf("%s t.ref= %d\n",nodo->clave, nodo->ultimaRef);
 	}
 
 }
@@ -278,13 +212,29 @@ void eliminarDeListaRemp(t_list* listaEliminar){
 
 		for(j=0;j<list_size(reemplazos);j++){
 		Nodo_Reemplazo* nodo2 = list_get(reemplazos,j);
-			if(string_equals_ignore_case(nodo->clave,nodo2->clave)){
-			list_remove_and_destroy_element(reemplazos,j,(void*) nodoRempDestroyer);
-			}
+			if(string_equals_ignore_case(nodo->clave,nodo2->clave))
+				list_remove_and_destroy_element(reemplazos,j,(void*) nodoRempDestroyer);
 		}
-
 	}
+
 }
+
+void* compactacion() {
+
+	s_wait(&semaforo_compactacion);
+
+	compactado = 0;
+	const int microsegundo = 1 * 1000 * 1000;
+	printf(RED"\nCOMPACTANDO...\n"RESET);
+	usleep(5 * microsegundo); //5 segundos
+	printf(GREEN"\nSE HA COMPACTADO CON EXITO!\n"RESET);
+	compactado = 1;
+	avisar(socketServer, compactacion_ok);
+
+	s_signal(&semaforo_compactacion);
+	return NULL;
+}
+
 
 void aumentarTiempoRef(){
 	int i;
@@ -310,6 +260,8 @@ int buscarNodoReemplazo(char* clave){
 
 void ejecutarSentencia(t_sentencia* sentencia){
 
+	s_wait(&semaforo_compactacion);
+
 	switch(sentencia->tipo){
 
 	case S_SET:
@@ -333,6 +285,8 @@ void ejecutarSentencia(t_sentencia* sentencia){
 		exit(0);
 		break;
 	}
+
+	s_signal(&semaforo_compactacion);
 }
 
 void almacenarValor(char* clave, char* valor){
@@ -373,7 +327,16 @@ void almacenarValor(char* clave, char* valor){
 
 		} else{
 			printf(RED "\nNo existen suficientes entradas de reemplazo para ubicar valor de clave: %s!\n\n"RESET,clave);
-			exit(0); 											//por ahora exit, pero enviar mensaje de fallo supongo
+			exit(0); //por ahora exit, pero enviar mensaje de fallo supongo
+			//SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+			//SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+			//SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+			//SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+			//SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+			//SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+			//SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+			//SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+			//SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
 			return;
 		}
 	}
@@ -437,8 +400,8 @@ void reemplazarValor(char* clave, char* valor, int tamEnEntradas){
 
 	int i;
 	for(i=0;i<list_size(paraReemplazar);i++){
-	Nodo_Reemplazo* remp = list_get(paraReemplazar,i);
-	liberarEntradas(remp->clave);
+		Nodo_Reemplazo* remp = list_get(paraReemplazar,i);
+		liberarEntradas(remp->clave);
 	}
 
 	list_clean_and_destroy_elements(paraReemplazar,(void*) nodoRempDestroyer);
@@ -481,8 +444,8 @@ void limpiarArray(int desde, int hasta){
 
 
 int buscarEspacioLibre(int entradasNecesarias){
-	int posInicialLibre=0, i,contador=0,compactado=0;
-
+	int posInicialLibre=0, i,contador=0;
+	int ya_avise = 0;
 	do{
 	for(i=0;i<disponibles->size && contador<entradasNecesarias;i++){
 		if (!bitarray_test_bit(disponibles,i)){
@@ -492,14 +455,17 @@ int buscarEspacioLibre(int entradasNecesarias){
 			posInicialLibre=i+1;}
 	}
 
-	if (contador<entradasNecesarias){							//Compacta en caso de ser necesario (porque hay espacios pero no son contiguos)
-		//compactar();
-		compactado=0;
+	if (contador < entradasNecesarias){							//Compacta en caso de ser necesario (porque hay espacios pero no son contiguos)
+		if (ya_avise == 0) {
+			avisar(socketServer, compactar);
+			s_signal(&semaforo_compactacion);
+			ya_avise = 1;
+		}
+		compactado = 0;
 	}else{
-		compactado=1;
+		compactado = 1;
 	}
-
-	}while(!compactado);
+	}while(compactado == 0);
 
 	for(i=posInicialLibre;i<posInicialLibre+contador;i++){
 		bitarray_set_bit(disponibles,i);						//ocupa las entradas
@@ -518,23 +484,27 @@ void destruirlo_todo(){
 
 //--------------------------------------------------------------------------------------------------------------------------------------------
 
-void crear_hilo(int vc) {
+
+
+void crear_hilo(HiloInstancia tipo, t_sentencia* sentencia) {
 	pthread_attr_t attr;
 	pthread_t hilo;
-	//Hilos detachables con manejo de errores tienen que ser logs
 	int  res = pthread_attr_init(&attr);
-	if (res != 0) {
-		printf( "\nError en los atributos del hilo\n");
-	}
 	res = pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
-	if (res != 0) {
-		printf("\nError en el seteado del estado de detached\n");
+	switch(tipo) {
+	case hilo_sentencia:
+		res = pthread_create (&hilo ,&attr, rutina_sentencia, sentencia);
+		break;
+	case hilo_dump:
+		res = pthread_create (&hilo ,&attr, rutina_Dump, NULL);
+		break;
+	case hilo_compactar:
+		res = pthread_create (&hilo ,&attr, compactacion, NULL);
+		break;
 	}
-	res = pthread_create (&hilo ,&attr, rutina_Dump,NULL);
 	if (res != 0) {
 		printf( "\nError en la creacion del hilo\n");
 	}
-	printf( "\nSe ha creado un hilo\n");
 	pthread_attr_destroy(&attr);
 }
 
@@ -572,7 +542,6 @@ void guardarLaWea()
 		}
 	}
 }
-
 
 
 

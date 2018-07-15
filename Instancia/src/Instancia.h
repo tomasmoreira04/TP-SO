@@ -21,6 +21,12 @@ typedef struct{
 	int ultimaRef;
 }Nodo_Reemplazo;
 
+typedef enum {
+	hilo_dump,
+	hilo_compactar,
+	hilo_sentencia
+} HiloInstancia;
+
 void setValor(char* clave, char* valor, int tamEnBytes);
 void almacenarNuevo(char* clave, char* valor, int tamEnBytes);
 void recibirDimensiones(int socketServer);
@@ -50,6 +56,8 @@ int laListaLoContiene(char * clave);
 void *rutina_Dump(void * arg);
 void guardarLaWea();
 
+//asd
+void rutina_principal();
 
 
 #endif /* INSTANCIA_H_ */

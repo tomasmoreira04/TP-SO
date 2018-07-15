@@ -25,6 +25,7 @@
 // TOMI SE LA COME
 
 int compresion;
+int compresiones_finalizadas = 0;
 ConfigCoordinador configuracion;
 int socket_plan; //esto cambiar tal vez
 t_dictionary *instancias_Claves;
@@ -91,7 +92,9 @@ void *rutina_instancia(void * arg) {
 		dictionary_put(lista_Instancias, nombre_inst , instancia_conexion);
 		list_add(listaSoloInstancias, nombre_inst);
 		configurar_instancia(socket_INST);
-		nodo_inst_conexion_destroyer(instancia_conexion);
+
+		//TOMI ROMPISTE TODO
+		//nodo_inst_conexion_destroyer(instancia_conexion);
 
 	}
 	else{
@@ -106,6 +109,18 @@ void configurar_instancia(int socket){
 	memcpy(dim+1,&configuracion.tamanio_entrada,sizeof(int));
 	enviarMensaje(socket,config_inst,dim,sizeof(int)*2);
 	printf(YELLOW"\nNueva instancia configurada\n"RESET);
+}
+
+t_list* instancias_conectadas() {
+	int n = list_size(listaSoloInstancias);
+	t_list* lista = list_create();
+	for(int i = 0; i < n; i++){
+		char* nombre_inst = list_get(listaSoloInstancias, i);
+		instancia_Estado_Conexion* instancia = dictionary_get(lista_Instancias, nombre_inst);
+		if (instancia->estadoConexion == conectada)
+			list_add(lista, instancia);
+	}
+	return lista;
 }
 
 void *rutina_ESI(void* argumento) {
@@ -126,7 +141,7 @@ void *rutina_ESI(void* argumento) {
 
 		usleep(configuracion.retardo * 1000);
 
-		while(compresion!=1){}
+		esperar_compactacion();
 
 		if (sentencia_okey == sentencia_coordinador) {
 
@@ -142,12 +157,9 @@ void *rutina_ESI(void* argumento) {
 				}
 				case S_STORE:
 				{
-					int largoSentencia= strlen((char*) (dictionary_get(instancias_Claves , sentencia.clave)));
-					char* instanciaGuardada=malloc(largoSentencia);
-					strcpy(instanciaGuardada, (char*) (dictionary_get(instancias_Claves , sentencia.clave)) );
-
-					//VALIDADA
-					int socketEncontrado= (*(instancia_Estado_Conexion*) (dictionary_get(lista_Instancias , instanciaGuardada))).socket;
+					char* instanciaGuardada = dictionary_get(instancias_Claves , sentencia.clave);
+					instancia_Estado_Conexion* conexion_instancia = dictionary_get(lista_Instancias, instanciaGuardada);
+					int socketEncontrado = conexion_instancia->socket;
 					enviarMensaje(socketEncontrado, ejecutar_sentencia_instancia,  &sentencia,sizeof(t_sentencia));
 
 					void* cantidad_entradas;
@@ -189,9 +201,10 @@ void *rutina_ESI(void* argumento) {
 
 					printf("\nBuscando socket de instancia %s\n", instancia);
 
-					int largoSentencia= strlen((char*) (dictionary_get(instancias_Claves , sentencia.clave)));
-					char* instanciaGuardada=malloc(largoSentencia);
-					strcpy(instanciaGuardada, (char*) (dictionary_get(instancias_Claves , sentencia.clave)) );
+					char* instanciaGuardada = dictionary_get(instancias_Claves , sentencia.clave);
+					/*int largoSentencia = strlen(nombre_instancia) + 1;
+					char* instanciaGuardada = malloc(largoSentencia);
+					strcpy(instanciaGuardada, nombre_instancia );*/
 
 					int socket = (*(instancia_Estado_Conexion*) dictionary_get(lista_Instancias , instancia)).socket;
 
@@ -223,18 +236,25 @@ void *rutina_ESI(void* argumento) {
 						}
 						case compactar:
 						{
-							compresion=1;
+							avisar_compactacion();
+							compresion = 1;
 							void * asd;
-							int finalizacionDeCompresion = recibirMensaje(socket, &asd);
-							if( finalizacionDeCompresion == 0 )
-							{
-								int  ESI_bloq= sentencia.id_esi;
+							int resultado = recibirMensaje(socket, &asd);
+							printf("%d", resultado);
+							if(resultado == compactacion_ok) {
+								printf("Termino de compactar la instancia del socket %d", socket);
+								compresiones_finalizadas++;
+							}
+							else if (resultado == 0) {
+								int  ESI_bloq = sentencia.id_esi;
 								printf("SE DESCONECTO LA CHINGADA INSTANCIA\n");
 								enviarMensaje(socket_plan, esi_bloqueado, &ESI_bloq, sizeof(int));
-								compresion=0;
 							}
-							else{
-								printf("IVAN ILUMINANOS AHORA\n");
+							else {
+								if (compresiones_finalizadas < list_size(instancias_conectadas())) {
+									compresion = 0;
+									compresiones_finalizadas = 0;
+								}
 							}
 							break;
 						}
@@ -257,7 +277,9 @@ void *rutina_ESI(void* argumento) {
 			enviarMensaje(socket_esi, ejecucion_ok, &variable, sizeof(int));
 		}
 		else if(sentencia_okey== esi_bloqueado){
-
+			printf(YELLOW "\nESI bloqueado\n" RESET);
+			int variable = bloqueado;
+			enviarMensaje(socket_esi, ejecucion_bloqueado, &variable, sizeof(int));
 		}
 		else{
 			printf(RED "\nERROR\n" RESET);
@@ -272,6 +294,17 @@ void *rutina_ESI(void* argumento) {
 	return NULL;
 }
 
+void avisar_compactacion() {
+	t_list* conectadas = instancias_conectadas();
+	int n = list_size(conectadas);
+	for (int i = 0; i < n; i++) {
+		instancia_Estado_Conexion* instancia = list_get(conectadas, i);
+		printf("Compactando instancia en socket %d", instancia->socket);
+		avisar(instancia->socket, compactar);
+	}
+	printf(RED"\nCOMPACTANDO INSTANCIAS\n"RESET);
+}
+
 void cambiarEstadoInstancia(char *instanciaGuardada, estado_de_la_instancia accion){
 	instancia_Estado_Conexion *aux=malloc(sizeof(instancia_Estado_Conexion));
 	dictionary_remove(lista_Instancias, instanciaGuardada);
@@ -281,10 +314,10 @@ void cambiarEstadoInstancia(char *instanciaGuardada, estado_de_la_instancia acci
 }
 
 void avisar_guardado_planif(char* instancia, char* clave) {
-	t_clave respuesta;
-	strcpy(respuesta.clave, clave);
-	strcpy(respuesta.instancia, instancia);
-	enviarMensaje(socket_plan, clave_guardada_en_instancia, &respuesta, sizeof(t_clave));
+	t_clave* respuesta = malloc(sizeof(t_clave));
+	strcpy(respuesta->clave, clave);
+	strcpy(respuesta->instancia, instancia);
+	enviarMensaje(socket_plan, clave_guardada_en_instancia, respuesta, sizeof(t_clave));
 }
 
 int clave_tiene_instancia(char* clave) {
@@ -337,6 +370,16 @@ void crear_log_operaciones() {
 	log_operaciones = log_create("operaciones_coordinador.log", "coordinador", 0, 1);
 }
 
+void esperar_compactacion() {
+	int hay_que_compactar = 0;
+	int instancias = list_size(instancias_conectadas());
+	while(compresion != 1 && compresiones_finalizadas < instancias)
+		hay_que_compactar = 1;
+	printf("asd");
+	/*if (hay_que_compactar == 1)
+		printf(GREEN"\nCOMPACTACION FINALIZADA\n"RESET);*/
+}
+
 void modificar_clave(char* clave, char* instancia) {
 	dictionary_remove(instancias_Claves, clave);
 	dictionary_put(instancias_Claves, clave, instancia);
@@ -378,9 +421,8 @@ void contador_EQ(int cantidadDeInstancias){
 }
 
 int estadoDeInstancia(char * instancia){
-	puts("LLEGUE");
-	//printf("das%d", (*(instancia_Estado_Conexion*)dictionary_get(lista_Instancias,instancia)).estadoConexion);
-	return (*(instancia_Estado_Conexion*)dictionary_get(lista_Instancias,instancia)).estadoConexion;
+	instancia_Estado_Conexion* estado = dictionary_get(lista_Instancias,instancia);
+	return estado->estadoConexion;
 }
 
 void key_explicit(char* claveSentencia){
@@ -413,24 +455,6 @@ void key_explicit(char* claveSentencia){
 
 }
 
-
-//ESTO FUNCIONA PARA LA LISTA PROPUESTA lista_instancias_new
-/*void least_space_used(char* claveSentencia) {
-
-	bool comparator_entradas_max(Nodo_Instancia* m, Nodo_Instancia* n) {
-			return m->entradas_desocupadas >= n->entradas_desocupadas;
-		}
-
-	t_list* lista_aux = list_create();
-	lista_aux = list_duplicate(lista_instancias_new);
-	//list_add_all(lista_aux, lista_instancias_new);
-	list_sort(lista_aux, (void*) comparator_entradas_max);
-	Nodo_Instancia* nodo_maximo = list_get(lista_aux, 0);
-	char* instancia_max = malloc(strlen(nodo_maximo->inst_ID));
-	strcpy(instancia_max, nodo_maximo->inst_ID);
-	modificar_clave(claveSentencia, instancia_max);
-}
-*/
 
 void least_space_used(char* clave) {
 	t_list* lista_inst_activa = list_create();
