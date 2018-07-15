@@ -32,8 +32,7 @@ int ultimo_id;
 int planificar = 1;
 int coordinador_conectado = 0;
 int hay_hilo_coordinador = 0;
-
-int coord = 0;
+int socket_coordinador;
 
 //semaforos
 pthread_mutex_t lista_disponible = PTHREAD_MUTEX_INITIALIZER;
@@ -85,8 +84,7 @@ void recibir_conexiones() {
 	int listener = crear_socket_de_escucha(config.puerto_escucha);
 	FD_SET(listener, &master);
 
-	int coordinador = conectar_con_coordinador(listener);
-	coord = coordinador;
+	socket_coordinador = conectar_con_coordinador(listener);
 
 	while (1) {
 		if(planificar)
@@ -101,7 +99,7 @@ void recibir_conexiones() {
 
 			for (int i = listener; i < n; i++)
 				if (FD_ISSET(i, &read_fds)) {
-					recibir_mensajes(i, listener, coordinador);
+					recibir_mensajes(i, listener, socket_coordinador);
 				}
 		}
 	}
@@ -351,12 +349,7 @@ void error_operacion(ErrorOperacion tipo, char* clave, int esi) {
 }
 
 void GET(char* clave, ESI* esi, int coordinador) {
-	/*if (strlen(clave) > MAX_LARGO_CLAVE) {
-		error_operacion(error_tamanio_clave, clave, esi->id);
-		finalizar_esi_ref(esi);
-		avisar(coordinador, error_sentencia);
-	}
-	else */if (esta_bloqueada(clave) == 1) {
+	if (esta_bloqueada(clave) == 1) {
 		printf(YELLOW"\nLa clave "GREEN"%s "YELLOW"se encuentra bloqueada, se bloqueará el "GREEN"ESI %d"RESET, clave, esi->id);
 		nueva_solicitud_clave(clave, esi); //va bien esto
 		bloquear_esi(esi);
@@ -446,6 +439,7 @@ void bloquear_clave(const char* clave, ESI* esi) {
 		entrada = malloc(sizeof(t_clave));
 		entrada->bloqueada = 1;
 		entrada->esi_duenio = esi;
+		strcpy(entrada->instancia, "No asignada");
 		entrada->esis_esperando = list_create();
 		strcpy(entrada->clave, clave);
 		strcpy(entrada->valor, "");
@@ -731,3 +725,5 @@ ESI* primero_llegado() {
 	}
 	return NULL;
 }
+
+

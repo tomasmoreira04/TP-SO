@@ -73,8 +73,8 @@ typedef enum {
 	cerrar_conexion_coord,
 	cerrar_conexion_esi,
 	podes_seguir,
-	clave_guardada_en_instancia //coord -> planif
-
+	clave_guardada_en_instancia, //coord -> planif
+	consulta_simulacion
 } Accion;
 
 typedef enum {

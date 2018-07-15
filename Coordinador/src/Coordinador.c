@@ -68,6 +68,7 @@ int main(int argc, char* argv[]) {
 	return 0;
 }
 
+
 //ACCIONES DE LOS HILOS
 void *rutina_instancia(void * arg) {
 	int socket_INST = (int)arg;
@@ -331,6 +332,15 @@ char* aplicar_algoritmo(char* clave, char* valor) { //DEVUELVE EL NOMBRE DE LA I
 		case ke: 	key_explicit(clave); 		break;
 		default: 								break;
 	}
+	//ACA FALTA EL ID DEL ESI, SIEMPRE ES 1
+	//ACA FALTA EL ID DEL ESI, SIEMPRE ES 1
+	//ACA FALTA EL ID DEL ESI, SIEMPRE ES 1
+	//ACA FALTA EL ID DEL ESI, SIEMPRE ES 1
+	//ACA FALTA EL ID DEL ESI, SIEMPRE ES 1
+	//ACA FALTA EL ID DEL ESI, SIEMPRE ES 1
+	//ACA FALTA EL ID DEL ESI, SIEMPRE ES 1
+	//ACA FALTA EL ID DEL ESI, SIEMPRE ES 1
+	//ACA FALTA EL ID DEL ESI, SIEMPRE ES 1
 	log_info(log_operaciones, formatear_mensaje_esi(1, S_SET, clave, valor)); //por qué 1 xd?
 	return (char*) dictionary_get(instancias_Claves , clave);
 }
@@ -347,12 +357,23 @@ void crear_hilo(int nuevo_socket, int modulo) {
 	if (res != 0) {
 		log_error(log_operaciones, "Error en el seteado del estado de detached. func: crear_hilo");
 	}
-	res = (modulo == instancia) ? pthread_create (&hilo ,&attr, rutina_instancia , (void *)nuevo_socket)
-			:pthread_create (&hilo ,&attr, rutina_ESI, (void*)nuevo_socket);
+	switch (modulo) {
+	case instancia:
+		res = pthread_create (&hilo ,&attr, rutina_instancia , (void *)nuevo_socket);
+		break;
+	case esi:
+		res = pthread_create (&hilo ,&attr, rutina_ESI , (void *)nuevo_socket);
+		break;
+	case consola:
+		res = pthread_create (&hilo ,&attr, rutina_consulta , (void *)nuevo_socket);
+		break;
+	default:
+		break;
+	}
 	if (res != 0) {
 		log_error(log_operaciones, "Error en la creacion del hilo");
 	}
-	log_info(log_operaciones, "Se ha creado un hilo con la rutina ESI");
+	//log_info(log_operaciones, "Se ha creado un hilo con la rutina ESI");
 	pthread_attr_destroy(&attr);
 }
 
@@ -375,9 +396,8 @@ void esperar_compactacion() {
 	int instancias = list_size(instancias_conectadas());
 	while(compresion != 1 && compresiones_finalizadas < instancias)
 		hay_que_compactar = 1;
-	printf("asd");
-	/*if (hay_que_compactar == 1)
-		printf(GREEN"\nCOMPACTACION FINALIZADA\n"RESET);*/
+	if (hay_que_compactar == 1)
+		printf(GREEN"\nCOMPACTACION FINALIZADA\n"RESET);
 }
 
 void modificar_clave(char* clave, char* instancia) {
@@ -397,27 +417,19 @@ void equitative_load(char* claveSentencia){
 	int cantidadInstancias = dictionary_size(lista_Instancias)-1;
 	char* instancia = list_get(listaSoloInstancias, contadorEquitativeLoad);
 	int estadoInstancia = estadoDeInstancia(instancia);
-	if( estadoInstancia==conectada ){
+	if( estadoInstancia == conectada ){
 		modificar_clave(claveSentencia, instancia);
 		contador_EQ(cantidadInstancias);
 	}
-	else{
-		if(estadoInstancia==desconectada){
-			equitative_load(claveSentencia);
-		}
-		else{
-			printf(RED"\nERROR\n"RESET);
-		}
-	}
+	else if(estadoInstancia == desconectada)
+		equitative_load(claveSentencia);
+	else
+		printf(RED"\nERROR\n"RESET); //esto nunca pasa nigga
 }
 
 void contador_EQ(int cantidadDeInstancias){
-	if(contadorEquitativeLoad+1>cantidadDeInstancias){
-		contadorEquitativeLoad = 0;
-	}
-	else{
-		contadorEquitativeLoad=contadorEquitativeLoad+1;
-	}
+	int c = contadorEquitativeLoad, i = cantidadDeInstancias;
+	contadorEquitativeLoad = c + 1 > i ? 0 : c + 1;
 }
 
 int estadoDeInstancia(char * instancia){
@@ -426,59 +438,53 @@ int estadoDeInstancia(char * instancia){
 }
 
 void key_explicit(char* claveSentencia){
-	fflush(stdin);
-	t_list *listaKE;
-	listaKE= list_create();
+	t_list* instancias_activas = lista_instancias_activas();
+	int cantidad_instancias = list_size(instancias_activas);
+	int comienzo = claveSentencia[0] - ('a' - 1);
 
-	int comienzo=(claveSentencia[0])-96;
-
-	int instanciasActivas=0;
-	int tamano_lista_instancias=list_size(listaSoloInstancias);
-
-	for(int i=0;i<tamano_lista_instancias;i++){
-		if(((*(instancia_Estado_Conexion*)dictionary_get(lista_Instancias,((char*)list_get(listaSoloInstancias,i)))).estadoConexion)==conectada){
-			list_add(listaKE, ((char*)list_get(listaSoloInstancias,i)));
-			instanciasActivas++;
-		}
-	}
-	float asignacion_por_instancia= (float) 26  /  (float)instanciasActivas;
-	float mult=1;
-	for(int j=1;j<=26;j++){
-		if( (asignacion_por_instancia*mult) < comienzo ){
-			mult++;
-		}
-		if(comienzo==j){
-			modificar_clave(claveSentencia, ((char*)list_get(listaKE, (mult-1) )) );
+	float asignacion_por_instancia = (float) 26  /  (float)cantidad_instancias;
+	float multiplicador = 1;
+	for(int j = 1; j <= 26; j++){
+		if(asignacion_por_instancia * multiplicador < comienzo)
+			multiplicador++;
+		if(comienzo == j) {
+			modificar_clave(claveSentencia, (char*)list_get(instancias_activas, multiplicador - 1 ));
 			break;
 		}
 	}
-
 }
 
-
 void least_space_used(char* clave) {
-	t_list* lista_inst_activa = list_create();
-	int instancias_activas = 0;
-	for(int i=0 ; i < list_size(listaSoloInstancias) ; i++) {
-		if(((*(instancia_Estado_Conexion*)dictionary_get(lista_Instancias,((char*)list_get(listaSoloInstancias,i)))).estadoConexion)==conectada){
-			list_add(lista_inst_activa, ((char*)list_get(listaSoloInstancias,i)));
-			instancias_activas++;
-		}
-	}
-	//char* instancia_elegida = malloc(80);
+	char* instancia = instancia_con_mas_espacio();
+	modificar_clave(clave, instancia);
+}
 
-	for(int j=1; j<instancias_activas; j++) {
-		if((*(instancia_Estado_Conexion*)(dictionary_get(lista_Instancias, (char*)list_get(lista_inst_activa, j)))).entradas_disponibles >
-			(*(instancia_Estado_Conexion*)(dictionary_get(lista_Instancias, (char*)list_get(lista_inst_activa, (j-1))))).entradas_disponibles) {
-			//list_get(lista_inst_activa, j);
-			//strcpy(instancia_elegida, (char*)list_get(lista_inst_activa, j));
-			modificar_clave(clave, (char*)list_get(lista_inst_activa, j));
-		}
-		else {
-			//strcpy(instancia_elegida, (char*)list_get(lista_inst_activa, (j+1)));
-			modificar_clave(clave, (char*)list_get(lista_inst_activa, (j+1)));
+char* instancia_con_mas_espacio() {
+	t_list* instancias_activas = lista_instancias_activas();
+	int cantidad_instancias = list_size(instancias_activas);
+	char* instancia = list_get(instancias_activas, 0); //la primera
+	instancia_Estado_Conexion* conexion = dictionary_get(lista_Instancias, instancia); //conex de la primera
+
+	for(int j = 1; j < cantidad_instancias; j++) {
+		char* otra_instancia = list_get(instancias_activas, j);
+		instancia_Estado_Conexion* otra_conexion = dictionary_get(lista_Instancias, otra_instancia);
+		if(otra_conexion->entradas_disponibles > conexion->entradas_disponibles) { //si es mejor que la anterior, pasa a ser la seleccionada
+			instancia = otra_instancia;
+			conexion = otra_conexion;
 		}
 	}
+	return instancia;
+}
+
+t_list* lista_instancias_activas() {
+	t_list* lista = list_create();
+	for(int i = 0 ; i < list_size(listaSoloInstancias) ; i++) {
+		char* nombre = list_get(listaSoloInstancias, i);
+		instancia_Estado_Conexion* conexion = dictionary_get(lista_Instancias, nombre);
+		if(conexion->estadoConexion == conectada)
+			list_add(lista, nombre);
+	}
+	return lista;
 }
 
 char* formatear_mensaje_esi(int id, TipoSentencia t, char* clave, char* valor) {
@@ -534,3 +540,58 @@ char* buscar_instancia(char* clave) {
 void nodo_inst_conexion_destroyer(instancia_Estado_Conexion* inst) {
 	free(inst);
 }
+
+
+
+////////////////////////////////////////////////////////////
+//_______________________MAGIA____________________________//
+//_________________________________________________________
+//_________________________________________________________
+
+void* rutina_consulta(void* argumento) {
+	int socket_consola = (int)argumento;
+	void* stream;
+	Accion accion = recibirMensaje(socket_consola, &stream);
+	char* instancia = "ERROR";
+	if (accion == consulta_simulacion)
+		instancia = simular_algoritmo((char*)stream);
+	enviarMensaje(socket_consola, consulta_simulacion, instancia, sizeof(instancia));
+	return NULL;
+}
+
+char* simular_algoritmo(char* clave) {
+	switch(configuracion.algoritmo) {
+		case el:	return equitative_load_simulado(clave);
+		case lsu:	return least_space_used_simulado(clave);
+		case ke: 	return key_explicit_simulado(clave);
+		default: 	return "ERROR";
+	}
+}
+
+char* equitative_load_simulado(char* clave) {
+	char* instancia = list_get(listaSoloInstancias, contadorEquitativeLoad);
+	int estadoInstancia = estadoDeInstancia(instancia);
+	return estadoInstancia == conectada ? instancia : equitative_load_simulado(clave);
+}
+
+char* key_explicit_simulado(char* clave) {
+	t_list* instancias_activas = lista_instancias_activas();
+	int cantidad_instancias = list_size(instancias_activas);
+	int comienzo = clave[0] - ('a' - 1);
+	float asignacion_por_instancia = (float) 26  /  (float)cantidad_instancias;
+	float multiplicador = 1;
+	for (int j = 1; j <= 26; j++) {
+		if(asignacion_por_instancia * multiplicador < comienzo)
+			multiplicador++;
+		if(comienzo == j)
+			return (char*)list_get(instancias_activas, multiplicador - 1);
+	}
+	return NULL;
+}
+
+char* least_space_used_simulado(char* clave) {
+	return instancia_con_mas_espacio();
+}
+
+
+

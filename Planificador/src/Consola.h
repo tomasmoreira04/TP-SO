@@ -57,4 +57,6 @@ void _imprimir_claves_esi(t_list* claves);
 ESI* _obtener_esi(int id);
 ESI* _buscar_esi(t_list* lista, int id);
 
+
+char* consultar_simulacion(char* clave);
 #endif

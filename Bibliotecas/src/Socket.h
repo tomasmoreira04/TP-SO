@@ -10,7 +10,7 @@
 #define MAXDATASIZE 100
 #define BACKLOG 10
 
-typedef enum { planificador, coordinador, esi, instancia } Modulo;
+typedef enum { planificador, coordinador, esi, instancia, consola } Modulo;
 
 fd_set master;
 fd_set read_fds;

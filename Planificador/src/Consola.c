@@ -267,15 +267,17 @@ void estado_clave(char* clave){
 				printf(CYAN"\nESI %d"RESET, esi->id);
 			}
 		}
-		//ACA LO DE LA INSTANCIA
-		printf(CYAN"\nEsta clave se encuentra guardada en "RED"%s."RESET, clave_bloqueada->instancia);
+		if (strcmp(clave_bloqueada->instancia, "No asignada") != 0)
+			printf(CYAN"\nEsta clave se encuentra guardada en "RED"%s."RESET, clave_bloqueada->instancia);
+		else {
+			char* instancia_posible = consultar_simulacion(clave);
+			printf(GREEN"\nLa clave se guardaria en la instancia"RED" %s."RESET, instancia_posible);
+		}
 	}
 	else {
-		printf(GREEN"\nLa clave"RED" %s "GREEN"no se encuentra bloqueada", clave);
-		if (clave_bloqueada->valor != NULL)
-			printf(", pero tiene valor"GREEN" %s."RESET, clave_bloqueada->valor);
-		else
-			printf(", y no tiene valor asignado."RESET);
+		printf(GREEN"\nLa clave"RED" %s "GREEN"no se encuentra bloqueada y no tiene valor asignado.", clave);
+		char* instancia_posible = consultar_simulacion(clave);
+		printf(GREEN"\nLa clave se guardaria en la instancia"RED" %s."RESET, instancia_posible);
 	}
 }
 
@@ -303,4 +305,13 @@ ESI* _buscar_esi(t_list* lista, int id) {
 			return otro;
 	}
 	return NULL;
+}
+
+char* consultar_simulacion(char* clave) {
+	void* mensaje;
+	int coordinador = conexion_con_servidor(config.ip_coordinador, config.puerto_coordinador);
+	handShake(coordinador, consola);
+	enviarMensaje(coordinador, consulta_simulacion, clave, sizeof(clave));
+	recibirMensaje(coordinador, &mensaje);
+	return (char*)mensaje;
 }

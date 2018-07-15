@@ -43,11 +43,21 @@ void configurar_instancia(int socket);
 void destruir_estructuras_globales();
 char* aplicar_algoritmo(char* clave, char* valor);
 int clave_tiene_instancia(char* clave);
+char* instancia_con_mas_espacio();
 void avisar_guardado_planif(char* instancia, char* clave);
 void actualizar_instancia(char* instancia, int valor);
-
+t_list* lista_instancias_activas();
 int estadoDeInstancia(char * instancia);//DEVUELVE EL ESTADO DE LA INSTANCIA A LA CUAL SE INTENTA GUARDAR
 void nodo_inst_conexion_destroyer(instancia_Estado_Conexion* inst);
 
+void esperar_compactacion();
+void avisar_compactacion();
+
+//simulaciones planificador
+void* rutina_consulta(void* argumento);
+char* simular_algoritmo(char* clave);
+char* equitative_load_simulado(char* clave);
+char* key_explicit_simulado(char* clave);
+char* least_space_used_simulado(char* clave);
 
 #endif /* COORDINADOR_H_ */

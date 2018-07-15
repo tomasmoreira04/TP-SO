@@ -99,7 +99,7 @@ int aceptar_nueva_conexion(int listener) {
 		if (newfd > fdmax) {
 			fdmax = newfd;
 		}
-		printf("\nselectserver: new connection from %s on socket %d\n", inet_ntoa(remoteaddr.sin_addr), newfd);
+		//printf("\nselectserver: new connection from %s on socket %d\n", inet_ntoa(remoteaddr.sin_addr), newfd);
 	}
 	return newfd;
 }
@@ -151,7 +151,7 @@ int conexion_con_servidor(char* ip, int port) {
 	}
 	inet_ntop(p->ai_family, getSin_Addr((struct sockaddr *)p->ai_addr),
 			s, sizeof s);
-	printf("\nConexion con ip %s - \n", s);
+	//printf("\nConexion con ip %s - \n", s);
 	freeaddrinfo(servinfo); // all done with this structure
 	return sockfd;
 }
