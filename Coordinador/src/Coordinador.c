@@ -24,7 +24,6 @@
 // Guardar con ID instancia
 // TOMI SE LA COME
 
-int compresion;
 int compresiones_finalizadas = 0;
 ConfigCoordinador configuracion;
 int socket_plan; //esto cambiar tal vez
@@ -34,9 +33,10 @@ t_list* lista_instancias_new;
 t_list *listaSoloInstancias;
 int contadorEquitativeLoad;
 
+pthread_mutex_t semaforo_compactacion = PTHREAD_MUTEX_INITIALIZER;
+
 int main(int argc, char* argv[]) {
 	setbuf(stdout, NULL); //a veces el printf no andaba, se puede hacer esto o un fflush
-	compresion=1;
 	int banderaPlanificador=0;
 	contadorEquitativeLoad=0;
 	instancias_Claves= dictionary_create();
@@ -128,182 +128,164 @@ void *rutina_ESI(void* argumento) {
 	int socket_esi = *(int*)(&argumento);
 	int id_esi;
 	void* stream;
-	printf(BLUE "\nEjecutando ESI (socket %d)..." RESET, socket_esi);
-
+	printf(BLUE "\nNueva rutina ESI en socket"CYAN" %d."RESET, socket_esi);
 	while (recibirMensaje(socket_esi, &stream) == ejecutar_sentencia_coordinador) {
-
 		t_sentencia sentencia = *(t_sentencia*)stream;
 		id_esi = sentencia.id_esi;
-		imprimir_sentencia(sentencia);
-
 		enviarMensaje(socket_plan, sentencia_coordinador, &sentencia, sizeof(t_sentencia));
-
-		int sentencia_okey = recibirMensaje(socket_plan, &stream); //el planif me da el OK, entonces ejecuto una sentencia del esi
-
+		int	accion = recibirMensaje(socket_plan, &stream);
 		usleep(configuracion.retardo * 1000);
-
-		esperar_compactacion();
-
-		if (sentencia_okey == sentencia_coordinador) {
-
-			switch(sentencia.tipo){
-				case S_GET:
-				{
-					if( (dictionary_has_key(instancias_Claves , sentencia.clave) )==false ) {
-						//Persistir
-						dictionary_put(instancias_Claves, sentencia.clave , "0" );//VERIFICAR SI ES EN VARIABLE
-						log_info(log_operaciones, formatear_mensaje_esi(1, S_GET, sentencia.clave, NULL));
-					}
-					break;
-				}
-				case S_STORE:
-				{
-					char* instanciaGuardada = dictionary_get(instancias_Claves , sentencia.clave);
-					instancia_Estado_Conexion* conexion_instancia = dictionary_get(lista_Instancias, instanciaGuardada);
-					int socketEncontrado = conexion_instancia->socket;
-					enviarMensaje(socketEncontrado, ejecutar_sentencia_instancia,  &sentencia,sizeof(t_sentencia));
-
-					void* cantidad_entradas;
-					int operacionPedidaInstacia = recibirMensaje(socketEncontrado, &cantidad_entradas);
-					actualizar_instancia(instanciaGuardada, *((int*)cantidad_entradas));
-					switch(operacionPedidaInstacia){
-						case 0:
-						{
-							int  ESI_bloq = sentencia.id_esi;
-							cambiarEstadoInstancia(instanciaGuardada, desconectada);
-							printf(RED"Se desconecto la Instancia  %s\n"RESET, instanciaGuardada);
-							enviarMensaje(socket_plan, esi_bloqueado, &ESI_bloq, sizeof(int));
-							break;
-						}
-						case ejecucion_ok:
-						{
-							//printf(GREEN"Ejecucion OK!\n"RESET);
-							break;
-						}
-						default:
-						{
-							printf(CYAN"IVAN ILUMINANOS\n"RESET);
-							break;
-						}
-					}
-					//MANDAR A INSTANCIA
-					break;
-				}
-				case S_SET:
-				{
-					char* instancia = "0";
-
-					if(!clave_tiene_instancia(sentencia.clave)) //atencion al !
-						instancia = aplicar_algoritmo(sentencia.clave, sentencia.valor);
-					else {
-						printf(RED"\nLa clave ya esta seteada en una instancia\n"RESET);
-						instancia = buscar_instancia(sentencia.clave);
-					}
-
-					printf("\nBuscando socket de instancia %s\n", instancia);
-
-					char* instanciaGuardada = dictionary_get(instancias_Claves , sentencia.clave);
-					/*int largoSentencia = strlen(nombre_instancia) + 1;
-					char* instanciaGuardada = malloc(largoSentencia);
-					strcpy(instanciaGuardada, nombre_instancia );*/
-
-					int socket = (*(instancia_Estado_Conexion*) dictionary_get(lista_Instancias , instancia)).socket;
-
-					//VALIDAR INSTANCIA CONECTADA
-					//MANDAR A INSTANCIA
-					enviarMensaje(socket, ejecutar_sentencia_instancia, &sentencia, sizeof(t_sentencia));
-
-					//VER BIEN DONDE VA ESTO, le envio al planif la instancia que esta la clave
-					avisar_guardado_planif(instancia, sentencia.clave);
-
-					void* cantidad_entradas;
-					int operacionPedidaInstacia = recibirMensaje(socket, &cantidad_entradas);
-					//COMPACTAR
-
-					switch(operacionPedidaInstacia){
-						case 0:
-						{
-							int  ESI_bloq= sentencia.id_esi;
-							cambiarEstadoInstancia(instanciaGuardada,desconectada);
-							printf("SE DESCONECTO LA CHINGADA INSTANCIA\n");
-							enviarMensaje(socket_plan, esi_bloqueado, &ESI_bloq, sizeof(int));
-							break;
-						}
-
-						case ejecucion_ok:
-						{
-							//printf("GREAT ejecucion_ok\n");
-							break;
-						}
-						case compactar:
-						{
-							avisar_compactacion();
-							compresion = 1;
-							void * asd;
-							int resultado = recibirMensaje(socket, &asd);
-							printf("%d", resultado);
-							if(resultado == compactacion_ok) {
-								printf("Termino de compactar la instancia del socket %d", socket);
-								compresiones_finalizadas++;
-							}
-							else if (resultado == 0) {
-								int  ESI_bloq = sentencia.id_esi;
-								printf("SE DESCONECTO LA CHINGADA INSTANCIA\n");
-								enviarMensaje(socket_plan, esi_bloqueado, &ESI_bloq, sizeof(int));
-							}
-							else {
-								if (compresiones_finalizadas < list_size(instancias_conectadas())) {
-									compresion = 0;
-									compresiones_finalizadas = 0;
-								}
-							}
-							break;
-						}
-
-						default:
-						{
-							printf("IVAN ILUMINANOS\n");
-							break;
-						}
-					}
-					break;
-				}
-				default:{
-					log_error(log_operaciones,"Error al identificar la operacion en el coordinador");
-					break;
-				}
-			}
-			int variable = exitoso;
-
-			enviarMensaje(socket_esi, ejecucion_ok, &variable, sizeof(int));
-		}
-		else if(sentencia_okey== esi_bloqueado){
-			printf(YELLOW "\nESI bloqueado\n" RESET);
-			int variable = bloqueado;
-			enviarMensaje(socket_esi, ejecucion_bloqueado, &variable, sizeof(int));
-		}
-		else{
-			printf(RED "\nERROR\n" RESET);
-			int variable = no_exitoso;
-			enviarMensaje(socket_esi, ejecucion_no_ok, &variable, sizeof(int));
-			break;
-		}
+		procesar_permiso_planificador(accion, sentencia, socket_esi);
 	}
 	//sale del while -> no hay mas sentencias
-	printf(YELLOW"\nFinalizando ESI %d\n"RESET, id_esi);
+	printf(YELLOW"\nEl ESI %d ha terminado su rutina. Finalizando ESI...\n"RESET, id_esi);
 	enviarMensaje(socket_plan, terminar_esi, &id_esi, sizeof(id_esi));
 	return NULL;
 }
 
-void avisar_compactacion() {
+void procesar_permiso_planificador(Accion mensaje, t_sentencia sentencia, int socket_esi) { //el planif me da el ok para ejecutar
+	int resultado; //lo mando luego de ejecutar
+	switch (mensaje) {
+		case sentencia_coordinador:
+			realizar_sentencia(sentencia);
+			resultado = exitoso;
+			break;
+		case esi_bloqueado:
+			printf(YELLOW "\nESI bloqueado por el planificador" RESET);
+			resultado = bloqueado; //antes era exitoso /?
+			break;
+		case error:
+		default:
+			printf(RED"\nERROR" RESET);
+			resultado = no_exitoso;
+			break;
+	}
+	enviarMensaje(socket_esi, resultado_ejecucion, &resultado, sizeof(int));
+}
+
+void GET(t_sentencia sentencia) {
+	if(!existe_clave(sentencia.clave)) {
+		dictionary_put(instancias_Claves, sentencia.clave, "0" );
+		log_info(log_operaciones, formatear_mensaje_esi(sentencia.id_esi, S_GET, sentencia.clave, NULL));
+	}
+}
+
+void SET(t_sentencia sentencia) {
+	char* instancia = buscar_instancia(sentencia.clave);
+	if(!clave_tiene_instancia(sentencia.clave))
+		instancia = aplicar_algoritmo(sentencia);
+
+	printf("\nBuscando socket de instancia %s", instancia);
+	instancia_Estado_Conexion* conexion = dictionary_get(lista_Instancias , instancia);
+	int socket = conexion->socket;
+
+	//VALIDAR INSTANCIA CONECTADA
+	enviarMensaje(socket, ejecutar_sentencia_instancia, &sentencia, sizeof(t_sentencia));
+	avisar_guardado_planif(instancia, sentencia.clave); //aviso de clave guardada en tal instancia
+
+	void* cantidad_entradas;
+	int operacion = recibirMensaje(socket, &cantidad_entradas);
+	procesar_pedido_instancia(operacion, instancia, sentencia.id_esi);
+}
+
+void STORE(t_sentencia sentencia) {
+	char* instancia = buscar_instancia(sentencia.clave);
+	instancia_Estado_Conexion* conexion = dictionary_get(lista_Instancias, instancia);
+	int socket = conexion->socket;
+	enviarMensaje(socket, ejecutar_sentencia_instancia, &sentencia, sizeof(t_sentencia));
+
+	void* cantidad_entradas;
+	int operacion = recibirMensaje(socket, &cantidad_entradas);
+	actualizar_instancia(instancia, *((int*)cantidad_entradas));
+	procesar_pedido_instancia(operacion, instancia, sentencia.id_esi);
+}
+
+void realizar_sentencia(t_sentencia sentencia) {
+
+	s_wait(&semaforo_compactacion);
+
+	imprimir_sentencia(sentencia);
+	switch(sentencia.tipo) {
+		case S_GET:		GET(sentencia); 	break;
+		case S_SET: 	SET(sentencia); 	break;
+		case S_STORE: 	STORE(sentencia); 	break;
+		default: 		log_error(log_operaciones,"Error al identificar la operacion en el coordinador"); break;
+	}
+
+	s_signal(&semaforo_compactacion);
+}
+
+void procesar_pedido_instancia(Accion operacion, char* instancia, int esi) {
+	switch(operacion){
+		case ejecucion_ok:
+			printf(GREEN"\nLa instancia ejecuto la operacion de forma exitosa."RESET);
+			break;
+		case compactar:
+			hilo_avisar_compactacion(); //creo un hilo que espera las compactaciones
+			break;
+		case error:
+		default:
+			printf(RED"\nLa instancia no pudo ejecutar la operacion. Finalizando ESI."RESET);
+			enviarMensaje(socket_plan, terminar_esi, &esi, sizeof(int));
+			printf(RED"\nDesconectando "CYAN"%s."RESET, instancia);
+			cambiarEstadoInstancia(instancia, desconectada);
+			break;
+	}
+}
+
+void* avisar_compactacion() {
+	s_wait(&semaforo_compactacion);
 	t_list* conectadas = instancias_conectadas();
 	int n = list_size(conectadas);
 	for (int i = 0; i < n; i++) {
 		instancia_Estado_Conexion* instancia = list_get(conectadas, i);
-		printf("Compactando instancia en socket %d", instancia->socket);
-		avisar(instancia->socket, compactar);
+		hilo_compactacion(instancia->socket); //creo un hilo para cada instancia
 	}
 	printf(RED"\nCOMPACTANDO INSTANCIAS\n"RESET);
+	esperar_compactacion(); //espera activa
+	printf(GREEN"\nCOMPACTACION FINALIZADA\n"RESET);
+	compresiones_finalizadas = 0;
+	s_signal(&semaforo_compactacion);
+	return NULL;
+}
+
+void hilo_avisar_compactacion() {
+	pthread_attr_t attr;
+	pthread_t hilo;
+	pthread_attr_init(&attr);
+	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+	pthread_create (&hilo ,&attr, avisar_compactacion, NULL);
+	pthread_attr_destroy(&attr);
+}
+
+void hilo_compactacion(int socket_instancia) {
+	pthread_attr_t attr;
+	pthread_t hilo;
+	pthread_attr_init(&attr);
+	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+	pthread_create (&hilo ,&attr, rutina_compactacion, (void *)socket_instancia);
+	pthread_attr_destroy(&attr);
+}
+
+void* rutina_compactacion(void* sock) {
+	int socket_instancia = (int)sock;
+	void* stream;
+	printf(GREEN"\nCompactando instancia en socket %d"RESET, socket_instancia);
+	avisar(socket_instancia, compactar); //aviso a la instancia que debe compactar
+
+	int resultado = recibirMensaje(socket_instancia, &stream); //espero que compacte
+	switch(resultado) {
+	case compactacion_ok:
+		printf(GREEN"\nTermino de compactar la instancia del socket %d"RESET, socket_instancia);
+		compresiones_finalizadas++; //una vez que el contador es igual al total de instancias, todas terminaron
+		break;
+	case error:
+	default:
+		if (compresiones_finalizadas < list_size(instancias_conectadas()))
+			compresiones_finalizadas = 0;
+		break;
+	}
+	return NULL;
 }
 
 void cambiarEstadoInstancia(char *instanciaGuardada, estado_de_la_instancia accion){
@@ -322,27 +304,18 @@ void avisar_guardado_planif(char* instancia, char* clave) {
 }
 
 int clave_tiene_instancia(char* clave) {
-	return strcmp((char*)dictionary_get(instancias_Claves, clave), "0") == 0 ? 0 : 1; //xd
+	return strcmp((char*)dictionary_get(instancias_Claves, clave), "0") == 0 ? 0 : 1;
 }
 
-char* aplicar_algoritmo(char* clave, char* valor) { //DEVUELVE EL NOMBRE DE LA INSTANCIA ASIGNADA
+char* aplicar_algoritmo(t_sentencia sentencia) { //DEVUELVE EL NOMBRE DE LA INSTANCIA ASIGNADA
 	switch(configuracion.algoritmo) {
-		case el:	equitative_load(clave);		break;
-		case lsu:	least_space_used(clave);	break;
-		case ke: 	key_explicit(clave); 		break;
+		case el:	equitative_load(sentencia.clave);		break;
+		case lsu:	least_space_used(sentencia.clave);	break;
+		case ke: 	key_explicit(sentencia.clave); 		break;
 		default: 								break;
 	}
-	//ACA FALTA EL ID DEL ESI, SIEMPRE ES 1
-	//ACA FALTA EL ID DEL ESI, SIEMPRE ES 1
-	//ACA FALTA EL ID DEL ESI, SIEMPRE ES 1
-	//ACA FALTA EL ID DEL ESI, SIEMPRE ES 1
-	//ACA FALTA EL ID DEL ESI, SIEMPRE ES 1
-	//ACA FALTA EL ID DEL ESI, SIEMPRE ES 1
-	//ACA FALTA EL ID DEL ESI, SIEMPRE ES 1
-	//ACA FALTA EL ID DEL ESI, SIEMPRE ES 1
-	//ACA FALTA EL ID DEL ESI, SIEMPRE ES 1
-	log_info(log_operaciones, formatear_mensaje_esi(1, S_SET, clave, valor)); //por qué 1 xd?
-	return (char*) dictionary_get(instancias_Claves , clave);
+	log_info(log_operaciones, formatear_mensaje_esi(sentencia.id_esi, S_SET, sentencia.clave, sentencia.valor));
+	return (char*) dictionary_get(instancias_Claves , sentencia.clave);
 }
 
 void crear_hilo(int nuevo_socket, int modulo) {
@@ -392,12 +365,8 @@ void crear_log_operaciones() {
 }
 
 void esperar_compactacion() {
-	int hay_que_compactar = 0;
 	int instancias = list_size(instancias_conectadas());
-	while(compresion != 1 && compresiones_finalizadas < instancias)
-		hay_que_compactar = 1;
-	if (hay_que_compactar == 1)
-		printf(GREEN"\nCOMPACTACION FINALIZADA\n"RESET);
+	while(compresiones_finalizadas != instancias);
 }
 
 void modificar_clave(char* clave, char* instancia) {
@@ -593,5 +562,8 @@ char* least_space_used_simulado(char* clave) {
 	return instancia_con_mas_espacio();
 }
 
+int existe_clave(char* clave) {
+	return dictionary_has_key(instancias_Claves, clave);
+}
 
 

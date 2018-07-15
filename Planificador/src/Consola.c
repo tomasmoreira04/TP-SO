@@ -203,9 +203,7 @@ t_deadlock* clave_que_necesita(ESI* a, ESI* b) {
 
 void desbloquear_clave(char* clave) {
 	int ok = liberar_clave(clave);
-	if (ok)
-		printf(GREEN"\nSe ha liberado la clave"RED" %s"RESET, clave);
-	else
+	if (!ok)
 		printf(RED"\nNo se ha podido liberar la clave"CYAN" %s"RESET, clave);
 }
 

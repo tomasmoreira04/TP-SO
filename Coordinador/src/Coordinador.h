@@ -41,7 +41,7 @@ void cambiarEstadoInstancia(char *instanciaGuardada,estado_de_la_instancia accio
 char* formatear_mensaje_esi(int, TipoSentencia, char*, char*);
 void configurar_instancia(int socket);
 void destruir_estructuras_globales();
-char* aplicar_algoritmo(char* clave, char* valor);
+char* aplicar_algoritmo(t_sentencia sentencia);
 int clave_tiene_instancia(char* clave);
 char* instancia_con_mas_espacio();
 void avisar_guardado_planif(char* instancia, char* clave);
@@ -50,8 +50,16 @@ t_list* lista_instancias_activas();
 int estadoDeInstancia(char * instancia);//DEVUELVE EL ESTADO DE LA INSTANCIA A LA CUAL SE INTENTA GUARDAR
 void nodo_inst_conexion_destroyer(instancia_Estado_Conexion* inst);
 
+//abstracciones
+void procesar_pedido_instancia(Accion operacion, char* instancia, int esi);
+void realizar_sentencia(t_sentencia sentencia);
+void procesar_permiso_planificador(Accion mensaje, t_sentencia sentencia, int socket_esi);
+
 void esperar_compactacion();
-void avisar_compactacion();
+void* avisar_compactacion();
+void* rutina_compactacion(void* sock);
+void hilo_compactacion(int socket_instancia);
+void hilo_avisar_compactacion();
 
 //simulaciones planificador
 void* rutina_consulta(void* argumento);
@@ -59,5 +67,6 @@ char* simular_algoritmo(char* clave);
 char* equitative_load_simulado(char* clave);
 char* key_explicit_simulado(char* clave);
 char* least_space_used_simulado(char* clave);
+int existe_clave(char* clave);
 
 #endif /* COORDINADOR_H_ */

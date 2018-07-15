@@ -4,5 +4,6 @@
 #define BLUE    "\x1b[34m"
 #define MAGENTA "\x1b[35m"
 #define CYAN    "\x1b[36m"
+#define WHITE 	"\x1b[37m"
 #define RESET   "\x1b[0m"
 

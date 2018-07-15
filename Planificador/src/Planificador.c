@@ -46,6 +46,7 @@ pthread_mutex_t coord_ok = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t numero_esi = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t num_esis = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t sem_ejecutar = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t operando_claves = PTHREAD_MUTEX_INITIALIZER;
 
 
 int main(int argc, char* argv[]) {
@@ -243,13 +244,13 @@ void procesar_resultado(ResultadoEjecucion resultado) {
 	s_wait(&ejecucion);
 	switch (resultado) {
 	case no_exitoso:
-		printf(RED "\nEl esi %d no pudo ejecutar la sentencia.\n" RESET, esi_ejecutando->id);
+		printf(RED "\nEl esi no pudo ejecutar la sentencia.\n" RESET);
 		break;
 	case exitoso:
-		printf(GREEN "\nEl esi %d pudo ejecutar la sentencia.\n" RESET, esi_ejecutando->id);
+		printf(GREEN "\nEl esi pudo ejecutar la sentencia.\n" RESET);
 		break;
 	case bloqueado:
-		printf(YELLOW "\nEl esi %d se encuentra bloqueado.\n" RESET, esi_ejecutando->id);
+		printf(YELLOW "\nEl esi se ha bloqueado.\n" RESET);
 		break;
 	case dudoso:
 		break;
@@ -350,54 +351,57 @@ void error_operacion(ErrorOperacion tipo, char* clave, int esi) {
 
 void GET(char* clave, ESI* esi, int coordinador) {
 	if (esta_bloqueada(clave) == 1) {
-		printf(YELLOW"\nLa clave "GREEN"%s "YELLOW"se encuentra bloqueada, se bloqueará el "GREEN"ESI %d"RESET, clave, esi->id);
+		printf(YELLOW"\n(GET) de clave"RED" %s"YELLOW", pero se encuentra bloqueada, se bloqueará el "GREEN"ESI %d."RESET, clave, esi->id);
 		nueva_solicitud_clave(clave, esi); //va bien esto
 		bloquear_esi(esi);
 		avisar(coordinador, esi_bloqueado);
 	}
 	else {
 		bloquear_clave(clave, esi);
-		printf("\nLa clave "GREEN"%s "RESET"se asigno a "GREEN"ESI %d"RESET, clave, esi->id);
+		printf("\n(GET) La clave "GREEN"%s "RESET"se asigno a "GREEN"ESI %d"RESET, clave, esi->id);
 		esi->rafagas_restantes--;
 		avisar(coordinador, sentencia_coordinador);
 	}
 }
 
 void SET(char* clave, char* valor, ESI* esi, int coordinador) {
-	t_clave* c = buscar_clave_bloqueada(clave);
-	if (c == NULL) {
-		error_operacion(error_clave_no_identificada, clave, esi->id);
-		finalizar_esi_ref(esi);
-		avisar(coordinador, error_sentencia);
-	}
-	else if (c->bloqueada == 0 || c->esi_duenio != esi) {
+	t_clave* c = buscar_clave_bloqueada(clave); //aca adentro hay mutex
+
+	if (c->bloqueada != 1 || c->esi_duenio->id != esi->id) {
 		error_operacion(error_clave_no_bloqueada, clave, esi->id);
 		finalizar_esi_ref(esi);
 		avisar(coordinador, error_sentencia);
 	}
-	else { //puedo hacer store
+	else if (c == NULL) {
+		error_operacion(error_clave_no_identificada, clave, esi->id);
+		finalizar_esi_ref(esi);
+		avisar(coordinador, error_sentencia);
+	}
+	else { //puedo hacer set
 		strcpy(c->valor, valor);
-		printf("\nSe ha seteado la clave" GREEN " %s" RESET " con valor" MAGENTA " %s" RESET, c->clave, c->valor);
+		printf("\n(SET) Se ha seteado la clave" GREEN " %s" RESET " con valor" MAGENTA " %s" RESET, c->clave, c->valor);
 		esi->rafagas_restantes--;
 		avisar(coordinador, sentencia_coordinador);
 	}
+
 }
 
 void STORE(char* clave, ESI* esi, int coordinador) { //esi: esi que hace el pedido de store
-	t_clave* c = buscar_clave_bloqueada(clave);
-	if (c == NULL) {
-		error_operacion(error_clave_no_identificada, clave, esi->id);
+	t_clave* c = buscar_clave_bloqueada(clave); //aca adentro hay mutex
+
+	if (c->bloqueada != 1 || c->esi_duenio->id != esi->id) {
+		error_operacion(error_clave_no_bloqueada, clave, esi->id);
 		finalizar_esi_ref(esi);
 		avisar(coordinador, error_sentencia);
 	}
-	else if (c->bloqueada == 0 || c->esi_duenio != esi) {
-		error_operacion(error_clave_no_bloqueada, clave, esi->id);
+	else if (c == NULL) {
+		error_operacion(error_clave_no_identificada, clave, esi->id);
 		finalizar_esi_ref(esi);
 		avisar(coordinador, error_sentencia);
 	}
 	else { //puedo hacer store
 		liberar_clave(clave);
-		printf("\nSe ha liberado la clave" GREEN " %s" RESET, c->clave);
+		printf("\n(STORE) Se ha liberado la clave" GREEN " %s" RESET, c->clave);
 		esi->rafagas_restantes--;
 		avisar(coordinador, sentencia_coordinador);
 	}
@@ -435,6 +439,7 @@ void liberar_recursos(ESI* esi) {
 
 void bloquear_clave(const char* clave, ESI* esi) {
 	t_clave* entrada = buscar_clave_bloqueada(clave);
+	s_wait(&operando_claves);
 	if (entrada == NULL) { //no existe -> la creo
 		entrada = malloc(sizeof(t_clave));
 		entrada->bloqueada = 1;
@@ -448,26 +453,40 @@ void bloquear_clave(const char* clave, ESI* esi) {
 		entrada->bloqueada = 1;
 		entrada->esi_duenio = esi;
 	}
+	s_signal(&operando_claves);
 }
 
 void nueva_solicitud_clave(char* clave, ESI* esi) {
 	t_clave* entrada = buscar_clave_bloqueada(clave);
-	if (entrada != NULL)
+	if (entrada != NULL) {
 		list_add(entrada->esis_esperando, esi);
-	else
-		bloquear_clave(clave, esi);
+		printf(GREEN"\nESI %d"RESET" agregado a la lista de espera de la clave"MAGENTA" %s"RESET, esi->id, clave);
+	}
+	else bloquear_clave(clave, esi);
 }
+
+
 
 int liberar_clave(char* clave) {
 	t_clave* c = buscar_clave_bloqueada(clave);
+	s_wait(&operando_claves);
 	if (c != NULL) {
-		c->bloqueada = 0;
-		c->esi_duenio = NULL;
 		ESI* esi_a_desbloquear = list_remove(c->esis_esperando, 0); //el primero en haberse bloqueado, y lo saco
-		if (esi_a_desbloquear != NULL)
+		if (esi_a_desbloquear != NULL) {
 			desbloquear_esi(esi_a_desbloquear);
+			c->esi_duenio = esi_a_desbloquear;
+			c->bloqueada = 1; //ahora esta bloqueada por el esi q taba esprando
+			printf("\nClave"RED" %s "RESET"liberada. Ahora pertenece a ESI %d", clave, esi_a_desbloquear->id);
+		}
+		else {
+			c->bloqueada = 0; //queda libre en el aire
+			c->esi_duenio = NULL;
+			printf("\nClave"RED" %s "RESET"desbloqueada y libre.", clave);
+		}
+		s_signal(&operando_claves);
 		return 1;
 	}
+	s_signal(&operando_claves);
 	return 0; //error
 }
 
@@ -479,11 +498,15 @@ int esta_bloqueada(char* clave) {
 }
 
 t_clave* buscar_clave_bloqueada(const char* clave) {
+	s_wait(&operando_claves);
 	for (int i = 0; i < list_size(lista_claves_bloqueadas); i++) {
 		t_clave* c = list_get(lista_claves_bloqueadas, i);
-		if (strcmp(clave, c->clave) == 0)
+		if (strcmp(clave, c->clave) == 0) {
+			s_signal(&operando_claves);
 			return c;
+		}
 	}
+	s_signal(&operando_claves);
 	return NULL;
 }
 
