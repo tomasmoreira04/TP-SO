@@ -13,19 +13,24 @@ typedef struct{
 	char* clave;
 	int entrada;
 	int tamanio;		//en Bytes
-}Reg_TablaEntradas;
+} Reg_TablaEntradas;
 
 typedef struct{
 	char* clave;
 	int tamanio;
 	int ultimaRef;
-}Nodo_Reemplazo;
+} Nodo_Reemplazo;
 
 typedef enum {
 	hilo_dump,
 	hilo_compactar,
 	hilo_sentencia
 } HiloInstancia;
+
+typedef struct{
+	char* clave;
+	char* valor;
+} t_clave_inicial;
 
 void setValor(char* clave, char* valor, int tamEnBytes);
 void almacenarNuevo(char* clave, char* valor, int tamEnBytes);
@@ -63,7 +68,13 @@ void rutina_principal();
 //sida
 t_list* lista_entradas();
 Reg_TablaEntradas* buscar_entrada_en_lista(t_list* lista, int entrada);
-void compac();
+void compact();
 void imprimir_almacenamiento();
+void imprimir_espacio(int bit);
+void cargar_clave_montaje(char* archivo, char* clave);
+void configurar_entradas();
+void inicializar_estructuras();
+int recuperar_claves(char* ruta);
+void cargar_claves_iniciales();
 
 #endif /* INSTANCIA_H_ */

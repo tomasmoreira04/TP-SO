@@ -68,6 +68,13 @@ int main(int argc, char* argv[]) {
 	return 0;
 }
 
+void* espera_desconexion(int socket_inst) {
+	while(true) {
+		void* b;
+		int a = recibirMensaje(socket_inst, &b);
+
+	}
+}
 
 //ACCIONES DE LOS HILOS
 void *rutina_instancia(void * arg) {
@@ -289,11 +296,13 @@ void* rutina_compactacion(void* sock) {
 }
 
 void cambiarEstadoInstancia(char *instanciaGuardada, estado_de_la_instancia accion){
-	instancia_Estado_Conexion *aux=malloc(sizeof(instancia_Estado_Conexion));
+	instancia_Estado_Conexion *estado = dictionary_get(lista_Instancias, instanciaGuardada);
+	/*instancia_Estado_Conexion *aux=malloc(sizeof(instancia_Estado_Conexion));
 	dictionary_remove(lista_Instancias, instanciaGuardada);
 	aux->estadoConexion=accion;
-	aux->socket=0;
-	dictionary_put(instancias_Claves, instanciaGuardada, aux);
+	aux->socket=0; //Y ESTO POR QUE?
+	dictionary_put(instancias_Claves, instanciaGuardada, aux);*/
+	estado->estadoConexion = accion;
 }
 
 void avisar_guardado_planif(char* instancia, char* clave) {
@@ -302,6 +311,7 @@ void avisar_guardado_planif(char* instancia, char* clave) {
 	strcpy(respuesta->instancia, instancia);
 	enviarMensaje(socket_plan, clave_guardada_en_instancia, respuesta, sizeof(t_clave));
 }
+
 
 int clave_tiene_instancia(char* clave) {
 	return strcmp((char*)dictionary_get(instancias_Claves, clave), "0") == 0 ? 0 : 1;
@@ -401,9 +411,21 @@ void contador_EQ(int cantidadDeInstancias){
 	contadorEquitativeLoad = c + 1 > i ? 0 : c + 1;
 }
 
-int estadoDeInstancia(char * instancia){
+int estadoDeInstancia(char* instancia){
 	instancia_Estado_Conexion* estado = dictionary_get(lista_Instancias,instancia);
+	estado->estadoConexion = enviar_check_conexion_instancia(estado->socket);
 	return estado->estadoConexion;
+}
+
+int enviar_check_conexion_instancia(int socket) {
+	header h = {.accion = verificar_conexion, .tamano = sizeof(int)};
+	void* stream = malloc(sizeof(header) + sizeof(int) );
+	int mensaje = 1;
+	memcpy(stream, &h, sizeof(header));
+	memcpy(stream + sizeof(header), &mensaje, sizeof(int));
+	int enviado = send(socket, stream,sizeof(header) + sizeof(int), 0);
+	free(stream);
+	return enviado == -1 ? desconectada : conectada;
 }
 
 void key_explicit(char* claveSentencia){
@@ -449,8 +471,7 @@ t_list* lista_instancias_activas() {
 	t_list* lista = list_create();
 	for(int i = 0 ; i < list_size(listaSoloInstancias) ; i++) {
 		char* nombre = list_get(listaSoloInstancias, i);
-		instancia_Estado_Conexion* conexion = dictionary_get(lista_Instancias, nombre);
-		if(conexion->estadoConexion == conectada)
+		if(estadoDeInstancia(nombre) == conectada)
 			list_add(lista, nombre);
 	}
 	return lista;

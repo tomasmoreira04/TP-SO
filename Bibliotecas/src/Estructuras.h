@@ -54,6 +54,7 @@ typedef enum {
 	conectar_esi_planif,
 	sentencia_coordinador,
 	nuevo_esi,
+	instancia_desconectada,
 	ejecutar_proxima_sentencia,
 	ejecutar_sentencia_coordinador,
 	preguntar_recursos_planificador,
@@ -74,7 +75,8 @@ typedef enum {
 	cerrar_conexion_esi,
 	podes_seguir,
 	clave_guardada_en_instancia, //coord -> planif
-	consulta_simulacion
+	consulta_simulacion,
+	verificar_conexion //coordi checkea que la instancia este conectada
 } Accion;
 
 typedef enum {
