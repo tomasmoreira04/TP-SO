@@ -60,4 +60,10 @@ void guardarLaWea();
 void rutina_principal();
 
 
+//sida
+t_list* lista_entradas();
+Reg_TablaEntradas* buscar_entrada_en_lista(t_list* lista, int entrada);
+void compac();
+void imprimir_almacenamiento();
+
 #endif /* INSTANCIA_H_ */

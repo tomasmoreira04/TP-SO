@@ -5,6 +5,7 @@
 #include <string.h>
 #include <netdb.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -27,9 +28,9 @@ ConfigInstancia config;
 t_dictionary* tablaEntradas;
 t_bitarray* disponibles;
 t_list* reemplazos;
-
-
 t_list* lista_Claves;
+
+t_list* tabla_de_entradas;
 
 
 //VARIABLES GLOBALES----
@@ -46,7 +47,8 @@ pthread_mutex_t semaforo_compactacion = PTHREAD_MUTEX_INITIALIZER;
 
 int main(int argc, char* argv[]) {
 
-	lista_Claves=list_create();
+	lista_Claves = list_create();
+	tabla_de_entradas = list_create();
 
 	char* nombre = argv[1];
 	config = cargar_config_inst(nombre);
@@ -82,10 +84,10 @@ int main(int argc, char* argv[]) {
 	//-------------INICIALIZAR
 
 	char* bitarray = malloc(sizeof(char)*cantEntradas);
-	disponibles = bitarray_create(bitarray,cantEntradas);
+	disponibles = bitarray_create(bitarray, cantEntradas);
 	limpiarArray(0,cantEntradas);
 
-	tablaEntradas = dictionary_create();
+	//tablaEntradas = dictionary_create();
 	reemplazos = list_create();
 
 	//aca crear hilo principal
@@ -121,14 +123,11 @@ void rutina_principal() {
 					crear_hilo(hilo_compactar, NULL);
 					break;
 
+				case error:
 				default:
 					printf(RED "\nError!\n"RESET );
+					printf(RED "\nSe desconecto el coordinador!\n"RESET);
 					break;
-			}
-
-			if(accion == error){
-				printf(RED "\nSe desconecto el coordinador!\n"RESET);
-				break;
 			}
 		}
 }
@@ -145,8 +144,27 @@ void mostrarArray(char* bitarray){
 	}
 }
 
+Reg_TablaEntradas* buscar_entrada(char* clave) {
+	for (int i = 0; i < list_size(tabla_de_entradas); i++) {
+		Reg_TablaEntradas* e = list_get(tabla_de_entradas, i);
+		if (strcmp(e->clave, clave) == 0)
+			return e;
+	}
+	return NULL;
+}
+
+Reg_TablaEntradas* borrar_devolver_entrada(char* clave) {
+	for (int i = 0; i < list_size(tabla_de_entradas); i++) {
+		Reg_TablaEntradas* e = list_get(tabla_de_entradas, i);
+		if (strcmp(e->clave, clave) == 0)
+			return list_remove(tabla_de_entradas, i);
+	}
+	return NULL;
+}
+
 void mostrarValor(char* clave){
-	Reg_TablaEntradas* registro = dictionary_get(tablaEntradas,clave);
+	//Reg_TablaEntradas* registro = dictionary_get(tablaEntradas,clave);
+	Reg_TablaEntradas* registro = buscar_entrada(clave);
 
 	char* valor=malloc((sizeof(char)*registro->tamanio)+1);
 	memcpy(valor, storage+(tamEntrada*registro->entrada),registro->tamanio);
@@ -226,15 +244,72 @@ void* compactacion() {
 	compactado = 0;
 	const int microsegundo = 1 * 1000 * 1000;
 	printf(RED"\nCOMPACTANDO...\n"RESET);
-	usleep(5 * microsegundo); //5 segundos
+	//usleep(5 * microsegundo); //5 segundos
+
+	//imprimir_almacenamiento();
+	mostrarArray(NULL);
+	compact();
 	printf(GREEN"\nSE HA COMPACTADO CON EXITO!\n"RESET);
+	//imprimir_almacenamiento();
+	mostrarArray(NULL);
+
 	compactado = 1;
 	avisar(socketServer, compactacion_ok);
 
 	s_signal(&semaforo_compactacion);
+
 	return NULL;
 }
 
+int compact() {
+    int i, inicioAnterior, libre, cont;
+    //traductor_marco* procesoAMover;
+    Reg_TablaEntradas* entrada_a_mover;
+
+    int ordenar_menor_mayor(Reg_TablaEntradas* entrada1, Reg_TablaEntradas* entrada2){
+        return (entrada1->entrada < entrada2->entrada);
+    }
+
+    int proxima_entrada(Reg_TablaEntradas* entrada){
+        return (entrada->entrada >= i);
+    }
+
+    list_sort(tabla_de_entradas, (void*)ordenar_menor_mayor);
+
+    for(i=0; i < cantEntradas; i++){
+        if (!bitarray_test_bit(disponibles,i)){
+                libre = i;
+                // busque el proximo proceso ocupado a mover
+                entrada_a_mover = list_find(tabla_de_entradas, (void*)proxima_entrada);
+                if (entrada_a_mover != NULL) {
+                        inicioAnterior = entrada_a_mover->entrada;
+                        int entradas_que_ocupa = 1 + ((entrada_a_mover->tamanio - 1) / tamEntrada);
+                        for (cont = 0; cont < entradas_que_ocupa; cont++){
+                            bitarray_clean_bit(disponibles, inicioAnterior + cont);                       //porque ahora va a estar vacia
+                            bitarray_set_bit(disponibles, libre + cont);                                  //Ahora va a estar ocupada
+                        }
+                    //memcpy(archivoSwap+ libre * datosSwap->tamPagina, archivoSwap+inicioAnterior * datosSwap->tamPagina, procesoAMover->paginas * datosSwap->tamPagina);        //Modifique los marcos, ahora copio los datos
+                    memcpy(storage + libre * tamEntrada, storage + inicioAnterior * tamEntrada, entrada_a_mover->tamanio);        //Modifique los marcos, ahora copio los datos
+                    entrada_a_mover->entrada = libre;
+                }
+                else
+                    i = cantEntradas;                         //No hay mas procesos para mover => salgo del ciclo, no necesito buscar mas
+        }
+    }
+    return 1;
+}
+
+
+void imprimir_almacenamiento() {
+	printf(CYAN"\nAlmacenamiento:\n");
+	for (int i = 0; i < cantEntradas; i++) {
+		int bit = bitarray_test_bit(disponibles, i);
+		char* color = bit == 0 ? RED : GREEN;
+		printf("\n%s", color);
+		for (int j = 0; j < tamEntrada; j++)
+			printf("#");
+	}
+}
 
 void aumentarTiempoRef(){
 	int i;
@@ -260,24 +335,22 @@ int buscarNodoReemplazo(char* clave){
 
 void ejecutarSentencia(t_sentencia* sentencia){
 
-	s_wait(&semaforo_compactacion);
-
 	switch(sentencia->tipo){
 
 	case S_SET:
 		aumentarTiempoRef();
 		almacenarValor(sentencia->clave,sentencia->valor);
-		printf(GREEN "\nSe ejecuto un SET correctamente\n"RESET);
-
-		if(laListaLoContiene(sentencia->clave)==0 ){
+		printf(GREEN "\nSe ejecuto un SET correctamente, de clave %s con valor %s.\n"RESET, sentencia->clave, sentencia->valor);
+		mostrarListaReemplazos(reemplazos);
+		mostrarArray(NULL);
+		if(!laListaLoContiene(sentencia->clave))
 			list_add(lista_Claves,sentencia->clave);
-		}
 		break;
 
 	case S_STORE:
 		aumentarTiempoRef();
 		persistirValor(sentencia->clave);
-		printf(GREEN "\nSe ejecuto un STORE correctamente\n"RESET);
+		printf(GREEN "\nSe ejecuto un STORE correctamente, de clave %s.\n"RESET, sentencia->clave);
 		break;
 
 	default:
@@ -285,8 +358,10 @@ void ejecutarSentencia(t_sentencia* sentencia){
 		exit(0);
 		break;
 	}
+}
 
-	s_signal(&semaforo_compactacion);
+int existe_entrada(char* clave) {
+	return buscar_entrada(clave) != NULL;
 }
 
 void almacenarValor(char* clave, char* valor){
@@ -294,22 +369,25 @@ void almacenarValor(char* clave, char* valor){
 	int tamEnBytes = string_length(valor)+1;
 	int tamEnEntradas = 1+((tamEnBytes-1)/tamEntrada);			//redondeo para arriba
 
-	if(dictionary_has_key(tablaEntradas,clave))
-		liberarEntradas(clave);
+	/*if(dictionary_has_key(tablaEntradas,clave))
+		liberarEntradas(clave);*/
 
+	if(existe_entrada(clave))
+		liberarEntradas(clave);
 
 	if(tamEnEntradas <= cantEntradasDisp){
 
 		int posInicialLibre = buscarEspacioLibre(tamEnEntradas);
-		strcpy(storage+(tamEntrada*posInicialLibre),valor);
+		strcpy(storage+(tamEntrada*posInicialLibre), valor);
 
 		Reg_TablaEntradas* registro = malloc(sizeof(Reg_TablaEntradas));
 		registro->entrada = posInicialLibre;
 		registro->tamanio = tamEnBytes;
 		registro->clave = malloc(strlen(clave)+1);
 		strcpy(registro->clave,clave);
-		dictionary_put(tablaEntradas,clave,registro);
-		cantEntradasDisp-=tamEnEntradas;
+		//dictionary_put(tablaEntradas,clave,registro);
+		list_add(tabla_de_entradas, registro);
+		cantEntradasDisp -= tamEnEntradas;
 
 		if (tamEnEntradas == 1){								//Si el valor es atomico, se selecciona como valor de reemplazo
 			Nodo_Reemplazo* remp = malloc(sizeof(Nodo_Reemplazo));
@@ -321,21 +399,14 @@ void almacenarValor(char* clave, char* valor){
 
 	} else {
 
-		if(tamEnEntradas<=list_size(reemplazos)){
+		if(tamEnEntradas <= list_size(reemplazos)){
 			printf(YELLOW "\nEl valor de la clave %s reemplazara %d valor(es) existente(s)\n"RESET,clave,tamEnEntradas);
 			reemplazarValor(clave,valor,tamEnEntradas);
 
 		} else{
+
 			printf(RED "\nNo existen suficientes entradas de reemplazo para ubicar valor de clave: %s!\n\n"RESET,clave);
 			exit(0); //por ahora exit, pero enviar mensaje de fallo supongo
-			//SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-			//SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-			//SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-			//SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-			//SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-			//SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-			//SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-			//SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
 			//SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
 			return;
 		}
@@ -345,6 +416,11 @@ void almacenarValor(char* clave, char* valor){
 
 void persistirValor(char* clave){
 	char* path = malloc(string_length(clave)+strlen(config.punto_montaje)+5);
+
+	struct stat st = {0};
+	if (stat(path, &st) == -1)
+		mkdir(path, 0777);
+
 	strcpy(path,config.punto_montaje);
 	strcat(path,clave);
 	strcat(path,".txt");
@@ -411,18 +487,19 @@ void reemplazarValor(char* clave, char* valor, int tamEnEntradas){
 
 
 char* devolverValor(char* clave){								//devuelve valor acordarse de liberarlo
-	Reg_TablaEntradas* registro;
-	registro = dictionary_get(tablaEntradas,clave);
+	//Reg_TablaEntradas* registro = dictionary_get(tablaEntradas, clave);
+	Reg_TablaEntradas* registro = buscar_entrada(clave);
 
-	char* valor=malloc(sizeof(char)*registro->tamanio);
-	strcpy(valor,storage+(tamEntrada*registro->entrada));
+	//char* valor;/* = malloc(sizeof(char)*registro->tamanio);*/
+	char* valor = strdup(storage+(tamEntrada*registro->entrada));
 
 	return valor;
 }
 
 
 void liberarEntradas(char* clave){
-	Reg_TablaEntradas* registro  = dictionary_remove(tablaEntradas,clave);
+	//Reg_TablaEntradas* registro  = dictionary_remove(tablaEntradas,clave);
+	Reg_TablaEntradas* registro = borrar_devolver_entrada(clave);
 	int tamEnEntradas = 1+((registro->tamanio-1)/tamEntrada);
 	int desde= registro->entrada;
 	int hasta= registro->entrada+tamEnEntradas;
@@ -444,32 +521,34 @@ void limpiarArray(int desde, int hasta){
 
 
 int buscarEspacioLibre(int entradasNecesarias){
-	int posInicialLibre=0, i,contador=0;
+	int posInicialLibre = 0, i, contador = 0;
 	int ya_avise = 0;
-	do{
-	for(i=0;i<disponibles->size && contador<entradasNecesarias;i++){
-		if (!bitarray_test_bit(disponibles,i)){
-			contador++;}										//busca espacios libres CONTIGUOS
-		else{
-			contador=0;
-			posInicialLibre=i+1;}
-	}
 
-	if (contador < entradasNecesarias){							//Compacta en caso de ser necesario (porque hay espacios pero no son contiguos)
+	do {
+		for(i=0;i<disponibles->size && contador<entradasNecesarias;i++){
+			if (bitarray_test_bit(disponibles,i) == 0) //espacio libre
+				contador++;
+			else{
+				contador=0;
+				posInicialLibre= i + 1;
+			}
+		}
+
+	if (contador < entradasNecesarias) {
+		compactado = 0;						//Compacta en caso de ser necesario (porque hay espacios pero no son contiguos)
 		if (ya_avise == 0) {
 			avisar(socketServer, compactar);
-			s_signal(&semaforo_compactacion);
+			//s_wait(&semaforo_compactacion);
+			while(compactado != 1);
 			ya_avise = 1;
 		}
-		compactado = 0;
-	}else{
+	}
+	else
 		compactado = 1;
-	}
-	}while(compactado == 0);
+	} while(compactado == 0);
 
-	for(i=posInicialLibre;i<posInicialLibre+contador;i++){
-		bitarray_set_bit(disponibles,i);						//ocupa las entradas
-	}
+	for(int i = posInicialLibre; i < posInicialLibre + contador; i++)
+		bitarray_set_bit(disponibles, i);						//ocupa las entradas
 
 	return posInicialLibre;
 }
@@ -477,8 +556,8 @@ int buscarEspacioLibre(int entradasNecesarias){
 void destruirlo_todo(){
 	bitarray_destroy(disponibles);
 	free(storage);
-	dictionary_destroy_and_destroy_elements(tablaEntradas,(void*)regTablaDestroyer);
-	list_clean_and_destroy_elements(reemplazos,(void*)nodoRempDestroyer);						//elimina elementos de la lista
+	//dictionary_destroy_and_destroy_elements(tablaEntradas,(void*)regTablaDestroyer);
+	list_clean_and_destroy_elements(reemplazos,(void*)nodoRempDestroyer);					//elimina elementos de la lista
 	free(reemplazos); 																			//elimina la lista en si
 }
 
@@ -517,29 +596,21 @@ void *rutina_Dump(void * arg) {
 }
 
 int laListaLoContiene(char * clave){
-	int existe=0;
-	for(int i=0;i< (list_size(lista_Claves));i++   ){
-		int resultado=strcmp(clave,(char*)list_get(lista_Claves,i));
-		if(resultado==0){
-			existe=1;
-			break;
-		}
+	for(int i = 0; i < list_size(lista_Claves); i++){
+		int resultado = strcmp(clave, (char*)list_get(lista_Claves, i));
+		if(resultado == 0)
+			return 1;
 	}
-	if(existe==1){
-		return 0;
-	}
-	else{
-		return 1;
-	}
+	return 0;
 }
 
 void guardarLaWea()
 {
 	for(int i=0;i<(list_size(lista_Claves));i++)
 	{
-		if( dictionary_has_key( tablaEntradas , (char*)list_get(lista_Claves,i)  ) ){
-			persistirValor( (char*)list_get(lista_Claves,i));
-		}
+		char* clave = (char*)list_get(lista_Claves, i);
+		if(existe_entrada(clave))
+			persistirValor(clave);
 	}
 }
 
