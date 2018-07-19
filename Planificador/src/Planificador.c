@@ -457,8 +457,12 @@ t_list* claves_de_esi(ESI* esi) {
 	t_list* claves = list_create();
 	for (int i = 0; i < list_size(lista_claves_bloqueadas); i++) {
 		t_clave* clave = list_get(lista_claves_bloqueadas, i);
-		if (clave->esi_duenio->id == esi->id)
-			list_add(claves, clave->clave);
+		if(clave!=NULL && clave->esi_duenio!=NULL){
+
+
+			if (clave->esi_duenio->id == esi->id)
+				list_add(claves, clave->clave);
+		}
 	}
 	return claves;
 }

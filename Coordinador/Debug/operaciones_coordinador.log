@@ -1,0 +1,18 @@
+[INFO] 18:55:34:868 coordinador/(5269:5269): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 18:55:34:868 coordinador/(5269:5269): PUERTO_ESCUCHA: 9035
+[INFO] 18:55:34:868 coordinador/(5269:5269): PUERTO_PLANIF: 167527088
+[INFO] 18:55:34:868 coordinador/(5269:5269): IP_PLANIF: 127.0.0.1
+[INFO] 18:55:34:868 coordinador/(5269:5269): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 18:55:34:868 coordinador/(5269:5269): CANTIDAD_ENTRADAS: 8
+[INFO] 18:55:34:868 coordinador/(5269:5269): TAMANIO_ENTRADA: 10
+[INFO] 18:55:34:868 coordinador/(5269:5269): RETARDO: 300
+[INFO] 18:56:26:273 coordinador/(5269:5269): Conectado con planificador
+[INFO] 18:56:26:274 coordinador/(5269:5286): Se conecto la Inst1
+[INFO] 18:59:02:960 coordinador/(5320:5320): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 18:59:02:960 coordinador/(5320:5320): PUERTO_ESCUCHA: 9035
+[INFO] 18:59:02:960 coordinador/(5320:5320): PUERTO_PLANIF: 155071152
+[INFO] 18:59:02:960 coordinador/(5320:5320): IP_PLANIF: 127.0.0.1
+[INFO] 18:59:02:960 coordinador/(5320:5320): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 18:59:02:960 coordinador/(5320:5320): CANTIDAD_ENTRADAS: 8
+[INFO] 18:59:02:960 coordinador/(5320:5320): TAMANIO_ENTRADA: 10
+[INFO] 18:59:02:960 coordinador/(5320:5320): RETARDO: 300
