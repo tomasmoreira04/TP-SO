@@ -45,7 +45,8 @@ int main(int argc, char* argv[]) {
 
 	configuracion = cargar_config_coordinador(argv[1]);
 	crear_log_operaciones();
-	log_info(log_operaciones, "Se ha cargado la configuracion inicial del Coordinador");
+	log_info(log_operaciones, "Se ha cargado la configuracion inicial del Coordinador:");
+	imprimir_cfg_en_log();
 	lista_Instancias = dictionary_create();
 	int listener = crear_socket_de_escucha(configuracion.puerto_escucha);
 	int nuevo_socket, modulo;
@@ -58,12 +59,14 @@ int main(int argc, char* argv[]) {
 			int socket_server = conexion_con_servidor(configuracion.ip_planificador, configuracion.puerto_planificador);
 			socket_plan = socket_server; //pasar ocmo parametro, no global, pero por ahora lo hago asi
 			avisar(socket_plan, conectar_coord_planif);
+			log_info(log_operaciones, "Conectado con planificador");
 			banderaPlanificador = 1;
 		}
 		nuevo_socket = aceptar_nueva_conexion(listener);
 		recv(nuevo_socket, &modulo, sizeof(int), 0);//HS
 		crear_hilo(nuevo_socket, modulo);
 	}
+	log_info(log_operaciones, "Terminando la ejecucion del proceso..");
 	destruir_estructuras_globales();
 	return 0;
 }
@@ -74,12 +77,33 @@ void *rutina_instancia(void * arg) {
 	void * stream;
 	recibirMensaje(socket_INST, &stream);
 	char* nombre_inst = (char*)stream;
+
 	if(!existe_instancia(nombre_inst))
 		nueva_instancia(socket_INST, nombre_inst);
 	else
 		cambiarEstadoInstancia(nombre_inst, conectada);
 
+	log_info(log_operaciones, string_from_format("Se conecto la %s", nombre_inst));
+	//list_add(lista_Instancias,(void*)nuevaInstancia);
+	printf("ID:%s || SOCKET: %d\n", nombre_inst , socket_INST);
+	//VALIDAR QUE SEA EL UNICO EN EL DICCIONARIO
+	if( (dictionary_has_key(lista_Instancias , nombre_inst ) ) == false ){
+		printf("socket %d agregado a instancia %s", socket_INST, nombre_inst);
+
+		instancia_Estado_Conexion *instancia_conexion = malloc(sizeof(instancia_Estado_Conexion));
+		instancia_conexion->estadoConexion=conectada;
+		instancia_conexion->socket=socket_INST;
+		instancia_conexion->entradas_disponibles = configuracion.cant_entradas;
+
+		printf("\nel estado de la instacia es %d y su socket es %d\n\n",instancia_conexion->estadoConexion,instancia_conexion->socket);
+		dictionary_put(lista_Instancias, nombre_inst , instancia_conexion);
+		list_add(listaSoloInstancias, nombre_inst);
+		configurar_instancia(socket_INST);
+
+		//TOMI ROMPISTE TODO. sory xdxdxdxxxxddddd
+
 	return NULL;
+	}
 }
 
 void nueva_instancia(int socket, char* nombre) {
@@ -350,6 +374,21 @@ void crear_log_operaciones() {
 	log_operaciones = log_create("operaciones_coordinador.log", "coordinador", 0, 1);
 }
 
+void imprimir_cfg_en_log() {
+	log_info(log_operaciones, string_from_format("PUERTO_ESCUCHA: %d", configuracion.puerto_escucha));
+	log_info(log_operaciones, string_from_format("PUERTO_PLANIF: %d"), configuracion.puerto_planificador);
+	log_info(log_operaciones, string_from_format("IP_PLANIF: %s", configuracion.ip_planificador));
+	if(configuracion.algoritmo == el)
+		log_info(log_operaciones, "ALGORITMO_DISTRIBUCION: EQ");
+	if(configuracion.algoritmo == lsu)
+		log_info(log_operaciones, "ALGORITMO_DISTRIBUCION: LSU");
+	if(configuracion.algoritmo == ke)
+		log_info(log_operaciones, "ALGORITMO_DISTRIBUCION: KE");
+	log_info(log_operaciones, string_from_format("CANTIDAD_ENTRADAS: %d", configuracion.cant_entradas));
+	log_info(log_operaciones, string_from_format("TAMANIO_ENTRADA: %d", configuracion.tamanio_entrada));
+	log_info(log_operaciones, string_from_format("RETARDO: %d", configuracion.retardo));
+}
+
 void esperar_compactacion() {
 	int instancias = list_size(instancias_conectadas());
 	while(compresiones_finalizadas != instancias);
@@ -462,9 +501,9 @@ char* formatear_mensaje_esi(int id, TipoSentencia t, char* clave, char* valor) {
 	string_append(&formato_string, " hizo un");
 	switch(t) {
 		case S_SET:
-			string_append(&formato_string, " SET sobre ");
+			string_append(&formato_string, " SET sobre la clave ");
 			string_append(&formato_string, clave);
-			string_append(&formato_string, ":");
+			string_append(&formato_string, " con valor: ");
 			string_append(&formato_string, valor);
 			break;
 		case S_GET:
@@ -563,8 +602,7 @@ int existe_clave(char* clave) {
 	return dictionary_has_key(instancias_Claves, clave);
 }
 
+
 int existe_instancia(char* nombre) {
 	return dictionary_has_key(lista_Instancias, nombre);
 }
-
-
