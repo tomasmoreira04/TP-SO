@@ -99,7 +99,7 @@ int aceptar_nueva_conexion(int listener) {
 		if (newfd > fdmax) {
 			fdmax = newfd;
 		}
-		printf("\nselectserver: new connection from %s on socket %d\n", inet_ntoa(remoteaddr.sin_addr), newfd);
+		//printf("\nselectserver: new connection from %s on socket %d\n", inet_ntoa(remoteaddr.sin_addr), newfd);
 	}
 	return newfd;
 }

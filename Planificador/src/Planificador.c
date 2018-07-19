@@ -34,6 +34,8 @@ int coordinador_conectado = 0;
 int hay_hilo_coordinador = 0;
 int socket_coordinador;
 
+FILE* output; //salida en la otra ventanita
+
 //semaforos
 pthread_mutex_t lista_disponible = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t siguiente_sentencia = PTHREAD_MUTEX_INITIALIZER;
@@ -50,17 +52,29 @@ pthread_mutex_t operando_claves = PTHREAD_MUTEX_INITIALIZER;
 
 
 int main(int argc, char* argv[]) {
-	setbuf(stdout, NULL); //a veces el printf no andaba, se puede hacer esto o un fflush
 	inicializar_estructuras();
 	config = cargar_config_planificador(argv[1]);
 	config.algoritmo = fifo;
 	bloquear_claves_iniciales(config.claves_bloqueadas, config.n_claves);
-	pthread_t thread_consola;
+	pthread_t thread_consola, thread_output;
 	pthread_create(&thread_consola, NULL, iniciar_consola, NULL);
+	pthread_create(&thread_output, NULL, crear_ventana_output, NULL);
 	ultimo_id = 0;
+
 	recibir_conexiones();
 	pthread_join(thread_consola, NULL);
+	pthread_join(thread_output, NULL);
 	destruir_estructuras();
+	fclose(output);
+}
+
+void* crear_ventana_output() {
+	const char* script = "\
+			#/bin/bash \n\
+			xterm -e tail -f consola & \n\
+			";
+	system(script);
+	return NULL;
 }
 
 
@@ -71,10 +85,10 @@ void bloquear_claves_iniciales(char** claves, int n) {
 		bloqueadas[i] = malloc(sizeof(char*) * strlen(claves[i]));
 		strcpy(bloqueadas[i], copia);
 	}
-	printf(GREEN"\nClaves inicialmente bloqueadas:"RESET);
+	fprintf(output, GREEN"\nClaves inicialmente bloqueadas:"RESET);
 	for (int i = 0; i < n; i++) {
 		bloquear_clave(bloqueadas[i], NULL);
-		printf(RED"\n%s"RESET, bloqueadas[i]);
+		fprintf(output, RED"\n%s"RESET, bloqueadas[i]);
 	}
 }
 
@@ -108,7 +122,7 @@ void recibir_conexiones() {
 
 int conectar_con_coordinador(int listener) { //fijarse bien esto, conectar siempre primero el coordinador
 	int socket_coord = aceptar_nueva_conexion(listener);
-	printf(MAGENTA "\nCOORDINADOR " RESET "conectado en socket " GREEN "%d\n" RESET, socket_coord);
+	fprintf(output, MAGENTA "\nCOORDINADOR " RESET "conectado en socket " GREEN "%d\n" RESET, socket_coord);
 	return socket_coord;
 }
 
@@ -168,7 +182,7 @@ void* procesar_mensaje_coordinador(void* sock) {
 					break;
 			}
 		if (accion == error) {
-			printf(RED"\n\nEL COORDINADOR SE HA DESCONECTADO"RESET);
+			fprintf(output, RED"\n\nEL COORDINADOR SE HA DESCONECTADO"RESET);
 			break;
 		}
 		s_signal(&coord_ok);
@@ -210,7 +224,7 @@ void* procesar_mensaje_esi(void* sock) {
 				break;
 		}
 		if (accion == error) {
-			printf(RED"\n\nEL ESI EN SOCKET %d SE HA DESCONECTADO"RESET, socket);
+			fprintf(output, RED"\n\nEL ESI EN SOCKET %d SE HA DESCONECTADO"RESET, socket);
 			break;
 		}
 	}
@@ -244,13 +258,13 @@ void procesar_resultado(ResultadoEjecucion resultado) {
 	s_wait(&ejecucion);
 	switch (resultado) {
 	case no_exitoso:
-		printf(RED "\nEl esi no pudo ejecutar la sentencia.\n" RESET);
+		fprintf(output, RED "\nEl esi no pudo ejecutar la sentencia.\n" RESET);
 		break;
 	case exitoso:
-		printf(GREEN "\nEl esi pudo ejecutar la sentencia.\n" RESET);
+		fprintf(output, GREEN "\nEl esi pudo ejecutar la sentencia.\n" RESET);
 		break;
 	case bloqueado:
-		printf(YELLOW "\nEl esi se ha bloqueado.\n" RESET);
+		fprintf(output, YELLOW "\nEl esi se ha bloqueado.\n" RESET);
 		break;
 	case dudoso:
 		break;
@@ -346,19 +360,19 @@ char* mensaje_error(ErrorOperacion tipo) {
 }
 
 void error_operacion(ErrorOperacion tipo, char* clave, int esi) {
-	printf(RED "%s" YELLOW "%s "RESET "por parte del" GREEN " ESI %d" RESET, mensaje_error(tipo), clave, esi);
+	fprintf(output, RED "%s" YELLOW "%s "RESET "por parte del" GREEN " ESI %d" RESET, mensaje_error(tipo), clave, esi);
 }
 
 void GET(char* clave, ESI* esi, int coordinador) {
 	if (esta_bloqueada(clave) == 1) {
-		printf(YELLOW"\n(GET) de clave"RED" %s"YELLOW", pero se encuentra bloqueada, se bloqueará el "GREEN"ESI %d."RESET, clave, esi->id);
+		fprintf(output, YELLOW"\n(GET) de clave"RED" %s"YELLOW", pero se encuentra bloqueada, se bloqueará el "GREEN"ESI %d."RESET, clave, esi->id);
 		nueva_solicitud_clave(clave, esi); //va bien esto
 		bloquear_esi(esi);
 		avisar(coordinador, esi_bloqueado);
 	}
 	else {
 		bloquear_clave(clave, esi);
-		printf("\n(GET) La clave "GREEN"%s "RESET"se asigno a "GREEN"ESI %d"RESET, clave, esi->id);
+		fprintf(output, "\n(GET) La clave "GREEN"%s "RESET"se asigno a "GREEN"ESI %d"RESET, clave, esi->id);
 		esi->rafagas_restantes--;
 		avisar(coordinador, sentencia_coordinador);
 	}
@@ -379,7 +393,7 @@ void SET(char* clave, char* valor, ESI* esi, int coordinador) {
 	}
 	else { //puedo hacer set
 		strcpy(c->valor, valor);
-		printf("\n(SET) Se ha seteado la clave" GREEN " %s" RESET " con valor" MAGENTA " %s" RESET, c->clave, c->valor);
+		fprintf(output, "\n(SET) Se ha seteado la clave" GREEN " %s" RESET " con valor" MAGENTA " %s" RESET, c->clave, c->valor);
 		esi->rafagas_restantes--;
 		avisar(coordinador, sentencia_coordinador);
 	}
@@ -401,21 +415,21 @@ void STORE(char* clave, ESI* esi, int coordinador) { //esi: esi que hace el pedi
 	}
 	else { //puedo hacer store
 		liberar_clave(clave);
-		printf("\n(STORE) Se ha liberado la clave" GREEN " %s" RESET, c->clave);
+		fprintf(output, "\n(STORE) Se ha liberado la clave" GREEN " %s" RESET, c->clave);
 		esi->rafagas_restantes--;
 		avisar(coordinador, sentencia_coordinador);
 	}
 }
 
 void finalizar_esi_ref(ESI* esi) {
-	printf(YELLOW"\nFinalizando ESI %d."RESET, esi->id);
+	fprintf(output, YELLOW"\nFinalizando ESI %d."RESET, esi->id);
 
 	if (config.algoritmo == sjf_sd || config.algoritmo == sjf_cd) {
 		if (esi->rafagas_restantes > 0)
-			printf("\nSobraron" RED " %.2f " RESET "UT de la estimacion.", esi->rafagas_restantes);
+			fprintf(output, "\nSobraron" RED " %.2f " RESET "UT de la estimacion.", esi->rafagas_restantes);
 		else if (esi->rafagas_restantes == 0)
-			printf("\nNo sobraron UT de la estimacion.");
-		else printf("\nFaltaron" RED " %.2f " RESET "UT en la estimacion.", esi->rafagas_restantes * -1);
+			fprintf(output, "\nNo sobraron UT de la estimacion.");
+		else fprintf(output, "\nFaltaron" RED " %.2f " RESET "UT en la estimacion.", esi->rafagas_restantes * -1);
 	}
 
 	mover_esi(esi, cola_de_finalizados);
@@ -472,7 +486,7 @@ void nueva_solicitud_clave(char* clave, ESI* esi) {
 	t_clave* entrada = buscar_clave_bloqueada(clave);
 	if (entrada != NULL) {
 		list_add(entrada->esis_esperando, esi);
-		printf(GREEN"\nESI %d"RESET" agregado a la lista de espera de la clave"MAGENTA" %s"RESET, esi->id, clave);
+		fprintf(output, GREEN"\nESI %d"RESET" agregado a la lista de espera de la clave"MAGENTA" %s"RESET, esi->id, clave);
 	}
 	else bloquear_clave(clave, esi);
 }
@@ -488,12 +502,12 @@ int liberar_clave(char* clave) {
 			desbloquear_esi(esi_a_desbloquear);
 			c->esi_duenio = esi_a_desbloquear;
 			c->bloqueada = 1; //ahora esta bloqueada por el esi q taba esprando
-			printf("\nClave"RED" %s "RESET"liberada. Ahora pertenece a ESI %d", clave, esi_a_desbloquear->id);
+			fprintf(output, "\nClave"RED" %s "RESET"liberada. Ahora pertenece a ESI %d", clave, esi_a_desbloquear->id);
 		}
 		else {
 			c->bloqueada = 0; //queda libre en el aire
 			c->esi_duenio = NULL;
-			printf("\nClave"RED" %s "RESET"desbloqueada y libre.", clave);
+			fprintf(output, "\nClave"RED" %s "RESET"desbloqueada y libre.", clave);
 		}
 		s_signal(&operando_claves);
 		return 1;
@@ -530,7 +544,7 @@ void bloquear_esi(ESI* esi) {
 
 void desbloquear_esi(ESI* esi) {
 	ingreso_cola_de_listos(esi);
-	printf(GREEN"\nSE HA DESBLOQUEADO EL ESI %d\n"RESET, esi->id);
+	fprintf(output, GREEN"\nSE HA DESBLOQUEADO EL ESI %d\n"RESET, esi->id);
 }
 
 void proceso_nuevo(t_nuevo_esi esi, int socket) {
@@ -550,12 +564,12 @@ void proceso_nuevo(t_nuevo_esi esi, int socket) {
 }
 
 void imprimir_nuevo_esi(ESI* esi, char* nombre) {
-	printf( "\nNuevo ESI " GREEN "%d" RESET " con ", esi->id);
+	fprintf(output, "\nNuevo ESI " GREEN "%d" RESET " con ", esi->id);
 	if (config.algoritmo == fifo || config.algoritmo == hrrn)
-		printf(RED"%d"RESET" de rafagas totales.", esi->rafagas_totales);
+		fprintf(output, RED"%d"RESET" de rafagas totales.", esi->rafagas_totales);
 	else //sjf
-		printf(RED"%.2f"RESET" de tiempo estimado.", esi->rafagas_restantes);
-	printf(" Script: "CYAN"%s"RESET, nombre);
+		fprintf(output, RED"%.2f"RESET" de tiempo estimado.", esi->rafagas_restantes);
+	fprintf(output, " Script: "CYAN"%s"RESET, nombre);
 }
 
 
@@ -619,6 +633,9 @@ void mover_esi(ESI* esi, t_list* nueva_lista) {
 }
 
 void inicializar_estructuras() {
+	output = fopen("consola", "w");
+	setbuf(stdout, NULL);
+	setbuf(output, NULL);
 	cola_de_listos = list_create();
 	cola_de_bloqueados = list_create();
 	cola_de_finalizados = list_create();
@@ -697,11 +714,11 @@ float response_ratio(ESI* esi) {
 }
 
 void calcular_response_ratios() {
-	printf(GREEN"\nCalculando response ratios...\n"RESET);
+	fprintf(output, GREEN"\nCalculando response ratios...\n"RESET);
 	for (int i = 0; i < list_size(cola_de_listos); i++) {
 		ESI* esi = list_get(cola_de_listos, i);
 		esi->response_ratio = response_ratio(esi);
-		printf(GREEN"\nESI %d: "RED"%f", esi->id, esi->response_ratio);
+		fprintf(output, GREEN"\nESI %d: "RED"%f", esi->id, esi->response_ratio);
 	}
 }
 
@@ -721,10 +738,10 @@ ESI* esi_resp_ratio_mas_alto() {
 		}
 	}
 	else {
-		printf(RED"\nNo hay esis listos para calcular RR\n"RESET);
+		fprintf(output, RED"\nNo hay esis listos para calcular RR\n"RESET);
 		return NULL;
 	}
-	printf(GREEN"\nESI elegido -> "RED"%d\n"RESET, mas_alto->id);
+	fprintf(output, GREEN"\nESI elegido -> "RED"%d\n"RESET, mas_alto->id);
 	return list_remove(cola_de_listos, indice);
 }
 

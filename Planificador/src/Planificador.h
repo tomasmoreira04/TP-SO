@@ -26,6 +26,7 @@ extern t_dictionary* estimaciones_actuales;
 extern int ultimo_id;
 extern int planificar; //parametro para pausar/continuar la planificacion por comando
 
+void* crear_ventana_output();
 
 //funciones del servidor
 void recibir_conexiones();

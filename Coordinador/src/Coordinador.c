@@ -42,14 +42,7 @@ int main(int argc, char* argv[]) {
 	contadorEquitativeLoad = 0;
 	instancias_Claves= dictionary_create();
 	listaSoloInstancias=list_create();
-	//lista_instancias_new = list_create(); por ahora, esta deprecada
-
 	configuracion = cargar_config_coordinador(argv[1]);
-
-	configuracion.tamanio_entrada=10;
-	configuracion.cant_entradas=8;
-	configuracion.algoritmo=el;
-
 	crear_log_operaciones();
 	log_info(log_operaciones, "Se ha cargado la configuracion inicial del Coordinador:");
 	imprimir_cfg_en_log();

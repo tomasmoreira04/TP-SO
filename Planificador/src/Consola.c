@@ -42,11 +42,10 @@ void* iniciar_consola() {
 	char *buffer = malloc(tamanio_buffer);
 
 	while(true) {
-		printf("\nIngrese un comando: ");
+		printf(GREEN"\nIngrese un comando "RESET"\n>> ");
 		getline(&buffer, &tamanio_buffer, stdin);
 		operacion = crear_operacion(buffer);
 		validar_operacion(operacion);
-		//y aca hacer la operacion xd
 	}
 }
 
@@ -91,18 +90,18 @@ int parametros_necesarios(Comando comando) {
 
 void validar_operacion(Operacion operacion) {
 	if (operacion.id == -1)
-		printf("Operacion no valida.\n");
+		printf(RED"Operacion no valida.\n"RESET);
 	else {
 		int params = parametros_necesarios(operacion.id);
 		if (params == 1) {
 			if (operacion.param1 == NULL)
-				printf("La operacion %s requiere un parametro.\n", operacion.nombre);
+				printf(YELLOW"La operacion"RED" %s "YELLOW"requiere un parametro.\n"RESET, operacion.nombre);
 			else
 				ejecutar_comando(operacion);
 		}
 		else if (params == 2) {
 			if (operacion.param1 == NULL || operacion.param2 == NULL)
-				printf("La operacion %s requiere dos parametros.\n", operacion.nombre);
+				printf(YELLOW"La operacion"RED" %s "YELLOW"requiere dos parametros.\n"RESET, operacion.nombre);
 			else
 				ejecutar_comando(operacion);
 		}
@@ -211,11 +210,11 @@ void listar_esis_recurso(char* clave) {
 	t_clave* c = buscar_clave_bloqueada(clave);
 	if (c != NULL) {
 		t_list* esis = c->esis_esperando;
-		printf("\nLista de procesos esperando la clave %s:\n", clave);
+		printf(CYAN"\nLista de procesos esperando la clave"RED" %s:\n"RESET, clave);
 		for (int i = 0; i < list_size(esis); i++)
-			printf("ESI %d, ", ((ESI*)list_get(esis, i))->id);
+			printf("ESI "GREEN"%d"RESET",", ((ESI*)list_get(esis, i))->id);
 	}
-	else printf("\nLa clave %s no esta bloqueada\n", clave);
+	else printf(RED"\nLa clave "GREEN"%s"RED" no esta bloqueada\n"RESET, clave);
 }
 
 void matar_esi(char* id) {
