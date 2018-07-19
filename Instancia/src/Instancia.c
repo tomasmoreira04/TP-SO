@@ -45,7 +45,20 @@ int compactado = 1;
 
 pthread_mutex_t semaforo_compactacion = PTHREAD_MUTEX_INITIALIZER;
 
+/*
+void CLOSE_HANDLER(int);
+
+void CLOSE_HANDLER(int sig) {
+     signal(sig, SIG_IGN);
+     printf("Cerrando, avisando desconexion al coordinador");
+     avisar(socketServer, instancia_desconectada);
+     exit(0);
+}*/
+
 int main(int argc, char* argv[]) {
+
+	//signal(SIGINT, CLOSE_HANDLER); //signal para capturar ctrl C
+
 	setbuf(stdout, NULL);
 	char* nombre = argv[1];
 	config = cargar_config_inst(nombre);
@@ -166,7 +179,6 @@ void rutina_principal() {
 					crear_hilo(hilo_compactar, NULL);
 					break;
 				case verificar_conexion:
-					//avisar(socketServer, conectada);
 					break;
 				case error:
 				default:
@@ -393,8 +405,8 @@ void ejecutarSentencia(t_sentencia* sentencia){
 		aumentarTiempoRef();
 		almacenarValor(sentencia->clave,sentencia->valor);
 		printf(GREEN "\nSe ejecuto un SET correctamente, de clave "CYAN"%s"GREEN" con valor"RED" %s.\n"RESET, sentencia->clave, sentencia->valor);
-		mostrarListaReemplazos(reemplazos);
-		mostrarArray(NULL);
+		//mostrarListaReemplazos(reemplazos);
+		//mostrarArray(NULL);
 		if(!laListaLoContiene(sentencia->clave))
 			list_add(lista_Claves,sentencia->clave);
 		break;

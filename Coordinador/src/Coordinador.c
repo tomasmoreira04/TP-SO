@@ -32,13 +32,14 @@ t_dictionary *lista_Instancias;
 t_list* lista_instancias_new;
 t_list *listaSoloInstancias;
 int contadorEquitativeLoad;
+int instancia_muerta;
 
 pthread_mutex_t semaforo_compactacion = PTHREAD_MUTEX_INITIALIZER;
 
 int main(int argc, char* argv[]) {
 	setbuf(stdout, NULL); //a veces el printf no andaba, se puede hacer esto o un fflush
-	int banderaPlanificador=0;
-	contadorEquitativeLoad=0;
+	int banderaPlanificador = 0;
+	contadorEquitativeLoad = 0;
 	instancias_Claves= dictionary_create();
 	listaSoloInstancias=list_create();
 	//lista_instancias_new = list_create(); por ahora, esta deprecada
@@ -116,9 +117,8 @@ t_list* instancias_conectadas() {
 	t_list* lista = list_create();
 	for(int i = 0; i < n; i++){
 		char* nombre_inst = list_get(listaSoloInstancias, i);
-		instancia_Estado_Conexion* instancia = dictionary_get(lista_Instancias, nombre_inst);
 		if (estadoDeInstancia(nombre_inst) == conectada)
-			list_add(lista, instancia);
+			list_add(lista, nombre_inst);
 	}
 	return lista;
 }
@@ -172,17 +172,14 @@ void SET(t_sentencia sentencia) {
 	char* instancia = buscar_instancia(sentencia.clave);
 	if(!clave_tiene_instancia(sentencia.clave))
 		instancia = aplicar_algoritmo(sentencia);
-
-	printf("\nBuscando socket de instancia %s", instancia);
 	instancia_Estado_Conexion* conexion = dictionary_get(lista_Instancias , instancia);
 	int socket = conexion->socket;
 
-	//VALIDAR INSTANCIA CONECTADA
 	enviarMensaje(socket, ejecutar_sentencia_instancia, &sentencia, sizeof(t_sentencia));
 	avisar_guardado_planif(instancia, sentencia.clave); //aviso de clave guardada en tal instancia
 
-	void* cantidad_entradas;
-	int operacion = recibirMensaje(socket, &cantidad_entradas);
+	void* asd;
+	int operacion = recibirMensaje(socket, &asd);
 	procesar_pedido_instancia(operacion, instancia, sentencia.id_esi);
 }
 
@@ -214,12 +211,16 @@ void realizar_sentencia(t_sentencia sentencia) {
 }
 
 void procesar_pedido_instancia(Accion operacion, char* instancia, int esi) {
-	switch(operacion){
+	switch(operacion) {
 		case ejecucion_ok:
 			printf(GREEN"\nLa instancia ejecuto la operacion de forma exitosa."RESET);
 			break;
 		case compactar:
 			hilo_avisar_compactacion(); //creo un hilo que espera las compactaciones
+			break;
+		case instancia_desconectada:
+			cambiarEstadoInstancia(instancia, desconectada);
+			printf("%s desconectada", instancia);
 			break;
 		case error:
 		default:
@@ -236,8 +237,9 @@ void* avisar_compactacion() {
 	t_list* conectadas = instancias_conectadas();
 	int n = list_size(conectadas);
 	for (int i = 0; i < n; i++) {
-		instancia_Estado_Conexion* instancia = list_get(conectadas, i);
-		hilo_compactacion(instancia->socket); //creo un hilo para cada instancia
+		char* instancia = list_get(conectadas, i);
+		instancia_Estado_Conexion* conexion = dictionary_get(lista_Instancias, instancia);
+		hilo_compactacion(conexion->socket); //creo un hilo para cada instancia
 	}
 	printf(RED"\nCOMPACTANDO INSTANCIAS\n"RESET);
 	esperar_compactacion(); //espera activa
@@ -382,22 +384,19 @@ void actualizar_instancia(char* instancia, int entradas) {
 
 void equitative_load(char* claveSentencia){
 	log_info(log_operaciones, "Aplicando Equitative Load..");
-	int cantidadInstancias = dictionary_size(lista_Instancias)-1;
-	char* instancia = list_get(listaSoloInstancias, contadorEquitativeLoad);
-	int estadoInstancia = estadoDeInstancia(instancia);
-	if( estadoInstancia == conectada ){
-		modificar_clave(claveSentencia, instancia);
-		contador_EQ(cantidadInstancias);
-	}
-	else if(estadoInstancia == desconectada)
-		equitative_load(claveSentencia);
-	else
-		printf(RED"\nERROR\n"RESET); //esto nunca pasa nigga
+	t_list* instancias = instancias_conectadas();
+	int cantidadInstancias = list_size(instancias) - 1;
+	char* instancia = list_get(instancias, contadorEquitativeLoad);
+	modificar_clave(claveSentencia, instancia);
+	contador_EQ(cantidadInstancias);
 }
 
-void contador_EQ(int cantidadDeInstancias){
-	int c = contadorEquitativeLoad, i = cantidadDeInstancias;
-	contadorEquitativeLoad = c + 1 > i ? 0 : c + 1;
+void contador_EQ(int instancias){
+	int contador = contadorEquitativeLoad;
+	if (contador + 1 > instancias)
+		contadorEquitativeLoad = 0;
+	else
+		contadorEquitativeLoad++;
 }
 
 int estadoDeInstancia(char* instancia){
@@ -407,11 +406,29 @@ int estadoDeInstancia(char* instancia){
 }
 
 int enviar_check_conexion_instancia(int socket) {
-	//avisar(socket, verificar_conexion);
-	printf("\nviendo si inst en socket %d esta online", socket);
-	void *stream;
-	int estado = recibirMensaje(socket, &stream);
-	return estado == conectada ? conectada : desconectada;
+	int contenido = 1;
+	int tam = sizeof(int);
+	int accion = verificar_conexion;
+	header heder = {.accion = accion, .tamano = tam };//MODIFICAR FLAG
+	void* stream = malloc( sizeof(header) + tam );
+	memcpy(stream, &heder, sizeof(header));
+	memcpy(stream + sizeof(header), &contenido, tam);
+	send(socket, stream, sizeof(header) + tam, 0);
+	signal(SIGPIPE, SIG_IGN);
+	int pepito = send(socket, stream, sizeof(header) + tam, 0);
+	free(stream);
+	return pepito == -1 ? desconectada : conectada;
+}
+
+char* instancia_por_socket(int socket) {
+	t_list* l = listaSoloInstancias;
+	for (int i = 0; i < list_size(l); i++) {
+		char* inst = list_get(l, i);
+		instancia_Estado_Conexion* estado = dictionary_get(lista_Instancias, inst);
+		if (estado->socket == socket)
+			return inst;
+	}
+	return NULL;
 }
 
 void key_explicit(char* claveSentencia){

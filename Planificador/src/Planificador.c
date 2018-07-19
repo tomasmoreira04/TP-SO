@@ -432,9 +432,21 @@ void finalizar_esi(int id_esi) {
 }
 
 void liberar_recursos(ESI* esi) {
-	int n_claves = list_size(esi->claves);
-	for (int i = 0; i < n_claves; i++)
-		liberar_clave(list_get(esi->claves, i));
+	t_list* claves = claves_de_esi(esi);
+	for (int i = 0; i < list_size(claves); i++) {
+		char* clave = list_get(claves, i);
+		liberar_clave(clave);
+	}
+}
+
+t_list* claves_de_esi(ESI* esi) {
+	t_list* claves = list_create();
+	for (int i = 0; i < list_size(lista_claves_bloqueadas); i++) {
+		t_clave* clave = list_get(lista_claves_bloqueadas, i);
+		if (clave->esi_duenio->id == esi->id)
+			list_add(claves, clave->clave);
+	}
+	return claves;
 }
 
 void bloquear_clave(const char* clave, ESI* esi) {

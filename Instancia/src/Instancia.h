@@ -76,5 +76,6 @@ void configurar_entradas();
 void inicializar_estructuras();
 int recuperar_claves(char* ruta);
 void cargar_claves_iniciales();
+void asd();
 
 #endif /* INSTANCIA_H_ */

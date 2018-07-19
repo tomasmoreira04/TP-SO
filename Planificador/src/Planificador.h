@@ -29,6 +29,7 @@ extern int planificar; //parametro para pausar/continuar la planificacion por co
 
 //funciones del servidor
 void recibir_conexiones();
+t_list* claves_de_esi(ESI* esi);
 int conectar_con_coordinador(int listener);
 void recibir_mensajes(int socket, int listener, int coordinador);
 void* procesar_mensaje_coordinador(void*);
