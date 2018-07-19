@@ -407,6 +407,7 @@ int enviar_check_conexion_instancia(int socket) {
 	memcpy(stream, &heder, sizeof(header));
 	memcpy(stream + sizeof(header), &contenido, tam);
 	send(socket, stream, sizeof(header) + tam, 0);
+	usleep(1000*1000*0.5);
 	signal(SIGPIPE, SIG_IGN);
 	int pepito = send(socket, stream, sizeof(header) + tam, 0);
 	free(stream);
