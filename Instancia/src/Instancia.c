@@ -166,13 +166,13 @@ void rutina_principal() {
 					crear_hilo(hilo_compactar, NULL);
 					break;
 				case verificar_conexion:
-					//aca solo me hace send, y recibe en el coord si me llego o no
+					//avisar(socketServer, conectada);
 					break;
 				case error:
 				default:
-					printf(RED "\nError!\n"RESET );
+					printf(RED "\nError!\n"RESET);
 					printf(RED "\nSe desconecto el coordinador!\n"RESET);
-					break;
+					exit(0);
 			}
 		}
 }
@@ -425,12 +425,11 @@ void nuevo_registro(char* clave, int entrada, int tamanio) {
 	list_add(tabla_de_entradas, registro);
 }
 
-void agregar_barra_cero(char* valor, int tamanio) { //necesito tamanio para saber hasta donde grabar, sin el /0 se rompe el string
+char* agregar_barra_cero(char* valor, int tamanio) { //necesito tamanio para saber hasta donde grabar, sin el /0 se rompe el string
 	char* copia = malloc(tamanio + 1);
 	memcpy(copia, valor, tamanio);
 	copia[tamanio] = '\0';
-	memcpy(valor, copia, tamanio + 1);
-	free(copia);
+	return copia;
 }
 
 void nuevo_nodo_reemplazo(char* clave, int tamanio) {
@@ -551,8 +550,7 @@ char* devolver_valor(char* clave) {
 	Reg_TablaEntradas* registro = buscar_entrada(clave);
 	char* valor = malloc(sizeof(char) * registro->tamanio);
 	memcpy(valor, storage + (tamEntrada * registro->entrada), registro->tamanio);
-	agregar_barra_cero(valor, registro->tamanio);
-	return valor;
+	return agregar_barra_cero(valor, registro->tamanio);
 }
 
 

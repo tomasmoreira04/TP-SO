@@ -82,8 +82,8 @@ typedef enum {
 
 typedef enum {
 	conectada = 1,
-	desconectada=2,
-	chingada=3
+	desconectada = 2,
+	chingada = 3
 
 } estado_de_la_instancia;
 

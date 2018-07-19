@@ -44,6 +44,11 @@ int main(int argc, char* argv[]) {
 	//lista_instancias_new = list_create(); por ahora, esta deprecada
 
 	configuracion = cargar_config_coordinador(argv[1]);
+
+	configuracion.tamanio_entrada=10;
+	configuracion.cant_entradas=8;
+	configuracion.algoritmo=el;
+
 	crear_log_operaciones();
 	log_info(log_operaciones, "Se ha cargado la configuracion inicial del Coordinador:");
 	imprimir_cfg_en_log();
@@ -77,33 +82,15 @@ void *rutina_instancia(void * arg) {
 	void * stream;
 	recibirMensaje(socket_INST, &stream);
 	char* nombre_inst = (char*)stream;
-
 	if(!existe_instancia(nombre_inst))
 		nueva_instancia(socket_INST, nombre_inst);
 	else
 		cambiarEstadoInstancia(nombre_inst, conectada);
 
 	log_info(log_operaciones, string_from_format("Se conecto la %s", nombre_inst));
-	//list_add(lista_Instancias,(void*)nuevaInstancia);
-	printf("ID:%s || SOCKET: %d\n", nombre_inst , socket_INST);
-	//VALIDAR QUE SEA EL UNICO EN EL DICCIONARIO
-	if( (dictionary_has_key(lista_Instancias , nombre_inst ) ) == false ){
-		printf("socket %d agregado a instancia %s", socket_INST, nombre_inst);
 
-		instancia_Estado_Conexion *instancia_conexion = malloc(sizeof(instancia_Estado_Conexion));
-		instancia_conexion->estadoConexion=conectada;
-		instancia_conexion->socket=socket_INST;
-		instancia_conexion->entradas_disponibles = configuracion.cant_entradas;
-
-		printf("\nel estado de la instacia es %d y su socket es %d\n\n",instancia_conexion->estadoConexion,instancia_conexion->socket);
-		dictionary_put(lista_Instancias, nombre_inst , instancia_conexion);
-		list_add(listaSoloInstancias, nombre_inst);
-		configurar_instancia(socket_INST);
-
-		//TOMI ROMPISTE TODO. sory xdxdxdxxxxddddd
 
 	return NULL;
-	}
 }
 
 void nueva_instancia(int socket, char* nombre) {
@@ -130,7 +117,7 @@ t_list* instancias_conectadas() {
 	for(int i = 0; i < n; i++){
 		char* nombre_inst = list_get(listaSoloInstancias, i);
 		instancia_Estado_Conexion* instancia = dictionary_get(lista_Instancias, nombre_inst);
-		if (instancia->estadoConexion == conectada)
+		if (estadoDeInstancia(nombre_inst) == conectada)
 			list_add(lista, instancia);
 	}
 	return lista;
@@ -302,7 +289,9 @@ void* rutina_compactacion(void* sock) {
 void cambiarEstadoInstancia(char *instanciaGuardada, estado_de_la_instancia accion){
 	instancia_Estado_Conexion *estado = dictionary_get(lista_Instancias, instanciaGuardada);
 	estado->estadoConexion = accion;
-	printf(GREEN"\nInstancia"CYAN" %s "GREEN" se ha vuelto a conectar en socket"RED" %d"RESET, instanciaGuardada, estado->socket);
+	if (accion == conectada) {
+		printf(GREEN"\nInstancia"CYAN" %s "GREEN" se ha vuelto a conectar en socket"RED" %d"RESET, instanciaGuardada, estado->socket);
+	}
 }
 
 void avisar_guardado_planif(char* instancia, char* clave) {
@@ -319,7 +308,7 @@ int clave_tiene_instancia(char* clave) {
 
 char* aplicar_algoritmo(t_sentencia sentencia) { //DEVUELVE EL NOMBRE DE LA INSTANCIA ASIGNADA
 	switch(configuracion.algoritmo) {
-		case el:	equitative_load(sentencia.clave);		break;
+		case el:	equitative_load(sentencia.clave);	break;
 		case lsu:	least_space_used(sentencia.clave);	break;
 		case ke: 	key_explicit(sentencia.clave); 		break;
 		default: 								break;
@@ -374,21 +363,6 @@ void crear_log_operaciones() {
 	log_operaciones = log_create("operaciones_coordinador.log", "coordinador", 0, 1);
 }
 
-void imprimir_cfg_en_log() {
-	log_info(log_operaciones, string_from_format("PUERTO_ESCUCHA: %d", configuracion.puerto_escucha));
-	log_info(log_operaciones, string_from_format("PUERTO_PLANIF: %d"), configuracion.puerto_planificador);
-	log_info(log_operaciones, string_from_format("IP_PLANIF: %s", configuracion.ip_planificador));
-	if(configuracion.algoritmo == el)
-		log_info(log_operaciones, "ALGORITMO_DISTRIBUCION: EQ");
-	if(configuracion.algoritmo == lsu)
-		log_info(log_operaciones, "ALGORITMO_DISTRIBUCION: LSU");
-	if(configuracion.algoritmo == ke)
-		log_info(log_operaciones, "ALGORITMO_DISTRIBUCION: KE");
-	log_info(log_operaciones, string_from_format("CANTIDAD_ENTRADAS: %d", configuracion.cant_entradas));
-	log_info(log_operaciones, string_from_format("TAMANIO_ENTRADA: %d", configuracion.tamanio_entrada));
-	log_info(log_operaciones, string_from_format("RETARDO: %d", configuracion.retardo));
-}
-
 void esperar_compactacion() {
 	int instancias = list_size(instancias_conectadas());
 	while(compresiones_finalizadas != instancias);
@@ -433,14 +407,11 @@ int estadoDeInstancia(char* instancia){
 }
 
 int enviar_check_conexion_instancia(int socket) {
-	header h = {.accion = verificar_conexion, .tamano = sizeof(int)};
-	void* stream = malloc(sizeof(header) + sizeof(int) );
-	int mensaje = 1;
-	memcpy(stream, &h, sizeof(header));
-	memcpy(stream + sizeof(header), &mensaje, sizeof(int));
-	int enviado = send(socket, stream,sizeof(header) + sizeof(int), 0);
-	free(stream);
-	return enviado == -1 ? desconectada : conectada;
+	//avisar(socket, verificar_conexion);
+	printf("\nviendo si inst en socket %d esta online", socket);
+	void *stream;
+	int estado = recibirMensaje(socket, &stream);
+	return estado == conectada ? conectada : desconectada;
 }
 
 void key_explicit(char* claveSentencia){
@@ -502,7 +473,7 @@ char* formatear_mensaje_esi(int id, TipoSentencia t, char* clave, char* valor) {
 	switch(t) {
 		case S_SET:
 			string_append(&formato_string, " SET sobre la clave ");
-			string_append(&formato_string, clave);
+ 			string_append(&formato_string, clave);
 			string_append(&formato_string, " con valor: ");
 			string_append(&formato_string, valor);
 			break;
@@ -602,7 +573,28 @@ int existe_clave(char* clave) {
 	return dictionary_has_key(instancias_Claves, clave);
 }
 
-
 int existe_instancia(char* nombre) {
 	return dictionary_has_key(lista_Instancias, nombre);
 }
+
+
+
+void imprimir_cfg_en_log() {
+	log_info(log_operaciones, string_from_format("PUERTO_ESCUCHA: %d", configuracion.puerto_escucha));
+	log_info(log_operaciones, string_from_format("PUERTO_PLANIF: %d"), configuracion.puerto_planificador);
+	log_info(log_operaciones, string_from_format("IP_PLANIF: %s", configuracion.ip_planificador));
+	if(configuracion.algoritmo == el)
+		log_info(log_operaciones, "ALGORITMO_DISTRIBUCION: EQ");
+	if(configuracion.algoritmo == lsu)
+		log_info(log_operaciones, "ALGORITMO_DISTRIBUCION: LSU");
+	if(configuracion.algoritmo == ke)
+		log_info(log_operaciones, "ALGORITMO_DISTRIBUCION: KE");
+	log_info(log_operaciones, string_from_format("CANTIDAD_ENTRADAS: %d", configuracion.cant_entradas));
+	log_info(log_operaciones, string_from_format("TAMANIO_ENTRADA: %d", configuracion.tamanio_entrada));
+	log_info(log_operaciones, string_from_format("RETARDO: %d", configuracion.retardo));
+}
+
+
+
+
+

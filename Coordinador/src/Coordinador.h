@@ -18,6 +18,8 @@ typedef struct{
 
 t_log* log_operaciones;
 
+void imprimir_cfg_en_log();
+
 void conectar_con_planificador(int planificador);
 void mostrar_por_pantalla_config(ConfigCoordinador config);
 void crear_log_operaciones();
