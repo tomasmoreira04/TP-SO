@@ -76,6 +76,7 @@ typedef enum {
 	podes_seguir,
 	clave_guardada_en_instancia, //coord -> planif
 	consulta_simulacion,
+	inicializacion_instancia,
 	verificar_conexion //coordi checkea que la instancia este conectada
 } Accion;
 

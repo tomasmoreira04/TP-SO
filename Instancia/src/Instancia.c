@@ -55,6 +55,7 @@ int main(int argc, char* argv[]) {
 	inicializar_estructuras();
 	recuperar_claves(config.punto_montaje); //"Esta info. debe ser recuperada al momento de iniciar una instancia"
 	cargar_claves_iniciales();
+
 	crear_hilo(hilo_dump, NULL);
 	rutina_principal();
 	destruirlo_todo();
@@ -207,20 +208,14 @@ Reg_TablaEntradas* borrar_devolver_entrada(char* clave) {
 }
 
 void mostrarValor(char* clave){
-	Reg_TablaEntradas* registro = buscar_entrada(clave);
-
-	char* valor = malloc((sizeof(char)*registro->tamanio)+1);
-	memcpy(valor, storage+(tamEntrada*registro->entrada),registro->tamanio);
-
-	printf("\nEl valor de la clave %s es: %s\n",clave,valor);
-	free(valor);
+	printf("\nEl valor de la clave %s es: %s\n", clave, devolver_valor(clave));
 }
 
 void mostrarListaReemplazos(t_list* list){
 	printf("Lista de reemplazos:\n");
 	for(int i = 0; i < list_size(list); i++){
 		Nodo_Reemplazo* nodo = list_get(list, i);
-		printf("%s t.ref= %d\n",nodo->clave, nodo->ultimaRef);
+		printf("%s t.ref= %d\n", nodo->clave, nodo->ultimaRef);
 	}
 
 }
@@ -240,19 +235,15 @@ void regTablaDestroyer(Reg_TablaEntradas* registro){
 
 t_list* duplicarLista(t_list* self) {
 	t_list* duplicated = list_create();
-	int i;
-	for(i=0;i<list_size(self);i++){
-		Nodo_Reemplazo* nodo = list_get(self,i);
-
+	for(int i = 0; i < list_size(self); i++){
+		Nodo_Reemplazo* nodo = list_get(self , i);
 		Nodo_Reemplazo* nodo2 = malloc(sizeof(Nodo_Reemplazo));
 		nodo2->clave = strdup(nodo->clave);
 		nodo2->tamanio = nodo->tamanio;
 		nodo2->ultimaRef = nodo->ultimaRef;
-		list_add(duplicated,nodo2);
+		list_add(duplicated, nodo2);
 	}
-
 	return duplicated;
-
 }
 
 bool comparadorMayorTam(Nodo_Reemplazo* nodo1, Nodo_Reemplazo* nodo2){
@@ -425,10 +416,36 @@ int existe_entrada(char* clave) {
 	return buscar_entrada(clave) != NULL;
 }
 
+void nuevo_registro(char* clave, int entrada, int tamanio) {
+	Reg_TablaEntradas* registro = malloc(sizeof(Reg_TablaEntradas));
+	registro->entrada = entrada;
+	registro->tamanio = tamanio;
+	registro->clave = malloc(strlen(clave) + 1);
+	strcpy(registro->clave,clave);
+	list_add(tabla_de_entradas, registro);
+}
+
+void agregar_barra_cero(char* valor, int tamanio) { //necesito tamanio para saber hasta donde grabar, sin el /0 se rompe el string
+	char* copia = malloc(tamanio + 1);
+	memcpy(copia, valor, tamanio);
+	copia[tamanio] = '\0';
+	memcpy(valor, copia, tamanio + 1);
+	free(copia);
+}
+
+void nuevo_nodo_reemplazo(char* clave, int tamanio) {
+	Nodo_Reemplazo* remp = malloc(sizeof(Nodo_Reemplazo));
+	remp->clave = strdup(clave);
+	remp->tamanio = tamanio;
+	remp->ultimaRef = 0;
+	list_add(reemplazos,remp);
+}
+
 void almacenarValor(char* clave, char* valor){
 
-	int tamEnBytes = string_length(valor)+1;
-	int tamEnEntradas = 1+((tamEnBytes-1)/tamEntrada);			//redondeo para arriba
+	//int tamEnBytes = string_length(valor)+1;
+	int tamEnBytes = string_length(valor); //no se incluye el \0
+	int tamEnEntradas = 1 + (tamEnBytes - 1) / tamEntrada;			//redondeo para arriba
 
 	if(existe_entrada(clave))
 		liberarEntradas(clave);
@@ -436,24 +453,13 @@ void almacenarValor(char* clave, char* valor){
 	if(tamEnEntradas <= cantEntradasDisp) {
 
 		int posInicialLibre = buscarEspacioLibre(tamEnEntradas);
-		strcpy(storage+(tamEntrada*posInicialLibre), valor);
+		memcpy(storage + (tamEntrada * posInicialLibre), valor, tamEnBytes);
+		nuevo_registro(clave, posInicialLibre, tamEnBytes);
 
-		Reg_TablaEntradas* registro = malloc(sizeof(Reg_TablaEntradas));
-		registro->entrada = posInicialLibre;
-		registro->tamanio = tamEnBytes;
-		registro->clave = malloc(strlen(clave)+1);
-		strcpy(registro->clave,clave);
-		//dictionary_put(tablaEntradas,clave,registro);
-		list_add(tabla_de_entradas, registro);
 		cantEntradasDisp -= tamEnEntradas;
 
-		if (tamEnEntradas == 1){								//Si el valor es atomico, se selecciona como valor de reemplazo
-			Nodo_Reemplazo* remp = malloc(sizeof(Nodo_Reemplazo));
-			remp->clave = strdup(clave);
-			remp->tamanio = tamEnBytes;
-			remp->ultimaRef = 0;
-			list_add(reemplazos,remp);
-		}
+		if (tamEnEntradas == 1)								//Si el valor es atomico, se selecciona como valor de reemplazo
+			nuevo_nodo_reemplazo(clave, tamEnBytes);
 
 	} else {
 
@@ -471,7 +477,7 @@ void almacenarValor(char* clave, char* valor){
 }
 
 void persistirValor(char* clave){
-	char* path = malloc(string_length(clave) + strlen(config.punto_montaje)/* + strlen(".txt")*/);
+	char* path = malloc(string_length(clave) + strlen(config.punto_montaje));
 
 	struct stat st = {0};
 	if (stat(config.punto_montaje, &st) == -1)
@@ -479,12 +485,11 @@ void persistirValor(char* clave){
 
 	strcpy(path, config.punto_montaje);
 	strcat(path, clave);
-	//strcat(path, ".txt"); //NOOOOOOOOO
 
-	char* valor = devolverValor(clave);
+	char* valor = devolver_valor(clave);
 
-	FILE* arch = fopen(path,"w+");
-		fputs(valor,arch);
+	FILE* arch = fopen(path, "w+");
+		fputs(valor, arch);
 	fclose(arch);
 
 	free(path);
@@ -538,27 +543,26 @@ void reemplazarValor(char* clave, char* valor, int tamEnEntradas){
 
 	list_clean_and_destroy_elements(paraReemplazar,(void*) nodoRempDestroyer);
 	free(paraReemplazar);
-	almacenarValor(clave,valor);
+	almacenarValor(clave, valor);
 }
 
 
-char* devolverValor(char* clave) {
+char* devolver_valor(char* clave) {
 	Reg_TablaEntradas* registro = buscar_entrada(clave);
-
-	char* valor = malloc(sizeof(char)*registro->tamanio+1);
-	strcpy(valor, storage+(tamEntrada*registro->entrada));
-
+	char* valor = malloc(sizeof(char) * registro->tamanio);
+	memcpy(valor, storage + (tamEntrada * registro->entrada), registro->tamanio);
+	agregar_barra_cero(valor, registro->tamanio);
 	return valor;
 }
 
 
 void liberarEntradas(char* clave){
 	Reg_TablaEntradas* registro = borrar_devolver_entrada(clave);
-	int tamEnEntradas = 1+((registro->tamanio-1)/tamEntrada);
-	int desde= registro->entrada;
-	int hasta= registro->entrada+tamEnEntradas;
-	limpiarArray(desde,hasta);
-	cantEntradasDisp+=tamEnEntradas;
+	int tamEnEntradas = 1 + (registro->tamanio - 1) / tamEntrada;
+	int desde = registro->entrada;
+	int hasta = registro->entrada + tamEnEntradas;
+	limpiarArray(desde, hasta);
+	cantEntradasDisp += tamEnEntradas;
 
 	if(buscarNodoReemplazo(clave)>=0)
 		list_remove_and_destroy_element(reemplazos,buscarNodoReemplazo(clave),(void*)nodoRempDestroyer);
@@ -589,10 +593,10 @@ int buscarEspacioLibre(int entradasNecesarias){
 	if (contador < entradasNecesarias) {
 		compactado = 0;						//Compacta en caso de ser necesario (porque hay espacios pero no son contiguos)
 		if (ya_avise == 0) {
+			ya_avise = 1;
 			avisar(socketServer, compactar);
 			printf(RED"\n\nAvisado el coordinador de compactacion."RESET);
 			while(compactado != 1);
-			ya_avise = 1;
 		}
 	}
 	else

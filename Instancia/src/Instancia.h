@@ -41,7 +41,7 @@ void liberarEntradas(char* clave);
 int buscarEspacioLibre(int entradasNecesarias);
 void almacenarValor(char* clave, char* valor);
 void ejecutarSentencia(t_sentencia* sentencia);
-char* devolverValor(char* clave);
+char* devolver_valor(char* clave);
 void mostrarValor(char* clave);
 void persistirValor(char* clave);
 t_list* reemplazoSegunAlgoritmo(int cantNecesita);

@@ -68,55 +68,36 @@ int main(int argc, char* argv[]) {
 	return 0;
 }
 
-void* espera_desconexion(int socket_inst) {
-	while(true) {
-		void* b;
-		int a = recibirMensaje(socket_inst, &b);
-
-	}
-}
-
 //ACCIONES DE LOS HILOS
 void *rutina_instancia(void * arg) {
 	int socket_INST = (int)arg;
-	printf("\n------------------------------------\n");
-	printf("NUEVA INSTANCIA EJECUTADA || ");
 	void * stream;
-	//RECIBIR NOMBRE DE INSTACIA
-	recibirMensaje(socket_INST,&stream);
+	recibirMensaje(socket_INST, &stream);
 	char* nombre_inst = (char*)stream;
-	//list_add(lista_Instancias,(void*)nuevaInstancia);
-	printf("ID:%s || SOCKET: %d\n", nombre_inst , socket_INST);
-	//VALIDAR QUE SEA EL UNICO EN EL DICCIONARIO
-	if( (dictionary_has_key(lista_Instancias , nombre_inst ) ) == false ){
-		printf("socket %d agregado a instancia %s", socket_INST, nombre_inst);
+	if(!existe_instancia(nombre_inst))
+		nueva_instancia(socket_INST, nombre_inst);
+	else
+		cambiarEstadoInstancia(nombre_inst, conectada);
 
-		instancia_Estado_Conexion *instancia_conexion = malloc(sizeof(instancia_Estado_Conexion));
-		instancia_conexion->estadoConexion=conectada;
-		instancia_conexion->socket=socket_INST;
-		instancia_conexion->entradas_disponibles = configuracion.cant_entradas;
-
-		printf("\nel estado de la instacia es %d y su socket es %d\n\n",instancia_conexion->estadoConexion,instancia_conexion->socket);
-		dictionary_put(lista_Instancias, nombre_inst , instancia_conexion);
-		list_add(listaSoloInstancias, nombre_inst);
-		configurar_instancia(socket_INST);
-
-		//TOMI ROMPISTE TODO
-		//nodo_inst_conexion_destroyer(instancia_conexion);
-
-	}
-	else{
-		cambiarEstadoInstancia(nombre_inst,conectada);
-	}
 	return NULL;
+}
+
+void nueva_instancia(int socket, char* nombre) {
+	instancia_Estado_Conexion *instancia_conexion = malloc(sizeof(instancia_Estado_Conexion));
+	instancia_conexion->estadoConexion = conectada;
+	instancia_conexion->socket = socket;
+	instancia_conexion->entradas_disponibles = configuracion.cant_entradas;
+	dictionary_put(lista_Instancias, nombre, instancia_conexion);
+	list_add(listaSoloInstancias, nombre);
+	configurar_instancia(socket);
+	printf(GREEN"\nNueva instancia"CYAN" %s "GREEN"conectada en socket"RED" %d"RESET, nombre, socket);
 }
 
 void configurar_instancia(int socket){
 	int* dim = malloc(sizeof(int)*2);//RECIBE 3
 	memcpy(dim,&configuracion.cant_entradas,sizeof(int));
 	memcpy(dim+1,&configuracion.tamanio_entrada,sizeof(int));
-	enviarMensaje(socket,config_inst,dim,sizeof(int)*2);
-	printf(YELLOW"\nNueva instancia configurada\n"RESET);
+	enviarMensaje(socket, config_inst, dim,sizeof(int)*2);
 }
 
 t_list* instancias_conectadas() {
@@ -144,7 +125,6 @@ void *rutina_ESI(void* argumento) {
 		usleep(configuracion.retardo * 1000);
 		procesar_permiso_planificador(accion, sentencia, socket_esi);
 	}
-	//sale del while -> no hay mas sentencias
 	printf(YELLOW"\nEl ESI %d ha terminado su rutina. Finalizando ESI...\n"RESET, id_esi);
 	enviarMensaje(socket_plan, terminar_esi, &id_esi, sizeof(id_esi));
 	return NULL;
@@ -297,12 +277,8 @@ void* rutina_compactacion(void* sock) {
 
 void cambiarEstadoInstancia(char *instanciaGuardada, estado_de_la_instancia accion){
 	instancia_Estado_Conexion *estado = dictionary_get(lista_Instancias, instanciaGuardada);
-	/*instancia_Estado_Conexion *aux=malloc(sizeof(instancia_Estado_Conexion));
-	dictionary_remove(lista_Instancias, instanciaGuardada);
-	aux->estadoConexion=accion;
-	aux->socket=0; //Y ESTO POR QUE?
-	dictionary_put(instancias_Claves, instanciaGuardada, aux);*/
 	estado->estadoConexion = accion;
+	printf(GREEN"\nInstancia"CYAN" %s "GREEN" se ha vuelto a conectar en socket"RED" %d"RESET, instanciaGuardada, estado->socket);
 }
 
 void avisar_guardado_planif(char* instancia, char* clave) {
@@ -585,6 +561,10 @@ char* least_space_used_simulado(char* clave) {
 
 int existe_clave(char* clave) {
 	return dictionary_has_key(instancias_Claves, clave);
+}
+
+int existe_instancia(char* nombre) {
+	return dictionary_has_key(lista_Instancias, nombre);
 }
 
 

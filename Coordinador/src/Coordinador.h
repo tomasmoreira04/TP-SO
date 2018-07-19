@@ -37,7 +37,8 @@ char* buscar_instancia(char* clave);
 void key_explicit(char* claveSentencia);
 
 void cambiarEstadoInstancia(char *instanciaGuardada,estado_de_la_instancia accion);
-
+void nueva_instancia(int socket, char* nombre);
+int existe_instancia(char* nombre);
 char* formatear_mensaje_esi(int, TipoSentencia, char*, char*);
 void configurar_instancia(int socket);
 void destruir_estructuras_globales();
