@@ -17,7 +17,7 @@
 //VER https://github.com/sisoputnfrba/parsi/blob/master/src/parsi/parser.h para entender funciones
 
 int main(int argc, char* argv[]) {
-	ConfigESI config = cargar_config_esi(argv[2]);
+	ConfigESI config = cargar_config_esi();
 	char* nombre = argv[1];
 	char* ruta = ruta_script(nombre);
 	setbuf(stdout, NULL);
@@ -39,8 +39,8 @@ char* ruta_script(char* argumento) { //se pasa solo el nombre del archivo, sin e
 	if (argumento == NULL)
 		return "scripts/script.esi"; //default
 	char* ruta = malloc(LARGO_RUTA);
-	string_append(&ruta, "../scripts/");
-	string_append(&ruta, argumento);
+	strcpy(ruta, "../scripts/");
+	strcat(ruta, argumento);
 	return ruta;
 }
 
@@ -156,4 +156,9 @@ int cantidad_de_sentencias(FILE* script) {
 	    sentencias++;
 	}
 	return sentencias;
+}
+
+void imprimir_configuracion(ConfigESI config) {
+	printf(CYAN"\nPlanificador: "YELLOW"%s : %d"RESET, config.ip_planificador, config.puerto_planificador);
+	printf(CYAN"\nCoordinador: "YELLOW"%s : %d\n"RESET, config.ip_coordinador, config.puerto_coordinador);
 }

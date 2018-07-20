@@ -1,18 +1,85 @@
-[INFO] 18:55:34:868 coordinador/(5269:5269): Se ha cargado la configuracion inicial del Coordinador:
-[INFO] 18:55:34:868 coordinador/(5269:5269): PUERTO_ESCUCHA: 9035
-[INFO] 18:55:34:868 coordinador/(5269:5269): PUERTO_PLANIF: 167527088
-[INFO] 18:55:34:868 coordinador/(5269:5269): IP_PLANIF: 127.0.0.1
-[INFO] 18:55:34:868 coordinador/(5269:5269): ALGORITMO_DISTRIBUCION: EQ
-[INFO] 18:55:34:868 coordinador/(5269:5269): CANTIDAD_ENTRADAS: 8
-[INFO] 18:55:34:868 coordinador/(5269:5269): TAMANIO_ENTRADA: 10
-[INFO] 18:55:34:868 coordinador/(5269:5269): RETARDO: 300
-[INFO] 18:56:26:273 coordinador/(5269:5269): Conectado con planificador
-[INFO] 18:56:26:274 coordinador/(5269:5286): Se conecto la Inst1
-[INFO] 18:59:02:960 coordinador/(5320:5320): Se ha cargado la configuracion inicial del Coordinador:
-[INFO] 18:59:02:960 coordinador/(5320:5320): PUERTO_ESCUCHA: 9035
-[INFO] 18:59:02:960 coordinador/(5320:5320): PUERTO_PLANIF: 155071152
-[INFO] 18:59:02:960 coordinador/(5320:5320): IP_PLANIF: 127.0.0.1
-[INFO] 18:59:02:960 coordinador/(5320:5320): ALGORITMO_DISTRIBUCION: EQ
-[INFO] 18:59:02:960 coordinador/(5320:5320): CANTIDAD_ENTRADAS: 8
-[INFO] 18:59:02:960 coordinador/(5320:5320): TAMANIO_ENTRADA: 10
-[INFO] 18:59:02:960 coordinador/(5320:5320): RETARDO: 300
+[INFO] 23:22:09:950 coordinador/(8189:8189): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 23:22:09:960 coordinador/(8189:8189): PUERTO_ESCUCHA: 9035
+[INFO] 23:22:09:963 coordinador/(8189:8189): PUERTO_PLANIF: 69430248
+[INFO] 23:22:09:964 coordinador/(8189:8189): IP_PLANIF: 127.0.0.1
+[INFO] 23:22:09:964 coordinador/(8189:8189): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 23:22:09:964 coordinador/(8189:8189): CANTIDAD_ENTRADAS: 50
+[INFO] 23:22:09:964 coordinador/(8189:8189): TAMANIO_ENTRADA: 20
+[INFO] 23:22:09:965 coordinador/(8189:8189): RETARDO: 200
+[INFO] 23:23:43:737 coordinador/(8306:8306): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 23:23:43:747 coordinador/(8306:8306): PUERTO_ESCUCHA: 9035
+[INFO] 23:23:43:750 coordinador/(8306:8306): PUERTO_PLANIF: 69430248
+[INFO] 23:23:43:751 coordinador/(8306:8306): IP_PLANIF: 127.0.0.1
+[INFO] 23:23:43:751 coordinador/(8306:8306): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 23:23:43:751 coordinador/(8306:8306): CANTIDAD_ENTRADAS: 50
+[INFO] 23:23:43:751 coordinador/(8306:8306): TAMANIO_ENTRADA: 20
+[INFO] 23:23:43:752 coordinador/(8306:8306): RETARDO: 200
+[INFO] 23:34:14:101 coordinador/(8928:8928): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 23:34:14:111 coordinador/(8928:8928): PUERTO_ESCUCHA: 9035
+[INFO] 23:34:14:114 coordinador/(8928:8928): PUERTO_PLANIF: 69430248
+[INFO] 23:34:14:114 coordinador/(8928:8928): IP_PLANIF: 127.0.0.1
+[INFO] 23:34:14:114 coordinador/(8928:8928): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 23:34:14:115 coordinador/(8928:8928): CANTIDAD_ENTRADAS: 50
+[INFO] 23:34:14:115 coordinador/(8928:8928): TAMANIO_ENTRADA: 20
+[INFO] 23:34:14:115 coordinador/(8928:8928): RETARDO: 200
+[INFO] 23:35:37:691 coordinador/(8988:8988): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 23:42:50:379 coordinador/(9275:9275): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 23:42:50:379 coordinador/(9275:9275): PUERTO_ESCUCHA: 9035
+[INFO] 23:42:50:379 coordinador/(9275:9275): PUERTO_PLANIF: 139818080
+[INFO] 23:42:50:379 coordinador/(9275:9275): IP_PLANIF: 127.0.0.1
+[INFO] 23:42:50:379 coordinador/(9275:9275): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 23:42:50:379 coordinador/(9275:9275): CANTIDAD_ENTRADAS: 50
+[INFO] 23:42:50:379 coordinador/(9275:9275): TAMANIO_ENTRADA: 20
+[INFO] 23:42:50:379 coordinador/(9275:9275): RETARDO: 200
+[INFO] 23:45:05:931 coordinador/(9772:9772): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 23:45:05:931 coordinador/(9772:9772): PUERTO_ESCUCHA: 9035
+[INFO] 23:45:05:931 coordinador/(9772:9772): PUERTO_PLANIF: 138880096
+[INFO] 23:45:05:931 coordinador/(9772:9772): IP_PLANIF: 127.0.0.1
+[INFO] 23:45:05:931 coordinador/(9772:9772): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 23:45:05:931 coordinador/(9772:9772): CANTIDAD_ENTRADAS: 50
+[INFO] 23:45:05:931 coordinador/(9772:9772): TAMANIO_ENTRADA: 20
+[INFO] 23:45:05:931 coordinador/(9772:9772): RETARDO: 200
+[INFO] 23:46:02:252 coordinador/(9772:9772): Conectado con planificador
+[INFO] 23:46:02:253 coordinador/(9772:9803): Se conecto la Inst1
+[INFO] 23:46:17:501 coordinador/(9772:9813): El ESI 1 hizo un GET de la clave sony:consola:ps1
+[INFO] 23:46:17:704 coordinador/(9772:9813): El ESI 1 hizo un GET de la clave sony:consola:ps2
+[INFO] 23:46:17:907 coordinador/(9772:9813): El ESI 1 hizo un GET de la clave sony:consola:ps3
+[INFO] 23:46:18:107 coordinador/(9772:9813): El ESI 1 hizo un GET de la clave sony:consola:ps4
+[INFO] 23:46:18:308 coordinador/(9772:9813): El ESI 1 hizo un GET de la clave microsoft:consola:xbox
+[INFO] 23:46:18:509 coordinador/(9772:9813): El ESI 1 hizo un GET de la clave microsoft:consola:xbox360
+[INFO] 23:46:18:711 coordinador/(9772:9813): El ESI 1 hizo un GET de la clave microsoft:consola:xboxone
+[INFO] 23:46:18:912 coordinador/(9772:9813): El ESI 1 hizo un GET de la clave nintendo:consola:nes
+[INFO] 23:46:19:114 coordinador/(9772:9813): El ESI 1 hizo un GET de la clave nintendo:consola:snes
+[INFO] 23:46:19:315 coordinador/(9772:9813): El ESI 1 hizo un GET de la clave nintendo:consola:nintendo64
+[INFO] 23:46:19:517 coordinador/(9772:9813): El ESI 1 hizo un GET de la clave nintendo:consola:gamecube
+[INFO] 23:46:19:718 coordinador/(9772:9813): El ESI 1 hizo un GET de la clave nintendo:consola:wii
+[INFO] 23:46:19:919 coordinador/(9772:9813): El ESI 1 hizo un GET de la clave nintendo:consola:wiiu
+[INFO] 23:46:20:121 coordinador/(9772:9813): El ESI 1 hizo un GET de la clave nintendo:consola:switch
+[INFO] 23:46:20:323 coordinador/(9772:9813): Aplicando Equitative Load..
+[INFO] 23:46:20:323 coordinador/(9772:9813): El ESI 1 hizo un SET sobre la clave nintendo:consola:nes con valor: Mario
+[INFO] 23:46:20:563 coordinador/(9772:9813): Aplicando Equitative Load..
+[INFO] 23:46:20:564 coordinador/(9772:9813): El ESI 1 hizo un SET sobre la clave nintendo:consola:snes con valor: SuperMario
+[INFO] 23:46:20:807 coordinador/(9772:9813): Aplicando Equitative Load..
+[INFO] 23:46:20:807 coordinador/(9772:9813): El ESI 1 hizo un SET sobre la clave nintendo:consola:nintendo64 con valor: Mario64
+[INFO] 23:46:21:47 coordinador/(9772:9813): Aplicando Equitative Load..
+[INFO] 23:46:21:48 coordinador/(9772:9813): El ESI 1 hizo un SET sobre la clave nintendo:consola:gamecube con valor: FinalFantasyTactics
+[INFO] 23:46:21:290 coordinador/(9772:9813): Aplicando Equitative Load..
+[INFO] 23:46:21:290 coordinador/(9772:9813): El ESI 1 hizo un SET sobre la clave nintendo:consola:wii con valor: MarioGalaxy
+[INFO] 23:46:21:768 coordinador/(9772:9813): Aplicando Equitative Load..
+[INFO] 23:46:21:768 coordinador/(9772:9813): El ESI 1 hizo un SET sobre la clave nintendo:consola:wiiu con valor: RIP
+[INFO] 23:46:22:247 coordinador/(9772:9813): Aplicando Equitative Load..
+[INFO] 23:46:22:247 coordinador/(9772:9813): El ESI 1 hizo un SET sobre la clave sony:consola:ps1 con valor: FF7
+[INFO] 23:46:22:731 coordinador/(9772:9813): Aplicando Equitative Load..
+[INFO] 23:46:22:731 coordinador/(9772:9813): El ESI 1 hizo un SET sobre la clave sony:consola:ps2 con valor: GodOfWar
+[INFO] 23:46:23:212 coordinador/(9772:9813): Aplicando Equitative Load..
+[INFO] 23:46:23:212 coordinador/(9772:9813): El ESI 1 hizo un SET sobre la clave sony:consola:ps3 con valor: TLOU
+[INFO] 23:46:23:691 coordinador/(9772:9813): Aplicando Equitative Load..
+[INFO] 23:46:23:691 coordinador/(9772:9813): El ESI 1 hizo un SET sobre la clave sony:consola:ps4 con valor: Bloodborne
+[INFO] 23:46:24:172 coordinador/(9772:9813): Aplicando Equitative Load..
+[INFO] 23:46:24:172 coordinador/(9772:9813): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox con valor: Halo
+[INFO] 23:46:24:414 coordinador/(9772:9813): Aplicando Equitative Load..
+[INFO] 23:46:24:414 coordinador/(9772:9813): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox360 con valor: Halo
+[INFO] 23:46:24:654 coordinador/(9772:9813): Aplicando Equitative Load..
+[INFO] 23:46:24:654 coordinador/(9772:9813): El ESI 1 hizo un SET sobre la clave microsoft:consola:xboxone con valor: Halo
+[INFO] 23:46:24:893 coordinador/(9772:9813): Aplicando Equitative Load..
+[INFO] 23:46:24:893 coordinador/(9772:9813): El ESI 1 hizo un SET sobre la clave nintendo:consola:switch con valor: ZeldaBOTW

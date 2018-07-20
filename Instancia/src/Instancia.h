@@ -76,6 +76,7 @@ void configurar_entradas();
 void inicializar_estructuras();
 int recuperar_claves(char* ruta);
 void cargar_claves_iniciales();
-void asd();
+char* algoritmo(AlgoritmoInst alg);
+void imprimir_configuracion();
 
 #endif /* INSTANCIA_H_ */

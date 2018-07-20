@@ -54,7 +54,7 @@ pthread_mutex_t operando_claves = PTHREAD_MUTEX_INITIALIZER;
 int main(int argc, char* argv[]) {
 	inicializar_estructuras();
 	config = cargar_config_planificador(argv[1]);
-	config.algoritmo = fifo;
+	imprimir_configuracion();
 	bloquear_claves_iniciales(config.claves_bloqueadas, config.n_claves);
 	pthread_t thread_consola, thread_output;
 	pthread_create(&thread_consola, NULL, iniciar_consola, NULL);
@@ -782,4 +782,21 @@ ESI* primero_llegado() {
 	return NULL;
 }
 
+void imprimir_configuracion() {
+	printf(CYAN"\nPuerto de escucha: "YELLOW"%d"RESET, config.puerto_escucha);
+	printf(CYAN"\nCoordinador: "YELLOW"%s : %d"RESET, config.ip_coordinador, config.puerto_coordinador);
+	printf(GREEN"\n\nConfiguracion cargada con exito:"RESET);
+	printf(GREEN"\nAlgoritmo: "RED"%s", algoritmo(config.algoritmo));
+	printf(GREEN"\nAlfa: "RED"%d", config.alfa_planif);
+	printf(GREEN"\nEstimacion inicial: "RED"%f\n"RESET, config.estimacion_inicial);
+}
+
+char* algoritmo(AlgoritmoPlanif alg) {
+	switch (alg) {
+		case sjf_sd: 	return "SJF-SD";
+		case sjf_cd: 	return "SJD-CD";
+		case hrrn: 		return "HRRN";
+		default: 		return "FIFO";
+	}
+}
 

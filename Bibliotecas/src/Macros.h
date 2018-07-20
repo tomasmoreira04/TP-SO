@@ -9,7 +9,7 @@
 #define LARGO_IP 16
 #define LARGO_ALG 10
 #define LARGO_NINSTANCIA 20
-#define LARGO_RUTA 60
+#define LARGO_RUTA 100
 
 
 #endif

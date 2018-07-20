@@ -43,6 +43,7 @@ int main(int argc, char* argv[]) {
 	instancias_Claves= dictionary_create();
 	listaSoloInstancias=list_create();
 	configuracion = cargar_config_coordinador(argv[1]);
+	imprimir_configuracion();
 	crear_log_operaciones();
 	log_info(log_operaciones, "Se ha cargado la configuracion inicial del Coordinador:");
 	imprimir_cfg_en_log();
@@ -406,10 +407,10 @@ int enviar_check_conexion_instancia(int socket) {
 	void* stream = malloc( sizeof(header) + tam );
 	memcpy(stream, &heder, sizeof(header));
 	memcpy(stream + sizeof(header), &contenido, tam);
-	send(socket, stream, sizeof(header) + tam, 0);
-	usleep(1000*1000*0.5);
+	int pepito = send(socket, stream, sizeof(header) + tam, MSG_NOSIGNAL);
+	/*usleep(1000*1000*0.5);
 	signal(SIGPIPE, SIG_IGN);
-	int pepito = send(socket, stream, sizeof(header) + tam, 0);
+	int pepito = send(socket, stream, sizeof(header) + tam, 0);*/
 	free(stream);
 	return pepito == -1 ? desconectada : conectada;
 }
@@ -605,7 +606,23 @@ void imprimir_cfg_en_log() {
 	log_info(log_operaciones, string_from_format("RETARDO: %d", configuracion.retardo));
 }
 
+void imprimir_configuracion() {
+	printf(CYAN"\nPuerto de escucha: "YELLOW"%d"RESET, configuracion.puerto_escucha);
+	printf(CYAN"\nPlanificador: "YELLOW"%s : %d"RESET, configuracion.ip_planificador, configuracion.puerto_planificador);
+	printf(GREEN"\n\nConfiguracion cargada con exito:"RESET);
+	printf(GREEN"\nAlgoritmo: "RED"%s", algoritmo(configuracion.algoritmo));
+	printf(GREEN"\nEntradas: "RED"%d", configuracion.cant_entradas);
+	printf(GREEN"\nTamaño: "RED"%d", configuracion.tamanio_entrada);
+	printf(GREEN"\nRetardo: "RED"%d\n"RESET, configuracion.retardo);
+}
 
+char* algoritmo(AlgoritmoCoord alg) {
+	switch (alg) {
+		case lsu: 			return "LSU";
+		case ke: 			return "KE";
+		case el:default: 	return "EL";
+	}
+}
 
 
 

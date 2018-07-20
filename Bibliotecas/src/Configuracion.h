@@ -34,6 +34,12 @@ typedef struct {
 	int puerto_coordinador, intervalo_dump, algoritmo_reemp;
 } ConfigInstancia;
 
+typedef struct {
+	char ip_coordinador[LARGO_IP], ip_planificador[LARGO_IP];
+	int puerto_coordinador, puerto_planificador;
+} ConfigGlobal;
+
+ConfigGlobal cargar_config_global();
 ConfigPlanificador cargar_config_planificador();
 ConfigCoordinador cargar_config_coordinador();
 ConfigESI cargar_config_esi();
@@ -46,8 +52,9 @@ ConfigInstancia config_predeterminada_inst();
 char* ruta_modulo(Modulo modulo);
 AlgoritmoPlanif numero_algoritmo_p(char* nombre);
 AlgoritmoCoord numero_algoritmo_c(char* nombre);
+AlgoritmoInst numero_algoritmo_i(char* nombre);
 int faltan_campos(t_config* config, char** campos);
-void imprimir_default();
+void imprimir_error();
 int numero_claves(char* linea);
 
 #endif

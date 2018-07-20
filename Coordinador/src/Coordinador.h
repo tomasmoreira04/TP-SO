@@ -76,4 +76,7 @@ char* key_explicit_simulado(char* clave);
 char* least_space_used_simulado(char* clave);
 int existe_clave(char* clave);
 
+void imprimir_configuracion();
+char* algoritmo(AlgoritmoCoord alg);
+
 #endif /* COORDINADOR_H_ */

@@ -1,0 +1,6 @@
+P1 = Prueba Minima
+P2 = Prueba Algoritmos de Reemplazo y Compactación
+P3 = Prueba Algoritmos de Distribución
+P4 = Prueba Deadlock
+P5 = Prueba Algoritmos de Planificación
+P6 = Prueba de Estrés

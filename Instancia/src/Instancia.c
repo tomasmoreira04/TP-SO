@@ -45,23 +45,11 @@ int compactado = 1;
 
 pthread_mutex_t semaforo_compactacion = PTHREAD_MUTEX_INITIALIZER;
 
-/*
-void CLOSE_HANDLER(int);
-
-void CLOSE_HANDLER(int sig) {
-     signal(sig, SIG_IGN);
-     printf("Cerrando, avisando desconexion al coordinador");
-     avisar(socketServer, instancia_desconectada);
-     exit(0);
-}*/
-
 int main(int argc, char* argv[]) {
-
-	//signal(SIGINT, CLOSE_HANDLER); //signal para capturar ctrl C
-
 	setbuf(stdout, NULL);
 	char* nombre = argv[1];
 	config = cargar_config_inst(nombre);
+	imprimir_configuracion();
 	socketServer = conexion_con_servidor(config.ip_coordinador, config.puerto_coordinador);
 	handShake(socketServer, instancia);
 	configurar_entradas();
@@ -682,7 +670,21 @@ void guardarLaWea()
 	}
 }
 
+void imprimir_configuracion() {
+	printf(CYAN"\nCoordinador: "YELLOW"%s : %d"RESET, config.ip_coordinador, config.puerto_coordinador);
+	printf(GREEN"\n\nConfiguracion cargada con exito:"RESET);
+	printf(GREEN"\nAlgoritmo: "RED"%s", algoritmo(config.algoritmo_reemp));
+	printf(GREEN"\nMontaje: "RED"%s", config.punto_montaje);
+	printf(GREEN"\nNombre: "RED"%d", config.nombre_instancia);
+	printf(GREEN"\nIntervalo de dump: "RED"%d\n"RESET, config.intervalo_dump);
+}
 
-
+char* algoritmo(AlgoritmoInst alg) {
+	switch (alg) {
+		case CIRC: 			return "CIRC";
+		case LRU: 			return "LRU";
+		case BSU:default: 	return "BSU";
+	}
+}
 
 

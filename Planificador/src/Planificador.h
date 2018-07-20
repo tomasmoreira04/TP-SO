@@ -87,4 +87,7 @@ float estimar(ESI* esi);
 ESI* esi_rafaga_mas_corta();
 ESI* esi_resp_ratio_mas_alto();
 
+void imprimir_configuracion();
+char* algoritmo(AlgoritmoPlanif alg);
+
 #endif
