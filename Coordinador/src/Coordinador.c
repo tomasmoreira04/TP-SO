@@ -79,8 +79,8 @@ void *rutina_instancia(void * arg) {
 	char* nombre_inst = (char*)stream;
 	if(!existe_instancia(nombre_inst))
 		nueva_instancia(socket_INST, nombre_inst);
-	else
-		cambiarEstadoInstancia(nombre_inst, conectada);
+	/*else
+		cambiarEstadoInstancia(nombre_inst, conectada);*/
 
 	log_info(log_operaciones, string_from_format("Se conecto la %s", nombre_inst));
 
@@ -111,8 +111,10 @@ t_list* instancias_conectadas() {
 	t_list* lista = list_create();
 	for(int i = 0; i < n; i++){
 		char* nombre_inst = list_get(listaSoloInstancias, i);
-		if (estadoDeInstancia(nombre_inst) == conectada)
-			list_add(lista, nombre_inst);
+		instancia_Estado_Conexion* estado_viejo = dictionary_get(lista_Instancias, nombre_inst);
+		if (estado_viejo->estadoConexion == conectada) //si ya estaba desconectada ni me gasto en el ping
+			if (estadoDeInstancia(nombre_inst) == conectada) //ping
+				list_add(lista, nombre_inst);
 	}
 	return lista;
 }
@@ -407,11 +409,12 @@ int enviar_check_conexion_instancia(int socket) {
 	void* stream = malloc( sizeof(header) + tam );
 	memcpy(stream, &heder, sizeof(header));
 	memcpy(stream + sizeof(header), &contenido, tam);
-	int pepito = send(socket, stream, sizeof(header) + tam, MSG_NOSIGNAL);
-	/*usleep(1000*1000*0.5);
+	int pepito = send(socket, stream, sizeof(header) + tam, 0);
+	usleep(1000*100); //100 milisegundos
 	signal(SIGPIPE, SIG_IGN);
-	int pepito = send(socket, stream, sizeof(header) + tam, 0);*/
+	pepito = send(socket, stream, sizeof(header) + tam, 0);
 	free(stream);
+
 	return pepito == -1 ? desconectada : conectada;
 }
 

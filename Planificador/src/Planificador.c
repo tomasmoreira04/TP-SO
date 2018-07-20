@@ -102,21 +102,16 @@ void recibir_conexiones() {
 	socket_coordinador = conectar_con_coordinador(listener);
 
 	while (1) {
-		if(planificar)
-		{
-			int n = fdmax + 1;
+		int n = fdmax + 1;
+		s_wait(&fds_disponibles);
+		read_fds = master;
+		if (select(n, &read_fds, NULL, NULL, NULL) == -1)
+			exit(1);
+		s_signal(&fds_disponibles);
 
-			s_wait(&fds_disponibles);
-			read_fds = master;
-			if (select(n, &read_fds, NULL, NULL, NULL) == -1)
-				exit(1);
-			s_signal(&fds_disponibles);
-
-			for (int i = listener; i < n; i++)
-				if (FD_ISSET(i, &read_fds)) {
-					recibir_mensajes(i, listener, socket_coordinador);
-				}
-		}
+		for (int i = listener; i < n; i++)
+			if (FD_ISSET(i, &read_fds))
+				recibir_mensajes(i, listener, socket_coordinador);
 	}
 }
 
@@ -393,7 +388,7 @@ void SET(char* clave, char* valor, ESI* esi, int coordinador) {
 	}
 	else { //puedo hacer set
 		strcpy(c->valor, valor);
-		fprintf(output, "\n(SET) Se ha seteado la clave" GREEN " %s" RESET " con valor" MAGENTA " %s" RESET, c->clave, c->valor);
+		fprintf(output, "\n(SET) El "GREEN"ESI %d"RESET" ha seteado la clave" GREEN " %s" RESET " con valor" MAGENTA " %s" RESET, esi->id, c->clave, c->valor);
 		esi->rafagas_restantes--;
 		avisar(coordinador, sentencia_coordinador);
 	}
@@ -415,7 +410,7 @@ void STORE(char* clave, ESI* esi, int coordinador) { //esi: esi que hace el pedi
 	}
 	else { //puedo hacer store
 		liberar_clave(clave);
-		fprintf(output, "\n(STORE) Se ha liberado la clave" GREEN " %s" RESET, c->clave);
+		fprintf(output, "\n(STORE) El"GREEN" ESI %d "RESET"ha liberado la clave" GREEN " %s" RESET, esi->id, c->clave);
 		esi->rafagas_restantes--;
 		avisar(coordinador, sentencia_coordinador);
 	}
@@ -673,7 +668,7 @@ void ejecutar_por_sjf(int desalojar) {
 	s_wait(&ejecucion);
 	if (esi_ejecutando == NULL || desalojar) {
 		 esi = esi_rafaga_mas_corta();
-		 if (esi_ejecutando != NULL && esi->id != esi_ejecutando->id)
+		 if (esi_ejecutando != NULL && esi->id != esi_ejecutando->id) //desalojo si es otro
 		 	mover_esi(esi_ejecutando, cola_de_listos);
 	}
 	else
@@ -754,19 +749,22 @@ ESI* esi_rafaga_mas_corta() {
 	if (esi_ejecutando != NULL)
 		mas_corto = esi_ejecutando;
 	int indice = 0;
-
+	//printf("\nbuscando entre %d esis", list_size(cola_de_listos));
 	for (int i = 0; i < list_size(cola_de_listos); i++) {
 		ESI* esi = list_get(cola_de_listos, i);
 		if (esi != NULL) {
+			//printf("\ncomparando esi %d con esi%d", esi->id, mas_corto->id);
 			if (esi->rafagas_restantes < mas_corto->rafagas_restantes) {
 				mas_corto = esi;
 				indice = i;
 			}
 		}
 	}
+	//printf("\nganador: esi %d", mas_corto->id);
 	if (esi_ejecutando != NULL)
 		if (mas_corto->id == esi_ejecutando->id)
 			return mas_corto;
+
 	return list_remove(cola_de_listos, indice);
 }
 

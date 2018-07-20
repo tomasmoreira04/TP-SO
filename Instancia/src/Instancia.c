@@ -69,7 +69,7 @@ void configurar_entradas() {
 	if (config_inst == recibirMensaje(socketServer, &dim)) {
 		memcpy(&cantEntradas,(int*)dim,sizeof(int));
 		memcpy(&tamEntrada,(int*)dim+1,sizeof(int));
-		free(dim);
+		//free(dim);
 
 		printf(CYAN "\n------------ INSTANCIA ------------\n");
 		printf("\nCANT ENTRADAS: %i \nTAM ENTRADAS: %i \n"RESET,cantEntradas, tamEntrada);
@@ -476,7 +476,7 @@ void almacenarValor(char* clave, char* valor){
 }
 
 void persistirValor(char* clave){
-	char* path = malloc(string_length(clave) + strlen(config.punto_montaje));
+	char* path = malloc(strlen(clave) + strlen(config.punto_montaje) + 1);
 
 	struct stat st = {0};
 	if (stat(config.punto_montaje, &st) == -1)
@@ -541,7 +541,7 @@ void reemplazarValor(char* clave, char* valor, int tamEnEntradas){
 	}
 
 	list_clean_and_destroy_elements(paraReemplazar,(void*) nodoRempDestroyer);
-	free(paraReemplazar);
+	//free(paraReemplazar);
 	almacenarValor(clave, valor);
 }
 
@@ -675,7 +675,7 @@ void imprimir_configuracion() {
 	printf(GREEN"\n\nConfiguracion cargada con exito:"RESET);
 	printf(GREEN"\nAlgoritmo: "RED"%s", algoritmo(config.algoritmo_reemp));
 	printf(GREEN"\nMontaje: "RED"%s", config.punto_montaje);
-	printf(GREEN"\nNombre: "RED"%d", config.nombre_instancia);
+	printf(GREEN"\nNombre: "RED"%s", config.nombre_instancia);
 	printf(GREEN"\nIntervalo de dump: "RED"%d\n"RESET, config.intervalo_dump);
 }
 

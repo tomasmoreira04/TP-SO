@@ -83,3 +83,1410 @@
 [INFO] 23:46:24:654 coordinador/(9772:9813): El ESI 1 hizo un SET sobre la clave microsoft:consola:xboxone con valor: Halo
 [INFO] 23:46:24:893 coordinador/(9772:9813): Aplicando Equitative Load..
 [INFO] 23:46:24:893 coordinador/(9772:9813): El ESI 1 hizo un SET sobre la clave nintendo:consola:switch con valor: ZeldaBOTW
+[INFO] 23:50:57:843 coordinador/(10350:10350): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 23:50:57:843 coordinador/(10350:10350): PUERTO_ESCUCHA: 9035
+[INFO] 23:50:57:843 coordinador/(10350:10350): PUERTO_PLANIF: 144335968
+[INFO] 23:50:57:843 coordinador/(10350:10350): IP_PLANIF: 127.0.0.1
+[INFO] 23:50:57:843 coordinador/(10350:10350): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 23:50:57:843 coordinador/(10350:10350): CANTIDAD_ENTRADAS: 50
+[INFO] 23:50:57:843 coordinador/(10350:10350): TAMANIO_ENTRADA: 20
+[INFO] 23:50:57:843 coordinador/(10350:10350): RETARDO: 200
+[INFO] 23:51:54:323 coordinador/(10350:10350): Conectado con planificador
+[INFO] 23:51:54:326 coordinador/(10350:10526): Se conecto la Inst1
+[INFO] 23:52:06:907 coordinador/(10350:10540): Se conecto la Inst1
+[INFO] 23:52:25:683 coordinador/(10350:10542): Se conecto la Inst2
+[INFO] 23:59:01:370 coordinador/(11008:11008): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 23:59:01:370 coordinador/(11008:11008): PUERTO_ESCUCHA: 9035
+[INFO] 23:59:01:370 coordinador/(11008:11008): PUERTO_PLANIF: 166548576
+[INFO] 23:59:01:370 coordinador/(11008:11008): IP_PLANIF: 127.0.0.1
+[INFO] 23:59:01:370 coordinador/(11008:11008): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 23:59:01:370 coordinador/(11008:11008): CANTIDAD_ENTRADAS: 50
+[INFO] 23:59:01:370 coordinador/(11008:11008): TAMANIO_ENTRADA: 20
+[INFO] 23:59:01:370 coordinador/(11008:11008): RETARDO: 200
+[INFO] 23:59:10:235 coordinador/(11008:11008): Conectado con planificador
+[INFO] 23:59:10:238 coordinador/(11008:11018): Se conecto la Inst1
+[INFO] 23:59:10:3 coordinador/(11008:11022): Se conecto la Inst2
+[INFO] 23:59:11:811 coordinador/(11008:11025): Se conecto la Inst3
+[INFO] 23:59:29:704 coordinador/(11008:11032): El ESI 1 hizo un GET de la clave sony:consola:ps1
+[INFO] 23:59:29:905 coordinador/(11008:11032): El ESI 1 hizo un GET de la clave sony:consola:ps2
+[INFO] 23:59:30:107 coordinador/(11008:11032): El ESI 1 hizo un GET de la clave sony:consola:ps3
+[INFO] 23:59:30:308 coordinador/(11008:11032): El ESI 1 hizo un GET de la clave sony:consola:ps4
+[INFO] 23:59:30:510 coordinador/(11008:11032): El ESI 1 hizo un GET de la clave microsoft:consola:xbox
+[INFO] 23:59:30:711 coordinador/(11008:11032): El ESI 1 hizo un GET de la clave microsoft:consola:xbox360
+[INFO] 23:59:30:914 coordinador/(11008:11032): El ESI 1 hizo un GET de la clave microsoft:consola:xboxone
+[INFO] 23:59:31:116 coordinador/(11008:11032): El ESI 1 hizo un GET de la clave nintendo:consola:nes
+[INFO] 23:59:31:317 coordinador/(11008:11032): El ESI 1 hizo un GET de la clave nintendo:consola:snes
+[INFO] 23:59:31:520 coordinador/(11008:11032): El ESI 1 hizo un GET de la clave nintendo:consola:nintendo64
+[INFO] 23:59:31:722 coordinador/(11008:11032): El ESI 1 hizo un GET de la clave nintendo:consola:gamecube
+[INFO] 23:59:31:924 coordinador/(11008:11032): El ESI 1 hizo un GET de la clave nintendo:consola:wii
+[INFO] 23:59:32:126 coordinador/(11008:11032): El ESI 1 hizo un GET de la clave nintendo:consola:wiiu
+[INFO] 23:59:32:329 coordinador/(11008:11032): El ESI 1 hizo un GET de la clave nintendo:consola:switch
+[INFO] 23:59:32:530 coordinador/(11008:11032): Aplicando Equitative Load..
+[INFO] 23:59:32:531 coordinador/(11008:11032): El ESI 1 hizo un SET sobre la clave nintendo:consola:nes con valor: Mario
+[INFO] 23:59:32:771 coordinador/(11008:11032): Aplicando Equitative Load..
+[INFO] 23:59:32:772 coordinador/(11008:11032): El ESI 1 hizo un SET sobre la clave nintendo:consola:snes con valor: SuperMario
+[INFO] 23:59:33:11 coordinador/(11008:11032): Aplicando Equitative Load..
+[INFO] 23:59:33:11 coordinador/(11008:11032): El ESI 1 hizo un SET sobre la clave nintendo:consola:nintendo64 con valor: Mario64
+[INFO] 23:59:33:251 coordinador/(11008:11032): Aplicando Equitative Load..
+[INFO] 23:59:33:251 coordinador/(11008:11032): El ESI 1 hizo un SET sobre la clave nintendo:consola:gamecube con valor: Mario
+[INFO] 23:59:33:491 coordinador/(11008:11032): Aplicando Equitative Load..
+[INFO] 23:59:33:491 coordinador/(11008:11032): El ESI 1 hizo un SET sobre la clave nintendo:consola:wii con valor: MarioGalaxy
+[INFO] 23:59:33:732 coordinador/(11008:11032): Aplicando Equitative Load..
+[INFO] 23:59:33:732 coordinador/(11008:11032): El ESI 1 hizo un SET sobre la clave nintendo:consola:wiiu con valor: RIP
+[INFO] 23:59:33:971 coordinador/(11008:11032): Aplicando Equitative Load..
+[INFO] 23:59:33:971 coordinador/(11008:11032): El ESI 1 hizo un SET sobre la clave nintendo:consola:switch con valor: MarioOddysey
+[INFO] 23:59:34:211 coordinador/(11008:11032): Aplicando Equitative Load..
+[INFO] 23:59:34:211 coordinador/(11008:11032): El ESI 1 hizo un SET sobre la clave sony:consola:ps1 con valor: FinalFantasy
+[INFO] 23:59:34:451 coordinador/(11008:11032): Aplicando Equitative Load..
+[INFO] 23:59:34:451 coordinador/(11008:11032): El ESI 1 hizo un SET sobre la clave sony:consola:ps2 con valor: GodOfWar
+[INFO] 23:59:34:692 coordinador/(11008:11032): Aplicando Equitative Load..
+[INFO] 23:59:34:692 coordinador/(11008:11032): El ESI 1 hizo un SET sobre la clave sony:consola:ps3 con valor: TLOU
+[INFO] 23:59:34:931 coordinador/(11008:11032): Aplicando Equitative Load..
+[INFO] 23:59:34:931 coordinador/(11008:11032): El ESI 1 hizo un SET sobre la clave sony:consola:ps4 con valor: Bloodborne
+[INFO] 23:59:35:171 coordinador/(11008:11032): Aplicando Equitative Load..
+[INFO] 23:59:35:171 coordinador/(11008:11032): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox con valor: Halo
+[INFO] 23:59:35:411 coordinador/(11008:11032): Aplicando Equitative Load..
+[INFO] 23:59:35:411 coordinador/(11008:11032): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox360 con valor: Halo
+[INFO] 23:59:35:651 coordinador/(11008:11032): Aplicando Equitative Load..
+[INFO] 23:59:35:651 coordinador/(11008:11032): El ESI 1 hizo un SET sobre la clave microsoft:consola:xboxone con valor: Halo
+[INFO] 23:59:35:892 coordinador/(11008:11037): El ESI 4 hizo un GET de la clave platoprincipal:ingrediente5
+[INFO] 23:59:36:94 coordinador/(11008:11037): El ESI 4 hizo un GET de la clave platoprincipal:ingrediente4
+[INFO] 23:59:36:297 coordinador/(11008:11037): El ESI 4 hizo un GET de la clave platoprincipal:ingrediente3
+[INFO] 23:59:36:501 coordinador/(11008:11037): El ESI 4 hizo un GET de la clave platoprincipal:ingrediente2
+[INFO] 23:59:36:704 coordinador/(11008:11037): El ESI 4 hizo un GET de la clave platoprincipal:ingrediente1
+[INFO] 23:59:36:907 coordinador/(11008:11037): Aplicando Equitative Load..
+[INFO] 23:59:36:907 coordinador/(11008:11037): El ESI 4 hizo un SET sobre la clave platoprincipal:ingrediente1 con valor: milanesadecarne
+[INFO] 23:59:37:147 coordinador/(11008:11037): Aplicando Equitative Load..
+[INFO] 23:59:37:147 coordinador/(11008:11037): El ESI 4 hizo un SET sobre la clave platoprincipal:ingrediente2 con valor: queso
+[INFO] 23:59:37:388 coordinador/(11008:11037): Aplicando Equitative Load..
+[INFO] 23:59:37:388 coordinador/(11008:11037): El ESI 4 hizo un SET sobre la clave platoprincipal:ingrediente3 con valor: jamon
+[INFO] 23:59:37:627 coordinador/(11008:11037): Aplicando Equitative Load..
+[INFO] 23:59:37:627 coordinador/(11008:11037): El ESI 4 hizo un SET sobre la clave platoprincipal:ingrediente4 con valor: lechuga
+[INFO] 23:59:37:867 coordinador/(11008:11037): Aplicando Equitative Load..
+[INFO] 23:59:37:867 coordinador/(11008:11037): El ESI 4 hizo un SET sobre la clave platoprincipal:ingrediente5 con valor: tomate
+[INFO] 23:59:39:163 coordinador/(11008:11028): El ESI 3 hizo un GET de la clave e3:sony:juegos
+[INFO] 23:59:39:366 coordinador/(11008:11028): El ESI 3 hizo un GET de la clave e3:microsoft:juegos
+[INFO] 23:59:39:568 coordinador/(11008:11028): Aplicando Equitative Load..
+[INFO] 23:59:39:569 coordinador/(11008:11028): El ESI 3 hizo un SET sobre la clave e3:sony:juegos con valor: TLOU2
+[INFO] 23:59:41:7 coordinador/(11008:11028): Aplicando Equitative Load..
+[INFO] 23:59:41:7 coordinador/(11008:11028): El ESI 3 hizo un SET sobre la clave e3:microsoft:juegos con valor: DLCCuphead
+[INFO] 23:59:43:856 coordinador/(11008:11040): El ESI 5 hizo un GET de la clave sandwich:bondiola:simple
+[INFO] 23:59:44:58 coordinador/(11008:11040): El ESI 5 hizo un GET de la clave sandwich:bondiola:jyq
+[INFO] 23:59:44:260 coordinador/(11008:11040): El ESI 5 hizo un GET de la clave sandwich:bondiola:completo
+[INFO] 23:59:44:463 coordinador/(11008:11040): El ESI 5 hizo un GET de la clave sandwich:lomo:simple
+[INFO] 23:59:44:665 coordinador/(11008:11040): El ESI 5 hizo un GET de la clave sandwich:lomo:jyq
+[INFO] 23:59:44:867 coordinador/(11008:11040): El ESI 5 hizo un GET de la clave sandwich:lomo:completo
+[INFO] 23:59:45:70 coordinador/(11008:11040): El ESI 5 hizo un GET de la clave sandwich:vacio:simple
+[INFO] 23:59:45:272 coordinador/(11008:11040): El ESI 5 hizo un GET de la clave sandwich:vacio:jyq
+[INFO] 23:59:45:474 coordinador/(11008:11040): El ESI 5 hizo un GET de la clave sandwich:vacio:completo
+[INFO] 23:59:45:676 coordinador/(11008:11040): El ESI 5 hizo un GET de la clave sandwich:choripan
+[INFO] 23:59:45:879 coordinador/(11008:11040): El ESI 5 hizo un GET de la clave sandwich:morcipan
+[INFO] 23:59:46:81 coordinador/(11008:11040): El ESI 5 hizo un GET de la clave parrilla:chinchulines
+[INFO] 23:59:46:283 coordinador/(11008:11040): El ESI 5 hizo un GET de la clave parrilla:rinion
+[INFO] 23:59:46:485 coordinador/(11008:11040): El ESI 5 hizo un GET de la clave parrilla:tiraasado
+[INFO] 23:59:46:687 coordinador/(11008:11040): El ESI 5 hizo un GET de la clave parrilla:vacio
+[INFO] 23:59:46:890 coordinador/(11008:11040): El ESI 5 hizo un GET de la clave parrilla:entrania
+[INFO] 23:59:47:92 coordinador/(11008:11040): El ESI 5 hizo un GET de la clave parrilla:bifedelomo
+[INFO] 23:59:47:294 coordinador/(11008:11040): El ESI 5 hizo un GET de la clave parrilla:matambre:simple
+[INFO] 23:59:47:497 coordinador/(11008:11040): El ESI 5 hizo un GET de la clave parrilla:matambre:alapizza
+[INFO] 23:59:47:698 coordinador/(11008:11040): El ESI 5 hizo un GET de la clave parrilla:ojodebife
+[INFO] 23:59:47:901 coordinador/(11008:11040): El ESI 5 hizo un GET de la clave parrilla:molleja
+[INFO] 23:59:48:102 coordinador/(11008:11040): El ESI 5 hizo un GET de la clave parrilla:pareja
+[INFO] 23:59:48:304 coordinador/(11008:11040): El ESI 5 hizo un GET de la clave cocina:papasfritas
+[INFO] 23:59:48:507 coordinador/(11008:11040): El ESI 5 hizo un GET de la clave cocina:batatasfritas
+[INFO] 23:59:48:709 coordinador/(11008:11040): El ESI 5 hizo un GET de la clave cocina:tallarines
+[INFO] 23:59:48:912 coordinador/(11008:11040): El ESI 5 hizo un GET de la clave cocina:ravioles
+[INFO] 23:59:49:114 coordinador/(11008:11040): El ESI 5 hizo un GET de la clave cocina:nioquis
+[INFO] 23:59:49:316 coordinador/(11008:11040): El ESI 5 hizo un GET de la clave cocina:suprema
+[INFO] 23:59:49:519 coordinador/(11008:11040): El ESI 5 hizo un GET de la clave cocina:milanesa:carne
+[INFO] 23:59:49:721 coordinador/(11008:11040): El ESI 5 hizo un GET de la clave cocina:milanesa:pollo
+[INFO] 23:59:49:923 coordinador/(11008:11040): Aplicando Equitative Load..
+[INFO] 23:59:49:924 coordinador/(11008:11040): El ESI 5 hizo un SET sobre la clave sandwich:bondiola:simple con valor: panbondiola
+[INFO] 23:59:50:163 coordinador/(11008:11040): Aplicando Equitative Load..
+[INFO] 23:59:50:163 coordinador/(11008:11040): El ESI 5 hizo un SET sobre la clave sandwich:bondiola:jyq con valor: panjamonquesobondiola
+[INFO] 23:59:50:403 coordinador/(11008:11040): Aplicando Equitative Load..
+[INFO] 23:59:50:403 coordinador/(11008:11040): El ESI 5 hizo un SET sobre la clave sandwich:bondiola:completo con valor: panjamonquesolechugatomatebondiola
+[INFO] 23:59:50:643 coordinador/(11008:11040): Aplicando Equitative Load..
+[INFO] 23:59:50:643 coordinador/(11008:11040): El ESI 5 hizo un SET sobre la clave sandwich:lomo:simple con valor: panlomo
+[INFO] 23:59:50:883 coordinador/(11008:11040): Aplicando Equitative Load..
+[INFO] 23:59:50:883 coordinador/(11008:11040): El ESI 5 hizo un SET sobre la clave sandwich:lomo:jyq con valor: panjamonquesolomo
+[INFO] 23:59:51:123 coordinador/(11008:11040): Aplicando Equitative Load..
+[INFO] 23:59:51:123 coordinador/(11008:11040): El ESI 5 hizo un SET sobre la clave sandwich:lomo:completo con valor: panjamonquesolechugatomatelomo
+[INFO] 23:59:51:363 coordinador/(11008:11040): Aplicando Equitative Load..
+[INFO] 23:59:51:363 coordinador/(11008:11040): El ESI 5 hizo un SET sobre la clave sandwich:vacio:simple con valor: panvacio
+[INFO] 23:59:51:603 coordinador/(11008:11040): Aplicando Equitative Load..
+[INFO] 23:59:51:603 coordinador/(11008:11040): El ESI 5 hizo un SET sobre la clave sandwich:vacio:jyq con valor: panjamonquesovacio
+[INFO] 23:59:51:843 coordinador/(11008:11040): Aplicando Equitative Load..
+[INFO] 23:59:51:843 coordinador/(11008:11040): El ESI 5 hizo un SET sobre la clave sandwich:vacio:completo con valor: panjamonquesolechugatomatevacio
+[INFO] 23:59:52:83 coordinador/(11008:11040): Aplicando Equitative Load..
+[INFO] 23:59:52:83 coordinador/(11008:11040): El ESI 5 hizo un SET sobre la clave sandwich:choripan con valor: panchorizo
+[INFO] 23:59:52:323 coordinador/(11008:11040): Aplicando Equitative Load..
+[INFO] 23:59:52:323 coordinador/(11008:11040): El ESI 5 hizo un SET sobre la clave sandwich:morcipan con valor: panmorcilla
+[INFO] 23:59:52:563 coordinador/(11008:11040): Aplicando Equitative Load..
+[INFO] 23:59:52:563 coordinador/(11008:11040): El ESI 5 hizo un SET sobre la clave parrilla:chinchulines con valor: chinchulineslimon
+[INFO] 23:59:52:803 coordinador/(11008:11040): Aplicando Equitative Load..
+[INFO] 23:59:52:803 coordinador/(11008:11040): El ESI 5 hizo un SET sobre la clave parrilla:rinion con valor: rinionylimon
+[INFO] 23:59:53:43 coordinador/(11008:11040): Aplicando Equitative Load..
+[INFO] 23:59:53:43 coordinador/(11008:11040): El ESI 5 hizo un SET sobre la clave parrilla:tiraasado con valor: porcionde3o4huesos
+[INFO] 23:59:53:283 coordinador/(11008:11040): Aplicando Equitative Load..
+[INFO] 23:59:53:283 coordinador/(11008:11040): El ESI 5 hizo un SET sobre la clave parrilla:vacio con valor: vacioconfritas
+[INFO] 23:59:53:523 coordinador/(11008:11040): Aplicando Equitative Load..
+[INFO] 23:59:53:523 coordinador/(11008:11040): El ESI 5 hizo un SET sobre la clave parrilla:entrania con valor: entraniaconfritas
+[INFO] 23:59:53:764 coordinador/(11008:11040): Aplicando Equitative Load..
+[INFO] 23:59:53:764 coordinador/(11008:11040): El ESI 5 hizo un SET sobre la clave parrilla:bifedelomo con valor: bifeconfritas
+[INFO] 23:59:54:4 coordinador/(11008:11040): Aplicando Equitative Load..
+[INFO] 23:59:54:4 coordinador/(11008:11040): El ESI 5 hizo un SET sobre la clave parrilla:matambre:simple con valor: matambrefritas
+[INFO] 23:59:54:243 coordinador/(11008:11040): Aplicando Equitative Load..
+[INFO] 23:59:54:243 coordinador/(11008:11040): El ESI 5 hizo un SET sobre la clave parrilla:matambre:alapizza con valor: matambrejamonquesooregano
+[INFO] 23:59:54:483 coordinador/(11008:11040): Aplicando Equitative Load..
+[INFO] 23:59:54:483 coordinador/(11008:11040): El ESI 5 hizo un SET sobre la clave parrilla:ojodebife con valor: ojodebifeconfritas
+[INFO] 23:59:54:723 coordinador/(11008:11040): Aplicando Equitative Load..
+[INFO] 23:59:54:723 coordinador/(11008:11040): El ESI 5 hizo un SET sobre la clave parrilla:molleja con valor: mollejaconlimon
+[INFO] 23:59:54:963 coordinador/(11008:11040): Aplicando Equitative Load..
+[INFO] 23:59:54:964 coordinador/(11008:11040): El ESI 5 hizo un SET sobre la clave parrilla:pareja con valor: chorizoymorcilla
+[INFO] 23:59:55:203 coordinador/(11008:11040): Aplicando Equitative Load..
+[INFO] 23:59:55:203 coordinador/(11008:11040): El ESI 5 hizo un SET sobre la clave cocina:papasfritas con valor: papayaceite
+[INFO] 23:59:55:442 coordinador/(11008:11040): Aplicando Equitative Load..
+[INFO] 23:59:55:443 coordinador/(11008:11040): El ESI 5 hizo un SET sobre la clave cocina:batatasfritas con valor: batatayaceite
+[INFO] 23:59:55:683 coordinador/(11008:11040): Aplicando Equitative Load..
+[INFO] 23:59:55:683 coordinador/(11008:11040): El ESI 5 hizo un SET sobre la clave cocina:tallarines con valor: tallarinescontuco
+[INFO] 23:59:55:923 coordinador/(11008:11040): Aplicando Equitative Load..
+[INFO] 23:59:55:923 coordinador/(11008:11040): El ESI 5 hizo un SET sobre la clave cocina:ravioles con valor: raviolesdejyqcontuco
+[INFO] 23:59:56:163 coordinador/(11008:11040): Aplicando Equitative Load..
+[INFO] 23:59:56:163 coordinador/(11008:11040): El ESI 5 hizo un SET sobre la clave cocina:nioquis con valor: nioquisdepapacontuco
+[INFO] 23:59:56:403 coordinador/(11008:11040): Aplicando Equitative Load..
+[INFO] 23:59:56:403 coordinador/(11008:11040): El ESI 5 hizo un SET sobre la clave cocina:suprema con valor: supremaalamaryland
+[INFO] 23:59:56:643 coordinador/(11008:11040): Aplicando Equitative Load..
+[INFO] 23:59:56:643 coordinador/(11008:11040): El ESI 5 hizo un SET sobre la clave cocina:milanesa:carne con valor: milanesadecarneconfritas
+[INFO] 23:59:56:884 coordinador/(11008:11040): Aplicando Equitative Load..
+[INFO] 23:59:56:884 coordinador/(11008:11040): El ESI 5 hizo un SET sobre la clave cocina:milanesa:pollo con valor: milanesadepolloconfritas
+[INFO] 00:04:39:850 coordinador/(11218:11218): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 00:04:39:850 coordinador/(11218:11218): PUERTO_ESCUCHA: 9035
+[INFO] 00:04:39:850 coordinador/(11218:11218): PUERTO_PLANIF: 167347296
+[INFO] 00:04:39:850 coordinador/(11218:11218): IP_PLANIF: 127.0.0.1
+[INFO] 00:04:39:850 coordinador/(11218:11218): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 00:04:39:850 coordinador/(11218:11218): CANTIDAD_ENTRADAS: 50
+[INFO] 00:04:39:850 coordinador/(11218:11218): TAMANIO_ENTRADA: 20
+[INFO] 00:04:39:850 coordinador/(11218:11218): RETARDO: 200
+[INFO] 00:04:43:123 coordinador/(11218:11218): Conectado con planificador
+[INFO] 00:04:43:126 coordinador/(11218:11228): Se conecto la Inst1
+[INFO] 00:04:43:980 coordinador/(11218:11232): Se conecto la Inst2
+[INFO] 00:04:44:708 coordinador/(11218:11235): Se conecto la Inst3
+[INFO] 00:05:00:9 coordinador/(11218:11242): El ESI 1 hizo un GET de la clave sony:consola:ps1
+[INFO] 00:05:00:211 coordinador/(11218:11242): El ESI 1 hizo un GET de la clave sony:consola:ps2
+[INFO] 00:05:00:412 coordinador/(11218:11242): El ESI 1 hizo un GET de la clave sony:consola:ps3
+[INFO] 00:05:00:614 coordinador/(11218:11242): El ESI 1 hizo un GET de la clave sony:consola:ps4
+[INFO] 00:05:00:817 coordinador/(11218:11242): El ESI 1 hizo un GET de la clave microsoft:consola:xbox
+[INFO] 00:05:01:18 coordinador/(11218:11242): El ESI 1 hizo un GET de la clave microsoft:consola:xbox360
+[INFO] 00:05:01:219 coordinador/(11218:11242): El ESI 1 hizo un GET de la clave microsoft:consola:xboxone
+[INFO] 00:05:01:421 coordinador/(11218:11242): El ESI 1 hizo un GET de la clave nintendo:consola:nes
+[INFO] 00:05:01:623 coordinador/(11218:11242): El ESI 1 hizo un GET de la clave nintendo:consola:snes
+[INFO] 00:05:01:825 coordinador/(11218:11242): El ESI 1 hizo un GET de la clave nintendo:consola:nintendo64
+[INFO] 00:05:02:27 coordinador/(11218:11242): El ESI 1 hizo un GET de la clave nintendo:consola:gamecube
+[INFO] 00:05:02:229 coordinador/(11218:11242): El ESI 1 hizo un GET de la clave nintendo:consola:wii
+[INFO] 00:05:02:432 coordinador/(11218:11242): El ESI 1 hizo un GET de la clave nintendo:consola:wiiu
+[INFO] 00:05:02:635 coordinador/(11218:11242): El ESI 1 hizo un GET de la clave nintendo:consola:switch
+[INFO] 00:05:02:837 coordinador/(11218:11242): Aplicando Equitative Load..
+[INFO] 00:05:02:837 coordinador/(11218:11242): El ESI 1 hizo un SET sobre la clave nintendo:consola:nes con valor: Mario
+[INFO] 00:05:03:79 coordinador/(11218:11242): Aplicando Equitative Load..
+[INFO] 00:05:03:79 coordinador/(11218:11242): El ESI 1 hizo un SET sobre la clave nintendo:consola:snes con valor: SuperMario
+[INFO] 00:05:03:319 coordinador/(11218:11242): Aplicando Equitative Load..
+[INFO] 00:05:03:319 coordinador/(11218:11242): El ESI 1 hizo un SET sobre la clave nintendo:consola:nintendo64 con valor: Mario64
+[INFO] 00:05:03:559 coordinador/(11218:11242): Aplicando Equitative Load..
+[INFO] 00:05:03:559 coordinador/(11218:11242): El ESI 1 hizo un SET sobre la clave nintendo:consola:gamecube con valor: Mario
+[INFO] 00:05:03:799 coordinador/(11218:11242): Aplicando Equitative Load..
+[INFO] 00:05:03:799 coordinador/(11218:11242): El ESI 1 hizo un SET sobre la clave nintendo:consola:wii con valor: MarioGalaxy
+[INFO] 00:05:04:39 coordinador/(11218:11242): Aplicando Equitative Load..
+[INFO] 00:05:04:39 coordinador/(11218:11242): El ESI 1 hizo un SET sobre la clave nintendo:consola:wiiu con valor: RIP
+[INFO] 00:05:04:279 coordinador/(11218:11242): Aplicando Equitative Load..
+[INFO] 00:05:04:279 coordinador/(11218:11242): El ESI 1 hizo un SET sobre la clave nintendo:consola:switch con valor: MarioOddysey
+[INFO] 00:05:04:519 coordinador/(11218:11242): Aplicando Equitative Load..
+[INFO] 00:05:04:519 coordinador/(11218:11242): El ESI 1 hizo un SET sobre la clave sony:consola:ps1 con valor: FinalFantasy
+[INFO] 00:05:04:759 coordinador/(11218:11242): Aplicando Equitative Load..
+[INFO] 00:05:04:759 coordinador/(11218:11242): El ESI 1 hizo un SET sobre la clave sony:consola:ps2 con valor: GodOfWar
+[INFO] 00:05:04:999 coordinador/(11218:11242): Aplicando Equitative Load..
+[INFO] 00:05:04:999 coordinador/(11218:11242): El ESI 1 hizo un SET sobre la clave sony:consola:ps3 con valor: TLOU
+[INFO] 00:05:05:239 coordinador/(11218:11242): Aplicando Equitative Load..
+[INFO] 00:05:05:239 coordinador/(11218:11242): El ESI 1 hizo un SET sobre la clave sony:consola:ps4 con valor: Bloodborne
+[INFO] 00:05:05:480 coordinador/(11218:11242): Aplicando Equitative Load..
+[INFO] 00:05:05:480 coordinador/(11218:11242): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox con valor: Halo
+[INFO] 00:05:05:719 coordinador/(11218:11242): Aplicando Equitative Load..
+[INFO] 00:05:05:719 coordinador/(11218:11242): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox360 con valor: Halo
+[INFO] 00:05:05:959 coordinador/(11218:11242): Aplicando Equitative Load..
+[INFO] 00:05:05:959 coordinador/(11218:11242): El ESI 1 hizo un SET sobre la clave microsoft:consola:xboxone con valor: Halo
+[INFO] 00:11:21:916 coordinador/(11472:11472): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 00:11:21:916 coordinador/(11472:11472): PUERTO_ESCUCHA: 9035
+[INFO] 00:11:21:916 coordinador/(11472:11472): PUERTO_PLANIF: 163353696
+[INFO] 00:11:21:916 coordinador/(11472:11472): IP_PLANIF: 127.0.0.1
+[INFO] 00:11:21:916 coordinador/(11472:11472): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 00:11:21:916 coordinador/(11472:11472): CANTIDAD_ENTRADAS: 50
+[INFO] 00:11:21:916 coordinador/(11472:11472): TAMANIO_ENTRADA: 20
+[INFO] 00:11:21:916 coordinador/(11472:11472): RETARDO: 200
+[INFO] 00:11:24:164 coordinador/(11472:11472): Conectado con planificador
+[INFO] 00:11:24:167 coordinador/(11472:11482): Se conecto la Inst1
+[INFO] 00:11:24:732 coordinador/(11472:11486): Se conecto la Inst2
+[INFO] 00:11:25:373 coordinador/(11472:11489): Se conecto la Inst3
+[INFO] 00:11:36:15 coordinador/(11472:11496): El ESI 1 hizo un GET de la clave sony:consola:ps1
+[INFO] 00:11:36:218 coordinador/(11472:11496): El ESI 1 hizo un GET de la clave sony:consola:ps2
+[INFO] 00:11:36:420 coordinador/(11472:11496): El ESI 1 hizo un GET de la clave sony:consola:ps3
+[INFO] 00:11:36:622 coordinador/(11472:11496): El ESI 1 hizo un GET de la clave sony:consola:ps4
+[INFO] 00:11:36:826 coordinador/(11472:11496): El ESI 1 hizo un GET de la clave microsoft:consola:xbox
+[INFO] 00:11:37:31 coordinador/(11472:11496): El ESI 1 hizo un GET de la clave microsoft:consola:xbox360
+[INFO] 00:11:37:233 coordinador/(11472:11496): El ESI 1 hizo un GET de la clave microsoft:consola:xboxone
+[INFO] 00:11:37:435 coordinador/(11472:11496): El ESI 1 hizo un GET de la clave nintendo:consola:nes
+[INFO] 00:11:37:637 coordinador/(11472:11496): El ESI 1 hizo un GET de la clave nintendo:consola:snes
+[INFO] 00:11:37:839 coordinador/(11472:11496): El ESI 1 hizo un GET de la clave nintendo:consola:nintendo64
+[INFO] 00:11:38:42 coordinador/(11472:11496): El ESI 1 hizo un GET de la clave nintendo:consola:gamecube
+[INFO] 00:11:38:244 coordinador/(11472:11496): El ESI 1 hizo un GET de la clave nintendo:consola:wii
+[INFO] 00:11:38:446 coordinador/(11472:11496): El ESI 1 hizo un GET de la clave nintendo:consola:wiiu
+[INFO] 00:11:38:648 coordinador/(11472:11496): El ESI 1 hizo un GET de la clave nintendo:consola:switch
+[INFO] 00:11:38:849 coordinador/(11472:11496): Aplicando Equitative Load..
+[INFO] 00:11:38:850 coordinador/(11472:11496): El ESI 1 hizo un SET sobre la clave nintendo:consola:nes con valor: Mario
+[INFO] 00:11:39:87 coordinador/(11472:11496): Aplicando Equitative Load..
+[INFO] 00:11:39:87 coordinador/(11472:11496): El ESI 1 hizo un SET sobre la clave nintendo:consola:snes con valor: SuperMario
+[INFO] 00:11:39:327 coordinador/(11472:11496): Aplicando Equitative Load..
+[INFO] 00:11:39:327 coordinador/(11472:11496): El ESI 1 hizo un SET sobre la clave nintendo:consola:nintendo64 con valor: Mario64
+[INFO] 00:11:39:567 coordinador/(11472:11496): Aplicando Equitative Load..
+[INFO] 00:11:39:567 coordinador/(11472:11496): El ESI 1 hizo un SET sobre la clave nintendo:consola:gamecube con valor: Mario
+[INFO] 00:11:39:807 coordinador/(11472:11496): Aplicando Equitative Load..
+[INFO] 00:11:39:808 coordinador/(11472:11496): El ESI 1 hizo un SET sobre la clave nintendo:consola:wii con valor: MarioGalaxy
+[INFO] 00:11:40:47 coordinador/(11472:11496): Aplicando Equitative Load..
+[INFO] 00:11:40:48 coordinador/(11472:11496): El ESI 1 hizo un SET sobre la clave nintendo:consola:wiiu con valor: RIP
+[INFO] 00:11:40:287 coordinador/(11472:11496): Aplicando Equitative Load..
+[INFO] 00:11:40:287 coordinador/(11472:11496): El ESI 1 hizo un SET sobre la clave nintendo:consola:switch con valor: MarioOddysey
+[INFO] 00:11:40:527 coordinador/(11472:11496): Aplicando Equitative Load..
+[INFO] 00:11:40:527 coordinador/(11472:11496): El ESI 1 hizo un SET sobre la clave sony:consola:ps1 con valor: FinalFantasy
+[INFO] 00:11:40:767 coordinador/(11472:11496): Aplicando Equitative Load..
+[INFO] 00:11:40:767 coordinador/(11472:11496): El ESI 1 hizo un SET sobre la clave sony:consola:ps2 con valor: GodOfWar
+[INFO] 00:11:41:7 coordinador/(11472:11496): Aplicando Equitative Load..
+[INFO] 00:11:41:7 coordinador/(11472:11496): El ESI 1 hizo un SET sobre la clave sony:consola:ps3 con valor: TLOU
+[INFO] 00:11:41:248 coordinador/(11472:11496): Aplicando Equitative Load..
+[INFO] 00:11:41:248 coordinador/(11472:11496): El ESI 1 hizo un SET sobre la clave sony:consola:ps4 con valor: Bloodborne
+[INFO] 00:11:41:487 coordinador/(11472:11496): Aplicando Equitative Load..
+[INFO] 00:11:41:487 coordinador/(11472:11496): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox con valor: Halo
+[INFO] 00:11:41:727 coordinador/(11472:11496): Aplicando Equitative Load..
+[INFO] 00:11:41:728 coordinador/(11472:11496): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox360 con valor: Halo
+[INFO] 00:11:41:967 coordinador/(11472:11496): Aplicando Equitative Load..
+[INFO] 00:11:41:967 coordinador/(11472:11496): El ESI 1 hizo un SET sobre la clave microsoft:consola:xboxone con valor: Halo
+[INFO] 00:11:42:208 coordinador/(11472:11501): El ESI 4 hizo un GET de la clave platoprincipal:ingrediente5
+[INFO] 00:11:42:411 coordinador/(11472:11501): El ESI 4 hizo un GET de la clave platoprincipal:ingrediente4
+[INFO] 00:11:42:613 coordinador/(11472:11501): El ESI 4 hizo un GET de la clave platoprincipal:ingrediente3
+[INFO] 00:11:42:815 coordinador/(11472:11501): El ESI 4 hizo un GET de la clave platoprincipal:ingrediente2
+[INFO] 00:11:43:17 coordinador/(11472:11501): El ESI 4 hizo un GET de la clave platoprincipal:ingrediente1
+[INFO] 00:11:43:219 coordinador/(11472:11501): Aplicando Equitative Load..
+[INFO] 00:11:43:219 coordinador/(11472:11501): El ESI 4 hizo un SET sobre la clave platoprincipal:ingrediente1 con valor: milanesadecarne
+[INFO] 00:11:43:459 coordinador/(11472:11501): Aplicando Equitative Load..
+[INFO] 00:11:43:459 coordinador/(11472:11501): El ESI 4 hizo un SET sobre la clave platoprincipal:ingrediente2 con valor: queso
+[INFO] 00:11:43:698 coordinador/(11472:11501): Aplicando Equitative Load..
+[INFO] 00:11:43:699 coordinador/(11472:11501): El ESI 4 hizo un SET sobre la clave platoprincipal:ingrediente3 con valor: jamon
+[INFO] 00:11:43:939 coordinador/(11472:11501): Aplicando Equitative Load..
+[INFO] 00:11:43:939 coordinador/(11472:11501): El ESI 4 hizo un SET sobre la clave platoprincipal:ingrediente4 con valor: lechuga
+[INFO] 00:11:44:179 coordinador/(11472:11501): Aplicando Equitative Load..
+[INFO] 00:11:44:179 coordinador/(11472:11501): El ESI 4 hizo un SET sobre la clave platoprincipal:ingrediente5 con valor: tomate
+[INFO] 00:11:45:475 coordinador/(11472:11492): El ESI 3 hizo un GET de la clave e3:sony:juegos
+[INFO] 00:11:45:677 coordinador/(11472:11492): El ESI 3 hizo un GET de la clave e3:microsoft:juegos
+[INFO] 00:11:45:879 coordinador/(11472:11492): Aplicando Equitative Load..
+[INFO] 00:11:45:879 coordinador/(11472:11492): El ESI 3 hizo un SET sobre la clave e3:sony:juegos con valor: TLOU2
+[INFO] 00:11:47:319 coordinador/(11472:11492): Aplicando Equitative Load..
+[INFO] 00:11:47:319 coordinador/(11472:11492): El ESI 3 hizo un SET sobre la clave e3:microsoft:juegos con valor: DLCCuphead
+[INFO] 00:11:50:164 coordinador/(11472:11504): El ESI 5 hizo un GET de la clave sandwich:bondiola:simple
+[INFO] 00:11:50:367 coordinador/(11472:11504): El ESI 5 hizo un GET de la clave sandwich:bondiola:jyq
+[INFO] 00:11:50:569 coordinador/(11472:11504): El ESI 5 hizo un GET de la clave sandwich:bondiola:completo
+[INFO] 00:11:50:771 coordinador/(11472:11504): El ESI 5 hizo un GET de la clave sandwich:lomo:simple
+[INFO] 00:11:50:974 coordinador/(11472:11504): El ESI 5 hizo un GET de la clave sandwich:lomo:jyq
+[INFO] 00:11:51:175 coordinador/(11472:11504): El ESI 5 hizo un GET de la clave sandwich:lomo:completo
+[INFO] 00:11:51:378 coordinador/(11472:11504): El ESI 5 hizo un GET de la clave sandwich:vacio:simple
+[INFO] 00:11:51:580 coordinador/(11472:11504): El ESI 5 hizo un GET de la clave sandwich:vacio:jyq
+[INFO] 00:11:51:783 coordinador/(11472:11504): El ESI 5 hizo un GET de la clave sandwich:vacio:completo
+[INFO] 00:11:51:985 coordinador/(11472:11504): El ESI 5 hizo un GET de la clave sandwich:choripan
+[INFO] 00:11:52:187 coordinador/(11472:11504): El ESI 5 hizo un GET de la clave sandwich:morcipan
+[INFO] 00:11:52:389 coordinador/(11472:11504): El ESI 5 hizo un GET de la clave parrilla:chinchulines
+[INFO] 00:11:52:591 coordinador/(11472:11504): El ESI 5 hizo un GET de la clave parrilla:rinion
+[INFO] 00:11:52:793 coordinador/(11472:11504): El ESI 5 hizo un GET de la clave parrilla:tiraasado
+[INFO] 00:11:52:995 coordinador/(11472:11504): El ESI 5 hizo un GET de la clave parrilla:vacio
+[INFO] 00:11:53:198 coordinador/(11472:11504): El ESI 5 hizo un GET de la clave parrilla:entrania
+[INFO] 00:11:53:400 coordinador/(11472:11504): El ESI 5 hizo un GET de la clave parrilla:bifedelomo
+[INFO] 00:11:53:602 coordinador/(11472:11504): El ESI 5 hizo un GET de la clave parrilla:matambre:simple
+[INFO] 00:11:53:805 coordinador/(11472:11504): El ESI 5 hizo un GET de la clave parrilla:matambre:alapizza
+[INFO] 00:11:54:7 coordinador/(11472:11504): El ESI 5 hizo un GET de la clave parrilla:ojodebife
+[INFO] 00:11:54:209 coordinador/(11472:11504): El ESI 5 hizo un GET de la clave parrilla:molleja
+[INFO] 00:11:54:412 coordinador/(11472:11504): El ESI 5 hizo un GET de la clave parrilla:pareja
+[INFO] 00:11:54:617 coordinador/(11472:11504): El ESI 5 hizo un GET de la clave cocina:papasfritas
+[INFO] 00:11:54:819 coordinador/(11472:11504): El ESI 5 hizo un GET de la clave cocina:batatasfritas
+[INFO] 00:11:55:21 coordinador/(11472:11504): El ESI 5 hizo un GET de la clave cocina:tallarines
+[INFO] 00:11:55:223 coordinador/(11472:11504): El ESI 5 hizo un GET de la clave cocina:ravioles
+[INFO] 00:11:55:425 coordinador/(11472:11504): El ESI 5 hizo un GET de la clave cocina:nioquis
+[INFO] 00:11:55:628 coordinador/(11472:11504): El ESI 5 hizo un GET de la clave cocina:suprema
+[INFO] 00:11:55:829 coordinador/(11472:11504): El ESI 5 hizo un GET de la clave cocina:milanesa:carne
+[INFO] 00:11:56:31 coordinador/(11472:11504): El ESI 5 hizo un GET de la clave cocina:milanesa:pollo
+[INFO] 00:11:56:233 coordinador/(11472:11504): Aplicando Equitative Load..
+[INFO] 00:11:56:233 coordinador/(11472:11504): El ESI 5 hizo un SET sobre la clave sandwich:bondiola:simple con valor: panbondiola
+[INFO] 00:11:56:471 coordinador/(11472:11504): Aplicando Equitative Load..
+[INFO] 00:11:56:471 coordinador/(11472:11504): El ESI 5 hizo un SET sobre la clave sandwich:bondiola:jyq con valor: panjamonquesobondiola
+[INFO] 00:11:56:711 coordinador/(11472:11504): Aplicando Equitative Load..
+[INFO] 00:11:56:711 coordinador/(11472:11504): El ESI 5 hizo un SET sobre la clave sandwich:bondiola:completo con valor: panjamonquesolechugatomatebondiola
+[INFO] 00:11:56:951 coordinador/(11472:11504): Aplicando Equitative Load..
+[INFO] 00:11:56:951 coordinador/(11472:11504): El ESI 5 hizo un SET sobre la clave sandwich:lomo:simple con valor: panlomo
+[INFO] 00:11:57:191 coordinador/(11472:11504): Aplicando Equitative Load..
+[INFO] 00:11:57:192 coordinador/(11472:11504): El ESI 5 hizo un SET sobre la clave sandwich:lomo:jyq con valor: panjamonquesolomo
+[INFO] 00:11:57:431 coordinador/(11472:11504): Aplicando Equitative Load..
+[INFO] 00:11:57:432 coordinador/(11472:11504): El ESI 5 hizo un SET sobre la clave sandwich:lomo:completo con valor: panjamonquesolechugatomatelomo
+[INFO] 00:11:57:672 coordinador/(11472:11504): Aplicando Equitative Load..
+[INFO] 00:11:57:672 coordinador/(11472:11504): El ESI 5 hizo un SET sobre la clave sandwich:vacio:simple con valor: panvacio
+[INFO] 00:11:57:911 coordinador/(11472:11504): Aplicando Equitative Load..
+[INFO] 00:11:57:911 coordinador/(11472:11504): El ESI 5 hizo un SET sobre la clave sandwich:vacio:jyq con valor: panjamonquesovacio
+[INFO] 00:11:58:151 coordinador/(11472:11504): Aplicando Equitative Load..
+[INFO] 00:11:58:151 coordinador/(11472:11504): El ESI 5 hizo un SET sobre la clave sandwich:vacio:completo con valor: panjamonquesolechugatomatevacio
+[INFO] 00:11:58:391 coordinador/(11472:11504): Aplicando Equitative Load..
+[INFO] 00:11:58:391 coordinador/(11472:11504): El ESI 5 hizo un SET sobre la clave sandwich:choripan con valor: panchorizo
+[INFO] 00:11:58:631 coordinador/(11472:11504): Aplicando Equitative Load..
+[INFO] 00:11:58:631 coordinador/(11472:11504): El ESI 5 hizo un SET sobre la clave sandwich:morcipan con valor: panmorcilla
+[INFO] 00:11:58:871 coordinador/(11472:11504): Aplicando Equitative Load..
+[INFO] 00:11:58:871 coordinador/(11472:11504): El ESI 5 hizo un SET sobre la clave parrilla:chinchulines con valor: chinchulineslimon
+[INFO] 00:11:59:111 coordinador/(11472:11504): Aplicando Equitative Load..
+[INFO] 00:11:59:111 coordinador/(11472:11504): El ESI 5 hizo un SET sobre la clave parrilla:rinion con valor: rinionylimon
+[INFO] 00:11:59:352 coordinador/(11472:11504): Aplicando Equitative Load..
+[INFO] 00:11:59:352 coordinador/(11472:11504): El ESI 5 hizo un SET sobre la clave parrilla:tiraasado con valor: porcionde3o4huesos
+[INFO] 00:11:59:592 coordinador/(11472:11504): Aplicando Equitative Load..
+[INFO] 00:11:59:592 coordinador/(11472:11504): El ESI 5 hizo un SET sobre la clave parrilla:vacio con valor: vacioconfritas
+[INFO] 00:11:59:831 coordinador/(11472:11504): Aplicando Equitative Load..
+[INFO] 00:11:59:831 coordinador/(11472:11504): El ESI 5 hizo un SET sobre la clave parrilla:entrania con valor: entraniaconfritas
+[INFO] 00:12:00:72 coordinador/(11472:11504): Aplicando Equitative Load..
+[INFO] 00:12:00:72 coordinador/(11472:11504): El ESI 5 hizo un SET sobre la clave parrilla:bifedelomo con valor: bifeconfritas
+[INFO] 00:12:00:312 coordinador/(11472:11504): Aplicando Equitative Load..
+[INFO] 00:12:00:312 coordinador/(11472:11504): El ESI 5 hizo un SET sobre la clave parrilla:matambre:simple con valor: matambrefritas
+[INFO] 00:12:00:551 coordinador/(11472:11504): Aplicando Equitative Load..
+[INFO] 00:12:00:551 coordinador/(11472:11504): El ESI 5 hizo un SET sobre la clave parrilla:matambre:alapizza con valor: matambrejamonquesooregano
+[INFO] 00:12:00:793 coordinador/(11472:11504): Aplicando Equitative Load..
+[INFO] 00:12:00:793 coordinador/(11472:11504): El ESI 5 hizo un SET sobre la clave parrilla:ojodebife con valor: ojodebifeconfritas
+[INFO] 00:12:01:31 coordinador/(11472:11504): Aplicando Equitative Load..
+[INFO] 00:12:01:32 coordinador/(11472:11504): El ESI 5 hizo un SET sobre la clave parrilla:molleja con valor: mollejaconlimon
+[INFO] 00:12:01:271 coordinador/(11472:11504): Aplicando Equitative Load..
+[INFO] 00:12:01:272 coordinador/(11472:11504): El ESI 5 hizo un SET sobre la clave parrilla:pareja con valor: chorizoymorcilla
+[INFO] 00:12:01:511 coordinador/(11472:11504): Aplicando Equitative Load..
+[INFO] 00:12:01:511 coordinador/(11472:11504): El ESI 5 hizo un SET sobre la clave cocina:papasfritas con valor: papayaceite
+[INFO] 00:12:01:752 coordinador/(11472:11504): Aplicando Equitative Load..
+[INFO] 00:12:01:752 coordinador/(11472:11504): El ESI 5 hizo un SET sobre la clave cocina:batatasfritas con valor: batatayaceite
+[INFO] 00:12:01:991 coordinador/(11472:11504): Aplicando Equitative Load..
+[INFO] 00:12:01:991 coordinador/(11472:11504): El ESI 5 hizo un SET sobre la clave cocina:tallarines con valor: tallarinescontuco
+[INFO] 00:12:02:231 coordinador/(11472:11504): Aplicando Equitative Load..
+[INFO] 00:12:02:231 coordinador/(11472:11504): El ESI 5 hizo un SET sobre la clave cocina:ravioles con valor: raviolesdejyqcontuco
+[INFO] 00:12:02:471 coordinador/(11472:11504): Aplicando Equitative Load..
+[INFO] 00:12:02:472 coordinador/(11472:11504): El ESI 5 hizo un SET sobre la clave cocina:nioquis con valor: nioquisdepapacontuco
+[INFO] 00:12:02:711 coordinador/(11472:11504): Aplicando Equitative Load..
+[INFO] 00:12:02:712 coordinador/(11472:11504): El ESI 5 hizo un SET sobre la clave cocina:suprema con valor: supremaalamaryland
+[INFO] 00:12:02:951 coordinador/(11472:11504): Aplicando Equitative Load..
+[INFO] 00:12:02:951 coordinador/(11472:11504): El ESI 5 hizo un SET sobre la clave cocina:milanesa:carne con valor: milanesadecarneconfritas
+[INFO] 00:12:03:191 coordinador/(11472:11504): Aplicando Equitative Load..
+[INFO] 00:12:03:191 coordinador/(11472:11504): El ESI 5 hizo un SET sobre la clave cocina:milanesa:pollo con valor: milanesadepolloconfritas
+[INFO] 00:14:01:835 coordinador/(11633:11633): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 00:14:01:835 coordinador/(11633:11633): PUERTO_ESCUCHA: 9035
+[INFO] 00:14:01:835 coordinador/(11633:11633): PUERTO_PLANIF: 167109728
+[INFO] 00:14:01:835 coordinador/(11633:11633): IP_PLANIF: 127.0.0.1
+[INFO] 00:14:01:835 coordinador/(11633:11633): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 00:14:01:835 coordinador/(11633:11633): CANTIDAD_ENTRADAS: 50
+[INFO] 00:14:01:835 coordinador/(11633:11633): TAMANIO_ENTRADA: 20
+[INFO] 00:14:01:835 coordinador/(11633:11633): RETARDO: 200
+[INFO] 00:14:07:436 coordinador/(11633:11633): Conectado con planificador
+[INFO] 00:14:07:438 coordinador/(11633:11645): Se conecto la Inst1
+[INFO] 00:14:07:949 coordinador/(11633:11649): Se conecto la Inst2
+[INFO] 00:14:08:517 coordinador/(11633:11652): Se conecto la Inst3
+[INFO] 00:14:09:726 coordinador/(11633:11655): El ESI 1 hizo un GET de la clave e3:sony:juegos
+[INFO] 00:14:09:929 coordinador/(11633:11655): El ESI 1 hizo un GET de la clave e3:microsoft:juegos
+[INFO] 00:14:10:131 coordinador/(11633:11655): Aplicando Equitative Load..
+[INFO] 00:14:10:131 coordinador/(11633:11655): El ESI 1 hizo un SET sobre la clave e3:sony:juegos con valor: TLOU2
+[INFO] 00:14:13:899 coordinador/(11663:11663): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 00:14:13:899 coordinador/(11663:11663): PUERTO_ESCUCHA: 9035
+[INFO] 00:14:13:899 coordinador/(11663:11663): PUERTO_PLANIF: 152630368
+[INFO] 00:14:13:899 coordinador/(11663:11663): IP_PLANIF: 127.0.0.1
+[INFO] 00:14:13:899 coordinador/(11663:11663): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 00:14:13:899 coordinador/(11663:11663): CANTIDAD_ENTRADAS: 50
+[INFO] 00:14:13:899 coordinador/(11663:11663): TAMANIO_ENTRADA: 20
+[INFO] 00:14:13:899 coordinador/(11663:11663): RETARDO: 200
+[INFO] 00:14:15:204 coordinador/(11663:11663): Conectado con planificador
+[INFO] 00:14:15:206 coordinador/(11663:11673): Se conecto la Inst1
+[INFO] 00:14:15:686 coordinador/(11663:11677): Se conecto la Inst2
+[INFO] 00:14:16:166 coordinador/(11663:11680): Se conecto la Inst3
+[INFO] 00:14:30:652 coordinador/(11663:11687): El ESI 1 hizo un GET de la clave sony:consola:ps1
+[INFO] 00:14:30:854 coordinador/(11663:11687): El ESI 1 hizo un GET de la clave sony:consola:ps2
+[INFO] 00:14:31:55 coordinador/(11663:11687): El ESI 1 hizo un GET de la clave sony:consola:ps3
+[INFO] 00:14:31:258 coordinador/(11663:11687): El ESI 1 hizo un GET de la clave sony:consola:ps4
+[INFO] 00:14:31:460 coordinador/(11663:11687): El ESI 1 hizo un GET de la clave microsoft:consola:xbox
+[INFO] 00:14:31:662 coordinador/(11663:11687): El ESI 1 hizo un GET de la clave microsoft:consola:xbox360
+[INFO] 00:14:31:865 coordinador/(11663:11687): El ESI 1 hizo un GET de la clave microsoft:consola:xboxone
+[INFO] 00:14:32:67 coordinador/(11663:11687): El ESI 1 hizo un GET de la clave nintendo:consola:nes
+[INFO] 00:14:32:269 coordinador/(11663:11687): El ESI 1 hizo un GET de la clave nintendo:consola:snes
+[INFO] 00:14:32:471 coordinador/(11663:11687): El ESI 1 hizo un GET de la clave nintendo:consola:nintendo64
+[INFO] 00:14:32:673 coordinador/(11663:11687): El ESI 1 hizo un GET de la clave nintendo:consola:gamecube
+[INFO] 00:14:32:876 coordinador/(11663:11687): El ESI 1 hizo un GET de la clave nintendo:consola:wii
+[INFO] 00:14:33:79 coordinador/(11663:11687): El ESI 1 hizo un GET de la clave nintendo:consola:wiiu
+[INFO] 00:14:33:281 coordinador/(11663:11687): El ESI 1 hizo un GET de la clave nintendo:consola:switch
+[INFO] 00:14:33:483 coordinador/(11663:11687): Aplicando Equitative Load..
+[INFO] 00:14:33:484 coordinador/(11663:11687): El ESI 1 hizo un SET sobre la clave nintendo:consola:nes con valor: Mario
+[INFO] 00:14:33:723 coordinador/(11663:11687): Aplicando Equitative Load..
+[INFO] 00:14:33:723 coordinador/(11663:11687): El ESI 1 hizo un SET sobre la clave nintendo:consola:snes con valor: SuperMario
+[INFO] 00:14:33:963 coordinador/(11663:11687): Aplicando Equitative Load..
+[INFO] 00:14:33:964 coordinador/(11663:11687): El ESI 1 hizo un SET sobre la clave nintendo:consola:nintendo64 con valor: Mario64
+[INFO] 00:14:34:203 coordinador/(11663:11687): Aplicando Equitative Load..
+[INFO] 00:14:34:203 coordinador/(11663:11687): El ESI 1 hizo un SET sobre la clave nintendo:consola:gamecube con valor: Mario
+[INFO] 00:14:34:443 coordinador/(11663:11687): Aplicando Equitative Load..
+[INFO] 00:14:34:443 coordinador/(11663:11687): El ESI 1 hizo un SET sobre la clave nintendo:consola:wii con valor: MarioGalaxy
+[INFO] 00:14:34:683 coordinador/(11663:11687): Aplicando Equitative Load..
+[INFO] 00:14:34:683 coordinador/(11663:11687): El ESI 1 hizo un SET sobre la clave nintendo:consola:wiiu con valor: RIP
+[INFO] 00:14:34:923 coordinador/(11663:11687): Aplicando Equitative Load..
+[INFO] 00:14:34:924 coordinador/(11663:11687): El ESI 1 hizo un SET sobre la clave nintendo:consola:switch con valor: MarioOddysey
+[INFO] 00:14:35:163 coordinador/(11663:11687): Aplicando Equitative Load..
+[INFO] 00:14:35:163 coordinador/(11663:11687): El ESI 1 hizo un SET sobre la clave sony:consola:ps1 con valor: FinalFantasy
+[INFO] 00:14:35:403 coordinador/(11663:11687): Aplicando Equitative Load..
+[INFO] 00:14:35:403 coordinador/(11663:11687): El ESI 1 hizo un SET sobre la clave sony:consola:ps2 con valor: GodOfWar
+[INFO] 00:14:35:643 coordinador/(11663:11687): Aplicando Equitative Load..
+[INFO] 00:14:35:644 coordinador/(11663:11687): El ESI 1 hizo un SET sobre la clave sony:consola:ps3 con valor: TLOU
+[INFO] 00:14:35:883 coordinador/(11663:11687): Aplicando Equitative Load..
+[INFO] 00:14:35:883 coordinador/(11663:11687): El ESI 1 hizo un SET sobre la clave sony:consola:ps4 con valor: Bloodborne
+[INFO] 00:14:36:123 coordinador/(11663:11687): Aplicando Equitative Load..
+[INFO] 00:14:36:123 coordinador/(11663:11687): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox con valor: Halo
+[INFO] 00:14:36:363 coordinador/(11663:11687): Aplicando Equitative Load..
+[INFO] 00:14:36:363 coordinador/(11663:11687): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox360 con valor: Halo
+[INFO] 00:14:36:603 coordinador/(11663:11687): Aplicando Equitative Load..
+[INFO] 00:14:36:603 coordinador/(11663:11687): El ESI 1 hizo un SET sobre la clave microsoft:consola:xboxone con valor: Halo
+[INFO] 00:14:36:845 coordinador/(11663:11692): El ESI 4 hizo un GET de la clave platoprincipal:ingrediente5
+[INFO] 00:14:37:47 coordinador/(11663:11692): El ESI 4 hizo un GET de la clave platoprincipal:ingrediente4
+[INFO] 00:14:37:249 coordinador/(11663:11692): El ESI 4 hizo un GET de la clave platoprincipal:ingrediente3
+[INFO] 00:14:37:451 coordinador/(11663:11692): El ESI 4 hizo un GET de la clave platoprincipal:ingrediente2
+[INFO] 00:14:37:654 coordinador/(11663:11692): El ESI 4 hizo un GET de la clave platoprincipal:ingrediente1
+[INFO] 00:14:37:856 coordinador/(11663:11692): Aplicando Equitative Load..
+[INFO] 00:14:37:856 coordinador/(11663:11692): El ESI 4 hizo un SET sobre la clave platoprincipal:ingrediente1 con valor: milanesadecarne
+[INFO] 00:14:38:95 coordinador/(11663:11692): Aplicando Equitative Load..
+[INFO] 00:14:38:95 coordinador/(11663:11692): El ESI 4 hizo un SET sobre la clave platoprincipal:ingrediente2 con valor: queso
+[INFO] 00:14:38:335 coordinador/(11663:11692): Aplicando Equitative Load..
+[INFO] 00:14:38:336 coordinador/(11663:11692): El ESI 4 hizo un SET sobre la clave platoprincipal:ingrediente3 con valor: jamon
+[INFO] 00:14:38:575 coordinador/(11663:11692): Aplicando Equitative Load..
+[INFO] 00:14:38:575 coordinador/(11663:11692): El ESI 4 hizo un SET sobre la clave platoprincipal:ingrediente4 con valor: lechuga
+[INFO] 00:14:38:816 coordinador/(11663:11692): Aplicando Equitative Load..
+[INFO] 00:14:38:816 coordinador/(11663:11692): El ESI 4 hizo un SET sobre la clave platoprincipal:ingrediente5 con valor: tomate
+[INFO] 00:14:40:115 coordinador/(11663:11683): El ESI 3 hizo un GET de la clave e3:sony:juegos
+[INFO] 00:14:40:317 coordinador/(11663:11683): El ESI 3 hizo un GET de la clave e3:microsoft:juegos
+[INFO] 00:14:40:519 coordinador/(11663:11683): Aplicando Equitative Load..
+[INFO] 00:14:40:519 coordinador/(11663:11683): El ESI 3 hizo un SET sobre la clave e3:sony:juegos con valor: TLOU2
+[INFO] 00:14:41:959 coordinador/(11663:11683): Aplicando Equitative Load..
+[INFO] 00:14:41:959 coordinador/(11663:11683): El ESI 3 hizo un SET sobre la clave e3:microsoft:juegos con valor: DLCCuphead
+[INFO] 00:14:44:809 coordinador/(11663:11695): El ESI 5 hizo un GET de la clave sandwich:bondiola:simple
+[INFO] 00:14:45:11 coordinador/(11663:11695): El ESI 5 hizo un GET de la clave sandwich:bondiola:jyq
+[INFO] 00:14:45:213 coordinador/(11663:11695): El ESI 5 hizo un GET de la clave sandwich:bondiola:completo
+[INFO] 00:14:45:419 coordinador/(11663:11695): El ESI 5 hizo un GET de la clave sandwich:lomo:simple
+[INFO] 00:14:45:621 coordinador/(11663:11695): El ESI 5 hizo un GET de la clave sandwich:lomo:jyq
+[INFO] 00:14:45:823 coordinador/(11663:11695): El ESI 5 hizo un GET de la clave sandwich:lomo:completo
+[INFO] 00:14:46:27 coordinador/(11663:11695): El ESI 5 hizo un GET de la clave sandwich:vacio:simple
+[INFO] 00:14:46:229 coordinador/(11663:11695): El ESI 5 hizo un GET de la clave sandwich:vacio:jyq
+[INFO] 00:19:13:76 coordinador/(11854:11854): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 00:19:13:76 coordinador/(11854:11854): PUERTO_ESCUCHA: 9035
+[INFO] 00:19:13:76 coordinador/(11854:11854): PUERTO_PLANIF: 156451936
+[INFO] 00:19:13:76 coordinador/(11854:11854): IP_PLANIF: 127.0.0.1
+[INFO] 00:19:13:76 coordinador/(11854:11854): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 00:19:13:76 coordinador/(11854:11854): CANTIDAD_ENTRADAS: 50
+[INFO] 00:19:13:76 coordinador/(11854:11854): TAMANIO_ENTRADA: 20
+[INFO] 00:19:13:76 coordinador/(11854:11854): RETARDO: 200
+[INFO] 00:19:14:172 coordinador/(11854:11854): Conectado con planificador
+[INFO] 00:19:14:175 coordinador/(11854:11864): Se conecto la Inst1
+[INFO] 00:19:14:693 coordinador/(11854:11868): Se conecto la Inst2
+[INFO] 00:19:15:197 coordinador/(11854:11871): Se conecto la Inst3
+[INFO] 00:19:23:808 coordinador/(11854:11878): El ESI 1 hizo un GET de la clave sony:consola:ps1
+[INFO] 00:19:24:11 coordinador/(11854:11878): El ESI 1 hizo un GET de la clave sony:consola:ps2
+[INFO] 00:19:24:213 coordinador/(11854:11878): El ESI 1 hizo un GET de la clave sony:consola:ps3
+[INFO] 00:19:24:415 coordinador/(11854:11878): El ESI 1 hizo un GET de la clave sony:consola:ps4
+[INFO] 00:19:24:617 coordinador/(11854:11878): El ESI 1 hizo un GET de la clave microsoft:consola:xbox
+[INFO] 00:19:24:819 coordinador/(11854:11878): El ESI 1 hizo un GET de la clave microsoft:consola:xbox360
+[INFO] 00:19:25:21 coordinador/(11854:11878): El ESI 1 hizo un GET de la clave microsoft:consola:xboxone
+[INFO] 00:19:25:223 coordinador/(11854:11878): El ESI 1 hizo un GET de la clave nintendo:consola:nes
+[INFO] 00:19:25:426 coordinador/(11854:11878): El ESI 1 hizo un GET de la clave nintendo:consola:snes
+[INFO] 00:19:25:629 coordinador/(11854:11878): El ESI 1 hizo un GET de la clave nintendo:consola:nintendo64
+[INFO] 00:19:25:831 coordinador/(11854:11878): El ESI 1 hizo un GET de la clave nintendo:consola:gamecube
+[INFO] 00:19:26:33 coordinador/(11854:11878): El ESI 1 hizo un GET de la clave nintendo:consola:wii
+[INFO] 00:19:26:236 coordinador/(11854:11878): El ESI 1 hizo un GET de la clave nintendo:consola:wiiu
+[INFO] 00:19:26:439 coordinador/(11854:11878): El ESI 1 hizo un GET de la clave nintendo:consola:switch
+[INFO] 00:19:26:641 coordinador/(11854:11878): Aplicando Equitative Load..
+[INFO] 00:19:26:641 coordinador/(11854:11878): El ESI 1 hizo un SET sobre la clave nintendo:consola:nes con valor: Mario
+[INFO] 00:19:26:879 coordinador/(11854:11878): Aplicando Equitative Load..
+[INFO] 00:19:26:879 coordinador/(11854:11878): El ESI 1 hizo un SET sobre la clave nintendo:consola:snes con valor: SuperMario
+[INFO] 00:19:27:119 coordinador/(11854:11878): Aplicando Equitative Load..
+[INFO] 00:19:27:119 coordinador/(11854:11878): El ESI 1 hizo un SET sobre la clave nintendo:consola:nintendo64 con valor: Mario64
+[INFO] 00:19:27:359 coordinador/(11854:11878): Aplicando Equitative Load..
+[INFO] 00:19:27:359 coordinador/(11854:11878): El ESI 1 hizo un SET sobre la clave nintendo:consola:gamecube con valor: Mario
+[INFO] 00:19:27:599 coordinador/(11854:11878): Aplicando Equitative Load..
+[INFO] 00:19:27:599 coordinador/(11854:11878): El ESI 1 hizo un SET sobre la clave nintendo:consola:wii con valor: MarioGalaxy
+[INFO] 00:19:27:839 coordinador/(11854:11878): Aplicando Equitative Load..
+[INFO] 00:19:27:839 coordinador/(11854:11878): El ESI 1 hizo un SET sobre la clave nintendo:consola:wiiu con valor: RIP
+[INFO] 00:19:28:79 coordinador/(11854:11878): Aplicando Equitative Load..
+[INFO] 00:19:28:80 coordinador/(11854:11878): El ESI 1 hizo un SET sobre la clave nintendo:consola:switch con valor: MarioOddysey
+[INFO] 00:19:28:319 coordinador/(11854:11878): Aplicando Equitative Load..
+[INFO] 00:19:28:319 coordinador/(11854:11878): El ESI 1 hizo un SET sobre la clave sony:consola:ps1 con valor: FinalFantasy
+[INFO] 00:19:28:559 coordinador/(11854:11878): Aplicando Equitative Load..
+[INFO] 00:19:28:559 coordinador/(11854:11878): El ESI 1 hizo un SET sobre la clave sony:consola:ps2 con valor: GodOfWar
+[INFO] 00:19:28:799 coordinador/(11854:11878): Aplicando Equitative Load..
+[INFO] 00:19:28:799 coordinador/(11854:11878): El ESI 1 hizo un SET sobre la clave sony:consola:ps3 con valor: TLOU
+[INFO] 00:19:29:39 coordinador/(11854:11878): Aplicando Equitative Load..
+[INFO] 00:19:29:40 coordinador/(11854:11878): El ESI 1 hizo un SET sobre la clave sony:consola:ps4 con valor: Bloodborne
+[INFO] 00:19:29:279 coordinador/(11854:11878): Aplicando Equitative Load..
+[INFO] 00:19:29:279 coordinador/(11854:11878): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox con valor: Halo
+[INFO] 00:19:29:519 coordinador/(11854:11878): Aplicando Equitative Load..
+[INFO] 00:19:29:519 coordinador/(11854:11878): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox360 con valor: Halo
+[INFO] 00:20:56:715 coordinador/(11955:11955): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 00:20:56:715 coordinador/(11955:11955): PUERTO_ESCUCHA: 9035
+[INFO] 00:20:56:715 coordinador/(11955:11955): PUERTO_PLANIF: 162706528
+[INFO] 00:20:56:715 coordinador/(11955:11955): IP_PLANIF: 127.0.0.1
+[INFO] 00:20:56:715 coordinador/(11955:11955): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 00:20:56:715 coordinador/(11955:11955): CANTIDAD_ENTRADAS: 50
+[INFO] 00:20:56:715 coordinador/(11955:11955): TAMANIO_ENTRADA: 20
+[INFO] 00:20:56:715 coordinador/(11955:11955): RETARDO: 200
+[INFO] 00:20:59:860 coordinador/(11955:11955): Conectado con planificador
+[INFO] 00:20:59:863 coordinador/(11955:11966): Se conecto la Inst1
+[INFO] 00:21:00:325 coordinador/(11955:11970): Se conecto la Inst2
+[INFO] 00:21:00:781 coordinador/(11955:11973): Se conecto la Inst3
+[INFO] 00:21:16:383 coordinador/(11955:11978): El ESI 1 hizo un GET de la clave e3:sony:juegos
+[INFO] 00:21:16:585 coordinador/(11955:11978): El ESI 1 hizo un GET de la clave e3:microsoft:juegos
+[INFO] 00:21:16:787 coordinador/(11955:11978): Aplicando Equitative Load..
+[INFO] 00:21:16:787 coordinador/(11955:11978): El ESI 1 hizo un SET sobre la clave e3:sony:juegos con valor: TLOU2
+[INFO] 00:21:18:227 coordinador/(11955:11978): Aplicando Equitative Load..
+[INFO] 00:21:18:227 coordinador/(11955:11978): El ESI 1 hizo un SET sobre la clave e3:microsoft:juegos con valor: DLCCuphead
+[INFO] 00:21:21:76 coordinador/(11955:11984): El ESI 3 hizo un GET de la clave sony:consola:ps1
+[INFO] 00:21:21:279 coordinador/(11955:11984): El ESI 3 hizo un GET de la clave sony:consola:ps2
+[INFO] 00:21:21:481 coordinador/(11955:11984): El ESI 3 hizo un GET de la clave sony:consola:ps3
+[INFO] 00:21:21:684 coordinador/(11955:11984): El ESI 3 hizo un GET de la clave sony:consola:ps4
+[INFO] 00:21:21:886 coordinador/(11955:11984): El ESI 3 hizo un GET de la clave microsoft:consola:xbox
+[INFO] 00:21:22:89 coordinador/(11955:11984): El ESI 3 hizo un GET de la clave microsoft:consola:xbox360
+[INFO] 00:21:22:291 coordinador/(11955:11984): El ESI 3 hizo un GET de la clave microsoft:consola:xboxone
+[INFO] 00:21:22:494 coordinador/(11955:11984): El ESI 3 hizo un GET de la clave nintendo:consola:nes
+[INFO] 00:21:22:696 coordinador/(11955:11984): El ESI 3 hizo un GET de la clave nintendo:consola:snes
+[INFO] 00:21:22:898 coordinador/(11955:11984): El ESI 3 hizo un GET de la clave nintendo:consola:nintendo64
+[INFO] 00:21:23:101 coordinador/(11955:11984): El ESI 3 hizo un GET de la clave nintendo:consola:gamecube
+[INFO] 00:21:23:303 coordinador/(11955:11984): El ESI 3 hizo un GET de la clave nintendo:consola:wii
+[INFO] 00:21:23:505 coordinador/(11955:11984): El ESI 3 hizo un GET de la clave nintendo:consola:wiiu
+[INFO] 00:21:23:707 coordinador/(11955:11984): El ESI 3 hizo un GET de la clave nintendo:consola:switch
+[INFO] 00:21:23:909 coordinador/(11955:11984): Aplicando Equitative Load..
+[INFO] 00:21:23:909 coordinador/(11955:11984): El ESI 3 hizo un SET sobre la clave nintendo:consola:nes con valor: Mario
+[INFO] 00:21:24:148 coordinador/(11955:11984): Aplicando Equitative Load..
+[INFO] 00:21:24:148 coordinador/(11955:11984): El ESI 3 hizo un SET sobre la clave nintendo:consola:snes con valor: SuperMario
+[INFO] 00:21:24:387 coordinador/(11955:11984): Aplicando Equitative Load..
+[INFO] 00:21:24:387 coordinador/(11955:11984): El ESI 3 hizo un SET sobre la clave nintendo:consola:nintendo64 con valor: Mario64
+[INFO] 00:21:24:627 coordinador/(11955:11984): Aplicando Equitative Load..
+[INFO] 00:21:24:627 coordinador/(11955:11984): El ESI 3 hizo un SET sobre la clave nintendo:consola:gamecube con valor: Mario
+[INFO] 00:21:24:867 coordinador/(11955:11984): Aplicando Equitative Load..
+[INFO] 00:21:24:867 coordinador/(11955:11984): El ESI 3 hizo un SET sobre la clave nintendo:consola:wii con valor: MarioGalaxy
+[INFO] 00:21:25:107 coordinador/(11955:11984): Aplicando Equitative Load..
+[INFO] 00:21:25:107 coordinador/(11955:11984): El ESI 3 hizo un SET sobre la clave nintendo:consola:wiiu con valor: RIP
+[INFO] 00:21:25:347 coordinador/(11955:11984): Aplicando Equitative Load..
+[INFO] 00:21:25:347 coordinador/(11955:11984): El ESI 3 hizo un SET sobre la clave nintendo:consola:switch con valor: MarioOddysey
+[INFO] 00:21:25:588 coordinador/(11955:11984): Aplicando Equitative Load..
+[INFO] 00:21:25:588 coordinador/(11955:11984): El ESI 3 hizo un SET sobre la clave sony:consola:ps1 con valor: FinalFantasy
+[INFO] 00:21:25:827 coordinador/(11955:11984): Aplicando Equitative Load..
+[INFO] 00:21:25:827 coordinador/(11955:11984): El ESI 3 hizo un SET sobre la clave sony:consola:ps2 con valor: GodOfWar
+[INFO] 00:21:26:67 coordinador/(11955:11984): Aplicando Equitative Load..
+[INFO] 00:21:26:67 coordinador/(11955:11984): El ESI 3 hizo un SET sobre la clave sony:consola:ps3 con valor: TLOU
+[INFO] 00:21:26:307 coordinador/(11955:11984): Aplicando Equitative Load..
+[INFO] 00:21:26:308 coordinador/(11955:11984): El ESI 3 hizo un SET sobre la clave sony:consola:ps4 con valor: Bloodborne
+[INFO] 00:21:26:548 coordinador/(11955:11984): Aplicando Equitative Load..
+[INFO] 00:21:26:548 coordinador/(11955:11984): El ESI 3 hizo un SET sobre la clave microsoft:consola:xbox con valor: Halo
+[INFO] 00:21:26:786 coordinador/(11955:11984): Aplicando Equitative Load..
+[INFO] 00:21:26:787 coordinador/(11955:11984): El ESI 3 hizo un SET sobre la clave microsoft:consola:xbox360 con valor: Halo
+[INFO] 00:21:27:27 coordinador/(11955:11984): Aplicando Equitative Load..
+[INFO] 00:21:27:27 coordinador/(11955:11984): El ESI 3 hizo un SET sobre la clave microsoft:consola:xboxone con valor: Halo
+[INFO] 00:22:32:868 coordinador/(12023:12023): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 00:22:32:868 coordinador/(12023:12023): PUERTO_ESCUCHA: 9035
+[INFO] 00:22:32:868 coordinador/(12023:12023): PUERTO_PLANIF: 150045792
+[INFO] 00:22:32:868 coordinador/(12023:12023): IP_PLANIF: 127.0.0.1
+[INFO] 00:22:32:868 coordinador/(12023:12023): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 00:22:32:868 coordinador/(12023:12023): CANTIDAD_ENTRADAS: 50
+[INFO] 00:22:32:868 coordinador/(12023:12023): TAMANIO_ENTRADA: 20
+[INFO] 00:22:32:868 coordinador/(12023:12023): RETARDO: 200
+[INFO] 00:22:34:308 coordinador/(12023:12023): Conectado con planificador
+[INFO] 00:22:34:311 coordinador/(12023:12033): Se conecto la Inst1
+[INFO] 00:22:34:790 coordinador/(12023:12037): Se conecto la Inst2
+[INFO] 00:22:35:246 coordinador/(12023:12040): Se conecto la Inst3
+[INFO] 00:22:45:439 coordinador/(12023:12043): El ESI 1 hizo un GET de la clave e3:sony:juegos
+[INFO] 00:22:45:641 coordinador/(12023:12043): El ESI 1 hizo un GET de la clave e3:microsoft:juegos
+[INFO] 00:22:45:842 coordinador/(12023:12043): Aplicando Equitative Load..
+[INFO] 00:22:45:842 coordinador/(12023:12043): El ESI 1 hizo un SET sobre la clave e3:sony:juegos con valor: TLOU2
+[INFO] 00:22:47:283 coordinador/(12023:12043): Aplicando Equitative Load..
+[INFO] 00:22:47:283 coordinador/(12023:12043): El ESI 1 hizo un SET sobre la clave e3:microsoft:juegos con valor: DLCCuphead
+[INFO] 00:22:50:130 coordinador/(12023:12052): El ESI 4 hizo un GET de la clave platoprincipal:ingrediente5
+[INFO] 00:22:50:332 coordinador/(12023:12052): El ESI 4 hizo un GET de la clave platoprincipal:ingrediente4
+[INFO] 00:22:50:536 coordinador/(12023:12052): El ESI 4 hizo un GET de la clave platoprincipal:ingrediente3
+[INFO] 00:22:50:738 coordinador/(12023:12052): El ESI 4 hizo un GET de la clave platoprincipal:ingrediente2
+[INFO] 00:22:50:940 coordinador/(12023:12052): El ESI 4 hizo un GET de la clave platoprincipal:ingrediente1
+[INFO] 00:22:51:142 coordinador/(12023:12052): Aplicando Equitative Load..
+[INFO] 00:22:51:142 coordinador/(12023:12052): El ESI 4 hizo un SET sobre la clave platoprincipal:ingrediente1 con valor: milanesadecarne
+[INFO] 00:22:51:384 coordinador/(12023:12052): Aplicando Equitative Load..
+[INFO] 00:22:51:384 coordinador/(12023:12052): El ESI 4 hizo un SET sobre la clave platoprincipal:ingrediente2 con valor: queso
+[INFO] 00:22:51:623 coordinador/(12023:12052): Aplicando Equitative Load..
+[INFO] 00:22:51:623 coordinador/(12023:12052): El ESI 4 hizo un SET sobre la clave platoprincipal:ingrediente3 con valor: jamon
+[INFO] 00:22:51:863 coordinador/(12023:12052): Aplicando Equitative Load..
+[INFO] 00:22:51:863 coordinador/(12023:12052): El ESI 4 hizo un SET sobre la clave platoprincipal:ingrediente4 con valor: lechuga
+[INFO] 00:22:52:103 coordinador/(12023:12052): Aplicando Equitative Load..
+[INFO] 00:22:52:103 coordinador/(12023:12052): El ESI 4 hizo un SET sobre la clave platoprincipal:ingrediente5 con valor: tomate
+[INFO] 00:22:53:399 coordinador/(12023:12049): El ESI 3 hizo un GET de la clave sony:consola:ps1
+[INFO] 00:22:53:601 coordinador/(12023:12049): El ESI 3 hizo un GET de la clave sony:consola:ps2
+[INFO] 00:22:53:803 coordinador/(12023:12049): El ESI 3 hizo un GET de la clave sony:consola:ps3
+[INFO] 00:22:54:5 coordinador/(12023:12049): El ESI 3 hizo un GET de la clave sony:consola:ps4
+[INFO] 00:22:54:208 coordinador/(12023:12049): El ESI 3 hizo un GET de la clave microsoft:consola:xbox
+[INFO] 00:22:54:410 coordinador/(12023:12049): El ESI 3 hizo un GET de la clave microsoft:consola:xbox360
+[INFO] 00:22:54:612 coordinador/(12023:12049): El ESI 3 hizo un GET de la clave microsoft:consola:xboxone
+[INFO] 00:22:54:815 coordinador/(12023:12049): El ESI 3 hizo un GET de la clave nintendo:consola:nes
+[INFO] 00:22:55:18 coordinador/(12023:12049): El ESI 3 hizo un GET de la clave nintendo:consola:snes
+[INFO] 00:22:55:220 coordinador/(12023:12049): El ESI 3 hizo un GET de la clave nintendo:consola:nintendo64
+[INFO] 00:22:55:422 coordinador/(12023:12049): El ESI 3 hizo un GET de la clave nintendo:consola:gamecube
+[INFO] 00:22:55:626 coordinador/(12023:12049): El ESI 3 hizo un GET de la clave nintendo:consola:wii
+[INFO] 00:22:55:828 coordinador/(12023:12049): El ESI 3 hizo un GET de la clave nintendo:consola:wiiu
+[INFO] 00:22:56:30 coordinador/(12023:12049): El ESI 3 hizo un GET de la clave nintendo:consola:switch
+[INFO] 00:22:56:233 coordinador/(12023:12049): Aplicando Equitative Load..
+[INFO] 00:22:56:233 coordinador/(12023:12049): El ESI 3 hizo un SET sobre la clave nintendo:consola:nes con valor: Mario
+[INFO] 00:22:56:473 coordinador/(12023:12049): Aplicando Equitative Load..
+[INFO] 00:22:56:474 coordinador/(12023:12049): El ESI 3 hizo un SET sobre la clave nintendo:consola:snes con valor: SuperMario
+[INFO] 00:22:56:711 coordinador/(12023:12049): Aplicando Equitative Load..
+[INFO] 00:22:56:711 coordinador/(12023:12049): El ESI 3 hizo un SET sobre la clave nintendo:consola:nintendo64 con valor: Mario64
+[INFO] 00:22:56:951 coordinador/(12023:12049): Aplicando Equitative Load..
+[INFO] 00:22:56:952 coordinador/(12023:12049): El ESI 3 hizo un SET sobre la clave nintendo:consola:gamecube con valor: Mario
+[INFO] 00:22:57:191 coordinador/(12023:12049): Aplicando Equitative Load..
+[INFO] 00:22:57:191 coordinador/(12023:12049): El ESI 3 hizo un SET sobre la clave nintendo:consola:wii con valor: MarioGalaxy
+[INFO] 00:22:57:431 coordinador/(12023:12049): Aplicando Equitative Load..
+[INFO] 00:22:57:431 coordinador/(12023:12049): El ESI 3 hizo un SET sobre la clave nintendo:consola:wiiu con valor: RIP
+[INFO] 00:22:57:671 coordinador/(12023:12049): Aplicando Equitative Load..
+[INFO] 00:22:57:671 coordinador/(12023:12049): El ESI 3 hizo un SET sobre la clave nintendo:consola:switch con valor: MarioOddysey
+[INFO] 00:22:57:911 coordinador/(12023:12049): Aplicando Equitative Load..
+[INFO] 00:22:57:911 coordinador/(12023:12049): El ESI 3 hizo un SET sobre la clave sony:consola:ps1 con valor: FinalFantasy
+[INFO] 00:22:58:151 coordinador/(12023:12049): Aplicando Equitative Load..
+[INFO] 00:22:58:151 coordinador/(12023:12049): El ESI 3 hizo un SET sobre la clave sony:consola:ps2 con valor: GodOfWar
+[INFO] 00:22:58:391 coordinador/(12023:12049): Aplicando Equitative Load..
+[INFO] 00:22:58:391 coordinador/(12023:12049): El ESI 3 hizo un SET sobre la clave sony:consola:ps3 con valor: TLOU
+[INFO] 00:22:58:631 coordinador/(12023:12049): Aplicando Equitative Load..
+[INFO] 00:22:58:631 coordinador/(12023:12049): El ESI 3 hizo un SET sobre la clave sony:consola:ps4 con valor: Bloodborne
+[INFO] 00:22:58:871 coordinador/(12023:12049): Aplicando Equitative Load..
+[INFO] 00:22:58:871 coordinador/(12023:12049): El ESI 3 hizo un SET sobre la clave microsoft:consola:xbox con valor: Halo
+[INFO] 00:22:59:111 coordinador/(12023:12049): Aplicando Equitative Load..
+[INFO] 00:22:59:111 coordinador/(12023:12049): El ESI 3 hizo un SET sobre la clave microsoft:consola:xbox360 con valor: Halo
+[INFO] 00:22:59:351 coordinador/(12023:12049): Aplicando Equitative Load..
+[INFO] 00:22:59:351 coordinador/(12023:12049): El ESI 3 hizo un SET sobre la clave microsoft:consola:xboxone con valor: Halo
+[INFO] 00:22:59:595 coordinador/(12023:12057): El ESI 5 hizo un GET de la clave sandwich:bondiola:simple
+[INFO] 00:22:59:798 coordinador/(12023:12057): El ESI 5 hizo un GET de la clave sandwich:bondiola:jyq
+[INFO] 00:22:59:0 coordinador/(12023:12057): El ESI 5 hizo un GET de la clave sandwich:bondiola:completo
+[INFO] 00:23:00:202 coordinador/(12023:12057): El ESI 5 hizo un GET de la clave sandwich:lomo:simple
+[INFO] 00:23:00:404 coordinador/(12023:12057): El ESI 5 hizo un GET de la clave sandwich:lomo:jyq
+[INFO] 00:23:00:607 coordinador/(12023:12057): El ESI 5 hizo un GET de la clave sandwich:lomo:completo
+[INFO] 00:23:00:809 coordinador/(12023:12057): El ESI 5 hizo un GET de la clave sandwich:vacio:simple
+[INFO] 00:23:01:11 coordinador/(12023:12057): El ESI 5 hizo un GET de la clave sandwich:vacio:jyq
+[INFO] 00:23:01:214 coordinador/(12023:12057): El ESI 5 hizo un GET de la clave sandwich:vacio:completo
+[INFO] 00:23:01:416 coordinador/(12023:12057): El ESI 5 hizo un GET de la clave sandwich:choripan
+[INFO] 00:23:01:618 coordinador/(12023:12057): El ESI 5 hizo un GET de la clave sandwich:morcipan
+[INFO] 00:23:01:820 coordinador/(12023:12057): El ESI 5 hizo un GET de la clave parrilla:chinchulines
+[INFO] 00:23:02:22 coordinador/(12023:12057): El ESI 5 hizo un GET de la clave parrilla:rinion
+[INFO] 00:23:02:224 coordinador/(12023:12057): El ESI 5 hizo un GET de la clave parrilla:tiraasado
+[INFO] 00:23:02:426 coordinador/(12023:12057): El ESI 5 hizo un GET de la clave parrilla:vacio
+[INFO] 00:23:02:628 coordinador/(12023:12057): El ESI 5 hizo un GET de la clave parrilla:entrania
+[INFO] 00:23:02:829 coordinador/(12023:12057): El ESI 5 hizo un GET de la clave parrilla:bifedelomo
+[INFO] 00:23:03:31 coordinador/(12023:12057): El ESI 5 hizo un GET de la clave parrilla:matambre:simple
+[INFO] 00:23:03:234 coordinador/(12023:12057): El ESI 5 hizo un GET de la clave parrilla:matambre:alapizza
+[INFO] 00:23:03:437 coordinador/(12023:12057): El ESI 5 hizo un GET de la clave parrilla:ojodebife
+[INFO] 00:23:03:639 coordinador/(12023:12057): El ESI 5 hizo un GET de la clave parrilla:molleja
+[INFO] 00:23:03:840 coordinador/(12023:12057): El ESI 5 hizo un GET de la clave parrilla:pareja
+[INFO] 00:23:04:42 coordinador/(12023:12057): El ESI 5 hizo un GET de la clave cocina:papasfritas
+[INFO] 00:23:04:244 coordinador/(12023:12057): El ESI 5 hizo un GET de la clave cocina:batatasfritas
+[INFO] 00:23:04:446 coordinador/(12023:12057): El ESI 5 hizo un GET de la clave cocina:tallarines
+[INFO] 00:23:04:649 coordinador/(12023:12057): El ESI 5 hizo un GET de la clave cocina:ravioles
+[INFO] 00:23:04:850 coordinador/(12023:12057): El ESI 5 hizo un GET de la clave cocina:nioquis
+[INFO] 00:23:05:52 coordinador/(12023:12057): El ESI 5 hizo un GET de la clave cocina:suprema
+[INFO] 00:23:05:254 coordinador/(12023:12057): El ESI 5 hizo un GET de la clave cocina:milanesa:carne
+[INFO] 00:23:05:456 coordinador/(12023:12057): El ESI 5 hizo un GET de la clave cocina:milanesa:pollo
+[INFO] 00:23:05:659 coordinador/(12023:12057): Aplicando Equitative Load..
+[INFO] 00:23:05:660 coordinador/(12023:12057): El ESI 5 hizo un SET sobre la clave sandwich:bondiola:simple con valor: panbondiola
+[INFO] 00:23:05:899 coordinador/(12023:12057): Aplicando Equitative Load..
+[INFO] 00:23:05:899 coordinador/(12023:12057): El ESI 5 hizo un SET sobre la clave sandwich:bondiola:jyq con valor: panjamonquesobondiola
+[INFO] 00:23:06:139 coordinador/(12023:12057): Aplicando Equitative Load..
+[INFO] 00:23:06:139 coordinador/(12023:12057): El ESI 5 hizo un SET sobre la clave sandwich:bondiola:completo con valor: panjamonquesolechugatomatebondiola
+[INFO] 00:23:06:379 coordinador/(12023:12057): Aplicando Equitative Load..
+[INFO] 00:23:06:379 coordinador/(12023:12057): El ESI 5 hizo un SET sobre la clave sandwich:lomo:simple con valor: panlomo
+[INFO] 00:23:06:619 coordinador/(12023:12057): Aplicando Equitative Load..
+[INFO] 00:23:06:619 coordinador/(12023:12057): El ESI 5 hizo un SET sobre la clave sandwich:lomo:jyq con valor: panjamonquesolomo
+[INFO] 00:23:06:859 coordinador/(12023:12057): Aplicando Equitative Load..
+[INFO] 00:23:06:859 coordinador/(12023:12057): El ESI 5 hizo un SET sobre la clave sandwich:lomo:completo con valor: panjamonquesolechugatomatelomo
+[INFO] 00:23:07:99 coordinador/(12023:12057): Aplicando Equitative Load..
+[INFO] 00:23:07:99 coordinador/(12023:12057): El ESI 5 hizo un SET sobre la clave sandwich:vacio:simple con valor: panvacio
+[INFO] 00:23:07:339 coordinador/(12023:12057): Aplicando Equitative Load..
+[INFO] 00:23:07:339 coordinador/(12023:12057): El ESI 5 hizo un SET sobre la clave sandwich:vacio:jyq con valor: panjamonquesovacio
+[INFO] 00:23:07:579 coordinador/(12023:12057): Aplicando Equitative Load..
+[INFO] 00:23:07:579 coordinador/(12023:12057): El ESI 5 hizo un SET sobre la clave sandwich:vacio:completo con valor: panjamonquesolechugatomatevacio
+[INFO] 00:23:07:820 coordinador/(12023:12057): Aplicando Equitative Load..
+[INFO] 00:23:07:820 coordinador/(12023:12057): El ESI 5 hizo un SET sobre la clave sandwich:choripan con valor: panchorizo
+[INFO] 00:23:08:59 coordinador/(12023:12057): Aplicando Equitative Load..
+[INFO] 00:23:08:59 coordinador/(12023:12057): El ESI 5 hizo un SET sobre la clave sandwich:morcipan con valor: panmorcilla
+[INFO] 00:23:08:299 coordinador/(12023:12057): Aplicando Equitative Load..
+[INFO] 00:23:08:299 coordinador/(12023:12057): El ESI 5 hizo un SET sobre la clave parrilla:chinchulines con valor: chinchulineslimon
+[INFO] 00:23:08:538 coordinador/(12023:12057): Aplicando Equitative Load..
+[INFO] 00:23:08:539 coordinador/(12023:12057): El ESI 5 hizo un SET sobre la clave parrilla:rinion con valor: rinionylimon
+[INFO] 00:23:08:779 coordinador/(12023:12057): Aplicando Equitative Load..
+[INFO] 00:23:08:779 coordinador/(12023:12057): El ESI 5 hizo un SET sobre la clave parrilla:tiraasado con valor: porcionde3o4huesos
+[INFO] 00:23:09:19 coordinador/(12023:12057): Aplicando Equitative Load..
+[INFO] 00:23:09:19 coordinador/(12023:12057): El ESI 5 hizo un SET sobre la clave parrilla:vacio con valor: vacioconfritas
+[INFO] 00:23:09:259 coordinador/(12023:12057): Aplicando Equitative Load..
+[INFO] 00:23:09:259 coordinador/(12023:12057): El ESI 5 hizo un SET sobre la clave parrilla:entrania con valor: entraniaconfritas
+[INFO] 00:23:09:499 coordinador/(12023:12057): Aplicando Equitative Load..
+[INFO] 00:23:09:499 coordinador/(12023:12057): El ESI 5 hizo un SET sobre la clave parrilla:bifedelomo con valor: bifeconfritas
+[INFO] 00:23:09:739 coordinador/(12023:12057): Aplicando Equitative Load..
+[INFO] 00:23:09:739 coordinador/(12023:12057): El ESI 5 hizo un SET sobre la clave parrilla:matambre:simple con valor: matambrefritas
+[INFO] 00:23:09:978 coordinador/(12023:12057): Aplicando Equitative Load..
+[INFO] 00:23:09:979 coordinador/(12023:12057): El ESI 5 hizo un SET sobre la clave parrilla:matambre:alapizza con valor: matambrejamonquesooregano
+[INFO] 00:23:10:219 coordinador/(12023:12057): Aplicando Equitative Load..
+[INFO] 00:23:10:219 coordinador/(12023:12057): El ESI 5 hizo un SET sobre la clave parrilla:ojodebife con valor: ojodebifeconfritas
+[INFO] 00:23:10:459 coordinador/(12023:12057): Aplicando Equitative Load..
+[INFO] 00:23:10:459 coordinador/(12023:12057): El ESI 5 hizo un SET sobre la clave parrilla:molleja con valor: mollejaconlimon
+[INFO] 00:23:10:699 coordinador/(12023:12057): Aplicando Equitative Load..
+[INFO] 00:23:10:700 coordinador/(12023:12057): El ESI 5 hizo un SET sobre la clave parrilla:pareja con valor: chorizoymorcilla
+[INFO] 00:23:10:939 coordinador/(12023:12057): Aplicando Equitative Load..
+[INFO] 00:23:10:939 coordinador/(12023:12057): El ESI 5 hizo un SET sobre la clave cocina:papasfritas con valor: papayaceite
+[INFO] 00:23:11:179 coordinador/(12023:12057): Aplicando Equitative Load..
+[INFO] 00:23:11:179 coordinador/(12023:12057): El ESI 5 hizo un SET sobre la clave cocina:batatasfritas con valor: batatayaceite
+[INFO] 00:23:11:418 coordinador/(12023:12057): Aplicando Equitative Load..
+[INFO] 00:23:11:419 coordinador/(12023:12057): El ESI 5 hizo un SET sobre la clave cocina:tallarines con valor: tallarinescontuco
+[INFO] 00:23:11:659 coordinador/(12023:12057): Aplicando Equitative Load..
+[INFO] 00:23:11:660 coordinador/(12023:12057): El ESI 5 hizo un SET sobre la clave cocina:ravioles con valor: raviolesdejyqcontuco
+[INFO] 00:23:11:899 coordinador/(12023:12057): Aplicando Equitative Load..
+[INFO] 00:23:11:899 coordinador/(12023:12057): El ESI 5 hizo un SET sobre la clave cocina:nioquis con valor: nioquisdepapacontuco
+[INFO] 00:23:12:139 coordinador/(12023:12057): Aplicando Equitative Load..
+[INFO] 00:23:12:139 coordinador/(12023:12057): El ESI 5 hizo un SET sobre la clave cocina:suprema con valor: supremaalamaryland
+[INFO] 00:23:12:379 coordinador/(12023:12057): Aplicando Equitative Load..
+[INFO] 00:23:12:380 coordinador/(12023:12057): El ESI 5 hizo un SET sobre la clave cocina:milanesa:carne con valor: milanesadecarneconfritas
+[INFO] 00:23:12:618 coordinador/(12023:12057): Aplicando Equitative Load..
+[INFO] 00:23:12:619 coordinador/(12023:12057): El ESI 5 hizo un SET sobre la clave cocina:milanesa:pollo con valor: milanesadepolloconfritas
+[INFO] 00:28:54:395 coordinador/(12448:12448): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 00:28:54:395 coordinador/(12448:12448): PUERTO_ESCUCHA: 9035
+[INFO] 00:28:54:395 coordinador/(12448:12448): PUERTO_PLANIF: 142681184
+[INFO] 00:28:54:395 coordinador/(12448:12448): IP_PLANIF: 127.0.0.1
+[INFO] 00:28:54:395 coordinador/(12448:12448): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 00:28:54:395 coordinador/(12448:12448): CANTIDAD_ENTRADAS: 50
+[INFO] 00:28:54:395 coordinador/(12448:12448): TAMANIO_ENTRADA: 20
+[INFO] 00:28:54:395 coordinador/(12448:12448): RETARDO: 200
+[INFO] 00:28:56:996 coordinador/(12448:12448): Conectado con planificador
+[INFO] 00:28:56:1 coordinador/(12448:12459): Se conecto la Inst1
+[INFO] 00:28:57:510 coordinador/(12448:12463): Se conecto la Inst2
+[INFO] 00:28:57:958 coordinador/(12448:12466): Se conecto la Inst3
+[INFO] 00:29:08:534 coordinador/(12448:12471): El ESI 1 hizo un GET de la clave e3:sony:juegos
+[INFO] 00:29:08:737 coordinador/(12448:12471): El ESI 1 hizo un GET de la clave e3:microsoft:juegos
+[INFO] 00:29:08:938 coordinador/(12448:12471): Aplicando Equitative Load..
+[INFO] 00:29:08:939 coordinador/(12448:12471): El ESI 1 hizo un SET sobre la clave e3:sony:juegos con valor: TLOU2
+[INFO] 00:29:10:379 coordinador/(12448:12471): Aplicando Equitative Load..
+[INFO] 00:29:10:379 coordinador/(12448:12471): El ESI 1 hizo un SET sobre la clave e3:microsoft:juegos con valor: DLCCuphead
+[INFO] 00:29:13:227 coordinador/(12448:12484): El ESI 4 hizo un GET de la clave platoprincipal:ingrediente5
+[INFO] 00:29:13:430 coordinador/(12448:12484): El ESI 4 hizo un GET de la clave platoprincipal:ingrediente4
+[INFO] 00:29:13:632 coordinador/(12448:12484): El ESI 4 hizo un GET de la clave platoprincipal:ingrediente3
+[INFO] 00:29:13:834 coordinador/(12448:12484): El ESI 4 hizo un GET de la clave platoprincipal:ingrediente2
+[INFO] 00:29:14:36 coordinador/(12448:12484): El ESI 4 hizo un GET de la clave platoprincipal:ingrediente1
+[INFO] 00:29:14:239 coordinador/(12448:12484): Aplicando Equitative Load..
+[INFO] 00:29:14:239 coordinador/(12448:12484): El ESI 4 hizo un SET sobre la clave platoprincipal:ingrediente1 con valor: milanesadecarne
+[INFO] 00:29:14:480 coordinador/(12448:12484): Aplicando Equitative Load..
+[INFO] 00:29:14:480 coordinador/(12448:12484): El ESI 4 hizo un SET sobre la clave platoprincipal:ingrediente2 con valor: queso
+[INFO] 00:29:14:718 coordinador/(12448:12484): Aplicando Equitative Load..
+[INFO] 00:29:14:719 coordinador/(12448:12484): El ESI 4 hizo un SET sobre la clave platoprincipal:ingrediente3 con valor: jamon
+[INFO] 00:29:14:959 coordinador/(12448:12484): Aplicando Equitative Load..
+[INFO] 00:29:14:959 coordinador/(12448:12484): El ESI 4 hizo un SET sobre la clave platoprincipal:ingrediente4 con valor: lechuga
+[INFO] 00:29:15:199 coordinador/(12448:12484): Aplicando Equitative Load..
+[INFO] 00:29:15:199 coordinador/(12448:12484): El ESI 4 hizo un SET sobre la clave platoprincipal:ingrediente5 con valor: tomate
+[INFO] 00:29:16:499 coordinador/(12448:12477): El ESI 3 hizo un GET de la clave sony:consola:ps1
+[INFO] 00:29:16:702 coordinador/(12448:12477): El ESI 3 hizo un GET de la clave sony:consola:ps2
+[INFO] 00:29:16:905 coordinador/(12448:12477): El ESI 3 hizo un GET de la clave sony:consola:ps3
+[INFO] 00:29:17:107 coordinador/(12448:12477): El ESI 3 hizo un GET de la clave sony:consola:ps4
+[INFO] 00:29:17:309 coordinador/(12448:12477): El ESI 3 hizo un GET de la clave microsoft:consola:xbox
+[INFO] 00:29:17:512 coordinador/(12448:12477): El ESI 3 hizo un GET de la clave microsoft:consola:xbox360
+[INFO] 00:29:17:714 coordinador/(12448:12477): El ESI 3 hizo un GET de la clave microsoft:consola:xboxone
+[INFO] 00:29:17:918 coordinador/(12448:12477): El ESI 3 hizo un GET de la clave nintendo:consola:nes
+[INFO] 00:29:18:119 coordinador/(12448:12477): El ESI 3 hizo un GET de la clave nintendo:consola:snes
+[INFO] 00:29:18:321 coordinador/(12448:12477): El ESI 3 hizo un GET de la clave nintendo:consola:nintendo64
+[INFO] 00:29:18:523 coordinador/(12448:12477): El ESI 3 hizo un GET de la clave nintendo:consola:gamecube
+[INFO] 00:29:18:726 coordinador/(12448:12477): El ESI 3 hizo un GET de la clave nintendo:consola:wii
+[INFO] 00:29:18:928 coordinador/(12448:12477): El ESI 3 hizo un GET de la clave nintendo:consola:wiiu
+[INFO] 00:29:19:129 coordinador/(12448:12477): El ESI 3 hizo un GET de la clave nintendo:consola:switch
+[INFO] 00:29:19:332 coordinador/(12448:12477): Aplicando Equitative Load..
+[INFO] 00:29:19:332 coordinador/(12448:12477): El ESI 3 hizo un SET sobre la clave nintendo:consola:nes con valor: Mario
+[INFO] 00:29:19:573 coordinador/(12448:12477): Aplicando Equitative Load..
+[INFO] 00:29:19:574 coordinador/(12448:12477): El ESI 3 hizo un SET sobre la clave nintendo:consola:snes con valor: SuperMario
+[INFO] 00:29:19:811 coordinador/(12448:12477): Aplicando Equitative Load..
+[INFO] 00:29:19:811 coordinador/(12448:12477): El ESI 3 hizo un SET sobre la clave nintendo:consola:nintendo64 con valor: Mario64
+[INFO] 00:29:20:51 coordinador/(12448:12477): Aplicando Equitative Load..
+[INFO] 00:29:20:51 coordinador/(12448:12477): El ESI 3 hizo un SET sobre la clave nintendo:consola:gamecube con valor: Mario
+[INFO] 00:29:20:291 coordinador/(12448:12477): Aplicando Equitative Load..
+[INFO] 00:29:20:291 coordinador/(12448:12477): El ESI 3 hizo un SET sobre la clave nintendo:consola:wii con valor: MarioGalaxy
+[INFO] 00:29:20:531 coordinador/(12448:12477): Aplicando Equitative Load..
+[INFO] 00:29:20:531 coordinador/(12448:12477): El ESI 3 hizo un SET sobre la clave nintendo:consola:wiiu con valor: RIP
+[INFO] 00:29:20:771 coordinador/(12448:12477): Aplicando Equitative Load..
+[INFO] 00:29:20:771 coordinador/(12448:12477): El ESI 3 hizo un SET sobre la clave nintendo:consola:switch con valor: MarioOddysey
+[INFO] 00:29:21:11 coordinador/(12448:12477): Aplicando Equitative Load..
+[INFO] 00:29:21:11 coordinador/(12448:12477): El ESI 3 hizo un SET sobre la clave sony:consola:ps1 con valor: FinalFantasy
+[INFO] 00:29:21:252 coordinador/(12448:12477): Aplicando Equitative Load..
+[INFO] 00:29:21:252 coordinador/(12448:12477): El ESI 3 hizo un SET sobre la clave sony:consola:ps2 con valor: GodOfWar
+[INFO] 00:29:21:491 coordinador/(12448:12477): Aplicando Equitative Load..
+[INFO] 00:29:21:492 coordinador/(12448:12477): El ESI 3 hizo un SET sobre la clave sony:consola:ps3 con valor: TLOU
+[INFO] 00:29:21:731 coordinador/(12448:12477): Aplicando Equitative Load..
+[INFO] 00:29:21:731 coordinador/(12448:12477): El ESI 3 hizo un SET sobre la clave sony:consola:ps4 con valor: Bloodborne
+[INFO] 00:29:21:971 coordinador/(12448:12477): Aplicando Equitative Load..
+[INFO] 00:29:21:971 coordinador/(12448:12477): El ESI 3 hizo un SET sobre la clave microsoft:consola:xbox con valor: Halo
+[INFO] 00:29:22:211 coordinador/(12448:12477): Aplicando Equitative Load..
+[INFO] 00:29:22:211 coordinador/(12448:12477): El ESI 3 hizo un SET sobre la clave microsoft:consola:xbox360 con valor: Halo
+[INFO] 00:29:22:451 coordinador/(12448:12477): Aplicando Equitative Load..
+[INFO] 00:29:22:451 coordinador/(12448:12477): El ESI 3 hizo un SET sobre la clave microsoft:consola:xboxone con valor: Halo
+[INFO] 00:29:22:694 coordinador/(12448:12490): El ESI 5 hizo un GET de la clave sandwich:bondiola:simple
+[INFO] 00:29:22:895 coordinador/(12448:12490): El ESI 5 hizo un GET de la clave sandwich:bondiola:jyq
+[INFO] 00:29:23:98 coordinador/(12448:12490): El ESI 5 hizo un GET de la clave sandwich:bondiola:completo
+[INFO] 00:29:23:299 coordinador/(12448:12490): El ESI 5 hizo un GET de la clave sandwich:lomo:simple
+[INFO] 00:29:23:501 coordinador/(12448:12490): El ESI 5 hizo un GET de la clave sandwich:lomo:jyq
+[INFO] 00:29:23:703 coordinador/(12448:12490): El ESI 5 hizo un GET de la clave sandwich:lomo:completo
+[INFO] 00:29:23:906 coordinador/(12448:12490): El ESI 5 hizo un GET de la clave sandwich:vacio:simple
+[INFO] 00:29:24:108 coordinador/(12448:12490): El ESI 5 hizo un GET de la clave sandwich:vacio:jyq
+[INFO] 00:29:24:310 coordinador/(12448:12490): El ESI 5 hizo un GET de la clave sandwich:vacio:completo
+[INFO] 00:29:24:512 coordinador/(12448:12490): El ESI 5 hizo un GET de la clave sandwich:choripan
+[INFO] 00:29:24:715 coordinador/(12448:12490): El ESI 5 hizo un GET de la clave sandwich:morcipan
+[INFO] 00:29:24:917 coordinador/(12448:12490): El ESI 5 hizo un GET de la clave parrilla:chinchulines
+[INFO] 00:29:25:119 coordinador/(12448:12490): El ESI 5 hizo un GET de la clave parrilla:rinion
+[INFO] 00:29:25:322 coordinador/(12448:12490): El ESI 5 hizo un GET de la clave parrilla:tiraasado
+[INFO] 00:29:25:524 coordinador/(12448:12490): El ESI 5 hizo un GET de la clave parrilla:vacio
+[INFO] 00:29:25:726 coordinador/(12448:12490): El ESI 5 hizo un GET de la clave parrilla:entrania
+[INFO] 00:29:25:928 coordinador/(12448:12490): El ESI 5 hizo un GET de la clave parrilla:bifedelomo
+[INFO] 00:29:26:130 coordinador/(12448:12490): El ESI 5 hizo un GET de la clave parrilla:matambre:simple
+[INFO] 00:29:26:332 coordinador/(12448:12490): El ESI 5 hizo un GET de la clave parrilla:matambre:alapizza
+[INFO] 00:29:26:534 coordinador/(12448:12490): El ESI 5 hizo un GET de la clave parrilla:ojodebife
+[INFO] 00:29:26:736 coordinador/(12448:12490): El ESI 5 hizo un GET de la clave parrilla:molleja
+[INFO] 00:29:26:938 coordinador/(12448:12490): El ESI 5 hizo un GET de la clave parrilla:pareja
+[INFO] 00:29:27:141 coordinador/(12448:12490): El ESI 5 hizo un GET de la clave cocina:papasfritas
+[INFO] 00:29:27:344 coordinador/(12448:12490): El ESI 5 hizo un GET de la clave cocina:batatasfritas
+[INFO] 00:29:27:546 coordinador/(12448:12490): El ESI 5 hizo un GET de la clave cocina:tallarines
+[INFO] 00:29:27:748 coordinador/(12448:12490): El ESI 5 hizo un GET de la clave cocina:ravioles
+[INFO] 00:29:27:951 coordinador/(12448:12490): El ESI 5 hizo un GET de la clave cocina:nioquis
+[INFO] 00:29:28:153 coordinador/(12448:12490): El ESI 5 hizo un GET de la clave cocina:suprema
+[INFO] 00:29:28:356 coordinador/(12448:12490): El ESI 5 hizo un GET de la clave cocina:milanesa:carne
+[INFO] 00:29:28:558 coordinador/(12448:12490): El ESI 5 hizo un GET de la clave cocina:milanesa:pollo
+[INFO] 00:29:28:760 coordinador/(12448:12490): Aplicando Equitative Load..
+[INFO] 00:29:28:761 coordinador/(12448:12490): El ESI 5 hizo un SET sobre la clave sandwich:bondiola:simple con valor: panbondiola
+[INFO] 00:29:28:0 coordinador/(12448:12490): Aplicando Equitative Load..
+[INFO] 00:29:28:1 coordinador/(12448:12490): El ESI 5 hizo un SET sobre la clave sandwich:bondiola:jyq con valor: panjamonquesobondiola
+[INFO] 00:29:29:239 coordinador/(12448:12490): Aplicando Equitative Load..
+[INFO] 00:29:29:239 coordinador/(12448:12490): El ESI 5 hizo un SET sobre la clave sandwich:bondiola:completo con valor: panjamonquesolechugatomatebondiola
+[INFO] 00:29:29:479 coordinador/(12448:12490): Aplicando Equitative Load..
+[INFO] 00:29:29:479 coordinador/(12448:12490): El ESI 5 hizo un SET sobre la clave sandwich:lomo:simple con valor: panlomo
+[INFO] 00:29:29:719 coordinador/(12448:12490): Aplicando Equitative Load..
+[INFO] 00:29:29:719 coordinador/(12448:12490): El ESI 5 hizo un SET sobre la clave sandwich:lomo:jyq con valor: panjamonquesolomo
+[INFO] 00:29:29:959 coordinador/(12448:12490): Aplicando Equitative Load..
+[INFO] 00:29:29:960 coordinador/(12448:12490): El ESI 5 hizo un SET sobre la clave sandwich:lomo:completo con valor: panjamonquesolechugatomatelomo
+[INFO] 00:29:30:199 coordinador/(12448:12490): Aplicando Equitative Load..
+[INFO] 00:29:30:199 coordinador/(12448:12490): El ESI 5 hizo un SET sobre la clave sandwich:vacio:simple con valor: panvacio
+[INFO] 00:29:30:440 coordinador/(12448:12490): Aplicando Equitative Load..
+[INFO] 00:29:30:440 coordinador/(12448:12490): El ESI 5 hizo un SET sobre la clave sandwich:vacio:jyq con valor: panjamonquesovacio
+[INFO] 00:29:30:679 coordinador/(12448:12490): Aplicando Equitative Load..
+[INFO] 00:29:30:679 coordinador/(12448:12490): El ESI 5 hizo un SET sobre la clave sandwich:vacio:completo con valor: panjamonquesolechugatomatevacio
+[INFO] 00:29:30:919 coordinador/(12448:12490): Aplicando Equitative Load..
+[INFO] 00:29:30:920 coordinador/(12448:12490): El ESI 5 hizo un SET sobre la clave sandwich:choripan con valor: panchorizo
+[INFO] 00:29:31:159 coordinador/(12448:12490): Aplicando Equitative Load..
+[INFO] 00:29:31:159 coordinador/(12448:12490): El ESI 5 hizo un SET sobre la clave sandwich:morcipan con valor: panmorcilla
+[INFO] 00:29:31:399 coordinador/(12448:12490): Aplicando Equitative Load..
+[INFO] 00:29:31:399 coordinador/(12448:12490): El ESI 5 hizo un SET sobre la clave parrilla:chinchulines con valor: chinchulineslimon
+[INFO] 00:29:31:639 coordinador/(12448:12490): Aplicando Equitative Load..
+[INFO] 00:29:31:639 coordinador/(12448:12490): El ESI 5 hizo un SET sobre la clave parrilla:rinion con valor: rinionylimon
+[INFO] 00:29:31:879 coordinador/(12448:12490): Aplicando Equitative Load..
+[INFO] 00:29:31:879 coordinador/(12448:12490): El ESI 5 hizo un SET sobre la clave parrilla:tiraasado con valor: porcionde3o4huesos
+[INFO] 00:29:32:119 coordinador/(12448:12490): Aplicando Equitative Load..
+[INFO] 00:29:32:119 coordinador/(12448:12490): El ESI 5 hizo un SET sobre la clave parrilla:vacio con valor: vacioconfritas
+[INFO] 00:29:32:359 coordinador/(12448:12490): Aplicando Equitative Load..
+[INFO] 00:29:32:360 coordinador/(12448:12490): El ESI 5 hizo un SET sobre la clave parrilla:entrania con valor: entraniaconfritas
+[INFO] 00:29:32:599 coordinador/(12448:12490): Aplicando Equitative Load..
+[INFO] 00:29:32:599 coordinador/(12448:12490): El ESI 5 hizo un SET sobre la clave parrilla:bifedelomo con valor: bifeconfritas
+[INFO] 00:29:32:838 coordinador/(12448:12490): Aplicando Equitative Load..
+[INFO] 00:29:32:839 coordinador/(12448:12490): El ESI 5 hizo un SET sobre la clave parrilla:matambre:simple con valor: matambrefritas
+[INFO] 00:29:33:79 coordinador/(12448:12490): Aplicando Equitative Load..
+[INFO] 00:29:33:79 coordinador/(12448:12490): El ESI 5 hizo un SET sobre la clave parrilla:matambre:alapizza con valor: matambrejamonquesooregano
+[INFO] 00:29:33:319 coordinador/(12448:12490): Aplicando Equitative Load..
+[INFO] 00:29:33:319 coordinador/(12448:12490): El ESI 5 hizo un SET sobre la clave parrilla:ojodebife con valor: ojodebifeconfritas
+[INFO] 00:29:33:559 coordinador/(12448:12490): Aplicando Equitative Load..
+[INFO] 00:29:33:559 coordinador/(12448:12490): El ESI 5 hizo un SET sobre la clave parrilla:molleja con valor: mollejaconlimon
+[INFO] 00:29:33:799 coordinador/(12448:12490): Aplicando Equitative Load..
+[INFO] 00:29:33:800 coordinador/(12448:12490): El ESI 5 hizo un SET sobre la clave parrilla:pareja con valor: chorizoymorcilla
+[INFO] 00:29:34:39 coordinador/(12448:12490): Aplicando Equitative Load..
+[INFO] 00:29:34:39 coordinador/(12448:12490): El ESI 5 hizo un SET sobre la clave cocina:papasfritas con valor: papayaceite
+[INFO] 00:29:34:279 coordinador/(12448:12490): Aplicando Equitative Load..
+[INFO] 00:29:34:279 coordinador/(12448:12490): El ESI 5 hizo un SET sobre la clave cocina:batatasfritas con valor: batatayaceite
+[INFO] 00:29:34:519 coordinador/(12448:12490): Aplicando Equitative Load..
+[INFO] 00:29:34:519 coordinador/(12448:12490): El ESI 5 hizo un SET sobre la clave cocina:tallarines con valor: tallarinescontuco
+[INFO] 00:29:34:759 coordinador/(12448:12490): Aplicando Equitative Load..
+[INFO] 00:29:34:760 coordinador/(12448:12490): El ESI 5 hizo un SET sobre la clave cocina:ravioles con valor: raviolesdejyqcontuco
+[INFO] 00:29:34:998 coordinador/(12448:12490): Aplicando Equitative Load..
+[INFO] 00:29:34:999 coordinador/(12448:12490): El ESI 5 hizo un SET sobre la clave cocina:nioquis con valor: nioquisdepapacontuco
+[INFO] 00:29:35:239 coordinador/(12448:12490): Aplicando Equitative Load..
+[INFO] 00:29:35:239 coordinador/(12448:12490): El ESI 5 hizo un SET sobre la clave cocina:suprema con valor: supremaalamaryland
+[INFO] 00:29:35:479 coordinador/(12448:12490): Aplicando Equitative Load..
+[INFO] 00:29:35:480 coordinador/(12448:12490): El ESI 5 hizo un SET sobre la clave cocina:milanesa:carne con valor: milanesadecarneconfritas
+[INFO] 00:29:35:718 coordinador/(12448:12490): Aplicando Equitative Load..
+[INFO] 00:29:35:719 coordinador/(12448:12490): El ESI 5 hizo un SET sobre la clave cocina:milanesa:pollo con valor: milanesadepolloconfritas
+[INFO] 00:31:22:587 coordinador/(12576:12576): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 00:31:22:598 coordinador/(12576:12576): PUERTO_ESCUCHA: 9035
+[INFO] 00:31:22:605 coordinador/(12576:12576): PUERTO_PLANIF: 69430000
+[INFO] 00:31:22:605 coordinador/(12576:12576): IP_PLANIF: 127.0.0.1
+[INFO] 00:31:22:605 coordinador/(12576:12576): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 00:31:22:606 coordinador/(12576:12576): CANTIDAD_ENTRADAS: 50
+[INFO] 00:31:22:606 coordinador/(12576:12576): TAMANIO_ENTRADA: 20
+[INFO] 00:31:22:606 coordinador/(12576:12576): RETARDO: 200
+[INFO] 00:31:25:7 coordinador/(12576:12586): Se conecto la Inst1
+[INFO] 00:31:25:10 coordinador/(12576:12576): Conectado con planificador
+[INFO] 00:31:25:521 coordinador/(12576:12590): Se conecto la Inst2
+[INFO] 00:31:26:55 coordinador/(12576:12593): Se conecto la Inst3
+[INFO] 00:31:39:547 coordinador/(12576:12596): El ESI 1 hizo un GET de la clave e3:sony:juegos
+[INFO] 00:31:39:762 coordinador/(12576:12596): El ESI 1 hizo un GET de la clave e3:microsoft:juegos
+[INFO] 00:31:39:975 coordinador/(12576:12596): Aplicando Equitative Load..
+[INFO] 00:31:39:994 coordinador/(12576:12596): El ESI 1 hizo un SET sobre la clave e3:sony:juegos con valor: TLOU2
+[INFO] 00:32:06:459 coordinador/(12611:12611): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 00:32:06:519 coordinador/(12611:12611): PUERTO_ESCUCHA: 9035
+[INFO] 00:32:06:527 coordinador/(12611:12611): PUERTO_PLANIF: 69430000
+[INFO] 00:32:06:528 coordinador/(12611:12611): IP_PLANIF: 127.0.0.1
+[INFO] 00:32:06:528 coordinador/(12611:12611): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 00:32:06:528 coordinador/(12611:12611): CANTIDAD_ENTRADAS: 50
+[INFO] 00:32:06:529 coordinador/(12611:12611): TAMANIO_ENTRADA: 20
+[INFO] 00:32:06:529 coordinador/(12611:12611): RETARDO: 200
+[INFO] 00:32:46:651 coordinador/(12611:12611): Conectado con planificador
+[INFO] 00:32:46:652 coordinador/(12611:12627): Se conecto la Inst1
+[INFO] 00:32:47:456 coordinador/(12611:12631): Se conecto la Inst2
+[INFO] 00:32:47:990 coordinador/(12611:12634): Se conecto la Inst3
+[INFO] 00:34:10:789 coordinador/(12701:12701): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 00:34:10:801 coordinador/(12701:12701): PUERTO_ESCUCHA: 9035
+[INFO] 00:34:10:805 coordinador/(12701:12701): PUERTO_PLANIF: 69430000
+[INFO] 00:34:10:805 coordinador/(12701:12701): IP_PLANIF: 127.0.0.1
+[INFO] 00:34:10:806 coordinador/(12701:12701): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 00:34:10:806 coordinador/(12701:12701): CANTIDAD_ENTRADAS: 50
+[INFO] 00:34:10:809 coordinador/(12701:12701): TAMANIO_ENTRADA: 20
+[INFO] 00:34:10:809 coordinador/(12701:12701): RETARDO: 200
+[INFO] 00:34:14:571 coordinador/(12701:12711): Se conecto la Inst1
+[INFO] 00:34:14:572 coordinador/(12701:12701): Conectado con planificador
+[INFO] 00:34:20:760 coordinador/(12701:12715): Se conecto la Inst2
+[INFO] 00:34:21:398 coordinador/(12701:12718): Se conecto la Inst3
+[INFO] 00:34:50:564 coordinador/(12722:12722): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 00:34:50:576 coordinador/(12722:12722): PUERTO_ESCUCHA: 9035
+[INFO] 00:34:50:582 coordinador/(12722:12722): PUERTO_PLANIF: 69430000
+[INFO] 00:34:50:582 coordinador/(12722:12722): IP_PLANIF: 127.0.0.1
+[INFO] 00:34:50:583 coordinador/(12722:12722): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 00:34:50:583 coordinador/(12722:12722): CANTIDAD_ENTRADAS: 50
+[INFO] 00:34:50:583 coordinador/(12722:12722): TAMANIO_ENTRADA: 20
+[INFO] 00:34:50:584 coordinador/(12722:12722): RETARDO: 200
+[INFO] 00:34:53:995 coordinador/(12722:12732): Se conecto la Inst1
+[INFO] 00:34:53:999 coordinador/(12722:12722): Conectado con planificador
+[INFO] 00:35:10:531 coordinador/(12738:12738): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 00:35:10:531 coordinador/(12738:12738): PUERTO_ESCUCHA: 9035
+[INFO] 00:35:10:531 coordinador/(12738:12738): PUERTO_PLANIF: 161907808
+[INFO] 00:35:10:531 coordinador/(12738:12738): IP_PLANIF: 127.0.0.1
+[INFO] 00:35:10:531 coordinador/(12738:12738): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 00:35:10:531 coordinador/(12738:12738): CANTIDAD_ENTRADAS: 50
+[INFO] 00:35:10:531 coordinador/(12738:12738): TAMANIO_ENTRADA: 20
+[INFO] 00:35:10:531 coordinador/(12738:12738): RETARDO: 200
+[INFO] 00:35:17:273 coordinador/(12738:12738): Conectado con planificador
+[INFO] 00:35:17:277 coordinador/(12738:12748): Se conecto la Inst1
+[INFO] 00:41:46:891 coordinador/(12847:12847): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 00:41:46:891 coordinador/(12847:12847): PUERTO_ESCUCHA: 9035
+[INFO] 00:41:46:891 coordinador/(12847:12847): PUERTO_PLANIF: 163292256
+[INFO] 00:41:46:891 coordinador/(12847:12847): IP_PLANIF: 127.0.0.1
+[INFO] 00:41:46:891 coordinador/(12847:12847): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 00:41:46:891 coordinador/(12847:12847): CANTIDAD_ENTRADAS: 50
+[INFO] 00:41:46:891 coordinador/(12847:12847): TAMANIO_ENTRADA: 20
+[INFO] 00:41:46:891 coordinador/(12847:12847): RETARDO: 200
+[INFO] 00:41:49:992 coordinador/(12847:12847): Conectado con planificador
+[INFO] 00:41:49:996 coordinador/(12847:12857): Se conecto la Inst1
+[INFO] 00:42:11:899 coordinador/(12862:12862): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 00:42:11:899 coordinador/(12862:12862): PUERTO_ESCUCHA: 9035
+[INFO] 00:42:11:899 coordinador/(12862:12862): PUERTO_PLANIF: 164570208
+[INFO] 00:42:11:899 coordinador/(12862:12862): IP_PLANIF: 127.0.0.1
+[INFO] 00:42:11:899 coordinador/(12862:12862): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 00:42:11:899 coordinador/(12862:12862): CANTIDAD_ENTRADAS: 50
+[INFO] 00:42:11:899 coordinador/(12862:12862): TAMANIO_ENTRADA: 20
+[INFO] 00:42:11:899 coordinador/(12862:12862): RETARDO: 200
+[INFO] 00:42:15:916 coordinador/(12862:12862): Conectado con planificador
+[INFO] 00:42:15:918 coordinador/(12862:12872): Se conecto la Inst1
+[INFO] 00:42:17:372 coordinador/(12862:12876): Se conecto la Inst2
+[INFO] 00:42:18:445 coordinador/(12862:12879): Se conecto la Inst3
+[INFO] 00:42:34:981 coordinador/(12862:12882): El ESI 1 hizo un GET de la clave e3:sony:juegos
+[INFO] 00:42:35:183 coordinador/(12862:12882): El ESI 1 hizo un GET de la clave e3:microsoft:juegos
+[INFO] 00:42:35:384 coordinador/(12862:12882): Aplicando Equitative Load..
+[INFO] 00:42:35:384 coordinador/(12862:12882): El ESI 1 hizo un SET sobre la clave e3:sony:juegos con valor: TLOU2
+[INFO] 00:42:36:823 coordinador/(12862:12882): Aplicando Equitative Load..
+[INFO] 00:42:36:823 coordinador/(12862:12882): El ESI 1 hizo un SET sobre la clave e3:microsoft:juegos con valor: DLCCuphead
+[INFO] 00:42:39:680 coordinador/(12862:12892): El ESI 4 hizo un GET de la clave platoprincipal:ingrediente5
+[INFO] 00:42:39:882 coordinador/(12862:12892): El ESI 4 hizo un GET de la clave platoprincipal:ingrediente4
+[INFO] 00:42:40:84 coordinador/(12862:12892): El ESI 4 hizo un GET de la clave platoprincipal:ingrediente3
+[INFO] 00:42:40:286 coordinador/(12862:12892): El ESI 4 hizo un GET de la clave platoprincipal:ingrediente2
+[INFO] 00:42:40:489 coordinador/(12862:12892): El ESI 4 hizo un GET de la clave platoprincipal:ingrediente1
+[INFO] 00:42:40:691 coordinador/(12862:12892): Aplicando Equitative Load..
+[INFO] 00:42:40:691 coordinador/(12862:12892): El ESI 4 hizo un SET sobre la clave platoprincipal:ingrediente1 con valor: milanesadecarne
+[INFO] 00:42:40:931 coordinador/(12862:12892): Aplicando Equitative Load..
+[INFO] 00:42:40:931 coordinador/(12862:12892): El ESI 4 hizo un SET sobre la clave platoprincipal:ingrediente2 con valor: queso
+[INFO] 00:42:41:171 coordinador/(12862:12892): Aplicando Equitative Load..
+[INFO] 00:42:41:171 coordinador/(12862:12892): El ESI 4 hizo un SET sobre la clave platoprincipal:ingrediente3 con valor: jamon
+[INFO] 00:42:41:411 coordinador/(12862:12892): Aplicando Equitative Load..
+[INFO] 00:42:41:412 coordinador/(12862:12892): El ESI 4 hizo un SET sobre la clave platoprincipal:ingrediente4 con valor: lechuga
+[INFO] 00:42:41:651 coordinador/(12862:12892): Aplicando Equitative Load..
+[INFO] 00:42:41:651 coordinador/(12862:12892): El ESI 4 hizo un SET sobre la clave platoprincipal:ingrediente5 con valor: tomate
+[INFO] 00:42:42:951 coordinador/(12862:12888): El ESI 3 hizo un GET de la clave sony:consola:ps1
+[INFO] 00:42:43:153 coordinador/(12862:12888): El ESI 3 hizo un GET de la clave sony:consola:ps2
+[INFO] 00:42:43:355 coordinador/(12862:12888): El ESI 3 hizo un GET de la clave sony:consola:ps3
+[INFO] 00:42:43:558 coordinador/(12862:12888): El ESI 3 hizo un GET de la clave sony:consola:ps4
+[INFO] 00:42:43:758 coordinador/(12862:12888): El ESI 3 hizo un GET de la clave microsoft:consola:xbox
+[INFO] 00:42:43:961 coordinador/(12862:12888): El ESI 3 hizo un GET de la clave microsoft:consola:xbox360
+[INFO] 00:42:44:163 coordinador/(12862:12888): El ESI 3 hizo un GET de la clave microsoft:consola:xboxone
+[INFO] 00:42:44:365 coordinador/(12862:12888): El ESI 3 hizo un GET de la clave nintendo:consola:nes
+[INFO] 00:42:44:569 coordinador/(12862:12888): El ESI 3 hizo un GET de la clave nintendo:consola:snes
+[INFO] 00:42:44:771 coordinador/(12862:12888): El ESI 3 hizo un GET de la clave nintendo:consola:nintendo64
+[INFO] 00:42:44:973 coordinador/(12862:12888): El ESI 3 hizo un GET de la clave nintendo:consola:gamecube
+[INFO] 00:42:45:175 coordinador/(12862:12888): El ESI 3 hizo un GET de la clave nintendo:consola:wii
+[INFO] 00:42:45:378 coordinador/(12862:12888): El ESI 3 hizo un GET de la clave nintendo:consola:wiiu
+[INFO] 00:42:45:580 coordinador/(12862:12888): El ESI 3 hizo un GET de la clave nintendo:consola:switch
+[INFO] 00:42:45:782 coordinador/(12862:12888): Aplicando Equitative Load..
+[INFO] 00:42:45:782 coordinador/(12862:12888): El ESI 3 hizo un SET sobre la clave nintendo:consola:nes con valor: Mario
+[INFO] 00:42:46:26 coordinador/(12862:12888): Aplicando Equitative Load..
+[INFO] 00:42:46:26 coordinador/(12862:12888): El ESI 3 hizo un SET sobre la clave nintendo:consola:snes con valor: SuperMario
+[INFO] 00:42:46:267 coordinador/(12862:12888): Aplicando Equitative Load..
+[INFO] 00:42:46:267 coordinador/(12862:12888): El ESI 3 hizo un SET sobre la clave nintendo:consola:nintendo64 con valor: Mario64
+[INFO] 00:42:46:507 coordinador/(12862:12888): Aplicando Equitative Load..
+[INFO] 00:42:46:507 coordinador/(12862:12888): El ESI 3 hizo un SET sobre la clave nintendo:consola:gamecube con valor: Mario
+[INFO] 00:42:46:748 coordinador/(12862:12888): Aplicando Equitative Load..
+[INFO] 00:42:46:748 coordinador/(12862:12888): El ESI 3 hizo un SET sobre la clave nintendo:consola:wii con valor: MarioGalaxy
+[INFO] 00:42:46:987 coordinador/(12862:12888): Aplicando Equitative Load..
+[INFO] 00:42:46:987 coordinador/(12862:12888): El ESI 3 hizo un SET sobre la clave nintendo:consola:wiiu con valor: RIP
+[INFO] 00:42:47:227 coordinador/(12862:12888): Aplicando Equitative Load..
+[INFO] 00:42:47:227 coordinador/(12862:12888): El ESI 3 hizo un SET sobre la clave nintendo:consola:switch con valor: MarioOddysey
+[INFO] 00:42:47:467 coordinador/(12862:12888): Aplicando Equitative Load..
+[INFO] 00:42:47:467 coordinador/(12862:12888): El ESI 3 hizo un SET sobre la clave sony:consola:ps1 con valor: FinalFantasy
+[INFO] 00:42:47:707 coordinador/(12862:12888): Aplicando Equitative Load..
+[INFO] 00:42:47:707 coordinador/(12862:12888): El ESI 3 hizo un SET sobre la clave sony:consola:ps2 con valor: GodOfWar
+[INFO] 00:42:47:947 coordinador/(12862:12888): Aplicando Equitative Load..
+[INFO] 00:42:47:947 coordinador/(12862:12888): El ESI 3 hizo un SET sobre la clave sony:consola:ps3 con valor: TLOU
+[INFO] 00:42:48:187 coordinador/(12862:12888): Aplicando Equitative Load..
+[INFO] 00:42:48:187 coordinador/(12862:12888): El ESI 3 hizo un SET sobre la clave sony:consola:ps4 con valor: Bloodborne
+[INFO] 00:42:48:428 coordinador/(12862:12888): Aplicando Equitative Load..
+[INFO] 00:42:48:428 coordinador/(12862:12888): El ESI 3 hizo un SET sobre la clave microsoft:consola:xbox con valor: Halo
+[INFO] 00:42:48:667 coordinador/(12862:12888): Aplicando Equitative Load..
+[INFO] 00:42:48:667 coordinador/(12862:12888): El ESI 3 hizo un SET sobre la clave microsoft:consola:xbox360 con valor: Halo
+[INFO] 00:42:48:907 coordinador/(12862:12888): Aplicando Equitative Load..
+[INFO] 00:42:48:907 coordinador/(12862:12888): El ESI 3 hizo un SET sobre la clave microsoft:consola:xboxone con valor: Halo
+[INFO] 00:42:49:154 coordinador/(12862:12899): El ESI 5 hizo un GET de la clave sandwich:bondiola:simple
+[INFO] 00:42:49:356 coordinador/(12862:12899): El ESI 5 hizo un GET de la clave sandwich:bondiola:jyq
+[INFO] 00:42:49:558 coordinador/(12862:12899): El ESI 5 hizo un GET de la clave sandwich:bondiola:completo
+[INFO] 00:42:49:761 coordinador/(12862:12899): El ESI 5 hizo un GET de la clave sandwich:lomo:simple
+[INFO] 00:42:49:963 coordinador/(12862:12899): El ESI 5 hizo un GET de la clave sandwich:lomo:jyq
+[INFO] 00:42:50:166 coordinador/(12862:12899): El ESI 5 hizo un GET de la clave sandwich:lomo:completo
+[INFO] 00:42:50:368 coordinador/(12862:12899): El ESI 5 hizo un GET de la clave sandwich:vacio:simple
+[INFO] 00:42:50:571 coordinador/(12862:12899): El ESI 5 hizo un GET de la clave sandwich:vacio:jyq
+[INFO] 00:42:50:773 coordinador/(12862:12899): El ESI 5 hizo un GET de la clave sandwich:vacio:completo
+[INFO] 00:42:50:975 coordinador/(12862:12899): El ESI 5 hizo un GET de la clave sandwich:choripan
+[INFO] 00:42:51:177 coordinador/(12862:12899): El ESI 5 hizo un GET de la clave sandwich:morcipan
+[INFO] 00:42:51:379 coordinador/(12862:12899): El ESI 5 hizo un GET de la clave parrilla:chinchulines
+[INFO] 00:42:51:581 coordinador/(12862:12899): El ESI 5 hizo un GET de la clave parrilla:rinion
+[INFO] 00:42:51:783 coordinador/(12862:12899): El ESI 5 hizo un GET de la clave parrilla:tiraasado
+[INFO] 00:42:51:985 coordinador/(12862:12899): El ESI 5 hizo un GET de la clave parrilla:vacio
+[INFO] 00:42:52:188 coordinador/(12862:12899): El ESI 5 hizo un GET de la clave parrilla:entrania
+[INFO] 00:42:52:390 coordinador/(12862:12899): El ESI 5 hizo un GET de la clave parrilla:bifedelomo
+[INFO] 00:42:52:592 coordinador/(12862:12899): El ESI 5 hizo un GET de la clave parrilla:matambre:simple
+[INFO] 00:42:52:794 coordinador/(12862:12899): El ESI 5 hizo un GET de la clave parrilla:matambre:alapizza
+[INFO] 00:42:52:996 coordinador/(12862:12899): El ESI 5 hizo un GET de la clave parrilla:ojodebife
+[INFO] 00:42:53:198 coordinador/(12862:12899): El ESI 5 hizo un GET de la clave parrilla:molleja
+[INFO] 00:42:53:400 coordinador/(12862:12899): El ESI 5 hizo un GET de la clave parrilla:pareja
+[INFO] 00:42:53:603 coordinador/(12862:12899): El ESI 5 hizo un GET de la clave cocina:papasfritas
+[INFO] 00:42:53:805 coordinador/(12862:12899): El ESI 5 hizo un GET de la clave cocina:batatasfritas
+[INFO] 00:42:54:7 coordinador/(12862:12899): El ESI 5 hizo un GET de la clave cocina:tallarines
+[INFO] 00:42:54:208 coordinador/(12862:12899): El ESI 5 hizo un GET de la clave cocina:ravioles
+[INFO] 00:42:54:411 coordinador/(12862:12899): El ESI 5 hizo un GET de la clave cocina:nioquis
+[INFO] 00:42:54:613 coordinador/(12862:12899): El ESI 5 hizo un GET de la clave cocina:suprema
+[INFO] 00:42:54:816 coordinador/(12862:12899): El ESI 5 hizo un GET de la clave cocina:milanesa:carne
+[INFO] 00:42:55:19 coordinador/(12862:12899): El ESI 5 hizo un GET de la clave cocina:milanesa:pollo
+[INFO] 00:42:55:221 coordinador/(12862:12899): Aplicando Equitative Load..
+[INFO] 00:42:55:221 coordinador/(12862:12899): El ESI 5 hizo un SET sobre la clave sandwich:bondiola:simple con valor: panbondiola
+[INFO] 00:42:55:458 coordinador/(12862:12899): Aplicando Equitative Load..
+[INFO] 00:42:55:459 coordinador/(12862:12899): El ESI 5 hizo un SET sobre la clave sandwich:bondiola:jyq con valor: panjamonquesobondiola
+[INFO] 00:42:55:699 coordinador/(12862:12899): Aplicando Equitative Load..
+[INFO] 00:42:55:699 coordinador/(12862:12899): El ESI 5 hizo un SET sobre la clave sandwich:bondiola:completo con valor: panjamonquesolechugatomatebondiola
+[INFO] 00:42:55:940 coordinador/(12862:12899): Aplicando Equitative Load..
+[INFO] 00:42:55:940 coordinador/(12862:12899): El ESI 5 hizo un SET sobre la clave sandwich:lomo:simple con valor: panlomo
+[INFO] 00:42:56:179 coordinador/(12862:12899): Aplicando Equitative Load..
+[INFO] 00:42:56:179 coordinador/(12862:12899): El ESI 5 hizo un SET sobre la clave sandwich:lomo:jyq con valor: panjamonquesolomo
+[INFO] 00:42:56:419 coordinador/(12862:12899): Aplicando Equitative Load..
+[INFO] 00:42:56:419 coordinador/(12862:12899): El ESI 5 hizo un SET sobre la clave sandwich:lomo:completo con valor: panjamonquesolechugatomatelomo
+[INFO] 00:42:56:659 coordinador/(12862:12899): Aplicando Equitative Load..
+[INFO] 00:42:56:659 coordinador/(12862:12899): El ESI 5 hizo un SET sobre la clave sandwich:vacio:simple con valor: panvacio
+[INFO] 00:42:56:899 coordinador/(12862:12899): Aplicando Equitative Load..
+[INFO] 00:42:56:899 coordinador/(12862:12899): El ESI 5 hizo un SET sobre la clave sandwich:vacio:jyq con valor: panjamonquesovacio
+[INFO] 00:42:57:139 coordinador/(12862:12899): Aplicando Equitative Load..
+[INFO] 00:42:57:139 coordinador/(12862:12899): El ESI 5 hizo un SET sobre la clave sandwich:vacio:completo con valor: panjamonquesolechugatomatevacio
+[INFO] 00:42:57:379 coordinador/(12862:12899): Aplicando Equitative Load..
+[INFO] 00:42:57:379 coordinador/(12862:12899): El ESI 5 hizo un SET sobre la clave sandwich:choripan con valor: panchorizo
+[INFO] 00:42:57:618 coordinador/(12862:12899): Aplicando Equitative Load..
+[INFO] 00:42:57:619 coordinador/(12862:12899): El ESI 5 hizo un SET sobre la clave sandwich:morcipan con valor: panmorcilla
+[INFO] 00:42:57:859 coordinador/(12862:12899): Aplicando Equitative Load..
+[INFO] 00:42:57:859 coordinador/(12862:12899): El ESI 5 hizo un SET sobre la clave parrilla:chinchulines con valor: chinchulineslimon
+[INFO] 00:42:58:99 coordinador/(12862:12899): Aplicando Equitative Load..
+[INFO] 00:42:58:99 coordinador/(12862:12899): El ESI 5 hizo un SET sobre la clave parrilla:rinion con valor: rinionylimon
+[INFO] 00:42:58:339 coordinador/(12862:12899): Aplicando Equitative Load..
+[INFO] 00:42:58:339 coordinador/(12862:12899): El ESI 5 hizo un SET sobre la clave parrilla:tiraasado con valor: porcionde3o4huesos
+[INFO] 00:42:58:578 coordinador/(12862:12899): Aplicando Equitative Load..
+[INFO] 00:42:58:579 coordinador/(12862:12899): El ESI 5 hizo un SET sobre la clave parrilla:vacio con valor: vacioconfritas
+[INFO] 00:42:58:819 coordinador/(12862:12899): Aplicando Equitative Load..
+[INFO] 00:42:58:819 coordinador/(12862:12899): El ESI 5 hizo un SET sobre la clave parrilla:entrania con valor: entraniaconfritas
+[INFO] 00:42:59:59 coordinador/(12862:12899): Aplicando Equitative Load..
+[INFO] 00:42:59:60 coordinador/(12862:12899): El ESI 5 hizo un SET sobre la clave parrilla:bifedelomo con valor: bifeconfritas
+[INFO] 00:42:59:299 coordinador/(12862:12899): Aplicando Equitative Load..
+[INFO] 00:42:59:299 coordinador/(12862:12899): El ESI 5 hizo un SET sobre la clave parrilla:matambre:simple con valor: matambrefritas
+[INFO] 00:42:59:539 coordinador/(12862:12899): Aplicando Equitative Load..
+[INFO] 00:42:59:539 coordinador/(12862:12899): El ESI 5 hizo un SET sobre la clave parrilla:matambre:alapizza con valor: matambrejamonquesooregano
+[INFO] 00:42:59:779 coordinador/(12862:12899): Aplicando Equitative Load..
+[INFO] 00:42:59:779 coordinador/(12862:12899): El ESI 5 hizo un SET sobre la clave parrilla:ojodebife con valor: ojodebifeconfritas
+[INFO] 00:43:00:19 coordinador/(12862:12899): Aplicando Equitative Load..
+[INFO] 00:43:00:19 coordinador/(12862:12899): El ESI 5 hizo un SET sobre la clave parrilla:molleja con valor: mollejaconlimon
+[INFO] 00:43:00:259 coordinador/(12862:12899): Aplicando Equitative Load..
+[INFO] 00:43:00:259 coordinador/(12862:12899): El ESI 5 hizo un SET sobre la clave parrilla:pareja con valor: chorizoymorcilla
+[INFO] 00:43:00:499 coordinador/(12862:12899): Aplicando Equitative Load..
+[INFO] 00:43:00:499 coordinador/(12862:12899): El ESI 5 hizo un SET sobre la clave cocina:papasfritas con valor: papayaceite
+[INFO] 00:43:00:740 coordinador/(12862:12899): Aplicando Equitative Load..
+[INFO] 00:43:00:740 coordinador/(12862:12899): El ESI 5 hizo un SET sobre la clave cocina:batatasfritas con valor: batatayaceite
+[INFO] 00:43:00:980 coordinador/(12862:12899): Aplicando Equitative Load..
+[INFO] 00:43:00:980 coordinador/(12862:12899): El ESI 5 hizo un SET sobre la clave cocina:tallarines con valor: tallarinescontuco
+[INFO] 00:43:01:218 coordinador/(12862:12899): Aplicando Equitative Load..
+[INFO] 00:43:01:219 coordinador/(12862:12899): El ESI 5 hizo un SET sobre la clave cocina:ravioles con valor: raviolesdejyqcontuco
+[INFO] 00:43:01:459 coordinador/(12862:12899): Aplicando Equitative Load..
+[INFO] 00:43:01:459 coordinador/(12862:12899): El ESI 5 hizo un SET sobre la clave cocina:nioquis con valor: nioquisdepapacontuco
+[INFO] 00:43:01:699 coordinador/(12862:12899): Aplicando Equitative Load..
+[INFO] 00:43:01:699 coordinador/(12862:12899): El ESI 5 hizo un SET sobre la clave cocina:suprema con valor: supremaalamaryland
+[INFO] 00:43:01:939 coordinador/(12862:12899): Aplicando Equitative Load..
+[INFO] 00:43:01:939 coordinador/(12862:12899): El ESI 5 hizo un SET sobre la clave cocina:milanesa:carne con valor: milanesadecarneconfritas
+[INFO] 00:43:02:179 coordinador/(12862:12899): Aplicando Equitative Load..
+[INFO] 00:43:02:179 coordinador/(12862:12899): El ESI 5 hizo un SET sobre la clave cocina:milanesa:pollo con valor: milanesadepolloconfritas
+[INFO] 00:50:06:371 coordinador/(13047:13047): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 00:50:06:371 coordinador/(13047:13047): PUERTO_ESCUCHA: 9035
+[INFO] 00:50:06:371 coordinador/(13047:13047): PUERTO_PLANIF: 143451144
+[INFO] 00:50:06:371 coordinador/(13047:13047): IP_PLANIF: 127.0.0.1
+[INFO] 00:50:06:371 coordinador/(13047:13047): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 00:50:06:371 coordinador/(13047:13047): CANTIDAD_ENTRADAS: 8
+[INFO] 00:50:06:371 coordinador/(13047:13047): TAMANIO_ENTRADA: 10
+[INFO] 00:50:06:371 coordinador/(13047:13047): RETARDO: 300
+[INFO] 00:50:19:932 coordinador/(13047:13047): Conectado con planificador
+[INFO] 00:50:19:938 coordinador/(13047:13065): Se conecto la Inst1
+[INFO] 00:50:35:867 coordinador/(13068:13068): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 00:50:35:867 coordinador/(13068:13068): PUERTO_ESCUCHA: 9035
+[INFO] 00:50:35:867 coordinador/(13068:13068): PUERTO_PLANIF: 156664840
+[INFO] 00:50:35:867 coordinador/(13068:13068): IP_PLANIF: 127.0.0.1
+[INFO] 00:50:35:867 coordinador/(13068:13068): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 00:50:35:867 coordinador/(13068:13068): CANTIDAD_ENTRADAS: 8
+[INFO] 00:50:35:867 coordinador/(13068:13068): TAMANIO_ENTRADA: 10
+[INFO] 00:50:35:867 coordinador/(13068:13068): RETARDO: 300
+[INFO] 00:50:39:148 coordinador/(13068:13068): Conectado con planificador
+[INFO] 00:50:39:149 coordinador/(13068:13078): Se conecto la Inst1
+[INFO] 00:50:46:129 coordinador/(13068:13082): El ESI 1 hizo un GET de la clave sony:consola:ps1
+[INFO] 00:50:46:431 coordinador/(13068:13082): El ESI 1 hizo un GET de la clave sony:consola:ps2
+[INFO] 00:50:46:734 coordinador/(13068:13082): El ESI 1 hizo un GET de la clave sony:consola:ps3
+[INFO] 00:50:47:35 coordinador/(13068:13082): El ESI 1 hizo un GET de la clave sony:consola:ps4
+[INFO] 00:50:47:338 coordinador/(13068:13082): El ESI 1 hizo un GET de la clave microsoft:consola:xbox
+[INFO] 00:50:47:640 coordinador/(13068:13082): El ESI 1 hizo un GET de la clave microsoft:consola:xbox360
+[INFO] 00:50:47:942 coordinador/(13068:13082): El ESI 1 hizo un GET de la clave microsoft:consola:xboxone
+[INFO] 00:50:48:245 coordinador/(13068:13082): El ESI 1 hizo un GET de la clave nintendo:consola:nes
+[INFO] 00:50:48:547 coordinador/(13068:13082): El ESI 1 hizo un GET de la clave nintendo:consola:snes
+[INFO] 00:50:48:849 coordinador/(13068:13082): El ESI 1 hizo un GET de la clave nintendo:consola:nintendo64
+[INFO] 00:50:49:151 coordinador/(13068:13082): El ESI 1 hizo un GET de la clave nintendo:consola:gamecube
+[INFO] 00:50:49:454 coordinador/(13068:13082): El ESI 1 hizo un GET de la clave nintendo:consola:wii
+[INFO] 00:50:49:757 coordinador/(13068:13082): El ESI 1 hizo un GET de la clave nintendo:consola:wiiu
+[INFO] 00:50:50:60 coordinador/(13068:13082): El ESI 1 hizo un GET de la clave nintendo:consola:switch
+[INFO] 00:50:50:362 coordinador/(13068:13082): Aplicando Equitative Load..
+[INFO] 00:50:50:362 coordinador/(13068:13082): El ESI 1 hizo un SET sobre la clave nintendo:consola:nes con valor: Mario
+[INFO] 00:50:50:702 coordinador/(13068:13082): Aplicando Equitative Load..
+[INFO] 00:50:50:703 coordinador/(13068:13082): El ESI 1 hizo un SET sobre la clave nintendo:consola:snes con valor: SuperMario
+[INFO] 00:50:51:46 coordinador/(13068:13082): Aplicando Equitative Load..
+[INFO] 00:50:51:46 coordinador/(13068:13082): El ESI 1 hizo un SET sobre la clave nintendo:consola:nintendo64 con valor: Mario64
+[INFO] 00:50:51:385 coordinador/(13068:13082): Aplicando Equitative Load..
+[INFO] 00:50:51:386 coordinador/(13068:13082): El ESI 1 hizo un SET sobre la clave nintendo:consola:gamecube con valor: FinalFantasyTactics
+[INFO] 00:50:51:725 coordinador/(13068:13082): Aplicando Equitative Load..
+[INFO] 00:50:51:725 coordinador/(13068:13082): El ESI 1 hizo un SET sobre la clave nintendo:consola:wii con valor: MarioGalaxy
+[INFO] 00:50:52:404 coordinador/(13068:13082): Aplicando Equitative Load..
+[INFO] 00:50:52:404 coordinador/(13068:13082): El ESI 1 hizo un SET sobre la clave nintendo:consola:wiiu con valor: RIP
+[INFO] 00:50:53:83 coordinador/(13068:13082): Aplicando Equitative Load..
+[INFO] 00:50:53:83 coordinador/(13068:13082): El ESI 1 hizo un SET sobre la clave sony:consola:ps1 con valor: FF7
+[INFO] 00:50:53:763 coordinador/(13068:13082): Aplicando Equitative Load..
+[INFO] 00:50:53:763 coordinador/(13068:13082): El ESI 1 hizo un SET sobre la clave sony:consola:ps2 con valor: GodOfWar
+[INFO] 00:50:54:443 coordinador/(13068:13082): Aplicando Equitative Load..
+[INFO] 00:50:54:443 coordinador/(13068:13082): El ESI 1 hizo un SET sobre la clave sony:consola:ps3 con valor: TLOU
+[INFO] 00:50:55:123 coordinador/(13068:13082): Aplicando Equitative Load..
+[INFO] 00:50:55:123 coordinador/(13068:13082): El ESI 1 hizo un SET sobre la clave sony:consola:ps4 con valor: Bloodborne
+[INFO] 00:50:55:804 coordinador/(13068:13082): Aplicando Equitative Load..
+[INFO] 00:50:55:804 coordinador/(13068:13082): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox con valor: Halo
+[INFO] 00:50:56:145 coordinador/(13068:13082): Aplicando Equitative Load..
+[INFO] 00:50:56:146 coordinador/(13068:13082): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox360 con valor: Halo
+[INFO] 00:50:56:487 coordinador/(13068:13082): Aplicando Equitative Load..
+[INFO] 00:50:56:487 coordinador/(13068:13082): El ESI 1 hizo un SET sobre la clave microsoft:consola:xboxone con valor: Halo
+[INFO] 00:50:56:829 coordinador/(13068:13082): Aplicando Equitative Load..
+[INFO] 00:50:56:829 coordinador/(13068:13082): El ESI 1 hizo un SET sobre la clave nintendo:consola:switch con valor: ZeldaBOTW
+[INFO] 00:51:05:428 coordinador/(13068:13112): Se conecto la Inst2
+[INFO] 00:51:13:135 coordinador/(13068:13115): El ESI 2 hizo un GET de la clave opcion1
+[INFO] 00:51:13:438 coordinador/(13068:13115): El ESI 2 hizo un GET de la clave opcion2
+[INFO] 00:51:13:741 coordinador/(13068:13115): El ESI 2 hizo un GET de la clave opcion3
+[INFO] 00:51:14:44 coordinador/(13068:13115): El ESI 2 hizo un GET de la clave opcion4
+[INFO] 00:51:14:346 coordinador/(13068:13115): Aplicando Equitative Load..
+[INFO] 00:51:14:346 coordinador/(13068:13115): El ESI 2 hizo un SET sobre la clave opcion1 con valor: fugazzetarellenagrande
+[INFO] 00:55:07:675 coordinador/(13572:13572): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 00:55:07:675 coordinador/(13572:13572): PUERTO_ESCUCHA: 9035
+[INFO] 00:55:07:675 coordinador/(13572:13572): PUERTO_PLANIF: 146424840
+[INFO] 00:55:07:675 coordinador/(13572:13572): IP_PLANIF: 127.0.0.1
+[INFO] 00:55:07:675 coordinador/(13572:13572): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 00:55:07:675 coordinador/(13572:13572): CANTIDAD_ENTRADAS: 8
+[INFO] 00:55:07:675 coordinador/(13572:13572): TAMANIO_ENTRADA: 10
+[INFO] 00:55:07:675 coordinador/(13572:13572): RETARDO: 300
+[INFO] 00:55:12:453 coordinador/(13572:13572): Conectado con planificador
+[INFO] 00:55:12:454 coordinador/(13572:13582): Se conecto la Inst1
+[INFO] 00:55:14:610 coordinador/(13572:13586): El ESI 1 hizo un GET de la clave sony:consola:ps1
+[INFO] 00:55:14:913 coordinador/(13572:13586): El ESI 1 hizo un GET de la clave sony:consola:ps2
+[INFO] 00:55:15:215 coordinador/(13572:13586): El ESI 1 hizo un GET de la clave sony:consola:ps3
+[INFO] 00:55:15:518 coordinador/(13572:13586): El ESI 1 hizo un GET de la clave sony:consola:ps4
+[INFO] 00:55:15:820 coordinador/(13572:13586): El ESI 1 hizo un GET de la clave microsoft:consola:xbox
+[INFO] 00:55:16:122 coordinador/(13572:13586): El ESI 1 hizo un GET de la clave microsoft:consola:xbox360
+[INFO] 00:55:16:425 coordinador/(13572:13586): El ESI 1 hizo un GET de la clave microsoft:consola:xboxone
+[INFO] 00:55:16:728 coordinador/(13572:13586): El ESI 1 hizo un GET de la clave nintendo:consola:nes
+[INFO] 00:55:17:30 coordinador/(13572:13586): El ESI 1 hizo un GET de la clave nintendo:consola:snes
+[INFO] 00:55:17:333 coordinador/(13572:13586): El ESI 1 hizo un GET de la clave nintendo:consola:nintendo64
+[INFO] 00:55:17:635 coordinador/(13572:13586): El ESI 1 hizo un GET de la clave nintendo:consola:gamecube
+[INFO] 00:55:17:937 coordinador/(13572:13586): El ESI 1 hizo un GET de la clave nintendo:consola:wii
+[INFO] 00:55:18:240 coordinador/(13572:13586): El ESI 1 hizo un GET de la clave nintendo:consola:wiiu
+[INFO] 00:55:18:543 coordinador/(13572:13586): El ESI 1 hizo un GET de la clave nintendo:consola:switch
+[INFO] 00:55:18:845 coordinador/(13572:13586): Aplicando Equitative Load..
+[INFO] 00:55:18:845 coordinador/(13572:13586): El ESI 1 hizo un SET sobre la clave nintendo:consola:nes con valor: Mario
+[INFO] 00:56:02:72 coordinador/(13629:13629): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 00:56:02:72 coordinador/(13629:13629): PUERTO_ESCUCHA: 9035
+[INFO] 00:56:02:72 coordinador/(13629:13629): PUERTO_PLANIF: 143250440
+[INFO] 00:56:02:72 coordinador/(13629:13629): IP_PLANIF: 127.0.0.1
+[INFO] 00:56:02:72 coordinador/(13629:13629): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 00:56:02:72 coordinador/(13629:13629): CANTIDAD_ENTRADAS: 8
+[INFO] 00:56:02:72 coordinador/(13629:13629): TAMANIO_ENTRADA: 10
+[INFO] 00:56:02:72 coordinador/(13629:13629): RETARDO: 300
+[INFO] 00:56:04:884 coordinador/(13629:13629): Conectado con planificador
+[INFO] 00:56:04:885 coordinador/(13629:13641): Se conecto la Inst1
+[INFO] 00:56:06:194 coordinador/(13629:13645): El ESI 1 hizo un GET de la clave sony:consola:ps1
+[INFO] 00:56:06:496 coordinador/(13629:13645): El ESI 1 hizo un GET de la clave sony:consola:ps2
+[INFO] 00:56:06:798 coordinador/(13629:13645): El ESI 1 hizo un GET de la clave sony:consola:ps3
+[INFO] 00:56:07:100 coordinador/(13629:13645): El ESI 1 hizo un GET de la clave sony:consola:ps4
+[INFO] 00:56:07:402 coordinador/(13629:13645): El ESI 1 hizo un GET de la clave microsoft:consola:xbox
+[INFO] 00:56:07:705 coordinador/(13629:13645): El ESI 1 hizo un GET de la clave microsoft:consola:xbox360
+[INFO] 00:56:08:9 coordinador/(13629:13645): El ESI 1 hizo un GET de la clave microsoft:consola:xboxone
+[INFO] 00:56:08:311 coordinador/(13629:13645): El ESI 1 hizo un GET de la clave nintendo:consola:nes
+[INFO] 00:56:08:613 coordinador/(13629:13645): El ESI 1 hizo un GET de la clave nintendo:consola:snes
+[INFO] 00:56:08:914 coordinador/(13629:13645): El ESI 1 hizo un GET de la clave nintendo:consola:nintendo64
+[INFO] 00:56:09:217 coordinador/(13629:13645): El ESI 1 hizo un GET de la clave nintendo:consola:gamecube
+[INFO] 00:56:09:519 coordinador/(13629:13645): El ESI 1 hizo un GET de la clave nintendo:consola:wii
+[INFO] 00:56:09:822 coordinador/(13629:13645): El ESI 1 hizo un GET de la clave nintendo:consola:wiiu
+[INFO] 00:56:10:125 coordinador/(13629:13645): El ESI 1 hizo un GET de la clave nintendo:consola:switch
+[INFO] 00:56:10:427 coordinador/(13629:13645): Aplicando Equitative Load..
+[INFO] 00:56:10:427 coordinador/(13629:13645): El ESI 1 hizo un SET sobre la clave nintendo:consola:nes con valor: Mario
+[INFO] 00:56:10:767 coordinador/(13629:13645): Aplicando Equitative Load..
+[INFO] 00:56:10:767 coordinador/(13629:13645): El ESI 1 hizo un SET sobre la clave nintendo:consola:snes con valor: SuperMario
+[INFO] 00:56:11:107 coordinador/(13629:13645): Aplicando Equitative Load..
+[INFO] 00:56:11:107 coordinador/(13629:13645): El ESI 1 hizo un SET sobre la clave nintendo:consola:nintendo64 con valor: Mario64
+[INFO] 00:56:11:449 coordinador/(13629:13645): Aplicando Equitative Load..
+[INFO] 00:56:11:449 coordinador/(13629:13645): El ESI 1 hizo un SET sobre la clave nintendo:consola:gamecube con valor: FinalFantasyTactics
+[INFO] 00:56:11:787 coordinador/(13629:13645): Aplicando Equitative Load..
+[INFO] 00:56:11:787 coordinador/(13629:13645): El ESI 1 hizo un SET sobre la clave nintendo:consola:wii con valor: MarioGalaxy
+[INFO] 00:56:12:467 coordinador/(13629:13645): Aplicando Equitative Load..
+[INFO] 00:56:12:467 coordinador/(13629:13645): El ESI 1 hizo un SET sobre la clave nintendo:consola:wiiu con valor: RIP
+[INFO] 00:56:13:147 coordinador/(13629:13645): Aplicando Equitative Load..
+[INFO] 00:56:13:147 coordinador/(13629:13645): El ESI 1 hizo un SET sobre la clave sony:consola:ps1 con valor: FF7
+[INFO] 00:56:13:827 coordinador/(13629:13645): Aplicando Equitative Load..
+[INFO] 00:56:13:828 coordinador/(13629:13645): El ESI 1 hizo un SET sobre la clave sony:consola:ps2 con valor: GodOfWar
+[INFO] 00:56:14:508 coordinador/(13629:13645): Aplicando Equitative Load..
+[INFO] 00:56:14:509 coordinador/(13629:13645): El ESI 1 hizo un SET sobre la clave sony:consola:ps3 con valor: TLOU
+[INFO] 00:56:15:187 coordinador/(13629:13645): Aplicando Equitative Load..
+[INFO] 00:56:15:187 coordinador/(13629:13645): El ESI 1 hizo un SET sobre la clave sony:consola:ps4 con valor: Bloodborne
+[INFO] 00:56:15:867 coordinador/(13629:13645): Aplicando Equitative Load..
+[INFO] 00:56:15:867 coordinador/(13629:13645): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox con valor: Halo
+[INFO] 00:56:16:207 coordinador/(13629:13645): Aplicando Equitative Load..
+[INFO] 00:56:16:207 coordinador/(13629:13645): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox360 con valor: Halo
+[INFO] 00:56:16:547 coordinador/(13629:13645): Aplicando Equitative Load..
+[INFO] 00:56:16:547 coordinador/(13629:13645): El ESI 1 hizo un SET sobre la clave microsoft:consola:xboxone con valor: Halo
+[INFO] 00:56:16:887 coordinador/(13629:13645): Aplicando Equitative Load..
+[INFO] 00:56:16:887 coordinador/(13629:13645): El ESI 1 hizo un SET sobre la clave nintendo:consola:switch con valor: ZeldaBOTW
+[INFO] 00:56:23:988 coordinador/(13629:13668): Se conecto la Inst2
+[INFO] 00:56:26:713 coordinador/(13629:13671): El ESI 2 hizo un GET de la clave opcion1
+[INFO] 00:56:27:15 coordinador/(13629:13671): El ESI 2 hizo un GET de la clave opcion2
+[INFO] 00:56:27:317 coordinador/(13629:13671): El ESI 2 hizo un GET de la clave opcion3
+[INFO] 00:56:27:621 coordinador/(13629:13671): El ESI 2 hizo un GET de la clave opcion4
+[INFO] 00:56:27:925 coordinador/(13629:13671): Aplicando Equitative Load..
+[INFO] 00:56:27:925 coordinador/(13629:13671): El ESI 2 hizo un SET sobre la clave opcion1 con valor: fugazzetarellenagrande
+[INFO] 01:01:24:362 coordinador/(13810:13810): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 01:01:24:362 coordinador/(13810:13810): PUERTO_ESCUCHA: 9035
+[INFO] 01:01:24:362 coordinador/(13810:13810): PUERTO_PLANIF: 142701576
+[INFO] 01:01:24:362 coordinador/(13810:13810): IP_PLANIF: 127.0.0.1
+[INFO] 01:01:24:362 coordinador/(13810:13810): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 01:01:24:362 coordinador/(13810:13810): CANTIDAD_ENTRADAS: 8
+[INFO] 01:01:24:362 coordinador/(13810:13810): TAMANIO_ENTRADA: 10
+[INFO] 01:01:24:362 coordinador/(13810:13810): RETARDO: 300
+[INFO] 01:01:26:411 coordinador/(13810:13810): Conectado con planificador
+[INFO] 01:01:26:412 coordinador/(13810:13820): Se conecto la Inst1
+[INFO] 01:01:27:474 coordinador/(13810:13824): El ESI 1 hizo un GET de la clave opcion1
+[INFO] 01:01:27:777 coordinador/(13810:13824): El ESI 1 hizo un GET de la clave opcion2
+[INFO] 01:01:28:79 coordinador/(13810:13824): El ESI 1 hizo un GET de la clave opcion3
+[INFO] 01:01:28:382 coordinador/(13810:13824): El ESI 1 hizo un GET de la clave opcion4
+[INFO] 01:01:28:685 coordinador/(13810:13824): Aplicando Equitative Load..
+[INFO] 01:01:28:685 coordinador/(13810:13824): El ESI 1 hizo un SET sobre la clave opcion1 con valor: fugazzetarellenagrande
+[INFO] 01:03:35:874 coordinador/(13923:13923): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 01:03:35:874 coordinador/(13923:13923): PUERTO_ESCUCHA: 9035
+[INFO] 01:03:35:874 coordinador/(13923:13923): PUERTO_PLANIF: 158970888
+[INFO] 01:03:35:874 coordinador/(13923:13923): IP_PLANIF: 127.0.0.1
+[INFO] 01:03:35:874 coordinador/(13923:13923): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 01:03:35:874 coordinador/(13923:13923): CANTIDAD_ENTRADAS: 8
+[INFO] 01:03:35:874 coordinador/(13923:13923): TAMANIO_ENTRADA: 10
+[INFO] 01:03:35:874 coordinador/(13923:13923): RETARDO: 300
+[INFO] 01:03:43:459 coordinador/(13923:13923): Conectado con planificador
+[INFO] 01:03:43:461 coordinador/(13923:13934): Se conecto la Inst1
+[INFO] 01:03:45:538 coordinador/(13923:13938): El ESI 1 hizo un GET de la clave sony:consola:ps1
+[INFO] 01:03:45:839 coordinador/(13923:13938): El ESI 1 hizo un GET de la clave sony:consola:ps2
+[INFO] 01:03:46:142 coordinador/(13923:13938): El ESI 1 hizo un GET de la clave sony:consola:ps3
+[INFO] 01:03:46:445 coordinador/(13923:13938): El ESI 1 hizo un GET de la clave sony:consola:ps4
+[INFO] 01:03:46:746 coordinador/(13923:13938): El ESI 1 hizo un GET de la clave microsoft:consola:xbox
+[INFO] 01:03:47:48 coordinador/(13923:13938): El ESI 1 hizo un GET de la clave microsoft:consola:xbox360
+[INFO] 01:03:47:350 coordinador/(13923:13938): El ESI 1 hizo un GET de la clave microsoft:consola:xboxone
+[INFO] 01:03:47:652 coordinador/(13923:13938): El ESI 1 hizo un GET de la clave nintendo:consola:nes
+[INFO] 01:03:47:954 coordinador/(13923:13938): El ESI 1 hizo un GET de la clave nintendo:consola:snes
+[INFO] 01:03:48:256 coordinador/(13923:13938): El ESI 1 hizo un GET de la clave nintendo:consola:nintendo64
+[INFO] 01:03:48:559 coordinador/(13923:13938): El ESI 1 hizo un GET de la clave nintendo:consola:gamecube
+[INFO] 01:03:48:861 coordinador/(13923:13938): El ESI 1 hizo un GET de la clave nintendo:consola:wii
+[INFO] 01:03:49:163 coordinador/(13923:13938): El ESI 1 hizo un GET de la clave nintendo:consola:wiiu
+[INFO] 01:03:49:465 coordinador/(13923:13938): El ESI 1 hizo un GET de la clave nintendo:consola:switch
+[INFO] 01:03:49:768 coordinador/(13923:13938): Aplicando Equitative Load..
+[INFO] 01:03:50:269 coordinador/(13923:13938): El ESI 1 hizo un SET sobre la clave nintendo:consola:nes con valor: Mario
+[INFO] 01:03:50:607 coordinador/(13923:13938): Aplicando Equitative Load..
+[INFO] 01:03:51:107 coordinador/(13923:13938): El ESI 1 hizo un SET sobre la clave nintendo:consola:snes con valor: SuperMario
+[INFO] 01:03:51:447 coordinador/(13923:13938): Aplicando Equitative Load..
+[INFO] 01:03:51:947 coordinador/(13923:13938): El ESI 1 hizo un SET sobre la clave nintendo:consola:nintendo64 con valor: Mario64
+[INFO] 01:03:52:287 coordinador/(13923:13938): Aplicando Equitative Load..
+[INFO] 01:03:52:788 coordinador/(13923:13938): El ESI 1 hizo un SET sobre la clave nintendo:consola:gamecube con valor: FinalFantasyTactics
+[INFO] 01:03:53:126 coordinador/(13923:13938): Aplicando Equitative Load..
+[INFO] 01:03:53:627 coordinador/(13923:13938): El ESI 1 hizo un SET sobre la clave nintendo:consola:wii con valor: MarioGalaxy
+[INFO] 01:03:54:307 coordinador/(13923:13938): Aplicando Equitative Load..
+[INFO] 01:03:54:808 coordinador/(13923:13938): El ESI 1 hizo un SET sobre la clave nintendo:consola:wiiu con valor: RIP
+[INFO] 01:03:55:487 coordinador/(13923:13938): Aplicando Equitative Load..
+[INFO] 01:03:55:987 coordinador/(13923:13938): El ESI 1 hizo un SET sobre la clave sony:consola:ps1 con valor: FF7
+[INFO] 01:03:56:666 coordinador/(13923:13938): Aplicando Equitative Load..
+[INFO] 01:03:57:168 coordinador/(13923:13938): El ESI 1 hizo un SET sobre la clave sony:consola:ps2 con valor: GodOfWar
+[INFO] 01:03:57:847 coordinador/(13923:13938): Aplicando Equitative Load..
+[INFO] 01:03:58:348 coordinador/(13923:13938): El ESI 1 hizo un SET sobre la clave sony:consola:ps3 con valor: TLOU
+[INFO] 01:03:59:27 coordinador/(13923:13938): Aplicando Equitative Load..
+[INFO] 01:03:59:528 coordinador/(13923:13938): El ESI 1 hizo un SET sobre la clave sony:consola:ps4 con valor: Bloodborne
+[INFO] 01:04:00:207 coordinador/(13923:13938): Aplicando Equitative Load..
+[INFO] 01:04:00:708 coordinador/(13923:13938): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox con valor: Halo
+[INFO] 01:04:01:47 coordinador/(13923:13938): Aplicando Equitative Load..
+[INFO] 01:04:01:547 coordinador/(13923:13938): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox360 con valor: Halo
+[INFO] 01:04:01:887 coordinador/(13923:13938): Aplicando Equitative Load..
+[INFO] 01:04:02:387 coordinador/(13923:13938): El ESI 1 hizo un SET sobre la clave microsoft:consola:xboxone con valor: Halo
+[INFO] 01:04:02:727 coordinador/(13923:13938): Aplicando Equitative Load..
+[INFO] 01:04:03:228 coordinador/(13923:13938): El ESI 1 hizo un SET sobre la clave nintendo:consola:switch con valor: ZeldaBOTW
+[INFO] 01:04:08:388 coordinador/(13923:13966): Se conecto la Inst2
+[INFO] 01:04:10:432 coordinador/(13923:13969): El ESI 2 hizo un GET de la clave opcion1
+[INFO] 01:04:10:734 coordinador/(13923:13969): El ESI 2 hizo un GET de la clave opcion2
+[INFO] 01:04:11:36 coordinador/(13923:13969): El ESI 2 hizo un GET de la clave opcion3
+[INFO] 01:04:11:338 coordinador/(13923:13969): El ESI 2 hizo un GET de la clave opcion4
+[INFO] 01:04:11:640 coordinador/(13923:13969): Aplicando Equitative Load..
+[INFO] 01:04:12:641 coordinador/(13923:13969): El ESI 2 hizo un SET sobre la clave opcion1 con valor: fugazzetarellenagrande
+[INFO] 01:04:12:979 coordinador/(13923:13969): Aplicando Equitative Load..
+[INFO] 01:04:13:480 coordinador/(13923:13969): El ESI 2 hizo un SET sobre la clave opcion2 con valor: promomuzzarella
+[INFO] 01:04:13:819 coordinador/(13923:13969): Aplicando Equitative Load..
+[INFO] 01:04:14:319 coordinador/(13923:13969): El ESI 2 hizo un SET sobre la clave opcion3 con valor: pizzacuatroquesosgrande
+[INFO] 01:04:15:339 coordinador/(13923:13969): Aplicando Equitative Load..
+[INFO] 01:04:15:839 coordinador/(13923:13969): El ESI 2 hizo un SET sobre la clave opcion4 con valor: pizzadecantimpalo

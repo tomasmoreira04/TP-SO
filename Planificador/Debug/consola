@@ -1,6 +1,5 @@
 [32m
-Claves inicialmente bloqueadas:[0m[31m
-postre:ingrediente1[0m[35m
+Claves inicialmente bloqueadas:[0m[35m
 COORDINADOR [0mconectado en socket [32m5
 [0m
 Nuevo ESI [32m1[0m con [31m19.00[0m de tiempo estimado. Script: [36mESI_MultiReemplazo[0m
@@ -46,64 +45,64 @@ El esi pudo ejecutar la sentencia.
 (GET) La clave [32mnintendo:consola:switch [0mse asigno a [32mESI 1[0m[32m
 El esi pudo ejecutar la sentencia.
 [0m
-(SET) Se ha seteado la clave[32m nintendo:consola:nes[0m con valor[35m Mario[0m[32m
+(SET) El [32mESI 1[0m ha seteado la clave[32m nintendo:consola:nes[0m con valor[35m Mario[0m[32m
 El esi pudo ejecutar la sentencia.
 [0m
-(SET) Se ha seteado la clave[32m nintendo:consola:snes[0m con valor[35m SuperMario[0m[32m
+(SET) El [32mESI 1[0m ha seteado la clave[32m nintendo:consola:snes[0m con valor[35m SuperMario[0m[32m
 El esi pudo ejecutar la sentencia.
 [0m
-(SET) Se ha seteado la clave[32m nintendo:consola:nintendo64[0m con valor[35m Mario64[0m[32m
+(SET) El [32mESI 1[0m ha seteado la clave[32m nintendo:consola:nintendo64[0m con valor[35m Mario64[0m[32m
 El esi pudo ejecutar la sentencia.
 [0m
-(SET) Se ha seteado la clave[32m nintendo:consola:gamecube[0m con valor[35m FinalFantasyTactics[0m[32m
+(SET) El [32mESI 1[0m ha seteado la clave[32m nintendo:consola:gamecube[0m con valor[35m FinalFantasyTactics[0m[32m
 El esi pudo ejecutar la sentencia.
 [0m
-(SET) Se ha seteado la clave[32m nintendo:consola:wii[0m con valor[35m MarioGalaxy[0m[32m
+(SET) El [32mESI 1[0m ha seteado la clave[32m nintendo:consola:wii[0m con valor[35m MarioGalaxy[0m[32m
 El esi pudo ejecutar la sentencia.
 [0m
-(SET) Se ha seteado la clave[32m nintendo:consola:wii[0m con valor[35m MarioGalaxy2[0m[32m
+(SET) El [32mESI 1[0m ha seteado la clave[32m nintendo:consola:wii[0m con valor[35m MarioGalaxy2[0m[32m
 El esi pudo ejecutar la sentencia.
 [0m
-(SET) Se ha seteado la clave[32m nintendo:consola:wiiu[0m con valor[35m RIP[0m[32m
+(SET) El [32mESI 1[0m ha seteado la clave[32m nintendo:consola:wiiu[0m con valor[35m RIP[0m[32m
 El esi pudo ejecutar la sentencia.
 [0m
-(SET) Se ha seteado la clave[32m nintendo:consola:nintendo64[0m con valor[35m MarioKart[0m[32m
+(SET) El [32mESI 1[0m ha seteado la clave[32m nintendo:consola:nintendo64[0m con valor[35m MarioKart[0m[32m
 El esi pudo ejecutar la sentencia.
 [0m
-(SET) Se ha seteado la clave[32m sony:consola:ps1[0m con valor[35m FF7[0m[32m
+(SET) El [32mESI 1[0m ha seteado la clave[32m sony:consola:ps1[0m con valor[35m FF7[0m[32m
 El esi pudo ejecutar la sentencia.
 [0m
-(SET) Se ha seteado la clave[32m nintendo:consola:nintendo64[0m con valor[35m PkmnSnap[0m[32m
+(SET) El [32mESI 1[0m ha seteado la clave[32m nintendo:consola:nintendo64[0m con valor[35m PkmnSnap[0m[32m
 El esi pudo ejecutar la sentencia.
 [0m
-(SET) Se ha seteado la clave[32m sony:consola:ps2[0m con valor[35m GodOfWar[0m[32m
+(SET) El [32mESI 1[0m ha seteado la clave[32m sony:consola:ps2[0m con valor[35m GodOfWar[0m[32m
 El esi pudo ejecutar la sentencia.
 [0m
-(SET) Se ha seteado la clave[32m sony:consola:ps1[0m con valor[35m FF8[0m[32m
+(SET) El [32mESI 1[0m ha seteado la clave[32m sony:consola:ps1[0m con valor[35m FF8[0m[32m
 El esi pudo ejecutar la sentencia.
 [0m
-(SET) Se ha seteado la clave[32m sony:consola:ps3[0m con valor[35m TLOU[0m[32m
+(SET) El [32mESI 1[0m ha seteado la clave[32m sony:consola:ps3[0m con valor[35m TLOU[0m[32m
 El esi pudo ejecutar la sentencia.
 [0m
-(SET) Se ha seteado la clave[32m sony:consola:ps2[0m con valor[35m GodOfWar2[0m[32m
+(SET) El [32mESI 1[0m ha seteado la clave[32m sony:consola:ps2[0m con valor[35m GodOfWar2[0m[32m
 El esi pudo ejecutar la sentencia.
 [0m
-(SET) Se ha seteado la clave[32m sony:consola:ps4[0m con valor[35m Bloodborne[0m[32m
+(SET) El [32mESI 1[0m ha seteado la clave[32m sony:consola:ps4[0m con valor[35m Bloodborne[0m[32m
 El esi pudo ejecutar la sentencia.
 [0m
-(SET) Se ha seteado la clave[32m sony:consola:ps3[0m con valor[35m GodOfWar3[0m[32m
+(SET) El [32mESI 1[0m ha seteado la clave[32m sony:consola:ps3[0m con valor[35m GodOfWar3[0m[32m
 El esi pudo ejecutar la sentencia.
 [0m
-(SET) Se ha seteado la clave[32m microsoft:consola:xbox[0m con valor[35m Halo[0m[32m
+(SET) El [32mESI 1[0m ha seteado la clave[32m microsoft:consola:xbox[0m con valor[35m Halo[0m[32m
 El esi pudo ejecutar la sentencia.
 [0m
-(SET) Se ha seteado la clave[32m microsoft:consola:xbox360[0m con valor[35m Halo[0m[32m
+(SET) El [32mESI 1[0m ha seteado la clave[32m microsoft:consola:xbox360[0m con valor[35m Halo[0m[32m
 El esi pudo ejecutar la sentencia.
 [0m
-(SET) Se ha seteado la clave[32m microsoft:consola:xboxone[0m con valor[35m Halo[0m[32m
+(SET) El [32mESI 1[0m ha seteado la clave[32m microsoft:consola:xboxone[0m con valor[35m Halo[0m[32m
 El esi pudo ejecutar la sentencia.
 [0m
-(SET) Se ha seteado la clave[32m nintendo:consola:switch[0m con valor[35m ZeldaBOTW[0m[32m
+(SET) El [32mESI 1[0m ha seteado la clave[32m nintendo:consola:switch[0m con valor[35m ZeldaBOTW[0m[32m
 El esi pudo ejecutar la sentencia.
 [0m[31m
 
@@ -123,6 +122,45 @@ Clave[31m nintendo:consola:nintendo64 [0mdesbloqueada y libre.
 Clave[31m nintendo:consola:gamecube [0mdesbloqueada y libre.
 Clave[31m nintendo:consola:wii [0mdesbloqueada y libre.
 Clave[31m nintendo:consola:wiiu [0mdesbloqueada y libre.
-Clave[31m nintendo:consola:switch [0mdesbloqueada y libre.[31m
+Clave[31m nintendo:consola:switch [0mdesbloqueada y libre.
+Nuevo ESI [32m2[0m con [31m6.50[0m de tiempo estimado. Script: [36mESI_Compactador1[0m
+(GET) La clave [32mopcion1 [0mse asigno a [32mESI 2[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+(GET) La clave [32mopcion2 [0mse asigno a [32mESI 2[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+(GET) La clave [32mopcion3 [0mse asigno a [32mESI 2[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+(GET) La clave [32mopcion4 [0mse asigno a [32mESI 2[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+(SET) El [32mESI 2[0m ha seteado la clave[32m opcion1[0m con valor[35m fugazzetarellenagrande[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+(SET) El [32mESI 2[0m ha seteado la clave[32m opcion2[0m con valor[35m promomuzzarella[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+(SET) El [32mESI 2[0m ha seteado la clave[32m opcion3[0m con valor[35m pizzacuatroquesosgrande[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+(SET) El [32mESI 2[0m ha seteado la clave[32m opcion1[0m con valor[35m napolitanagrande[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+(SET) El [32mESI 2[0m ha seteado la clave[32m opcion3[0m con valor[35m pizzadepalmitos[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+(SET) El [32mESI 2[0m ha seteado la clave[32m opcion4[0m con valor[35m pizzadecantimpalo[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m[31m
+
+EL ESI EN SOCKET 8 SE HA DESCONECTADO[0m[33m
+Finalizando ESI 2.[0m
+Faltaron[31m 3.50 [0mUT en la estimacion.
+Clave[31m opcion1 [0mdesbloqueada y libre.
+Clave[31m opcion2 [0mdesbloqueada y libre.
+Clave[31m opcion3 [0mdesbloqueada y libre.
+Clave[31m opcion4 [0mdesbloqueada y libre.[31m
 
 EL COORDINADOR SE HA DESCONECTADO[0m
