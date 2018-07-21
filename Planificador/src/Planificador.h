@@ -24,7 +24,7 @@ extern t_list* lista_claves_bloqueadas;
 extern ESI* esi_ejecutando;
 extern t_dictionary* estimaciones_actuales;
 extern int ultimo_id;
-extern int planificar; //parametro para pausar/continuar la planificacion por comando
+extern pthread_mutex_t mutex_planificar;
 
 void* crear_ventana_output();
 

@@ -20,7 +20,7 @@ C_DEPS += \
 src/%.o: ../src/%.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: Cross GCC Compiler'
-	gcc -Dcommons -Dpthread -I"/home/utnso/Escritorio/tpso/tp-2018-1c-PMD/Bibliotecas/src" -include"/home/utnso/Escritorio/tpso/tp-2018-1c-PMD/Bibliotecas/src/Configuracion.h" -include"/home/utnso/Escritorio/tpso/tp-2018-1c-PMD/Bibliotecas/src/Estructuras.h" -include"/home/utnso/Escritorio/tpso/tp-2018-1c-PMD/Bibliotecas/src/Macros.h" -include"/home/utnso/Escritorio/tpso/tp-2018-1c-PMD/Bibliotecas/src/Socket.h" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"
+	gcc -Dcommons -Dpthread -I"/home/utnso/Escritorio/tp/tp-2018-1c-PMD/Bibliotecas/src" -include"/home/utnso/Escritorio/tp/tp-2018-1c-PMD/Bibliotecas/src/Configuracion.h" -include"/home/utnso/Escritorio/tp/tp-2018-1c-PMD/Bibliotecas/src/Estructuras.h" -include"/home/utnso/Escritorio/tp/tp-2018-1c-PMD/Bibliotecas/src/Macros.h" -include"/home/utnso/Escritorio/tp/tp-2018-1c-PMD/Bibliotecas/src/Socket.h" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 

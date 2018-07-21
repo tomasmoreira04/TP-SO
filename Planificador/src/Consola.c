@@ -140,13 +140,15 @@ void ejecutar_comando(Operacion comando) {
 }
 
 void pausar_planificacion() {
-	planificar = 0;
+	//planificar = 0;
 	printf(RED"\n\nSE HA PAUSADO LA PLANIFICACION\n\n"RESET);
+	s_wait(&mutex_planificar);
 }
 
 void continuar_planificacion() {
-	planificar = 1;
+	//planificar = 1;
 	printf(GREEN"\n\nSE HA REANUDADO LA PLANIFICACION\n\n"RESET);
+	s_signal(&mutex_planificar);
 }
 
 t_list* buscar_deadlocks() {
@@ -201,6 +203,7 @@ t_deadlock* clave_que_necesita(ESI* a, ESI* b) {
 }
 
 void desbloquear_clave(char* clave) {
+	printf("\nsidaaaaaaaaa");
 	int ok = liberar_clave(clave);
 	if (!ok)
 		printf(RED"\nNo se ha podido liberar la clave"CYAN" %s"RESET, clave);
@@ -241,7 +244,7 @@ void estado_clave(char* clave){
 	//instancia en la que se guardaria
 	//esis esperando liberacion
 	t_clave* clave_bloqueada = buscar_clave_bloqueada(clave);
-	if (clave_bloqueada != NULL) {
+	if (clave_bloqueada != NULL && clave_bloqueada->bloqueada == 1) {
 		printf(YELLOW"\nLa clave"RED" %s "YELLOW"se encuentra bloqueada", clave);
 		//---------------VERIFICAR VALOR-----------------
 		if (clave_bloqueada->valor[0] != '\0')

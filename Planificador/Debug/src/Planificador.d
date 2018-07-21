@@ -1,10 +1,10 @@
 src/Planificador.o: ../src/Planificador.c \
- /home/utnso/Escritorio/tpso/tp-2018-1c-PMD/Bibliotecas/src/Configuracion.h \
- /home/utnso/Escritorio/tpso/tp-2018-1c-PMD/Bibliotecas/src/Socket.h \
- /home/utnso/Escritorio/tpso/tp-2018-1c-PMD/Bibliotecas/src/Macros.h \
- /home/utnso/Escritorio/tpso/tp-2018-1c-PMD/Bibliotecas/src/Estructuras.h \
- /home/utnso/Escritorio/tpso/tp-2018-1c-PMD/Bibliotecas/src/Macros.h \
- /home/utnso/Escritorio/tpso/tp-2018-1c-PMD/Bibliotecas/src/Socket.h \
+ /home/utnso/Escritorio/tp/tp-2018-1c-PMD/Bibliotecas/src/Configuracion.h \
+ /home/utnso/Escritorio/tp/tp-2018-1c-PMD/Bibliotecas/src/Socket.h \
+ /home/utnso/Escritorio/tp/tp-2018-1c-PMD/Bibliotecas/src/Macros.h \
+ /home/utnso/Escritorio/tp/tp-2018-1c-PMD/Bibliotecas/src/Estructuras.h \
+ /home/utnso/Escritorio/tp/tp-2018-1c-PMD/Bibliotecas/src/Macros.h \
+ /home/utnso/Escritorio/tp/tp-2018-1c-PMD/Bibliotecas/src/Socket.h \
  ../src/Planificador.h ../src/../../Bibliotecas/src/Configuracion.h \
  ../src/../../Bibliotecas/src/Estructuras.h \
  ../src/../../Bibliotecas/src/Socket.h ../src/Consola.h \
@@ -18,17 +18,17 @@ src/Planificador.o: ../src/Planificador.c \
  ../src/../../Bibliotecas/src/Configuracion.h \
  ../src/../../Bibliotecas/src/Semaforo.c
 
-/home/utnso/Escritorio/tpso/tp-2018-1c-PMD/Bibliotecas/src/Configuracion.h:
+/home/utnso/Escritorio/tp/tp-2018-1c-PMD/Bibliotecas/src/Configuracion.h:
 
-/home/utnso/Escritorio/tpso/tp-2018-1c-PMD/Bibliotecas/src/Socket.h:
+/home/utnso/Escritorio/tp/tp-2018-1c-PMD/Bibliotecas/src/Socket.h:
 
-/home/utnso/Escritorio/tpso/tp-2018-1c-PMD/Bibliotecas/src/Macros.h:
+/home/utnso/Escritorio/tp/tp-2018-1c-PMD/Bibliotecas/src/Macros.h:
 
-/home/utnso/Escritorio/tpso/tp-2018-1c-PMD/Bibliotecas/src/Estructuras.h:
+/home/utnso/Escritorio/tp/tp-2018-1c-PMD/Bibliotecas/src/Estructuras.h:
 
-/home/utnso/Escritorio/tpso/tp-2018-1c-PMD/Bibliotecas/src/Macros.h:
+/home/utnso/Escritorio/tp/tp-2018-1c-PMD/Bibliotecas/src/Macros.h:
 
-/home/utnso/Escritorio/tpso/tp-2018-1c-PMD/Bibliotecas/src/Socket.h:
+/home/utnso/Escritorio/tp/tp-2018-1c-PMD/Bibliotecas/src/Socket.h:
 
 ../src/Planificador.h:
 

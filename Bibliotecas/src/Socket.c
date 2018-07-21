@@ -34,8 +34,8 @@ int recibirMensaje(int socket, void** stream) {
 		if(verificador==0){
 			return 0;
 		}
-		else
-			perror("\nError en el recv");
+	//	else
+			//perror("\nError en el recv");
 	}
 	*stream=malloc(heder.tamano);
 	if((verificador = recv(socket, *stream, heder.tamano, MSG_WAITALL))<=0){

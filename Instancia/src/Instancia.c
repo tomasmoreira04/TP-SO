@@ -22,6 +22,7 @@
 #include "commons/bitarray.h"
 #include "commons/collections/dictionary.h"
 #include "commons/collections/list.h"
+#include "semaphore.h"
 
 ConfigInstancia config;
 
@@ -44,9 +45,11 @@ int socketServer;
 int compactado = 1;
 
 pthread_mutex_t semaforo_compactacion = PTHREAD_MUTEX_INITIALIZER;
+sem_t compactacion_espera; //contador de inst conectadas
 
 int main(int argc, char* argv[]) {
 	setbuf(stdout, NULL);
+
 	char* nombre = argv[1];
 	config = cargar_config_inst(nombre);
 	imprimir_configuracion();
@@ -56,11 +59,28 @@ int main(int argc, char* argv[]) {
 	inicializar_estructuras();
 	recuperar_claves(config.punto_montaje); //"Esta info. debe ser recuperada al momento de iniciar una instancia"
 	cargar_claves_iniciales();
-
+	signal(SIGINT, terminar_programa);
 	crear_hilo(hilo_dump, NULL);
 	rutina_principal();
 	destruirlo_todo();
 	return 0;
+}
+
+void terminar_programa(void) {
+	printf(GREEN"\nResultados finales:"RESET);
+	mostrar_storage();
+	exit(0);
+}
+
+void mostrar_storage() {
+	printf("\n");
+	for (int i = 0; i < cantEntradas; i++) {
+		printf(YELLOW"\n[%d]\t"RESET, i);
+		char* entrada = storage + i * tamEntrada;
+		for (int j = 0; j < tamEntrada; j++)
+			printf(RED"%c"RESET, entrada[j]);
+	}
+	printf("\n");
 }
 
 void configurar_entradas() {
@@ -74,7 +94,7 @@ void configurar_entradas() {
 		printf(CYAN "\n------------ INSTANCIA ------------\n");
 		printf("\nCANT ENTRADAS: %i \nTAM ENTRADAS: %i \n"RESET,cantEntradas, tamEntrada);
 		cantEntradasDisp = cantEntradas;
-		storage = malloc(sizeof(char)*cantEntradas*tamEntrada);
+		storage = calloc(sizeof(char)*cantEntradas*tamEntrada, tamEntrada);
 	} else {
 		printf(RED "\nFATAL ERROR AL RECIBIR CONFIG DEL COORDINADOR\n"RESET);
 		exit(0);
@@ -215,7 +235,8 @@ void mostrarListaReemplazos(t_list* list){
 	printf("Lista de reemplazos:\n");
 	for(int i = 0; i < list_size(list); i++){
 		Nodo_Reemplazo* nodo = list_get(list, i);
-		printf("%s t.ref= %d\n", nodo->clave, nodo->ultimaRef);
+		//printf("%s t.ref= %d\n", devolver_valor(nodo->clave), nodo->ultimaRef);
+		printf("[%d]\t%s\n", i, devolver_valor(nodo->clave));
 	}
 
 }
@@ -281,10 +302,7 @@ void* compactacion() {
 
 	s_wait(&semaforo_compactacion);
 
-	compactado = 0;
-	const int microsegundo = 1 * 1000 * 1000;
 	printf(RED"\nCOMPACTANDO...\n"RESET);
-	usleep(5 * microsegundo); //5 segundos
 
 	int* disponibles_antes = bits_disponibles(disponibles);
 	compact();
@@ -293,8 +311,8 @@ void* compactacion() {
 
 	imprimir_almacenamiento(disponibles_antes, disponibles_ahora);
 
-	compactado = 1;
 	avisar(socketServer, compactacion_ok);
+	sem_post(&compactacion_espera);
 
 	s_signal(&semaforo_compactacion);
 
@@ -393,8 +411,10 @@ void ejecutarSentencia(t_sentencia* sentencia){
 		aumentarTiempoRef();
 		almacenarValor(sentencia->clave,sentencia->valor);
 		printf(GREEN "\nSe ejecuto un SET correctamente, de clave "CYAN"%s"GREEN" con valor"RED" %s.\n"RESET, sentencia->clave, sentencia->valor);
+
+		//mostrar_storage();
+		//printf("\n\n");
 		//mostrarListaReemplazos(reemplazos);
-		//mostrarArray(NULL);
 		if(!laListaLoContiene(sentencia->clave))
 			list_add(lista_Claves,sentencia->clave);
 		break;
@@ -440,9 +460,13 @@ void nuevo_nodo_reemplazo(char* clave, int tamanio) {
 	list_add(reemplazos,remp);
 }
 
+void limpiar_entrada(int entrada) {
+	for (int i = 0; i < tamEntrada; i++)
+		memcpy(storage + (tamEntrada * entrada) + i, "\0", 1);
+}
+
 void almacenarValor(char* clave, char* valor){
 
-	//int tamEnBytes = string_length(valor)+1;
 	int tamEnBytes = string_length(valor); //no se incluye el \0
 	int tamEnEntradas = 1 + (tamEnBytes - 1) / tamEntrada;			//redondeo para arriba
 
@@ -450,8 +474,9 @@ void almacenarValor(char* clave, char* valor){
 		liberarEntradas(clave);
 
 	if(tamEnEntradas <= cantEntradasDisp) {
-
+		sem_init(&compactacion_espera, true, 1);
 		int posInicialLibre = buscarEspacioLibre(tamEnEntradas);
+		limpiar_entrada(posInicialLibre);
 		memcpy(storage + (tamEntrada * posInicialLibre), valor, tamEnBytes);
 		nuevo_registro(clave, posInicialLibre, tamEnBytes);
 
@@ -494,7 +519,6 @@ void persistirValor(char* clave){
 	free(path);
 }
 
-
 t_list* reemplazoSegunAlgoritmo(int cantNecesita){
 
 	t_list* seleccionados;
@@ -503,7 +527,7 @@ t_list* reemplazoSegunAlgoritmo(int cantNecesita){
 	switch(config.algoritmo_reemp){
 
 	case CIRC:
-		seleccionados = list_take_and_remove(reemplazos,cantNecesita);
+		seleccionados = list_take_and_remove(reemplazos, cantNecesita);
 		break;
 
 	case LRU:
@@ -573,33 +597,26 @@ void limpiarArray(int desde, int hasta){
 		bitarray_clean_bit(disponibles, i);
 }
 
-
 int buscarEspacioLibre(int entradasNecesarias){
-	int posInicialLibre = 0, i, contador = 0;
-	int ya_avise = 0;
 
-	do {
-		for(i=0;i<disponibles->size && contador<entradasNecesarias;i++){
-			if (bitarray_test_bit(disponibles,i) == 0) //espacio libre
-				contador++;
-			else{
-				contador=0;
-				posInicialLibre= i + 1;
-			}
-		}
+	int posInicialLibre = 0, contador = 0;
 
-	if (contador < entradasNecesarias) {
-		compactado = 0;						//Compacta en caso de ser necesario (porque hay espacios pero no son contiguos)
-		if (ya_avise == 0) {
-			ya_avise = 1;
-			avisar(socketServer, compactar);
-			printf(RED"\n\nAvisado el coordinador de compactacion."RESET);
-			while(compactado != 1);
+	sem_wait(&compactacion_espera);
+
+	for(int i = 0; i < disponibles->size && contador < entradasNecesarias; i++){
+		if (bitarray_test_bit(disponibles,i) == 0) //espacio libre
+			contador++;
+		else {
+			contador = 0;
+			posInicialLibre = i + 1;
 		}
 	}
-	else
-		compactado = 1;
-	} while(compactado == 0);
+
+	if (contador < entradasNecesarias) {
+		avisar(socketServer, compactar);
+		printf(RED"\n\nAvisado el coordinador de compactacion."RESET);
+		return buscarEspacioLibre(entradasNecesarias);
+	}
 
 	for(int i = posInicialLibre; i < posInicialLibre + contador; i++)
 		bitarray_set_bit(disponibles, i);						//ocupa las entradas

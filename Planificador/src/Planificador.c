@@ -29,7 +29,6 @@ t_list* lista_claves_bloqueadas;
 ESI* esi_ejecutando = NULL;
 t_dictionary* estimaciones_actuales;
 int ultimo_id;
-int planificar = 1;
 int coordinador_conectado = 0;
 int hay_hilo_coordinador = 0;
 int socket_coordinador;
@@ -50,6 +49,7 @@ pthread_mutex_t num_esis = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t sem_ejecutar = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t operando_claves = PTHREAD_MUTEX_INITIALIZER;
 
+pthread_mutex_t mutex_planificar = PTHREAD_MUTEX_INITIALIZER;
 
 int main(int argc, char* argv[]) {
 	inicializar_estructuras();
@@ -161,7 +161,6 @@ void* procesar_mensaje_coordinador(void* sock) {
 					break;
 				case sentencia_coordinador: {
 					t_sentencia sentencia = *(t_sentencia*)mensaje;
-					esperar_que_exista(sentencia.id_esi);
 					nueva_sentencia(sentencia, coordinador);
 					break;
 				}
@@ -182,19 +181,8 @@ void* procesar_mensaje_coordinador(void* sock) {
 		}
 		s_signal(&coord_ok);
 	}
-	free(mensaje);
+	//free(mensaje);
 	return NULL;
-}
-
-void esperar_que_exista(int id_esi) { //para que el coordi no me meta una sentencia sin que esté cargado ese esi
-	ESI* esi;
-	while(true) {
-		esi = obtener_esi(id_esi);
-		if (esi != NULL) {
-			if (esi->id == id_esi)
-				break;
-		}
-	}
 }
 
 int ver_disponibilidad_clave(char* clave) { //0: no, 1: disponible
@@ -223,7 +211,7 @@ void* procesar_mensaje_esi(void* sock) {
 			break;
 		}
 	}
-	free(mensaje);
+	//free(mensaje);
 	return NULL;
 }
 
@@ -589,7 +577,7 @@ int hay_desalojo(AlgoritmoPlanif algoritmo) {
 
 void ejecutar(int desalojar) {
 
-	while (planificar != 1);
+	s_wait(&mutex_planificar);
 
 	s_wait(&sem_ejecutar);
 
@@ -609,6 +597,8 @@ void ejecutar(int desalojar) {
 	}
 
 	s_signal(&sem_ejecutar);
+
+	s_signal(&mutex_planificar);
 }
 
 int _es_esi(ESI* a, ESI* b) {

@@ -81,7 +81,8 @@ void leer_sentencias(int planificador, int coordinador, char* ruta) {
 	while ((leidas = getline(&linea, &largo, script)) != -1) {
 
 			printf(YELLOW"\nEsperando pedido del planificador..."RESET);
-			while (recibirMensaje(planificador, &stream) != ejecutar_proxima_sentencia);
+			if(recibirMensaje(planificador, &stream) != ejecutar_proxima_sentencia)
+				continue;
 			id_esi = *(int*)stream;
 			t_esi_operacion operacion = parse(linea);
 

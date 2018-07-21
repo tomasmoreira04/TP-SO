@@ -60,6 +60,8 @@ void crear_hilo();
 int laListaLoContiene(char * clave);
 void *rutina_Dump(void * arg);
 void guardarLaWea();
+void mostrar_storage();
+void terminar_programa(void);
 
 //asd
 void rutina_principal();

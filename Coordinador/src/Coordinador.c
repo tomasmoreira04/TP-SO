@@ -18,13 +18,13 @@
 #include "Coordinador.h"
 #include "commons/collections/list.h"
 #include <unistd.h>
+#include "semaphore.h"
 
 // Diferenciacion de operacion ESI
 // Direnciar quien se conecta
 // Guardar con ID instancia
 // TOMI SE LA COME
 
-int compresiones_finalizadas = 0;
 ConfigCoordinador configuracion;
 int socket_plan; //esto cambiar tal vez
 t_dictionary *instancias_Claves;
@@ -34,7 +34,8 @@ t_list *listaSoloInstancias;
 int contadorEquitativeLoad;
 int instancia_muerta;
 
-pthread_mutex_t semaforo_compactacion = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t semaforo_avisando_compactacion = PTHREAD_MUTEX_INITIALIZER;
+sem_t semaforo_compactacion; //contador de inst conectadas
 
 int main(int argc, char* argv[]) {
 	setbuf(stdout, NULL); //a veces el printf no andaba, se puede hacer esto o un fflush
@@ -43,6 +44,7 @@ int main(int argc, char* argv[]) {
 	instancias_Claves= dictionary_create();
 	listaSoloInstancias=list_create();
 	configuracion = cargar_config_coordinador(argv[1]);
+
 	imprimir_configuracion();
 	crear_log_operaciones();
 	log_info(log_operaciones, "Se ha cargado la configuracion inicial del Coordinador:");
@@ -154,7 +156,7 @@ void procesar_permiso_planificador(Accion mensaje, t_sentencia sentencia, int so
 			break;
 		case error:
 		default:
-			printf(RED"\nERROR" RESET);
+			printf(RED"\nError del planificador!" RESET);
 			resultado = no_exitoso;
 			break;
 	}
@@ -197,7 +199,7 @@ void STORE(t_sentencia sentencia) {
 
 void realizar_sentencia(t_sentencia sentencia) {
 
-	s_wait(&semaforo_compactacion);
+	s_wait(&semaforo_avisando_compactacion);
 
 	imprimir_sentencia(sentencia);
 	switch(sentencia.tipo) {
@@ -207,7 +209,7 @@ void realizar_sentencia(t_sentencia sentencia) {
 		default: 		log_error(log_operaciones,"Error al identificar la operacion en el coordinador"); break;
 	}
 
-	s_signal(&semaforo_compactacion);
+	s_signal(&semaforo_avisando_compactacion);
 }
 
 void procesar_pedido_instancia(Accion operacion, char* instancia, int esi) {
@@ -235,19 +237,21 @@ void procesar_pedido_instancia(Accion operacion, char* instancia, int esi) {
 }
 
 void* avisar_compactacion() {
-	s_wait(&semaforo_compactacion);
+	s_wait(&semaforo_avisando_compactacion);
 	t_list* conectadas = instancias_conectadas();
-	int n = list_size(conectadas);
-	for (int i = 0; i < n; i++) {
+	int cantidad_conectadas = list_size(conectadas);
+
+	sem_init(&semaforo_compactacion, true, 0);
+
+	for (int i = 0; i < cantidad_conectadas; i++) {
 		char* instancia = list_get(conectadas, i);
 		instancia_Estado_Conexion* conexion = dictionary_get(lista_Instancias, instancia);
 		hilo_compactacion(conexion->socket); //creo un hilo para cada instancia
 	}
 	printf(RED"\nCOMPACTANDO INSTANCIAS\n"RESET);
-	esperar_compactacion(); //espera activa
+	esperar_compactacion(cantidad_conectadas); //espera activa
 	printf(GREEN"\nCOMPACTACION FINALIZADA\n"RESET);
-	compresiones_finalizadas = 0;
-	s_signal(&semaforo_compactacion);
+	s_signal(&semaforo_avisando_compactacion);
 	return NULL;
 }
 
@@ -279,12 +283,12 @@ void* rutina_compactacion(void* sock) {
 	switch(resultado) {
 	case compactacion_ok:
 		printf(GREEN"\nTermino de compactar la instancia del socket %d"RESET, socket_instancia);
-		compresiones_finalizadas++; //una vez que el contador es igual al total de instancias, todas terminaron
+		sem_post(&semaforo_compactacion);
 		break;
 	case error:
 	default:
-		if (compresiones_finalizadas < list_size(instancias_conectadas()))
-			compresiones_finalizadas = 0;
+		printf(RED"\nFallo una instancia al compactar (socket %d)"RESET, socket_instancia);
+		exit(0);
 		break;
 	}
 	return NULL;
@@ -312,13 +316,16 @@ int clave_tiene_instancia(char* clave) {
 	return strcmp((char*)dictionary_get(instancias_Claves, clave), "0") == 0 ? 0 : 1;
 }
 
+
 char* aplicar_algoritmo(t_sentencia sentencia) { //DEVUELVE EL NOMBRE DE LA INSTANCIA ASIGNADA
+
 	switch(configuracion.algoritmo) {
 		case el:	equitative_load(sentencia.clave);	break;
 		case lsu:	least_space_used(sentencia.clave);	break;
 		case ke: 	key_explicit(sentencia.clave); 		break;
 		default: 								break;
 	}
+
 	log_info(log_operaciones, formatear_mensaje_esi(sentencia.id_esi, S_SET, sentencia.clave, sentencia.valor));
 	return (char*) dictionary_get(instancias_Claves , sentencia.clave);
 }
@@ -369,9 +376,9 @@ void crear_log_operaciones() {
 	log_operaciones = log_create("operaciones_coordinador.log", "coordinador", 0, 1);
 }
 
-void esperar_compactacion() {
-	int instancias = list_size(instancias_conectadas());
-	while(compresiones_finalizadas != instancias);
+void esperar_compactacion(int cantidad_conectadas) {
+	for (int i = 0; i < cantidad_conectadas; i++)
+		sem_wait(&semaforo_compactacion);
 }
 
 void modificar_clave(char* clave, char* instancia) {
@@ -397,10 +404,9 @@ void equitative_load(char* claveSentencia){
 
 void contador_EQ(int instancias){
 	int contador = contadorEquitativeLoad;
+	contadorEquitativeLoad++;
 	if (contador + 1 > instancias)
 		contadorEquitativeLoad = 0;
-	else
-		contadorEquitativeLoad++;
 }
 
 int estadoDeInstancia(char* instancia){
@@ -418,7 +424,7 @@ int enviar_check_conexion_instancia(int socket) {
 	memcpy(stream, &heder, sizeof(header));
 	memcpy(stream + sizeof(header), &contenido, tam);
 	int pepito = send(socket, stream, sizeof(header) + tam, 0);
-	usleep(1000*100); //100 milisegundos
+	usleep(100 * 1000); //100 milisegundos
 	signal(SIGPIPE, SIG_IGN);
 	pepito = send(socket, stream, sizeof(header) + tam, 0);
 	free(stream);

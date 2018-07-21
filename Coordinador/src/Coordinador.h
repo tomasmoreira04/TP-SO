@@ -62,7 +62,7 @@ void procesar_pedido_instancia(Accion operacion, char* instancia, int esi);
 void realizar_sentencia(t_sentencia sentencia);
 void procesar_permiso_planificador(Accion mensaje, t_sentencia sentencia, int socket_esi);
 
-void esperar_compactacion();
+void esperar_compactacion(int cantidad);
 void* avisar_compactacion();
 void* rutina_compactacion(void* sock);
 void hilo_compactacion(int socket_instancia);
