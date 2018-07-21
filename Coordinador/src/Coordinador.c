@@ -66,6 +66,7 @@ int main(int argc, char* argv[]) {
 		recv(nuevo_socket, &modulo, sizeof(int), 0);//HS
 		crear_hilo(nuevo_socket, modulo);
 	}
+	//nunca llega hasta aca
 	log_info(log_operaciones, "Terminando la ejecucion del proceso..");
 	destruir_estructuras_globales();
 	return 0;
@@ -73,6 +74,7 @@ int main(int argc, char* argv[]) {
 
 //ACCIONES DE LOS HILOS
 void *rutina_instancia(void * arg) {
+	log_info(log_operaciones, "Se creo un hilo con rutina instancia");
 	int socket_INST = (int)arg;
 	void * stream;
 	recibirMensaje(socket_INST, &stream);
@@ -97,6 +99,7 @@ void nueva_instancia(int socket, char* nombre) {
 	list_add(listaSoloInstancias, nombre);
 	configurar_instancia(socket);
 	printf(GREEN"\nNueva instancia"CYAN" %s "GREEN"conectada en socket"RED" %d"RESET, nombre, socket);
+	log_info(log_operaciones, string_from_format("Se creo una nueva instancia. Nombre: %s. Socket: %d", nombre, socket));
 }
 
 void configurar_instancia(int socket){
@@ -120,6 +123,7 @@ t_list* instancias_conectadas() {
 }
 
 void *rutina_ESI(void* argumento) {
+	log_info(log_operaciones, "Se ha creado un hilo con rutina ESI");
 	int socket_esi = *(int*)(&argumento);
 	int id_esi;
 	void* stream;
@@ -210,6 +214,7 @@ void procesar_pedido_instancia(Accion operacion, char* instancia, int esi) {
 	switch(operacion) {
 		case ejecucion_ok:
 			printf(GREEN"\nLa instancia ejecuto la operacion de forma exitosa."RESET);
+			log_info(log_operaciones, string_from_format("La %s ejecuto correctamente", instancia));
 			break;
 		case compactar:
 			hilo_avisar_compactacion(); //creo un hilo que espera las compactaciones
@@ -224,6 +229,7 @@ void procesar_pedido_instancia(Accion operacion, char* instancia, int esi) {
 			enviarMensaje(socket_plan, terminar_esi, &esi, sizeof(int));
 			printf(RED"\nDesconectando "CYAN"%s."RESET, instancia);
 			cambiarEstadoInstancia(instancia, desconectada);
+			log_warning(log_operaciones, string_from_format("Se desconecto la %s", instancia));
 			break;
 	}
 }
@@ -289,6 +295,8 @@ void cambiarEstadoInstancia(char *instanciaGuardada, estado_de_la_instancia acci
 	estado->estadoConexion = accion;
 	if (accion == conectada) {
 		printf(GREEN"\nInstancia"CYAN" %s "GREEN" se ha vuelto a conectar en socket"RED" %d"RESET, instanciaGuardada, estado->socket);
+
+		log_info(log_operaciones, string_from_format("Se conecto de vuelta la %s en el socket %d", instanciaGuardada, estado->socket));
 	}
 }
 
@@ -379,7 +387,7 @@ void actualizar_instancia(char* instancia, int entradas) {
 }
 
 void equitative_load(char* claveSentencia){
-	log_info(log_operaciones, "Aplicando Equitative Load..");
+	//log_info(log_operaciones, "Aplicando Equitative Load..");
 	t_list* instancias = instancias_conectadas();
 	int cantidadInstancias = list_size(instancias) - 1;
 	char* instancia = list_get(instancias, contadorEquitativeLoad);
@@ -503,6 +511,7 @@ char* formatear_mensaje_esi(int id, TipoSentencia t, char* clave, char* valor) {
 		default:
 			log_error(log_operaciones, "Error al formatear el log");
 	}
+	free(str_id);
 	return formato_string;
 }
 
@@ -596,7 +605,7 @@ int existe_instancia(char* nombre) {
 
 void imprimir_cfg_en_log() {
 	log_info(log_operaciones, string_from_format("PUERTO_ESCUCHA: %d", configuracion.puerto_escucha));
-	log_info(log_operaciones, string_from_format("PUERTO_PLANIF: %d"), configuracion.puerto_planificador);
+	log_info(log_operaciones, string_from_format("PUERTO_PLANIF: %d", configuracion.puerto_planificador));
 	log_info(log_operaciones, string_from_format("IP_PLANIF: %s", configuracion.ip_planificador));
 	if(configuracion.algoritmo == el)
 		log_info(log_operaciones, "ALGORITMO_DISTRIBUCION: EQ");
