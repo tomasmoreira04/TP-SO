@@ -54,6 +54,7 @@ typedef enum {
 	conectar_esi_planif,
 	sentencia_coordinador,
 	nuevo_esi,
+	esi_listo_para_ejecutar, //planif -> esi (cuando ya esta en cola listos)
 	instancia_desconectada,
 	ejecutar_proxima_sentencia,
 	ejecutar_sentencia_coordinador,

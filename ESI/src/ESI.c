@@ -28,7 +28,6 @@ int main(int argc, char* argv[]) {
 	FILE* script = cargar_script(ruta);
 	int rafagas = cantidad_de_sentencias(script);
 	informar_nuevo_esi(planificador, rafagas, nombre);
-
 	leer_sentencias(planificador, coordinador, ruta); //si paso puntero a FILE no me anda el getline xD, asi que abro de nuevo
 
 	fclose(script);
@@ -49,6 +48,13 @@ void informar_nuevo_esi(int socket, int rafagas, char* nombre) {
 	nuevo->rafagas = rafagas;
 	strcpy(nuevo->nombre, nombre);
 	enviarMensaje(socket, nuevo_esi, nuevo, sizeof(t_nuevo_esi));
+	void* stream;
+	if (recibirMensaje(socket, &stream) == esi_listo_para_ejecutar)
+		printf(GREEN"\nEstoy listo para ejecutar\n"RESET);
+	else {
+		printf(RED"\nError del planificador al agregarme a listos\n"RESET);
+		exit(0);
+	}
 }
 
 //hago esto porque el struct que te dan en el parser es una mierda :)

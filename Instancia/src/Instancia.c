@@ -31,7 +31,6 @@ t_bitarray* disponibles;
 t_list* reemplazos;
 t_list* lista_Claves;
 t_list* tabla_de_entradas;
-
 t_list* claves_iniciales;
 
 //VARIABLES GLOBALES----
@@ -42,7 +41,7 @@ int32_t tamEntrada;
 int32_t cantEntradasDisp;
 ConfigInstancia config;
 int socketServer;
-int compactado = 1;
+int imprimir_storage = 0;
 
 pthread_mutex_t semaforo_compactacion = PTHREAD_MUTEX_INITIALIZER;
 sem_t compactacion_espera; //contador de inst conectadas
@@ -53,6 +52,7 @@ int main(int argc, char* argv[]) {
 	char* nombre = argv[1];
 	config = cargar_config_inst(nombre);
 	imprimir_configuracion();
+	mensaje_inicial();
 	socketServer = conexion_con_servidor(config.ip_coordinador, config.puerto_coordinador);
 	handShake(socketServer, instancia);
 	configurar_entradas();
@@ -66,7 +66,27 @@ int main(int argc, char* argv[]) {
 	return 0;
 }
 
-void terminar_programa(void) {
+void mensaje_inicial() {
+	char input[10];
+	printf(CYAN"\nDesea imprimir el estado del almacenamiento luego de cada SET?"RESET);
+	printf(GREEN"\n(S/N) >> "RED);
+	scanf("%s", input);
+	printf(RESET);
+	procesar_input(input);
+}
+
+void procesar_input(char* input) {
+	if (string_equals_ignore_case(input, "S"))
+		imprimir_storage = 1;
+	else {
+		if (string_equals_ignore_case(input, "N"))
+			imprimir_storage = 0;
+		else
+			printf("\nInput no valido, se asume que"RED"NO"RESET" desea mostrarlo.");
+	}
+}
+
+void terminar_programa(int sig) {
 	printf(GREEN"\nResultados finales:"RESET);
 	mostrar_storage();
 	exit(0);
@@ -84,19 +104,20 @@ void mostrar_storage() {
 }
 
 void configurar_entradas() {
-	enviarMensaje(socketServer, 8, &config.nombre_instancia , 20); //por que 8? por que 20?
+	int bytes = strlen(config.nombre_instancia) + 1;
+	enviarMensaje(socketServer, config_inst, &config.nombre_instancia, bytes);
 	void* dim;
-	if (config_inst == recibirMensaje(socketServer, &dim)) {
+	if (recibirMensaje(socketServer, &dim) == config_inst) {
 		memcpy(&cantEntradas,(int*)dim,sizeof(int));
 		memcpy(&tamEntrada,(int*)dim+1,sizeof(int));
-		//free(dim);
-
-		printf(CYAN "\n------------ INSTANCIA ------------\n");
-		printf("\nCANT ENTRADAS: %i \nTAM ENTRADAS: %i \n"RESET,cantEntradas, tamEntrada);
+		free(dim);
+		printf(MAGENTA"\nConfiguracion recibida del coordinador:");
+		printf(YELLOW"\nCantidad de entradas: "RED"%d"RESET, cantEntradas);
+		printf(YELLOW"\nTamaño de entradas: "RED"%d\n"RESET, tamEntrada);
 		cantEntradasDisp = cantEntradas;
 		storage = calloc(sizeof(char)*cantEntradas*tamEntrada, tamEntrada);
 	} else {
-		printf(RED "\nFATAL ERROR AL RECIBIR CONFIG DEL COORDINADOR\n"RESET);
+		printf(RED "\nERROR AL RECIBIR CONFIG DEL COORDINADOR\n"RESET);
 		exit(0);
 	}
 }
@@ -164,8 +185,8 @@ void cargar_clave_montaje(char* archivo, char* clave) {
 	}
 }
 
-
-void* rutina_sentencia(t_sentencia* sentencia) {
+void* rutina_sentencia(void* arg) {
+	t_sentencia* sentencia = (t_sentencia*)arg;
 	ejecutarSentencia(sentencia);
 	enviarMensaje(socketServer,ejecucion_ok,&cantEntradasDisp,sizeof(int));
 	return NULL;
@@ -197,18 +218,6 @@ void rutina_principal() {
 		}
 }
 
-
-//////////////////////////////////////////////////////////////////////////////////////////
-
-//-------------PARA PRUEBAS NOMAS-------------
-void mostrarArray(char* bitarray){
-	int i;
-	for(i=0;i<cantEntradas;i++){
-		int bit = bitarray_test_bit(disponibles,i);
-		printf("%d ", bit);
-	}
-}
-
 Reg_TablaEntradas* buscar_entrada(char* clave) {
 	for (int i = 0; i < list_size(tabla_de_entradas); i++) {
 		Reg_TablaEntradas* e = list_get(tabla_de_entradas, i);
@@ -235,10 +244,8 @@ void mostrarListaReemplazos(t_list* list){
 	printf("Lista de reemplazos:\n");
 	for(int i = 0; i < list_size(list); i++){
 		Nodo_Reemplazo* nodo = list_get(list, i);
-		//printf("%s t.ref= %d\n", devolver_valor(nodo->clave), nodo->ultimaRef);
-		printf("[%d]\t%s\n", i, devolver_valor(nodo->clave));
+		printf("[%d] (TR = "GREEN"%d"RESET")\t\t%s\n"RESET, i, nodo->ultimaRef, devolver_valor(nodo->clave));
 	}
-
 }
 //--------------DESTROYERS-------------------
 
@@ -272,7 +279,7 @@ bool comparadorMayorTam(Nodo_Reemplazo* nodo1, Nodo_Reemplazo* nodo2){
 }
 
 bool comparadorMayorTiempo(Nodo_Reemplazo* nodo1, Nodo_Reemplazo* nodo2){
-	return (nodo1->ultimaRef>=nodo2->ultimaRef);
+	return (nodo1->ultimaRef >= nodo2->ultimaRef);
 }
 
 
@@ -382,26 +389,20 @@ void imprimir_espacio(int bit) {
 }
 
 void aumentarTiempoRef(){
-	int i;
-	for(i=0;i<list_size(reemplazos);i++){
-		Nodo_Reemplazo* remp = list_get(reemplazos,i);
-		remp->ultimaRef+=1;
+	for(int i = 0; i < list_size(reemplazos); i++){
+		Nodo_Reemplazo* remp = list_get(reemplazos, i);
+		remp->ultimaRef++;
 	}
 }
 
-int buscarNodoReemplazo(char* clave){
-	int i;
-	int  IndexBuscado=-1;
-
-	for(i=0;i<list_size(reemplazos);i++){
+int indice_reemplazo(char* clave){
+	for(int i = 0; i < list_size(reemplazos); i++) {
 		Nodo_Reemplazo* remp = list_get(reemplazos,i);
-		if (string_equals_ignore_case(remp->clave,clave))
-			IndexBuscado = i;
+		if (string_equals_ignore_case(remp->clave, clave))
+			return i;
 	}
-	return IndexBuscado;
+	return -1;
 }
-
-//---------------------------------------------------------
 
 void ejecutarSentencia(t_sentencia* sentencia){
 
@@ -409,12 +410,13 @@ void ejecutarSentencia(t_sentencia* sentencia){
 
 	case S_SET:
 		aumentarTiempoRef();
-		almacenarValor(sentencia->clave,sentencia->valor);
+		almacenarValor(sentencia->clave, sentencia->valor);
 		printf(GREEN "\nSe ejecuto un SET correctamente, de clave "CYAN"%s"GREEN" con valor"RED" %s.\n"RESET, sentencia->clave, sentencia->valor);
-
-		//mostrar_storage();
-		//printf("\n\n");
-		//mostrarListaReemplazos(reemplazos);
+		if (imprimir_storage) {
+			mostrar_storage();
+			printf("\n");
+			mostrarListaReemplazos(reemplazos);
+		}
 		if(!laListaLoContiene(sentencia->clave))
 			list_add(lista_Claves,sentencia->clave);
 		break;
@@ -465,13 +467,21 @@ void limpiar_entrada(int entrada) {
 		memcpy(storage + (tamEntrada * entrada) + i, "\0", 1);
 }
 
+int es_atomico(char* valor) {
+	return strlen(valor) <= tamEntrada;
+}
+
+int existe_nodo(char* clave) {
+	return indice_reemplazo(clave) != -1;
+}
+
 void almacenarValor(char* clave, char* valor){
 
-	int tamEnBytes = string_length(valor); //no se incluye el \0
+	int tamEnBytes = string_length(valor);
 	int tamEnEntradas = 1 + (tamEnBytes - 1) / tamEntrada;			//redondeo para arriba
 
 	if(existe_entrada(clave))
-		liberarEntradas(clave);
+		liberarEntradas(clave, false); //libero la entrada, pero el reemplazo sigue
 
 	if(tamEnEntradas <= cantEntradasDisp) {
 		sem_init(&compactacion_espera, true, 1);
@@ -479,25 +489,20 @@ void almacenarValor(char* clave, char* valor){
 		limpiar_entrada(posInicialLibre);
 		memcpy(storage + (tamEntrada * posInicialLibre), valor, tamEnBytes);
 		nuevo_registro(clave, posInicialLibre, tamEnBytes);
-
 		cantEntradasDisp -= tamEnEntradas;
 
-		if (tamEnEntradas == 1)								//Si el valor es atomico, se selecciona como valor de reemplazo
+		if (es_atomico(valor) && !existe_nodo(clave))
 			nuevo_nodo_reemplazo(clave, tamEnBytes);
 
 	} else {
-
-		if(tamEnEntradas <= list_size(reemplazos)){
+		if(tamEnEntradas <= list_size(reemplazos)) {
 			printf(YELLOW "\nEl valor de la clave %s reemplazara %d valor(es) existente(s)\n"RESET,clave,tamEnEntradas);
-			reemplazarValor(clave,valor,tamEnEntradas);
-		} else{
-
+			reemplazarValor(clave, valor, tamEnEntradas);
+		} else {
 			printf(RED "\nNo existen suficientes entradas de reemplazo para ubicar valor de clave: %s!\n\n"RESET,clave);
 			exit(0);
-			return;
 		}
 	}
-
 }
 
 void persistirValor(char* clave){
@@ -522,7 +527,7 @@ void persistirValor(char* clave){
 t_list* reemplazoSegunAlgoritmo(int cantNecesita){
 
 	t_list* seleccionados;
-	t_list* duplicada;
+	//t_list* duplicada;
 
 	switch(config.algoritmo_reemp){
 
@@ -531,23 +536,26 @@ t_list* reemplazoSegunAlgoritmo(int cantNecesita){
 		break;
 
 	case LRU:
-		duplicada = duplicarLista(reemplazos);
+		/*duplicada = duplicarLista(reemplazos);
 		list_sort(duplicada,(void*)comparadorMayorTiempo);
-		seleccionados = list_take_and_remove(duplicada,cantNecesita);
+		seleccionados = list_take_and_remove(duplicada, cantNecesita);
 		eliminarDeListaRemp(seleccionados);
-
 		list_clean_and_destroy_elements(duplicada,(void*) nodoRempDestroyer);
-		free(duplicada);
+		free(duplicada);*/
+		list_sort(reemplazos, (void*)comparadorMayorTiempo);
+		seleccionados = list_take_and_remove(reemplazos, cantNecesita);
 		break;
 
 	case BSU:
-		duplicada = duplicarLista(reemplazos);
+		/*duplicada = duplicarLista(reemplazos);
 		list_sort(duplicada,(void*)comparadorMayorTam);
 		seleccionados = list_take_and_remove(duplicada,cantNecesita);
 		eliminarDeListaRemp(seleccionados);
 
 		list_clean_and_destroy_elements(duplicada,(void*) nodoRempDestroyer);
-		free(duplicada);
+		free(duplicada);*/
+		list_sort(reemplazos, (void*)comparadorMayorTam);
+		seleccionados = list_take_and_remove(reemplazos, cantNecesita);
 		break;
 	}
 
@@ -561,7 +569,7 @@ void reemplazarValor(char* clave, char* valor, int tamEnEntradas){
 	int i;
 	for(i=0;i<list_size(paraReemplazar);i++){
 		Nodo_Reemplazo* remp = list_get(paraReemplazar,i);
-		liberarEntradas(remp->clave);
+		liberarEntradas(remp->clave, true); //libero las entradas y el nodo lo elimino
 	}
 
 	list_clean_and_destroy_elements(paraReemplazar,(void*) nodoRempDestroyer);
@@ -577,8 +585,7 @@ char* devolver_valor(char* clave) {
 	return agregar_barra_cero(valor, registro->tamanio);
 }
 
-
-void liberarEntradas(char* clave){
+void liberarEntradas(char* clave, int borrar_nodo){
 	Reg_TablaEntradas* registro = borrar_devolver_entrada(clave);
 	int tamEnEntradas = 1 + (registro->tamanio - 1) / tamEntrada;
 	int desde = registro->entrada;
@@ -586,8 +593,14 @@ void liberarEntradas(char* clave){
 	limpiarArray(desde, hasta);
 	cantEntradasDisp += tamEnEntradas;
 
-	if(buscarNodoReemplazo(clave)>=0)
-		list_remove_and_destroy_element(reemplazos,buscarNodoReemplazo(clave),(void*)nodoRempDestroyer);
+
+	if (existe_nodo(clave)) {
+		int indice = indice_reemplazo(clave);
+		Nodo_Reemplazo* nodo = list_get(reemplazos, indice);
+		nodo->ultimaRef = 0;
+		if(borrar_nodo)
+			list_remove_and_destroy_element(reemplazos, indice, (void*)nodoRempDestroyer);
+	}
 
 	regTablaDestroyer(registro);
 }

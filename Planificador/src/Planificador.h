@@ -7,6 +7,7 @@
 #include "../../Bibliotecas/src/Estructuras.h"
 #include "../../Bibliotecas/src/Socket.h"
 #include <pthread.h>
+#include "semaphore.h"
 
 typedef enum {
 	error_tamanio_clave,
@@ -41,7 +42,6 @@ void crear_hilo(int nuevo_socket, Modulo modulo);
 
 //funciones de logica de esi
 void ejecutar_esi();
-void esperar_que_exista(int id_esi);
 ESI* obtener_esi(int id);
 void bloquear_esi(ESI* esi);
 void desbloquear_esi(ESI* esi);
@@ -86,8 +86,13 @@ void sentencia_ejecutada();
 float estimar(ESI* esi);
 ESI* esi_rafaga_mas_corta();
 ESI* esi_resp_ratio_mas_alto();
-
 void imprimir_configuracion();
 char* algoritmo(AlgoritmoPlanif alg);
+
+//semaforos de cada esi
+void semaforo_esi_nuevo();
+void esperar_disponibilidad(int id_esi);
+void hacer_disponible(int id_esi);
+sem_t* semaforo_esi(int id_esi);
 
 #endif

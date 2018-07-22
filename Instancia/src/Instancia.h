@@ -37,7 +37,7 @@ void almacenarNuevo(char* clave, char* valor, int tamEnBytes);
 void recibirDimensiones(int socketServer);
 void mostrarArray(char* bitarray);
 void limpiarArray(int desde, int hasta);
-void liberarEntradas(char* clave);
+void liberarEntradas(char* clave, int borrar_nodo);
 int buscarEspacioLibre(int entradasNecesarias);
 void almacenarValor(char* clave, char* valor);
 void ejecutarSentencia(t_sentencia* sentencia);
@@ -61,7 +61,7 @@ int laListaLoContiene(char * clave);
 void *rutina_Dump(void * arg);
 void guardarLaWea();
 void mostrar_storage();
-void terminar_programa(void);
+void terminar_programa(int);
 
 //asd
 void rutina_principal();
@@ -74,11 +74,15 @@ void compact();
 void imprimir_almacenamiento();
 void imprimir_espacio(int bit);
 void cargar_clave_montaje(char* archivo, char* clave);
-void configurar_entradas();
+
 void inicializar_estructuras();
 int recuperar_claves(char* ruta);
 void cargar_claves_iniciales();
 char* algoritmo(AlgoritmoInst alg);
 void imprimir_configuracion();
+
+void configurar_entradas();
+void procesar_input(char* input);
+void mensaje_inicial();
 
 #endif /* INSTANCIA_H_ */

@@ -21,8 +21,10 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 
+
 ConfigPlanificador config;
 t_list* cola_de_listos;
+t_list* semaforos_esi;
 t_list* cola_de_bloqueados;
 t_list* cola_de_finalizados;
 t_list* lista_claves_bloqueadas;
@@ -161,7 +163,9 @@ void* procesar_mensaje_coordinador(void* sock) {
 					break;
 				case sentencia_coordinador: {
 					t_sentencia sentencia = *(t_sentencia*)mensaje;
+					//esperar_disponibilidad(sentencia.id_esi);
 					nueva_sentencia(sentencia, coordinador);
+					//hacer_disponible(sentencia.id_esi);
 					break;
 				}
 				case clave_guardada_en_instancia: {
@@ -181,7 +185,7 @@ void* procesar_mensaje_coordinador(void* sock) {
 		}
 		s_signal(&coord_ok);
 	}
-	//free(mensaje);
+	free(mensaje);
 	return NULL;
 }
 
@@ -198,7 +202,9 @@ void* procesar_mensaje_esi(void* sock) {
 		Accion accion = recibirMensaje(socket, &mensaje);
 		switch(accion) {
 			case nuevo_esi:
+				//semaforo_esi_nuevo();
 				proceso_nuevo(*(t_nuevo_esi*)mensaje, socket);
+
 				break;
 			case resultado_ejecucion:
 				procesar_resultado(*(int*)mensaje);
@@ -211,7 +217,7 @@ void* procesar_mensaje_esi(void* sock) {
 			break;
 		}
 	}
-	//free(mensaje);
+	free(mensaje);
 	return NULL;
 }
 
@@ -547,7 +553,10 @@ void proceso_nuevo(t_nuevo_esi esi, int socket) {
 	nuevo_esi->cola_actual = NULL;
 	nuevo_esi->claves = list_create();
 	imprimir_nuevo_esi(nuevo_esi, esi.nombre);
-	ingreso_cola_de_listos(nuevo_esi);
+	//ingreso_cola_de_listos(nuevo_esi);
+	mover_esi(nuevo_esi, cola_de_listos);
+	avisar(socket, esi_listo_para_ejecutar);
+	replanificar();
 }
 
 void imprimir_nuevo_esi(ESI* esi, char* nombre) {
@@ -625,6 +634,7 @@ void inicializar_estructuras() {
 	output = fopen("consola", "w");
 	setbuf(stdout, NULL);
 	setbuf(output, NULL);
+	semaforos_esi = list_create();
 	cola_de_listos = list_create();
 	cola_de_bloqueados = list_create();
 	cola_de_finalizados = list_create();
@@ -639,6 +649,7 @@ void destruir_estructuras() {
 	list_destroy(lista_claves_bloqueadas);
 	dictionary_destroy(estimaciones_actuales);
 	close(file_descriptors[1]);
+	fclose(output);
 }
 
 void ejecutar_por_fifo() {
@@ -787,4 +798,26 @@ char* algoritmo(AlgoritmoPlanif alg) {
 		default: 		return "FIFO";
 	}
 }
+
+void semaforo_esi_nuevo() {
+	sem_t semaforo;
+	sem_init(&semaforo, true, 0);
+	list_add(semaforos_esi, &semaforo);
+}
+
+void esperar_disponibilidad(int id_esi) {
+	sem_t* semaforo = semaforo_esi(id_esi);
+	sem_wait(semaforo);
+}
+
+void hacer_disponible(int id_esi) {
+	sem_t* semaforo = semaforo_esi(id_esi);
+	sem_post(semaforo);
+}
+
+sem_t* semaforo_esi(int id_esi) {
+	int indice_semaforo = id_esi - 1; //los esi empiezan en 1, pero la lista indice 0
+	return list_get(semaforos_esi, indice_semaforo);
+}
+
 
