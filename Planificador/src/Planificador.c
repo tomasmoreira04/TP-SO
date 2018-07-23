@@ -21,13 +21,12 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 
-
 ConfigPlanificador config;
 t_list* cola_de_listos;
-t_list* semaforos_esi;
 t_list* cola_de_bloqueados;
 t_list* cola_de_finalizados;
 t_list* lista_claves_bloqueadas;
+t_list* nombres_esi;
 ESI* esi_ejecutando = NULL;
 t_dictionary* estimaciones_actuales;
 int ultimo_id;
@@ -50,8 +49,8 @@ pthread_mutex_t numero_esi = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t num_esis = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t sem_ejecutar = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t operando_claves = PTHREAD_MUTEX_INITIALIZER;
-
 pthread_mutex_t mutex_planificar = PTHREAD_MUTEX_INITIALIZER;
+
 
 int main(int argc, char* argv[]) {
 	inicializar_estructuras();
@@ -163,9 +162,9 @@ void* procesar_mensaje_coordinador(void* sock) {
 					break;
 				case sentencia_coordinador: {
 					t_sentencia sentencia = *(t_sentencia*)mensaje;
-					//esperar_disponibilidad(sentencia.id_esi);
+					while (obtener_esi(sentencia.id_esi) == NULL);
+					//esperar_que_exista(sentencia.id_esi);
 					nueva_sentencia(sentencia, coordinador);
-					//hacer_disponible(sentencia.id_esi);
 					break;
 				}
 				case clave_guardada_en_instancia: {
@@ -189,6 +188,18 @@ void* procesar_mensaje_coordinador(void* sock) {
 	return NULL;
 }
 
+/*
+void esperar_que_exista(int id_esi) { //para que el coordi no me meta una sentencia sin que esté cargado ese esi
+	ESI* esi;
+	while(true) {
+		esi = obtener_esi(id_esi);
+		if (esi != NULL) {
+			if (esi->id == id_esi)
+				break;
+		}
+	}
+}
+*/
 int ver_disponibilidad_clave(char* clave) { //0: no, 1: disponible
 	if (esta_bloqueada(clave))
 		return 0;
@@ -202,9 +213,7 @@ void* procesar_mensaje_esi(void* sock) {
 		Accion accion = recibirMensaje(socket, &mensaje);
 		switch(accion) {
 			case nuevo_esi:
-				//semaforo_esi_nuevo();
 				proceso_nuevo(*(t_nuevo_esi*)mensaje, socket);
-
 				break;
 			case resultado_ejecucion:
 				procesar_resultado(*(int*)mensaje);
@@ -217,7 +226,7 @@ void* procesar_mensaje_esi(void* sock) {
 			break;
 		}
 	}
-	free(mensaje);
+	//free(mensaje);
 	return NULL;
 }
 
@@ -265,10 +274,7 @@ void procesar_resultado(ResultadoEjecucion resultado) {
 void ejecutar_esi(ESI* esi) {
 	int id = esi->id;
 	enviarMensaje(esi->socket_planif, ejecutar_proxima_sentencia, &id, sizeof(int));
-
 	esi->cola_actual = NULL;
-	esi->posicion = 0;
-
 	s_wait(&ejecucion);
 	esi_ejecutando = esi;
 	if (config.algoritmo == hrrn)
@@ -422,8 +428,11 @@ void finalizar_esi_ref(ESI* esi) {
 	}
 
 	mover_esi(esi, cola_de_finalizados);
+
 	s_wait(&ejecucion);
-	esi_ejecutando = NULL;
+	if (esi_ejecutando != NULL)
+		if (esi_ejecutando->id == esi->id)
+			esi_ejecutando = NULL;
 	s_signal(&ejecucion);
 	liberar_recursos(esi);
 	replanificar();
@@ -529,9 +538,15 @@ t_clave* buscar_clave_bloqueada(const char* clave) {
 	return NULL;
 }
 
+
 void bloquear_esi(ESI* esi) {
 	mover_esi(esi, cola_de_bloqueados);
-	esi_ejecutando = NULL;
+	s_wait(&ejecucion);
+	if (esi_ejecutando != NULL)
+		if (esi_ejecutando->id == esi->id)
+			esi_ejecutando = NULL;
+	s_signal(&ejecucion);
+
 	replanificar();
 }
 
@@ -552,11 +567,11 @@ void proceso_nuevo(t_nuevo_esi esi, int socket) {
 	nuevo_esi->socket_planif = socket;
 	nuevo_esi->cola_actual = NULL;
 	nuevo_esi->claves = list_create();
-	imprimir_nuevo_esi(nuevo_esi, esi.nombre);
-	//ingreso_cola_de_listos(nuevo_esi);
-	mover_esi(nuevo_esi, cola_de_listos);
-	avisar(socket, esi_listo_para_ejecutar);
-	replanificar();
+	char* nombre = malloc(strlen(esi.nombre) + 1);
+	strcpy(nombre, esi.nombre);
+	list_add(nombres_esi, nombre);
+	imprimir_nuevo_esi(nuevo_esi, nombre);
+	ingreso_cola_de_listos(nuevo_esi);
 }
 
 void imprimir_nuevo_esi(ESI* esi, char* nombre) {
@@ -587,7 +602,6 @@ int hay_desalojo(AlgoritmoPlanif algoritmo) {
 void ejecutar(int desalojar) {
 
 	s_wait(&mutex_planificar);
-
 	s_wait(&sem_ejecutar);
 
 	switch(config.algoritmo) {
@@ -606,12 +620,20 @@ void ejecutar(int desalojar) {
 	}
 
 	s_signal(&sem_ejecutar);
-
 	s_signal(&mutex_planificar);
 }
 
 int _es_esi(ESI* a, ESI* b) {
 	return a->id == b->id;
+}
+
+int indice_en_lista(ESI* esi, t_list* lista) {
+	for (int i = 0; i < list_size(lista); i++) {
+		ESI* otro = list_get(lista, i);
+		if (otro->id == esi->id)
+			return i;
+	}
+	return -1;
 }
 
 void mover_esi(ESI* esi, t_list* nueva_lista) {
@@ -620,10 +642,9 @@ void mover_esi(ESI* esi, t_list* nueva_lista) {
 
 	if (esi != NULL) {
 		if (esi->cola_actual != NULL)
-			list_remove(esi->cola_actual, esi->posicion);
+			list_remove(esi->cola_actual, indice_en_lista(esi, esi->cola_actual));
 		list_add(nueva_lista, esi);
 		esi->cola_actual = nueva_lista;
-		esi->posicion = list_size(nueva_lista) - 1;
 	}
 
 	s_signal(&lista_disponible);
@@ -634,11 +655,11 @@ void inicializar_estructuras() {
 	output = fopen("consola", "w");
 	setbuf(stdout, NULL);
 	setbuf(output, NULL);
-	semaforos_esi = list_create();
 	cola_de_listos = list_create();
 	cola_de_bloqueados = list_create();
 	cola_de_finalizados = list_create();
 	lista_claves_bloqueadas = list_create();
+	nombres_esi = list_create();
 	estimaciones_actuales = dictionary_create();
 }
 
@@ -647,9 +668,9 @@ void destruir_estructuras() {
 	list_destroy(cola_de_bloqueados);
 	list_destroy(cola_de_finalizados);
 	list_destroy(lista_claves_bloqueadas);
+	list_destroy(nombres_esi);
 	dictionary_destroy(estimaciones_actuales);
 	close(file_descriptors[1]);
-	fclose(output);
 }
 
 void ejecutar_por_fifo() {
@@ -750,18 +771,15 @@ ESI* esi_rafaga_mas_corta() {
 	if (esi_ejecutando != NULL)
 		mas_corto = esi_ejecutando;
 	int indice = 0;
-	//printf("\nbuscando entre %d esis", list_size(cola_de_listos));
 	for (int i = 0; i < list_size(cola_de_listos); i++) {
 		ESI* esi = list_get(cola_de_listos, i);
 		if (esi != NULL) {
-			//printf("\ncomparando esi %d con esi%d", esi->id, mas_corto->id);
 			if (esi->rafagas_restantes < mas_corto->rafagas_restantes) {
 				mas_corto = esi;
 				indice = i;
 			}
 		}
 	}
-	//printf("\nganador: esi %d", mas_corto->id);
 	if (esi_ejecutando != NULL)
 		if (mas_corto->id == esi_ejecutando->id)
 			return mas_corto;
@@ -798,26 +816,3 @@ char* algoritmo(AlgoritmoPlanif alg) {
 		default: 		return "FIFO";
 	}
 }
-
-void semaforo_esi_nuevo() {
-	sem_t semaforo;
-	sem_init(&semaforo, true, 0);
-	list_add(semaforos_esi, &semaforo);
-}
-
-void esperar_disponibilidad(int id_esi) {
-	sem_t* semaforo = semaforo_esi(id_esi);
-	sem_wait(semaforo);
-}
-
-void hacer_disponible(int id_esi) {
-	sem_t* semaforo = semaforo_esi(id_esi);
-	sem_post(semaforo);
-}
-
-sem_t* semaforo_esi(int id_esi) {
-	int indice_semaforo = id_esi - 1; //los esi empiezan en 1, pero la lista indice 0
-	return list_get(semaforos_esi, indice_semaforo);
-}
-
-

@@ -154,6 +154,7 @@ void procesar_permiso_planificador(Accion mensaje, t_sentencia sentencia, int so
 			printf(YELLOW "\nESI bloqueado por el planificador" RESET);
 			resultado = bloqueado; //antes era exitoso /?
 			break;
+		case error_sentencia:
 		case error:
 		default:
 			printf(RED"\nError del planificador!" RESET);
@@ -561,7 +562,7 @@ void* rutina_consulta(void* argumento) {
 	char* instancia = "ERROR";
 	if (accion == consulta_simulacion)
 		instancia = simular_algoritmo((char*)stream);
-	enviarMensaje(socket_consola, consulta_simulacion, instancia, sizeof(instancia));
+	enviarMensaje(socket_consola, consulta_simulacion, instancia, strlen(instancia) + 1);
 	return NULL;
 }
 

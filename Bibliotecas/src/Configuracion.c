@@ -25,7 +25,6 @@ ConfigPlanificador cargar_config_planificador(char* ruta) {
 	char* campos[] = { "ESTIMACION_INICIAL", "ALFA_PLANIFICACION", "ALGORITMO_PLANIFICACION", "CLAVES_BLOQUEADAS"};
 	t_config* config = cargar_archivo(ruta, campos);
 	ConfigPlanificador configuracion;
-	printf("cargando config global");
 	ConfigGlobal global = cargar_config_global();
 	configuracion.puerto_escucha = global.puerto_planificador;
 	strcpy(configuracion.ip_coordinador, global.ip_coordinador);

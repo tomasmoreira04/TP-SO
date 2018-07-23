@@ -22,10 +22,12 @@ extern t_list* cola_de_listos;
 extern t_list* cola_de_bloqueados;
 extern t_list* cola_de_finalizados;
 extern t_list* lista_claves_bloqueadas;
+extern t_list* nombres_esi;
 extern ESI* esi_ejecutando;
 extern t_dictionary* estimaciones_actuales;
 extern int ultimo_id;
 extern pthread_mutex_t mutex_planificar;
+extern pthread_mutex_t sem_ejecutar;
 
 void* crear_ventana_output();
 
@@ -94,5 +96,9 @@ void semaforo_esi_nuevo();
 void esperar_disponibilidad(int id_esi);
 void hacer_disponible(int id_esi);
 sem_t* semaforo_esi(int id_esi);
+
+
+void mostrar_bloqueados();
+
 
 #endif

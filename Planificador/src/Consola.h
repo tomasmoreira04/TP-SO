@@ -26,9 +26,14 @@ typedef struct Operacion {
 } Operacion;
 
 typedef struct {
-	int esi_bloqueante;
 	int esi_bloqueado;
-	char clave_necesaria[LARGO_CLAVE];
+	int esi_bloqueante;
+	char clave[LARGO_CLAVE];
+} t_bloqueo;
+
+typedef struct {
+	t_bloqueo* bloqueo1;
+	t_bloqueo* bloqueo2;
 } t_deadlock;
 
 
@@ -56,6 +61,7 @@ void bloquear_esi_en_clave(char* clave, char* id_esi);
 void _imprimir_claves_esi(t_list* claves);
 ESI* _obtener_esi(int id);
 ESI* _buscar_esi(t_list* lista, int id);
+void destruir_deadlocks(t_list* bloqueos, t_list* deadlocks);
 
 
 char* consultar_simulacion(char* clave);

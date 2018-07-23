@@ -15,7 +15,6 @@ typedef struct {
 	float response_ratio; //para hrrn
 	t_list* claves;
 	t_list* cola_actual;
-	int posicion; //en la cola, en vez de filtrar la lista, ya se el indice -> mas rapido
 	int socket_planif;
 } ESI;
 
@@ -78,7 +77,8 @@ typedef enum {
 	clave_guardada_en_instancia, //coord -> planif
 	consulta_simulacion,
 	inicializacion_instancia,
-	verificar_conexion //coordi checkea que la instancia este conectada
+	verificar_conexion, //coordi checkea que la instancia este conectada
+	esi_matado
 } Accion;
 
 typedef enum {

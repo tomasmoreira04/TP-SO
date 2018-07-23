@@ -48,13 +48,6 @@ void informar_nuevo_esi(int socket, int rafagas, char* nombre) {
 	nuevo->rafagas = rafagas;
 	strcpy(nuevo->nombre, nombre);
 	enviarMensaje(socket, nuevo_esi, nuevo, sizeof(t_nuevo_esi));
-	void* stream;
-	if (recibirMensaje(socket, &stream) == esi_listo_para_ejecutar)
-		printf(GREEN"\nEstoy listo para ejecutar\n"RESET);
-	else {
-		printf(RED"\nError del planificador al agregarme a listos\n"RESET);
-		exit(0);
-	}
 }
 
 //hago esto porque el struct que te dan en el parser es una mierda :)
@@ -86,9 +79,11 @@ void leer_sentencias(int planificador, int coordinador, char* ruta) {
 
 	while ((leidas = getline(&linea, &largo, script)) != -1) {
 
-			printf(YELLOW"\nEsperando pedido del planificador..."RESET);
-			if(recibirMensaje(planificador, &stream) != ejecutar_proxima_sentencia)
-				continue;
+			if (recibirMensaje(planificador, &stream) == ejecutar_proxima_sentencia)
+				printf(GREEN"\nEjecutando: "RESET);
+			else
+				printf(RED"\nERROR"RESET);
+
 			id_esi = *(int*)stream;
 			t_esi_operacion operacion = parse(linea);
 
@@ -114,6 +109,7 @@ void leer_sentencias(int planificador, int coordinador, char* ruta) {
 	}
 
 	enviarMensaje(coordinador, no_hay_mas_sentencias, NULL, 0);
+	printf(GREEN"\n\nEjecucion finalizada!\n"RESET);
 
 	fclose(script);
 	if (linea)
@@ -121,15 +117,15 @@ void leer_sentencias(int planificador, int coordinador, char* ruta) {
 }
 
 void GET_CLAVE(t_esi_operacion operacion) {
-	printf("Envio al coordinador -> GET\t" GREEN "%s\n" RESET, operacion.argumentos.GET.clave);
+	printf("GET " GREEN "%s\n" RESET, operacion.argumentos.GET.clave);
 }
 
 void SET_CLAVE_VALOR(t_esi_operacion operacion) {
-	printf("Envio al coordinador -> SET\t" GREEN "%s\t" CYAN "%s\n" RESET, operacion.argumentos.SET.clave, operacion.argumentos.SET.valor);
+	printf("SET " GREEN "%s " CYAN "%s\n" RESET, operacion.argumentos.SET.clave, operacion.argumentos.SET.valor);
 }
 
 void STORE_CLAVE(t_esi_operacion operacion) {
-	printf("Envio al coordinador -> STORE\t" GREEN "%s\n" RESET, operacion.argumentos.STORE.clave);
+	printf("STORE " GREEN "%s" RESET, operacion.argumentos.STORE.clave);
 }
 
 void ejecutar_operacion(t_esi_operacion operacion) {

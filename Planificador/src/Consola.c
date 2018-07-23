@@ -14,29 +14,7 @@
 int file_descriptors[2];
 FILE* outPlanif;
 
-void iniciar_terminal() {
-    if(pipe(file_descriptors) == -1)
-        abort();
-
-    int pid = fork();
-
-    if (pid == -1)
-    	abort();
-    if (pid == 0) {
-    	close(file_descriptors[1]);
-    	char* buffer = malloc(LARGO_RUTA);
-    	sprintf(buffer, "%d", file_descriptors[0]);
-    	execlp("xterm","xterm", "-e", "cat", buffer, NULL);
-    	abort();
-    }
-
-    close(file_descriptors[0]);
-    outPlanif = fdopen(file_descriptors[1], "w");
-}
-
 void* iniciar_consola() {
-	//iniciar_terminal();
-
 	size_t tamanio_buffer = 50;
 	Operacion operacion;
 	char *buffer = malloc(tamanio_buffer);
@@ -140,70 +118,128 @@ void ejecutar_comando(Operacion comando) {
 }
 
 void pausar_planificacion() {
-	//planificar = 0;
 	printf(RED"\n\nSE HA PAUSADO LA PLANIFICACION\n\n"RESET);
 	s_wait(&mutex_planificar);
 }
 
 void continuar_planificacion() {
-	//planificar = 1;
 	printf(GREEN"\n\nSE HA REANUDADO LA PLANIFICACION\n\n"RESET);
 	s_signal(&mutex_planificar);
 }
 
-t_list* buscar_deadlocks() {
-	t_list* lista = cola_de_bloqueados;
-	int cant = list_size(lista);
-	t_list* deadlocks = list_create();
+t_clave* buscar_clave_que_necesita(ESI* esi) {
+	t_list* lista = lista_claves_bloqueadas;
+	int n = list_size(lista_claves_bloqueadas);
+	for (int i = 0; i < n; i++) {
+		t_clave* clave = list_get(lista, i);
+		for (int j = 0; j < list_size(clave->esis_esperando); j++) {
+			ESI* esperando = list_get(clave->esis_esperando, j);
+			if (esperando->id == esi->id)
+				return clave;
+		}
+	}
+	return NULL;
+}
 
-	for (int i = 0; i < cant; i++) {
-		ESI* esi = list_get(lista, i);
-		for (int j = 0; j < cant; i++) {
-			ESI* otro_esi = list_get(lista, j);
-			t_deadlock* deadlock = clave_que_necesita(esi, otro_esi);
-			if (deadlock != NULL)
-				list_add(deadlocks, deadlock);
+int alguno_bloquea_clave(t_clave* clave) { //y ademas bloqueado
+	if (clave->bloqueada && clave->esi_duenio != NULL)
+		return clave->esi_duenio->cola_actual == cola_de_bloqueados;
+	return 0;
+}
+
+char* nombre_esi(int id) {
+	return list_get(nombres_esi, id - 1);
+}
+
+void imprimir_deadlock(t_deadlock* d) {
+	char* n1 = nombre_esi(d->bloqueo1->esi_bloqueado);
+	char* n2 = nombre_esi(d->bloqueo2->esi_bloqueado);
+	printf(RED"\n%s"YELLOW" bloquea a "GREEN"%s"YELLOW" por la clave "CYAN"%s"RESET, n1, n2, d->bloqueo1->clave);
+	printf(RED"\n%s"YELLOW" bloquea a "GREEN"%s"YELLOW" por la clave "CYAN"%s\n"RESET, n2, n1, d->bloqueo2->clave);
+}
+
+void imprimir_deadlocks(t_list* deadlocks) {
+	int cantidad = list_size(deadlocks);
+	if (cantidad == 0)
+		printf(GREEN"\nNo hay deadlocks"RESET);
+	else {
+		printf(RED"\nDeadlocks detectados:"RESET);
+		for (int i = 0; i < cantidad; i ++)
+			imprimir_deadlock(list_get(deadlocks, i));
+	}
+}
+
+int tiene_clave(ESI* esi, char* clave) {
+	t_list* claves = claves_de_esi(esi);
+	for (int i = 0; i < list_size(claves); i++) {
+		t_clave* clave2  = list_get(claves, i);
+		if (strcmp(clave, clave2->clave) == 0)
+			return 1;
+	}
+	return 0;
+}
+
+void nuevo_bloqueo(t_list* bloqueos, ESI* esi_bloqueado, ESI* esi_bloqueante, char* clave) {
+	t_bloqueo* nuevo_bloqueo = malloc(sizeof(t_bloqueo));
+	nuevo_bloqueo->esi_bloqueado = esi_bloqueado->id;
+	nuevo_bloqueo->esi_bloqueante = esi_bloqueante->id;
+	strcpy(nuevo_bloqueo->clave, clave);
+	list_add(bloqueos, nuevo_bloqueo);
+}
+
+t_list* armar_bloqueos() {
+	t_list* bloqueados = cola_de_bloqueados;
+	int cantidad_bloqueados = list_size(bloqueados);
+	t_list* bloqueos = list_create();
+	for (int i = 0; i < cantidad_bloqueados; i++) {
+		ESI* esi1 = list_get(bloqueados, i);
+		t_clave* clave1 = buscar_clave_que_necesita(esi1);
+		if (clave1 != NULL && alguno_bloquea_clave(clave1)) {
+			ESI* esi2 = clave1->esi_duenio;
+			t_clave* clave2 = buscar_clave_que_necesita(esi2);
+			if (clave2 != NULL && alguno_bloquea_clave(clave2) && esi1->id == clave2->esi_duenio->id)
+				nuevo_bloqueo(bloqueos, esi1, esi2, clave1->clave);
+		}
+	}
+	return bloqueos;
+}
+
+t_list* armar_deadlocks(t_list* bloqueos) {
+	t_list* deadlocks = list_create();
+	int n = list_size(bloqueos);
+	for (int i = 0; i < n; i++) {
+		t_bloqueo* bloqueo1 = list_get(bloqueos, i);
+		for (int j = i + 1; j < n; j++) {
+			t_bloqueo* bloqueo2 = list_get(bloqueos, j);
+			if (bloqueo1->esi_bloqueado == bloqueo2->esi_bloqueante
+					&& bloqueo2->esi_bloqueado == bloqueo1->esi_bloqueante) {
+				t_deadlock* d = malloc(sizeof(deadlock));
+				d->bloqueo1 = bloqueo1;
+				d->bloqueo2 = bloqueo2;
+				list_add(deadlocks, d);
+			}
 		}
 	}
 	return deadlocks;
 }
 
 void mostrar_deadlocks() {
-	t_list* deadlocks = buscar_deadlocks();
-	int num_d = list_size(deadlocks);
-	if (num_d == 0)
-		printf(GREEN "\nNO SE HA ENCONTRADO DEADLOCK ENTRE LOS ESIS BLOQUEADOS" RESET);
-	else {
-		printf(RED "\nSE HAN ENCONTRADO DEADLOCKS" RESET);
-		for (int i = 0; i < num_d; i++)
-			imprimir_deadlock(list_get(deadlocks, i));
-	}
+	t_list* bloqueos = armar_bloqueos();
+	t_list* deadlocks = armar_deadlocks(bloqueos);
+	imprimir_deadlocks(deadlocks);
+	destruir_deadlocks(bloqueos, deadlocks);
 }
 
-void imprimir_deadlock(t_deadlock* deadlock) {
-	printf(GREEN"\nESI %d" RESET " esperando clave" MAGENTA " %s " RESET " bloqueada por "GREEN "ESI %d"RESET,
-			deadlock->esi_bloqueado, deadlock->clave_necesaria, deadlock->esi_bloqueante);
-}
+void destruir_deadlocks(t_list* bloqueos, t_list* deadlocks) {
 
-t_deadlock* clave_que_necesita(ESI* a, ESI* b) {
-	for (int i = 0; i < list_size(a->claves); i++) {
-		t_clave* clave = buscar_clave_bloqueada(list_get(a->claves, i));
-		for (int j = 0; j < list_size(clave->esis_esperando); j++){
-			ESI* esi_esperando = list_get(clave->esis_esperando, j);
-			if (esi_esperando->id == b->id) {
-				t_deadlock* deadlock = malloc(sizeof(t_deadlock));
-				deadlock->esi_bloqueado = b->id;
-				deadlock->esi_bloqueante = a->id;
-				strcpy(deadlock->clave_necesaria, clave->clave);
-				return deadlock;
-			}
-		}
+	void destructor(void* elemento) {
+		free(elemento);
 	}
-	return NULL;
+	list_destroy_and_destroy_elements(bloqueos, (void*)destructor);
+	list_destroy_and_destroy_elements(deadlocks, (void*)destructor);
 }
 
 void desbloquear_clave(char* clave) {
-	printf("\nsidaaaaaaaaa");
 	int ok = liberar_clave(clave);
 	if (!ok)
 		printf(RED"\nNo se ha podido liberar la clave"CYAN" %s"RESET, clave);
@@ -224,12 +260,11 @@ void matar_esi(char* id) {
 	int id_esi = atoi(id);
 	ESI* esi = obtener_esi(id_esi);
 	if (esi != NULL) {
-		t_list *claves_liberadas = esi->claves;
-		//s_wait(&ejecucion);
-		finalizar_esi(esi->id);
-		printf(GREEN"\nSe ha finalizado el ESI %d, liberando las claves "RESET, esi->id);
-		_imprimir_claves_esi(claves_liberadas);
-		//s_signal(&ejecucion);
+		s_wait(&sem_ejecutar);
+		ESI* esi = obtener_esi(id_esi);
+		finalizar_esi_ref(esi);
+		printf(RED"\n\nSe ha finalizado el ESI %d"RESET, id_esi);
+		s_signal(&sem_ejecutar);
 	}
 	else {
 		printf(RED"\nNo existe el ESI %d en ninguna cola ni ejecutando\n"GREEN, id_esi);
@@ -298,20 +333,11 @@ void _imprimir_claves_esi(t_list* claves) {
 		printf(RED"%s, "RESET, (char*)list_get(claves, i));
 }
 
-ESI* _buscar_esi(t_list* lista, int id) {
-	for (int i = 0; i < list_size(lista); i++) {
-		ESI* otro = (ESI*)list_get(lista, i);
-		if (otro->id == id)
-			return otro;
-	}
-	return NULL;
-}
-
 char* consultar_simulacion(char* clave) {
 	void* mensaje;
 	int coordinador = conexion_con_servidor(config.ip_coordinador, config.puerto_coordinador);
 	handShake(coordinador, consola);
-	enviarMensaje(coordinador, consulta_simulacion, clave, sizeof(clave));
+	enviarMensaje(coordinador, consulta_simulacion, clave, strlen(clave) + 1);
 	recibirMensaje(coordinador, &mensaje);
 	return (char*)mensaje;
 }

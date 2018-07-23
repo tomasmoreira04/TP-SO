@@ -92,13 +92,57 @@ void terminar_programa(int sig) {
 	exit(0);
 }
 
+void ordenar_reemplazos(int algoritmo) {
+	if (algoritmo == LRU)
+		list_sort(reemplazos, (void*)comparadorMayorTiempo);
+	else if (algoritmo == BSU)
+		list_sort(reemplazos, (void*)comparadorMayorTam);
+}
+
+
+
+int numero_entrada(Nodo_Reemplazo* nodo) {
+	return buscar_entrada(nodo->clave)->entrada;
+}
+
+char* valor_entrada(int entrada) { //devuelve lo que ENTRÓ en esa entrada, no el valor total
+	char* retorno = malloc(tamEntrada + 1);
+	memcpy(retorno, storage + entrada * tamEntrada, tamEntrada);
+	retorno[tamEntrada] = '\0';
+	return retorno;
+}
+
+int es_reemplazable(int indice) { //este indice es DEL STORAGE, no de la tabla
+	char* entrada = valor_entrada(indice);
+	char* valor;
+
+	int es_entrada(Nodo_Reemplazo* nodo) {
+		Reg_TablaEntradas* reg = buscar_entrada(nodo->clave);
+		valor = devolver_valor(nodo->clave);
+		int resultado = strcmp(entrada, valor) == 0 && indice == reg->entrada;
+		free(valor);
+		return resultado;
+	}
+
+	int resultado = list_any_satisfy(reemplazos, (void*)es_entrada);
+	free(entrada);
+	return resultado;
+}
+
 void mostrar_storage() {
+	Nodo_Reemplazo* nodo_reemplazo = list_get(reemplazos, 0);
+	char* color = RESET;
+	ordenar_reemplazos(config.algoritmo_reemp); //lo ordeno antes de imprimir
 	printf("\n");
+	int puntero_reemplazo = numero_entrada(nodo_reemplazo);
 	for (int i = 0; i < cantEntradas; i++) {
+		int es_puntero = puntero_reemplazo == i;
 		printf(YELLOW"\n[%d]\t"RESET, i);
-		char* entrada = storage + i * tamEntrada;
-		for (int j = 0; j < tamEntrada; j++)
-			printf(RED"%c"RESET, entrada[j]);
+		if (es_reemplazable(i)) color = RED;
+		if (es_puntero) 		color = GREEN;
+		printf("%s%s"RESET, color, valor_entrada(i));
+		if (es_puntero)	printf(GREEN"\t<<< REEMPLAZO"RESET);
+		color = RESET;
 	}
 	printf("\n");
 }
@@ -244,7 +288,12 @@ void mostrarListaReemplazos(t_list* list){
 	printf("Lista de reemplazos:\n");
 	for(int i = 0; i < list_size(list); i++){
 		Nodo_Reemplazo* nodo = list_get(list, i);
-		printf("[%d] (TR = "GREEN"%d"RESET")\t\t%s\n"RESET, i, nodo->ultimaRef, devolver_valor(nodo->clave));
+		printf("[%d]\t", i);
+		if (config.algoritmo_reemp == LRU)
+			printf("[T = "GREEN"%d"RESET"]\t", nodo->ultimaRef);
+		else if (config.algoritmo_reemp == BSU)
+			printf("[B = "GREEN"%d"RESET"]\t", nodo->tamanio);
+		printf("%s\n", devolver_valor(nodo->clave));
 	}
 }
 //--------------DESTROYERS-------------------
@@ -411,7 +460,7 @@ void ejecutarSentencia(t_sentencia* sentencia){
 	case S_SET:
 		aumentarTiempoRef();
 		almacenarValor(sentencia->clave, sentencia->valor);
-		printf(GREEN "\nSe ejecuto un SET correctamente, de clave "CYAN"%s"GREEN" con valor"RED" %s.\n"RESET, sentencia->clave, sentencia->valor);
+		printf(GREEN "\nSe ejecuto un SET correctamente, de clave "CYAN"%s"GREEN" con valor"RED" %s."RESET, sentencia->clave, sentencia->valor);
 		if (imprimir_storage) {
 			mostrar_storage();
 			printf("\n");
@@ -424,7 +473,7 @@ void ejecutarSentencia(t_sentencia* sentencia){
 	case S_STORE:
 		aumentarTiempoRef();
 		persistirValor(sentencia->clave);
-		printf(GREEN "\nSe ejecuto un STORE correctamente, de clave %s.\n"RESET, sentencia->clave);
+		printf(GREEN "\nSe ejecuto un STORE correctamente, de clave %s."RESET, sentencia->clave);
 		break;
 
 	default:
@@ -527,7 +576,6 @@ void persistirValor(char* clave){
 t_list* reemplazoSegunAlgoritmo(int cantNecesita){
 
 	t_list* seleccionados;
-	//t_list* duplicada;
 
 	switch(config.algoritmo_reemp){
 
@@ -536,25 +584,12 @@ t_list* reemplazoSegunAlgoritmo(int cantNecesita){
 		break;
 
 	case LRU:
-		/*duplicada = duplicarLista(reemplazos);
-		list_sort(duplicada,(void*)comparadorMayorTiempo);
-		seleccionados = list_take_and_remove(duplicada, cantNecesita);
-		eliminarDeListaRemp(seleccionados);
-		list_clean_and_destroy_elements(duplicada,(void*) nodoRempDestroyer);
-		free(duplicada);*/
-		list_sort(reemplazos, (void*)comparadorMayorTiempo);
+		ordenar_reemplazos(LRU);
 		seleccionados = list_take_and_remove(reemplazos, cantNecesita);
 		break;
 
 	case BSU:
-		/*duplicada = duplicarLista(reemplazos);
-		list_sort(duplicada,(void*)comparadorMayorTam);
-		seleccionados = list_take_and_remove(duplicada,cantNecesita);
-		eliminarDeListaRemp(seleccionados);
-
-		list_clean_and_destroy_elements(duplicada,(void*) nodoRempDestroyer);
-		free(duplicada);*/
-		list_sort(reemplazos, (void*)comparadorMayorTam);
+		ordenar_reemplazos(BSU);
 		seleccionados = list_take_and_remove(reemplazos, cantNecesita);
 		break;
 	}

@@ -55,6 +55,9 @@ void regTablaDestroyer(Reg_TablaEntradas* registro);
 void aumentarTiempoRef();
 int buscarNodoReemplazo(char* clave);
 
+bool comparadorMayorTam(Nodo_Reemplazo* nodo1, Nodo_Reemplazo* nodo2);
+bool comparadorMayorTiempo(Nodo_Reemplazo* nodo1, Nodo_Reemplazo* nodo2);
+int es_atomico(char* valor);
 //Lucy funciones
 void crear_hilo();
 int laListaLoContiene(char * clave);
@@ -65,6 +68,8 @@ void terminar_programa(int);
 
 //asd
 void rutina_principal();
+
+Reg_TablaEntradas* buscar_entrada(char* clave);
 
 
 //sida
