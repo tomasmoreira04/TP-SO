@@ -65,6 +65,9 @@ void *rutina_Dump(void * arg);
 void guardarLaWea();
 void mostrar_storage();
 void terminar_programa(int);
+char* string_mostrar_storage();
+void limpiarEntradas(int entrada, int numero_entradas);
+void limpiarStorage(int desde, int hasta);
 
 //asd
 void rutina_principal();

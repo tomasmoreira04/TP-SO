@@ -94,7 +94,6 @@ void *rutina_instancia(void * arg) {
 
 void nueva_instancia(int socket, char* nombre) {
 	instancia_Estado_Conexion *instancia_conexion = malloc(sizeof(instancia_Estado_Conexion));
-	instancia_conexion->estadoConexion = conectada;
 	instancia_conexion->socket = socket;
 	instancia_conexion->entradas_disponibles = configuracion.cant_entradas;
 	dictionary_put(lista_Instancias, nombre, instancia_conexion);
@@ -109,19 +108,6 @@ void configurar_instancia(int socket){
 	memcpy(dim,&configuracion.cant_entradas,sizeof(int));
 	memcpy(dim+1,&configuracion.tamanio_entrada,sizeof(int));
 	enviarMensaje(socket, config_inst, dim,sizeof(int)*2);
-}
-
-t_list* instancias_conectadas() {
-	int n = list_size(listaSoloInstancias);
-	t_list* lista = list_create();
-	for(int i = 0; i < n; i++){
-		char* nombre_inst = list_get(listaSoloInstancias, i);
-		instancia_Estado_Conexion* estado_viejo = dictionary_get(lista_Instancias, nombre_inst);
-		if (estado_viejo->estadoConexion == conectada) //si ya estaba desconectada ni me gasto en el ping
-			if (estadoDeInstancia(nombre_inst) == conectada) //ping
-				list_add(lista, nombre_inst);
-	}
-	return lista;
 }
 
 void *rutina_ESI(void* argumento) {
@@ -179,6 +165,7 @@ void SET(t_sentencia sentencia) {
 	int socket = conexion->socket;
 
 	enviarMensaje(socket, ejecutar_sentencia_instancia, &sentencia, sizeof(t_sentencia));
+
 	avisar_guardado_planif(instancia, sentencia.clave); //aviso de clave guardada en tal instancia
 
 	void* asd;
@@ -198,10 +185,13 @@ void STORE(t_sentencia sentencia) {
 	procesar_pedido_instancia(operacion, instancia, sentencia.id_esi);
 }
 
+t_sentencia ultima_sentencia;
+
 void realizar_sentencia(t_sentencia sentencia) {
 
 	s_wait(&semaforo_avisando_compactacion);
 
+	ultima_sentencia = sentencia; //por si falla la instancia, la vuelvo a hacer con otra
 	imprimir_sentencia(sentencia);
 	switch(sentencia.tipo) {
 		case S_GET:		GET(sentencia); 	break;
@@ -223,34 +213,45 @@ void procesar_pedido_instancia(Accion operacion, char* instancia, int esi) {
 			hilo_avisar_compactacion(); //creo un hilo que espera las compactaciones
 			break;
 		case instancia_desconectada:
-			cambiarEstadoInstancia(instancia, desconectada);
-			printf("%s desconectada", instancia);
-			break;
 		case error:
 		default:
-			printf(RED"\nLa instancia no pudo ejecutar la operacion. Finalizando ESI."RESET);
-			enviarMensaje(socket_plan, terminar_esi, &esi, sizeof(int));
+			printf(RED"\nLa instancia no pudo ejecutar la operacion."RESET);
 			printf(RED"\nDesconectando "CYAN"%s."RESET, instancia);
-			cambiarEstadoInstancia(instancia, desconectada);
+			eliminar_instancia(instancia);
+			reintentar_sentencia(ultima_sentencia);
 			log_warning(log_operaciones, string_from_format("Se desconecto la %s", instancia));
 			break;
 	}
 }
 
+void reintentar_sentencia(t_sentencia sentencia) {
+	modificar_clave(sentencia.clave, "0"); //la clave queda libre para que la nueva inst la agarre
+	s_signal(&semaforo_avisando_compactacion);
+	printf(GREEN"\n\nReintentando ultima sentencia con otra instancia..."RESET);
+	realizar_sentencia(ultima_sentencia); //vuelvo a intentar con la lista de inst actualizada
+}
+
+void eliminar_instancia(char* nombre_instancia) {
+	int indice = indice_instancia_por_nombre(nombre_instancia);
+	contadorEquitativeLoad = 0;
+	list_remove(listaSoloInstancias, indice);
+}
+
 void* avisar_compactacion() {
 	s_wait(&semaforo_avisando_compactacion);
-	t_list* conectadas = instancias_conectadas();
-	int cantidad_conectadas = list_size(conectadas);
+	t_list* instancias = listaSoloInstancias;
+	int cantidad = list_size(instancias);
 
 	sem_init(&semaforo_compactacion, true, 0);
 
-	for (int i = 0; i < cantidad_conectadas; i++) {
-		char* instancia = list_get(conectadas, i);
+	for (int i = 0; i < cantidad; i++) {
+		char* instancia = list_get(instancias, i);
 		instancia_Estado_Conexion* conexion = dictionary_get(lista_Instancias, instancia);
 		hilo_compactacion(conexion->socket); //creo un hilo para cada instancia
 	}
+
 	printf(RED"\nCOMPACTANDO INSTANCIAS\n"RESET);
-	esperar_compactacion(cantidad_conectadas); //espera activa
+	esperar_compactacion(cantidad);
 	printf(GREEN"\nCOMPACTACION FINALIZADA\n"RESET);
 	s_signal(&semaforo_avisando_compactacion);
 	return NULL;
@@ -289,20 +290,11 @@ void* rutina_compactacion(void* sock) {
 	case error:
 	default:
 		printf(RED"\nFallo una instancia al compactar (socket %d)"RESET, socket_instancia);
-		exit(0);
+		sem_post(&semaforo_compactacion);
+		eliminar_instancia(instancia_por_socket(socket_instancia));
 		break;
 	}
 	return NULL;
-}
-
-void cambiarEstadoInstancia(char *instanciaGuardada, estado_de_la_instancia accion){
-	instancia_Estado_Conexion *estado = dictionary_get(lista_Instancias, instanciaGuardada);
-	estado->estadoConexion = accion;
-	if (accion == conectada) {
-		printf(GREEN"\nInstancia"CYAN" %s "GREEN" se ha vuelto a conectar en socket"RED" %d"RESET, instanciaGuardada, estado->socket);
-
-		log_info(log_operaciones, string_from_format("Se conecto de vuelta la %s en el socket %d", instanciaGuardada, estado->socket));
-	}
 }
 
 void avisar_guardado_planif(char* instancia, char* clave) {
@@ -319,7 +311,6 @@ int clave_tiene_instancia(char* clave) {
 
 
 char* aplicar_algoritmo(t_sentencia sentencia) { //DEVUELVE EL NOMBRE DE LA INSTANCIA ASIGNADA
-
 	switch(configuracion.algoritmo) {
 		case el:	equitative_load(sentencia.clave);	break;
 		case lsu:	least_space_used(sentencia.clave);	break;
@@ -395,8 +386,7 @@ void actualizar_instancia(char* instancia, int entradas) {
 }
 
 void equitative_load(char* claveSentencia){
-	//log_info(log_operaciones, "Aplicando Equitative Load..");
-	t_list* instancias = instancias_conectadas();
+	t_list* instancias = listaSoloInstancias;
 	int cantidadInstancias = list_size(instancias) - 1;
 	char* instancia = list_get(instancias, contadorEquitativeLoad);
 	modificar_clave(claveSentencia, instancia);
@@ -410,27 +400,11 @@ void contador_EQ(int instancias){
 		contadorEquitativeLoad = 0;
 }
 
-int estadoDeInstancia(char* instancia){
-	instancia_Estado_Conexion* estado = dictionary_get(lista_Instancias,instancia);
-	estado->estadoConexion = enviar_check_conexion_instancia(estado->socket);
-	return estado->estadoConexion;
-}
-
-int enviar_check_conexion_instancia(int socket) {
-	int contenido = 1;
-	int tam = sizeof(int);
-	int accion = verificar_conexion;
-	header heder = {.accion = accion, .tamano = tam };//MODIFICAR FLAG
-	void* stream = malloc( sizeof(header) + tam );
-	memcpy(stream, &heder, sizeof(header));
-	memcpy(stream + sizeof(header), &contenido, tam);
-	int pepito = send(socket, stream, sizeof(header) + tam, 0);
-	usleep(100 * 1000); //100 milisegundos
-	signal(SIGPIPE, SIG_IGN);
-	pepito = send(socket, stream, sizeof(header) + tam, 0);
-	free(stream);
-
-	return pepito == -1 ? desconectada : conectada;
+int indice_instancia_por_nombre(char* nombre) {
+	for (int i = 0; i < list_size(listaSoloInstancias); i++)
+		if (strcmp(list_get(listaSoloInstancias, i), nombre) == 0)
+			return i;
+	return -1;
 }
 
 char* instancia_por_socket(int socket) {
@@ -445,7 +419,7 @@ char* instancia_por_socket(int socket) {
 }
 
 void key_explicit(char* claveSentencia){
-	t_list* instancias_activas = lista_instancias_activas();
+	t_list* instancias_activas = listaSoloInstancias;
 	int cantidad_instancias = list_size(instancias_activas);
 	int comienzo = claveSentencia[0] - ('a' - 1);
 
@@ -467,7 +441,7 @@ void least_space_used(char* clave) {
 }
 
 char* instancia_con_mas_espacio() {
-	t_list* instancias_activas = lista_instancias_activas();
+	t_list* instancias_activas = listaSoloInstancias;
 	int cantidad_instancias = list_size(instancias_activas);
 	char* instancia = list_get(instancias_activas, 0); //la primera
 	instancia_Estado_Conexion* conexion = dictionary_get(lista_Instancias, instancia); //conex de la primera
@@ -481,16 +455,6 @@ char* instancia_con_mas_espacio() {
 		}
 	}
 	return instancia;
-}
-
-t_list* lista_instancias_activas() {
-	t_list* lista = list_create();
-	for(int i = 0 ; i < list_size(listaSoloInstancias) ; i++) {
-		char* nombre = list_get(listaSoloInstancias, i);
-		if(estadoDeInstancia(nombre) == conectada)
-			list_add(lista, nombre);
-	}
-	return lista;
 }
 
 char* formatear_mensaje_esi(int id, TipoSentencia t, char* clave, char* valor) {
@@ -577,12 +541,11 @@ char* simular_algoritmo(char* clave) {
 
 char* equitative_load_simulado(char* clave) {
 	char* instancia = list_get(listaSoloInstancias, contadorEquitativeLoad);
-	int estadoInstancia = estadoDeInstancia(instancia);
-	return estadoInstancia == conectada ? instancia : equitative_load_simulado(clave);
+	return instancia;
 }
 
 char* key_explicit_simulado(char* clave) {
-	t_list* instancias_activas = lista_instancias_activas();
+	t_list* instancias_activas = listaSoloInstancias;
 	int cantidad_instancias = list_size(instancias_activas);
 	int comienzo = clave[0] - ('a' - 1);
 	float asignacion_por_instancia = (float) 26  /  (float)cantidad_instancias;
@@ -607,8 +570,6 @@ int existe_clave(char* clave) {
 int existe_instancia(char* nombre) {
 	return dictionary_has_key(lista_Instancias, nombre);
 }
-
-
 
 void imprimir_cfg_en_log() {
 	log_info(log_operaciones, string_from_format("PUERTO_ESCUCHA: %d", configuracion.puerto_escucha));

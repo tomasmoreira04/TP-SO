@@ -31,7 +31,7 @@ typedef struct {
 
 typedef struct {
 	char ip_coordinador[LARGO_IP], punto_montaje[LARGO_RUTA], nombre_instancia[LARGO_NINSTANCIA];
-	int puerto_coordinador, intervalo_dump, algoritmo_reemp;
+	int puerto_coordinador, intervalo_dump, algoritmo_reemp, mostrar_storage;
 } ConfigInstancia;
 
 typedef struct {
@@ -56,5 +56,6 @@ AlgoritmoInst numero_algoritmo_i(char* nombre);
 int faltan_campos(t_config* config, char** campos);
 void imprimir_error();
 int numero_claves(char* linea);
+int procesar_config_storage(char* valor_campo);
 
 #endif

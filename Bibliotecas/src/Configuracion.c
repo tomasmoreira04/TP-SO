@@ -66,7 +66,7 @@ ConfigESI cargar_config_esi() {
 }
 
 ConfigInstancia cargar_config_inst(char* ruta) {
-	char* campos[] = { "ALGORITMO_REEMPLAZO", "NOMBRE_INSTANCIA", "PUNTO_MONTAJE", "INTERVALO_DUMP" };
+	char* campos[] = { "ALGORITMO_REEMPLAZO", "NOMBRE_INSTANCIA", "PUNTO_MONTAJE", "INTERVALO_DUMP", "MOSTRAR_STORAGE" };
 	t_config* config = cargar_archivo(ruta, campos);
 	ConfigInstancia configuracion;
 	ConfigGlobal global = cargar_config_global();
@@ -76,8 +76,13 @@ ConfigInstancia cargar_config_inst(char* ruta) {
 	configuracion.algoritmo_reemp = numero_algoritmo_i(config_get_string_value(config, "ALGORITMO_REEMPLAZO"));
 	strcpy(configuracion.nombre_instancia, config_get_string_value(config, "NOMBRE_INSTANCIA"));
 	strcpy(configuracion.punto_montaje, config_get_string_value(config,"PUNTO_MONTAJE"));
+	configuracion.mostrar_storage = procesar_config_storage(config_get_string_value(config, "MOSTRAR_STORAGE"));
 	config_destroy(config);
 	return configuracion;
+}
+
+int procesar_config_storage(char* valor_campo) {
+	return strcmp(valor_campo, "SI") == 0 ? 1 : 0;
 }
 
 char* ruta_config(char* nombre) {

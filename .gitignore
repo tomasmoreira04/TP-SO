@@ -1,4 +1,9 @@
 /Debug/
+/Bibliotecas/Debug/
+/Coordinador/Debug/
+/ESI/Debug/
+/Instancia/Debug/
+/Planificador/Debug/
 
 # Prerequisites
 *.d

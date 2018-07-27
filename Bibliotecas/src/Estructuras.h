@@ -81,17 +81,8 @@ typedef enum {
 	esi_matado
 } Accion;
 
-typedef enum {
-	conectada = 1,
-	desconectada = 2,
-	chingada = 3
-
-} estado_de_la_instancia;
-
-
 typedef struct {
 	int socket;
-	estado_de_la_instancia estadoConexion;//1 Conectado, 2 Se Chingo la wea y se fue al carajo
 	int entradas_disponibles;
 } instancia_Estado_Conexion;
 

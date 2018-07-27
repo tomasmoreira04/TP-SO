@@ -14,7 +14,7 @@ typedef struct{
 	char* inst_ID;
 	int socket;
 	int entradas_desocupadas;
-}Nodo_Instancia;
+} Nodo_Instancia;
 
 t_log* log_operaciones;
 
@@ -41,7 +41,7 @@ char* buscar_instancia(char* clave);
 
 void key_explicit(char* claveSentencia);
 
-void cambiarEstadoInstancia(char *instanciaGuardada,estado_de_la_instancia accion);
+void eliminar_instancia(char* nombre_instancia);
 void nueva_instancia(int socket, char* nombre);
 int existe_instancia(char* nombre);
 char* formatear_mensaje_esi(int, TipoSentencia, char*, char*);
@@ -53,9 +53,11 @@ int clave_tiene_instancia(char* clave);
 char* instancia_con_mas_espacio();
 void avisar_guardado_planif(char* instancia, char* clave);
 void actualizar_instancia(char* instancia, int valor);
-t_list* lista_instancias_activas();
-int estadoDeInstancia(char * instancia);//DEVUELVE EL ESTADO DE LA INSTANCIA A LA CUAL SE INTENTA GUARDAR
 void nodo_inst_conexion_destroyer(instancia_Estado_Conexion* inst);
+int indice_instancia_por_nombre(char* nombre);
+char* instancia_por_socket(int socket);
+void reintentar_sentencia(t_sentencia sentencia);
+void modificar_clave(char* clave, char* instancia);
 
 //abstracciones
 void procesar_pedido_instancia(Accion operacion, char* instancia, int esi);

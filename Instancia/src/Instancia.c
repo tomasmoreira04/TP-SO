@@ -41,7 +41,6 @@ int32_t tamEntrada;
 int32_t cantEntradasDisp;
 ConfigInstancia config;
 int socketServer;
-int imprimir_storage = 0;
 
 pthread_mutex_t semaforo_compactacion = PTHREAD_MUTEX_INITIALIZER;
 sem_t compactacion_espera; //contador de inst conectadas
@@ -52,7 +51,6 @@ int main(int argc, char* argv[]) {
 	char* nombre = argv[1];
 	config = cargar_config_inst(nombre);
 	imprimir_configuracion();
-	mensaje_inicial();
 	socketServer = conexion_con_servidor(config.ip_coordinador, config.puerto_coordinador);
 	handShake(socketServer, instancia);
 	configurar_entradas();
@@ -64,26 +62,6 @@ int main(int argc, char* argv[]) {
 	rutina_principal();
 	destruirlo_todo();
 	return 0;
-}
-
-void mensaje_inicial() {
-	char input[10];
-	printf(CYAN"\nDesea imprimir el estado del almacenamiento luego de cada SET?"RESET);
-	printf(GREEN"\n(S/N) >> "RED);
-	scanf("%s", input);
-	printf(RESET);
-	procesar_input(input);
-}
-
-void procesar_input(char* input) {
-	if (string_equals_ignore_case(input, "S"))
-		imprimir_storage = 1;
-	else {
-		if (string_equals_ignore_case(input, "N"))
-			imprimir_storage = 0;
-		else
-			printf("\nInput no valido, se asume que"RED"NO"RESET" desea mostrarlo.");
-	}
 }
 
 void terminar_programa(int sig) {
@@ -134,7 +112,7 @@ void mostrar_storage() {
 	char* color = RESET;
 	ordenar_reemplazos(config.algoritmo_reemp); //lo ordeno antes de imprimir
 	printf("\n");
-	int puntero_reemplazo = numero_entrada(nodo_reemplazo);
+	int puntero_reemplazo = nodo_reemplazo != NULL ? numero_entrada(nodo_reemplazo) : -1;
 	for (int i = 0; i < cantEntradas; i++) {
 		int es_puntero = puntero_reemplazo == i;
 		printf(YELLOW"\n[%d]\t"RESET, i);
@@ -308,6 +286,7 @@ void regTablaDestroyer(Reg_TablaEntradas* registro){
 	free(registro);
 }
 
+
 //--------------MANEJO LISTAS-------------------
 
 t_list* duplicarLista(t_list* self) {
@@ -375,6 +354,7 @@ void* compactacion() {
 	return NULL;
 }
 
+
 void compact() {
     int i, inicioAnterior, libre, cont;
 
@@ -393,21 +373,24 @@ void compact() {
     for(i=0; i < cantEntradas; i++){
         if (!bitarray_test_bit(disponibles,i)){
                 libre = i;
-                // busque el proximo proceso ocupado a mover
                 entrada_a_mover = list_find(tabla_de_entradas, (void*)proxima_entrada);
                 if (entrada_a_mover != NULL) {
-                        inicioAnterior = entrada_a_mover->entrada;
-                        int entradas_que_ocupa = 1 + ((entrada_a_mover->tamanio - 1) / tamEntrada);
-                        for (cont = 0; cont < entradas_que_ocupa; cont++){
-                            bitarray_clean_bit(disponibles, inicioAnterior + cont);                       //porque ahora va a estar vacia
-                            bitarray_set_bit(disponibles, libre + cont);                                  //Ahora va a estar ocupada
-                        }
-                    //memcpy(archivoSwap+ libre * datosSwap->tamPagina, archivoSwap+inicioAnterior * datosSwap->tamPagina, procesoAMover->paginas * datosSwap->tamPagina);        //Modifique los marcos, ahora copio los datos
-                    memcpy(storage + libre * tamEntrada, storage + inicioAnterior * tamEntrada, entrada_a_mover->tamanio);        //Modifique los marcos, ahora copio los datos
+                	inicioAnterior = entrada_a_mover->entrada;
+                    int entradas_que_ocupa = 1 + ((entrada_a_mover->tamanio - 1) / tamEntrada);
+
+                    for (cont = 0; cont < entradas_que_ocupa; cont++){
+                    	bitarray_clean_bit(disponibles, inicioAnterior + cont);
+                        bitarray_set_bit(disponibles, libre + cont);
+                    }
+                    char* copia = calloc(entradas_que_ocupa * tamEntrada, sizeof(char));
+                    memcpy(copia, storage + inicioAnterior * tamEntrada, entrada_a_mover->tamanio);
+                    limpiarStorage(inicioAnterior, inicioAnterior + entradas_que_ocupa);
+                    memcpy(storage + libre * tamEntrada, copia, entrada_a_mover->tamanio);
                     entrada_a_mover->entrada = libre;
+                    free(copia);
                 }
                 else
-                    i = cantEntradas;                         //No hay mas procesos para mover => salgo del ciclo, no necesito buscar mas
+                    i = cantEntradas;
         }
     }
 }
@@ -461,7 +444,7 @@ void ejecutarSentencia(t_sentencia* sentencia){
 		aumentarTiempoRef();
 		almacenarValor(sentencia->clave, sentencia->valor);
 		printf(GREEN "\nSe ejecuto un SET correctamente, de clave "CYAN"%s"GREEN" con valor"RED" %s."RESET, sentencia->clave, sentencia->valor);
-		if (imprimir_storage) {
+		if (config.mostrar_storage) {
 			mostrar_storage();
 			printf("\n");
 			mostrarListaReemplazos(reemplazos);
@@ -620,12 +603,18 @@ char* devolver_valor(char* clave) {
 	return agregar_barra_cero(valor, registro->tamanio);
 }
 
+void limpiarStorage(int desde, int hasta) {
+	for (int i = desde * tamEntrada; i < hasta * tamEntrada; i++)
+	   storage[i] = '\0';
+}
+
 void liberarEntradas(char* clave, int borrar_nodo){
 	Reg_TablaEntradas* registro = borrar_devolver_entrada(clave);
 	int tamEnEntradas = 1 + (registro->tamanio - 1) / tamEntrada;
 	int desde = registro->entrada;
 	int hasta = registro->entrada + tamEnEntradas;
 	limpiarArray(desde, hasta);
+	limpiarStorage(desde, hasta);
 	cantEntradasDisp += tamEnEntradas;
 
 
@@ -741,7 +730,12 @@ void imprimir_configuracion() {
 	printf(GREEN"\nAlgoritmo: "RED"%s", algoritmo(config.algoritmo_reemp));
 	printf(GREEN"\nMontaje: "RED"%s", config.punto_montaje);
 	printf(GREEN"\nNombre: "RED"%s", config.nombre_instancia);
-	printf(GREEN"\nIntervalo de dump: "RED"%d\n"RESET, config.intervalo_dump);
+	printf(GREEN"\nIntervalo de dump: "RED"%d"RESET, config.intervalo_dump);
+	printf(GREEN"\nMostrar storage: "RED"%s\n"RESET, string_mostrar_storage());
+}
+
+char* string_mostrar_storage() {
+	return config.mostrar_storage ? "SI" : "NO";
 }
 
 char* algoritmo(AlgoritmoInst alg) {
