@@ -20,16 +20,10 @@
 #include <unistd.h>
 #include "semaphore.h"
 
-// Diferenciacion de operacion ESI
-// Direnciar quien se conecta
-// Guardar con ID instancia
-// TOMI SE LA COME
-
 ConfigCoordinador configuracion;
 int socket_plan; //esto cambiar tal vez
 t_dictionary *instancias_Claves;
 t_dictionary *lista_Instancias;
-t_list* lista_instancias_new;
 t_list *listaSoloInstancias;
 int contadorEquitativeLoad;
 int instancia_muerta;
@@ -491,7 +485,6 @@ void destruir_estructuras_globales() {
 	dictionary_destroy_and_destroy_elements(instancias_Claves, free);
 	dictionary_destroy_and_destroy_elements(lista_Instancias, (void*)nodo_inst_conexion_destroyer);
 	list_destroy_and_destroy_elements(listaSoloInstancias, free);
-	//list_destroy(lista_instancias_new); POR AHORA DEPRECADO, SOLO POR AHORA
 }
 
 void imprimir_sentencia(t_sentencia sentencia) {

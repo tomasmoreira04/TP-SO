@@ -26,7 +26,6 @@ t_list* cola_de_listos;
 t_list* cola_de_bloqueados;
 t_list* cola_de_finalizados;
 t_list* lista_claves_bloqueadas;
-t_list* nombres_esi;
 ESI* esi_ejecutando = NULL;
 t_dictionary* estimaciones_actuales;
 int ultimo_id;
@@ -61,12 +60,25 @@ int main(int argc, char* argv[]) {
 	pthread_create(&thread_consola, NULL, iniciar_consola, NULL);
 	pthread_create(&thread_output, NULL, crear_ventana_output, NULL);
 	ultimo_id = 0;
-
+	signal(SIGINT, terminar_programa);
 	recibir_conexiones();
 	pthread_join(thread_consola, NULL);
 	pthread_join(thread_output, NULL);
 	destruir_estructuras();
 	fclose(output);
+}
+
+void terminar_programa(int sig) {
+	printf(GREEN"\nOrden de finalizacion:"RESET);
+	imprimir_orden_finalizacion();
+	exit(0);
+}
+
+void imprimir_orden_finalizacion() {
+	for (int i = 0; i < list_size(cola_de_finalizados); i++) {
+		ESI* esi = list_get(cola_de_finalizados, i);
+		printf(YELLOW"\nESI %d "CYAN"(%s)"RESET, esi->id, esi->nombre);
+	}
 }
 
 void* crear_ventana_output() {
@@ -417,7 +429,7 @@ void STORE(char* clave, ESI* esi, int coordinador) { //esi: esi que hace el pedi
 }
 
 void finalizar_esi_ref(ESI* esi) {
-	fprintf(output, YELLOW"\nFinalizando ESI %d."RESET, esi->id);
+	fprintf(output, YELLOW"\nFinalizando ESI %d."CYAN"(%s)"RESET, esi->id, esi->nombre);
 
 	if (config.algoritmo == sjf_sd || config.algoritmo == sjf_cd) {
 		if (esi->rafagas_restantes > 0)
@@ -467,7 +479,7 @@ t_list* claves_de_esi(ESI* esi) {
 
 void bloquear_clave(const char* clave, ESI* esi) {
 	t_clave* entrada = buscar_clave_bloqueada(clave);
-	s_wait(&operando_claves);
+	//s_wait(&operando_claves);
 	if (entrada == NULL) { //no existe -> la creo
 		entrada = malloc(sizeof(t_clave));
 		entrada->bloqueada = 1;
@@ -481,7 +493,7 @@ void bloquear_clave(const char* clave, ESI* esi) {
 		entrada->bloqueada = 1;
 		entrada->esi_duenio = esi;
 	}
-	s_signal(&operando_claves);
+	//s_signal(&operando_claves);
 }
 
 void nueva_solicitud_clave(char* clave, ESI* esi) {
@@ -497,7 +509,7 @@ void nueva_solicitud_clave(char* clave, ESI* esi) {
 
 int liberar_clave(char* clave) {
 	t_clave* c = buscar_clave_bloqueada(clave);
-	s_wait(&operando_claves);
+	//s_wait(&operando_claves);
 	if (c != NULL) {
 		ESI* esi_a_desbloquear = list_remove(c->esis_esperando, 0); //el primero en haberse bloqueado, y lo saco
 		if (esi_a_desbloquear != NULL) {
@@ -511,10 +523,10 @@ int liberar_clave(char* clave) {
 			c->esi_duenio = NULL;
 			fprintf(output, "\nClave"RED" %s "RESET"desbloqueada y libre.", clave);
 		}
-		s_signal(&operando_claves);
+		//s_signal(&operando_claves);
 		return 1;
 	}
-	s_signal(&operando_claves);
+//	s_signal(&operando_claves);
 	return 0; //error
 }
 
@@ -526,15 +538,15 @@ int esta_bloqueada(char* clave) {
 }
 
 t_clave* buscar_clave_bloqueada(const char* clave) {
-	s_wait(&operando_claves);
+	//s_wait(&operando_claves);
 	for (int i = 0; i < list_size(lista_claves_bloqueadas); i++) {
 		t_clave* c = list_get(lista_claves_bloqueadas, i);
 		if (strcmp(clave, c->clave) == 0) {
-			s_signal(&operando_claves);
+			//s_signal(&operando_claves);
 			return c;
 		}
 	}
-	s_signal(&operando_claves);
+	//s_signal(&operando_claves);
 	return NULL;
 }
 
@@ -567,20 +579,18 @@ void proceso_nuevo(t_nuevo_esi esi, int socket) {
 	nuevo_esi->socket_planif = socket;
 	nuevo_esi->cola_actual = NULL;
 	nuevo_esi->claves = list_create();
-	char* nombre = malloc(strlen(esi.nombre) + 1);
-	strcpy(nombre, esi.nombre);
-	list_add(nombres_esi, nombre);
-	imprimir_nuevo_esi(nuevo_esi, nombre);
+	strcpy(nuevo_esi->nombre, esi.nombre);
+	imprimir_nuevo_esi(nuevo_esi);
 	ingreso_cola_de_listos(nuevo_esi);
 }
 
-void imprimir_nuevo_esi(ESI* esi, char* nombre) {
+void imprimir_nuevo_esi(ESI* esi) {
 	fprintf(output, "\nNuevo ESI " GREEN "%d" RESET " con ", esi->id);
 	if (config.algoritmo == fifo || config.algoritmo == hrrn)
 		fprintf(output, RED"%d"RESET" de rafagas totales.", esi->rafagas_totales);
 	else //sjf
 		fprintf(output, RED"%.2f"RESET" de tiempo estimado.", esi->rafagas_restantes);
-	fprintf(output, " Script: "CYAN"%s"RESET, nombre);
+	fprintf(output, " Script: "CYAN"%s"RESET, esi->nombre);
 }
 
 
@@ -659,7 +669,6 @@ void inicializar_estructuras() {
 	cola_de_bloqueados = list_create();
 	cola_de_finalizados = list_create();
 	lista_claves_bloqueadas = list_create();
-	nombres_esi = list_create();
 	estimaciones_actuales = dictionary_create();
 }
 
@@ -668,7 +677,6 @@ void destruir_estructuras() {
 	list_destroy(cola_de_bloqueados);
 	list_destroy(cola_de_finalizados);
 	list_destroy(lista_claves_bloqueadas);
-	list_destroy(nombres_esi);
 	dictionary_destroy(estimaciones_actuales);
 	close(file_descriptors[1]);
 }

@@ -147,8 +147,9 @@ int alguno_bloquea_clave(t_clave* clave) { //y ademas bloqueado
 	return 0;
 }
 
-char* nombre_esi(int id) {
-	return list_get(nombres_esi, id - 1);
+char* nombre_esi(int indice) {
+	ESI* esi = obtener_esi(indice);
+	return esi->nombre;
 }
 
 void imprimir_deadlock(t_deadlock* d) {

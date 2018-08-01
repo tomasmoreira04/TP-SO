@@ -16,6 +16,7 @@ typedef struct {
 	t_list* claves;
 	t_list* cola_actual;
 	int socket_planif;
+	char nombre[LARGO_ESI];
 } ESI;
 
 typedef struct {

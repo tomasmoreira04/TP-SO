@@ -62,11 +62,14 @@ void GET(char* clave, ESI* esi, int coordinador);
 void procesar_resultado(ResultadoEjecucion resultado);
 void error_operacion(ErrorOperacion tipo, char* clave, int esi);
 char* mensaje_error(ErrorOperacion tipo);
-void imprimir_nuevo_esi(ESI* esi, char* nombre);
+void imprimir_nuevo_esi(ESI* esi);
 void calcular_response_ratios();
 void bloquear_claves_iniciales(char** claves, int n);
 void copiar_lista_strings(char** destino, char** claves, int n);
 void actualizar_clave(t_clave respuesta);
+
+void terminar_programa(int sig);
+void imprimir_orden_finalizacion();
 
 void ingreso_cola_de_listos(ESI* esi);
 void sumar_tiempo_hrrn();

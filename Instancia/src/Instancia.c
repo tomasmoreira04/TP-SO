@@ -259,7 +259,9 @@ Reg_TablaEntradas* borrar_devolver_entrada(char* clave) {
 }
 
 void mostrarValor(char* clave){
-	printf("\nEl valor de la clave %s es: %s\n", clave, devolver_valor(clave));
+	char* val = devolver_valor(clave);
+	printf("\nEl valor de la clave %s es: %s\n", clave, val);
+	free(val);
 }
 
 void mostrarListaReemplazos(t_list* list){
@@ -271,7 +273,9 @@ void mostrarListaReemplazos(t_list* list){
 			printf("[T = "GREEN"%d"RESET"]\t", nodo->ultimaRef);
 		else if (config.algoritmo_reemp == BSU)
 			printf("[B = "GREEN"%d"RESET"]\t", nodo->tamanio);
-		printf("%s\n", devolver_valor(nodo->clave));
+		char* v = devolver_valor(nodo->clave);
+		printf("%s\n", v);
+		free(v);
 	}
 }
 //--------------DESTROYERS-------------------
@@ -345,6 +349,8 @@ void* compactacion() {
 	printf(GREEN"\nSE HA COMPACTADO CON EXITO!\n"RESET);
 
 	imprimir_almacenamiento(disponibles_antes, disponibles_ahora);
+	free(disponibles_antes);
+	free(disponibles_ahora);
 
 	avisar(socketServer, compactacion_ok);
 	sem_post(&compactacion_espera);
@@ -456,7 +462,7 @@ void ejecutarSentencia(t_sentencia* sentencia){
 	case S_STORE:
 		aumentarTiempoRef();
 		persistirValor(sentencia->clave);
-		printf(GREEN "\nSe ejecuto un STORE correctamente, de clave %s."RESET, sentencia->clave);
+		printf(GREEN "\nSe ejecuto un STORE correctamente, de clave "CYAN"%s."RESET, sentencia->clave);
 		break;
 
 	default:
@@ -552,7 +558,7 @@ void persistirValor(char* clave){
 	FILE* arch = fopen(path, "w+");
 		fputs(valor, arch);
 	fclose(arch);
-
+	free(valor);
 	free(path);
 }
 
