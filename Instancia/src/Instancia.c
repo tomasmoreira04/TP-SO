@@ -290,6 +290,12 @@ void regTablaDestroyer(Reg_TablaEntradas* registro){
 	free(registro);
 }
 
+void clavesInicialDestroyer(t_clave_inicial* nodo){
+	free(nodo->clave);
+	free(nodo->valor);
+	free(nodo);
+}
+
 
 //--------------MANEJO LISTAS-------------------
 
@@ -667,14 +673,21 @@ int buscarEspacioLibre(int entradasNecesarias){
 	return posInicialLibre;
 }
 
+
 void destruirlo_todo(){
 	free(bitarray);
 	bitarray_destroy(disponibles);
-	free(storage);
+
 	list_clean_and_destroy_elements(tabla_de_entradas, (void*)regTablaDestroyer);
+	free(tabla_de_entradas);
+
 	list_clean_and_destroy_elements(reemplazos,(void*)nodoRempDestroyer);					//elimina elementos de la lista
-	free(reemplazos); 																			//elimina la lista en si
-	//hacer destroy de clave siniciales
+	free(reemplazos);																		//elimina la lista en si
+
+	list_clean_and_destroy_elements(claves_iniciales, (void*)clavesInicialDestroyer);
+	free(claves_iniciales);
+
+	free(storage);
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------------------
