@@ -21,6 +21,8 @@ t_log* log_operaciones;
 
 void imprimir_cfg_en_log();
 
+void imprimir_semaforo();
+void logear_info(char* output);
 void handler();
 int enviar_check_conexion_instancia(int socket);
 void conectar_con_planificador(int planificador);
@@ -78,6 +80,7 @@ char* equitative_load_simulado(char* clave);
 char* key_explicit_simulado(char* clave);
 char* least_space_used_simulado(char* clave);
 int existe_clave(char* clave);
+void destruir_lista(t_list* lista);
 
 void imprimir_configuracion();
 char* algoritmo(AlgoritmoCoord alg);

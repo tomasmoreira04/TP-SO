@@ -31,6 +31,8 @@ int main(int argc, char* argv[]) {
 	leer_sentencias(planificador, coordinador, ruta); //si paso puntero a FILE no me anda el getline xD, asi que abro de nuevo
 
 	fclose(script);
+	free(ruta);
+
 	return EXIT_SUCCESS;
 }
 
@@ -48,6 +50,7 @@ void informar_nuevo_esi(int socket, int rafagas, char* nombre) {
 	nuevo->rafagas = rafagas;
 	strcpy(nuevo->nombre, nombre);
 	enviarMensaje(socket, nuevo_esi, nuevo, sizeof(t_nuevo_esi));
+	free(nuevo);
 }
 
 //hago esto porque el struct que te dan en el parser es una mierda :)
@@ -85,6 +88,8 @@ void leer_sentencias(int planificador, int coordinador, char* ruta) {
 				printf(RED"\nERROR"RESET);
 
 			id_esi = *(int*)stream;
+			free(stream);
+
 			t_esi_operacion operacion = parse(linea);
 
 			if(operacion.valido){
@@ -99,6 +104,7 @@ void leer_sentencias(int planificador, int coordinador, char* ruta) {
 				recibirMensaje(coordinador, &resultado);
 
 				enviarMensaje(planificador, resultado_ejecucion, (int*)resultado, sizeof(resultado));
+				free(resultado);
 			}
 			else {
 				printf(RED "\nNo se pudo interpretar " CYAN "%s\n" RESET, linea);

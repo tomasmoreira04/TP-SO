@@ -60,13 +60,14 @@ int main(int argc, char* argv[]) {
 	signal(SIGINT, terminar_programa);
 	crear_hilo(hilo_dump, NULL);
 	rutina_principal();
-	destruirlo_todo();
+
 	return 0;
 }
 
 void terminar_programa(int sig) {
 	printf(GREEN"\nResultados finales:"RESET);
 	mostrar_storage();
+	destruirlo_todo();
 	exit(0);
 }
 
@@ -115,10 +116,12 @@ void mostrar_storage() {
 	int puntero_reemplazo = nodo_reemplazo != NULL ? numero_entrada(nodo_reemplazo) : -1;
 	for (int i = 0; i < cantEntradas; i++) {
 		int es_puntero = puntero_reemplazo == i;
+		char* valor = valor_entrada(i);
 		printf(YELLOW"\n[%d]\t"RESET, i);
 		if (es_reemplazable(i)) color = RED;
 		if (es_puntero) 		color = GREEN;
-		printf("%s%s"RESET, color, valor_entrada(i));
+		printf("%s%s"RESET, color, valor);
+		free(valor);
 		if (es_puntero)	printf(GREEN"\t<<< REEMPLAZO"RESET);
 		color = RESET;
 	}
@@ -140,7 +143,7 @@ void configurar_entradas() {
 		storage = calloc(sizeof(char)*cantEntradas*tamEntrada, tamEntrada);
 	} else {
 		printf(RED "\nERROR AL RECIBIR CONFIG DEL COORDINADOR\n"RESET);
-		exit(0);
+		terminar_programa(0);
 	}
 }
 
@@ -210,6 +213,7 @@ void cargar_clave_montaje(char* archivo, char* clave) {
 void* rutina_sentencia(void* arg) {
 	t_sentencia* sentencia = (t_sentencia*)arg;
 	ejecutarSentencia(sentencia);
+	free(sentencia);
 	enviarMensaje(socketServer,ejecucion_ok,&cantEntradasDisp,sizeof(int));
 	return NULL;
 }
@@ -235,7 +239,7 @@ void rutina_principal() {
 				default:
 					printf(RED "\nError!\n"RESET);
 					printf(RED "\nSe desconecto el coordinador!\n"RESET);
-					exit(0);
+					terminar_programa(0);
 			}
 		}
 }
@@ -473,7 +477,7 @@ void ejecutarSentencia(t_sentencia* sentencia){
 
 	default:
 		printf(RED "\nTipo de sentencia no valida!\n" RESET);
-		exit(0);
+		terminar_programa(0);
 		break;
 	}
 }
@@ -544,7 +548,7 @@ void almacenarValor(char* clave, char* valor){
 			reemplazarValor(clave, valor, tamEnEntradas);
 		} else {
 			printf(RED "\nNo existen suficientes entradas de reemplazo para ubicar valor de clave: %s!\n\n"RESET,clave);
-			exit(0);
+			terminar_programa(0);
 		}
 	}
 }
@@ -612,7 +616,9 @@ char* devolver_valor(char* clave) {
 	Reg_TablaEntradas* registro = buscar_entrada(clave);
 	char* valor = malloc(sizeof(char) * registro->tamanio);
 	memcpy(valor, storage + (tamEntrada * registro->entrada), registro->tamanio);
-	return agregar_barra_cero(valor, registro->tamanio);
+	char* con = agregar_barra_cero(valor, registro->tamanio);
+	free(valor);
+	return con;
 }
 
 void limpiarStorage(int desde, int hasta) {
@@ -673,7 +679,6 @@ int buscarEspacioLibre(int entradasNecesarias){
 	return posInicialLibre;
 }
 
-
 void destruirlo_todo(){
 	free(bitarray);
 	bitarray_destroy(disponibles);
@@ -687,11 +692,13 @@ void destruirlo_todo(){
 	list_clean_and_destroy_elements(claves_iniciales, (void*)clavesInicialDestroyer);
 	free(claves_iniciales);
 
+	list_destroy(lista_Claves);
+
 	free(storage);
+
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------------------
-
 
 
 void crear_hilo(HiloInstancia tipo, t_sentencia* sentencia) {

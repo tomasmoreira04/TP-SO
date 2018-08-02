@@ -100,6 +100,7 @@ void imprimir_error() {
 t_config* cargar_archivo(char* nombre_archivo, char** campos) {
 	char* ruta = ruta_config(nombre_archivo);
 	t_config* config = config_create(ruta);
+	free(ruta);
 	if(config == NULL || faltan_campos(config, campos)) {
 		imprimir_error();
 		return NULL;

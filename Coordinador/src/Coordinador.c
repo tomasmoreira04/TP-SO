@@ -29,11 +29,15 @@ int contadorEquitativeLoad;
 int instancia_muerta;
 
 pthread_mutex_t semaforo_avisando_compactacion = PTHREAD_MUTEX_INITIALIZER;
-sem_t semaforo_compactacion; //contador de inst conectadas
+sem_t semaforo_compactacion;
+sem_t contador_instancias;
 
 int main(int argc, char* argv[]) {
 	setbuf(stdout, NULL); //a veces el printf no andaba, se puede hacer esto o un fflush
 	int banderaPlanificador = 0;
+
+	sem_init(&contador_instancias, true, 0);
+
 	contadorEquitativeLoad = 0;
 	instancias_Claves= dictionary_create();
 	listaSoloInstancias=list_create();
@@ -65,7 +69,7 @@ int main(int argc, char* argv[]) {
 	}
 	//nunca llega hasta aca
 	log_info(log_operaciones, "Terminando la ejecucion del proceso..");
-	destruir_estructuras_globales();
+
 	return 0;
 }
 
@@ -75,16 +79,19 @@ void *rutina_instancia(void * arg) {
 	int socket_INST = (int)arg;
 	void * stream;
 	recibirMensaje(socket_INST, &stream);
-	char* nombre_inst = (char*)stream;
+	char* nombre_inst = strdup((char*)stream);
+	free(stream);
 	if(!existe_instancia(nombre_inst))
 		nueva_instancia(socket_INST, nombre_inst);
-	/*else
-		cambiarEstadoInstancia(nombre_inst, conectada);*/
 
-	log_info(log_operaciones, string_from_format("Se conecto la %s", nombre_inst));
-
+	logear_info(string_from_format("Se conecto la %s", nombre_inst));
 
 	return NULL;
+}
+
+void logear_info(char* output) {
+	log_info(log_operaciones, output);
+	free(output);
 }
 
 void nueva_instancia(int socket, char* nombre) {
@@ -92,10 +99,13 @@ void nueva_instancia(int socket, char* nombre) {
 	instancia_conexion->socket = socket;
 	instancia_conexion->entradas_disponibles = configuracion.cant_entradas;
 	dictionary_put(lista_Instancias, nombre, instancia_conexion);
-	list_add(listaSoloInstancias, nombre);
+	char* nom = strdup(nombre);
+	list_add(listaSoloInstancias, nom);
 	configurar_instancia(socket);
 	printf(GREEN"\nNueva instancia"CYAN" %s "GREEN"conectada en socket"RED" %d"RESET, nombre, socket);
-	log_info(log_operaciones, string_from_format("Se creo una nueva instancia. Nombre: %s. Socket: %d", nombre, socket));
+	logear_info(string_from_format("Se creo una nueva instancia. Nombre: %s. Socket: %d", nombre, socket));
+
+	sem_post(&contador_instancias);
 }
 
 void configurar_instancia(int socket){
@@ -114,9 +124,11 @@ void *rutina_ESI(void* argumento) {
 	printf(BLUE "\nNueva rutina ESI en socket"CYAN" %d."RESET, socket_esi);
 	while (recibirMensaje(socket_esi, &stream) == ejecutar_sentencia_coordinador) {
 		t_sentencia sentencia = *(t_sentencia*)stream;
+		free(stream);
 		id_esi = sentencia.id_esi;
 		enviarMensaje(socket_plan, sentencia_coordinador, &sentencia, sizeof(t_sentencia));
 		int	accion = recibirMensaje(socket_plan, &stream);
+		free(stream);
 		usleep(configuracion.retardo * 1000);
 		procesar_permiso_planificador(accion, sentencia, socket_esi);
 	}
@@ -148,15 +160,22 @@ void procesar_permiso_planificador(Accion mensaje, t_sentencia sentencia, int so
 
 void GET(t_sentencia sentencia) {
 	if(!existe_clave(sentencia.clave)) {
-		dictionary_put(instancias_Claves, sentencia.clave, "0" );
-		log_info(log_operaciones, formatear_mensaje_esi(sentencia.id_esi, S_GET, sentencia.clave, NULL));
+		char* a = malloc(strlen("0"));
+		strcpy(a, "0");
+		dictionary_put(instancias_Claves, sentencia.clave, a);
+		logear_info(formatear_mensaje_esi(sentencia.id_esi, S_GET, sentencia.clave, NULL));
 	}
 }
 
 void SET(t_sentencia sentencia) {
+
 	char* instancia = buscar_instancia(sentencia.clave);
+
 	if(!clave_tiene_instancia(sentencia.clave))
 		instancia = aplicar_algoritmo(sentencia);
+
+
+
 	instancia_Estado_Conexion* conexion = dictionary_get(lista_Instancias , instancia);
 	int socket = conexion->socket;
 
@@ -170,7 +189,9 @@ void SET(t_sentencia sentencia) {
 }
 
 void STORE(t_sentencia sentencia) {
+
 	char* instancia = buscar_instancia(sentencia.clave);
+
 	instancia_Estado_Conexion* conexion = dictionary_get(lista_Instancias, instancia);
 	int socket = conexion->socket;
 	enviarMensaje(socket, ejecutar_sentencia_instancia, &sentencia, sizeof(t_sentencia));
@@ -185,16 +206,28 @@ t_sentencia ultima_sentencia;
 
 void realizar_sentencia(t_sentencia sentencia) {
 
+	int i;
+	sem_getvalue(&contador_instancias, &i);
+	if (i == 0) {
+		printf(RED"\nEsperando que haya instancias..."RESET);
+		sem_wait(&contador_instancias);
+	}
+
 	s_wait(&semaforo_avisando_compactacion);
 
 	ultima_sentencia = sentencia; //por si falla la instancia, la vuelvo a hacer con otra
+
 	imprimir_sentencia(sentencia);
+
 	switch(sentencia.tipo) {
 		case S_GET:		GET(sentencia); 	break;
 		case S_SET: 	SET(sentencia); 	break;
 		case S_STORE: 	STORE(sentencia); 	break;
 		default: 		log_error(log_operaciones,"Error al identificar la operacion en el coordinador"); break;
 	}
+
+	if (i == 0)
+		sem_post(&contador_instancias);
 
 	s_signal(&semaforo_avisando_compactacion);
 }
@@ -203,7 +236,7 @@ void procesar_pedido_instancia(Accion operacion, char* instancia, int esi) {
 	switch(operacion) {
 		case ejecucion_ok:
 			printf(GREEN"\nLa instancia ejecuto la operacion de forma exitosa."RESET);
-			log_info(log_operaciones, string_from_format("La %s ejecuto correctamente", instancia));
+			logear_info(string_from_format("La %s ejecuto correctamente", instancia));
 			break;
 		case compactar:
 			hilo_avisar_compactacion(); //creo un hilo que espera las compactaciones
@@ -215,7 +248,7 @@ void procesar_pedido_instancia(Accion operacion, char* instancia, int esi) {
 			printf(RED"\nDesconectando "CYAN"%s."RESET, instancia);
 			eliminar_instancia(instancia);
 			reintentar_sentencia(ultima_sentencia);
-			log_warning(log_operaciones, string_from_format("Se desconecto la %s", instancia));
+			logear_info(string_from_format("Se desconecto la %s", instancia));
 			break;
 	}
 }
@@ -231,6 +264,9 @@ void eliminar_instancia(char* nombre_instancia) {
 	int indice = indice_instancia_por_nombre(nombre_instancia);
 	contadorEquitativeLoad = 0;
 	list_remove(listaSoloInstancias, indice);
+	dictionary_remove(lista_Instancias, nombre_instancia);
+
+	sem_wait(&contador_instancias);
 }
 
 void* avisar_compactacion() {
@@ -307,7 +343,18 @@ int clave_tiene_instancia(char* clave) {
 }
 
 
+
 char* aplicar_algoritmo(t_sentencia sentencia) { //DEVUELVE EL NOMBRE DE LA INSTANCIA ASIGNADA
+/*
+	int ya_imprimio = 0;
+
+	while(list_size(listaSoloInstancias) <= 0) {
+		if (!ya_imprimio) {
+			printf(RED"\nNo hay instancias para operar."RESET);
+			ya_imprimio = 1;
+		}
+	}*/
+
 	switch(configuracion.algoritmo) {
 		case el:	equitative_load(sentencia.clave);	break;
 		case lsu:	least_space_used(sentencia.clave);	break;
@@ -315,7 +362,7 @@ char* aplicar_algoritmo(t_sentencia sentencia) { //DEVUELVE EL NOMBRE DE LA INST
 		default: 								break;
 	}
 
-	log_info(log_operaciones, formatear_mensaje_esi(sentencia.id_esi, S_SET, sentencia.clave, sentencia.valor));
+	logear_info(formatear_mensaje_esi(sentencia.id_esi, S_SET, sentencia.clave, sentencia.valor));
 	return (char*) dictionary_get(instancias_Claves , sentencia.clave);
 }
 
@@ -347,7 +394,7 @@ void crear_hilo(int nuevo_socket, int modulo) {
 	if (res != 0) {
 		log_error(log_operaciones, "Error en la creacion del hilo");
 	}
-	//log_info(log_operaciones, "Se ha creado un hilo con la rutina ESI");
+
 	pthread_attr_destroy(&attr);
 }
 
@@ -371,14 +418,17 @@ void esperar_compactacion(int cantidad_conectadas) {
 }
 
 void modificar_clave(char* clave, char* instancia) {
-	dictionary_remove(instancias_Claves, clave);
-	dictionary_put(instancias_Claves, clave, instancia);
+	char* i = dictionary_remove(instancias_Claves, clave);
+	free(i);
+	char* inst = strdup(instancia);
+	dictionary_put(instancias_Claves, clave, inst);
 }
 
 void actualizar_instancia(char* instancia, int entradas) {
 	instancia_Estado_Conexion *aux = (instancia_Estado_Conexion*) dictionary_get(lista_Instancias, instancia);
 	aux->entradas_disponibles = entradas;
-	dictionary_remove(lista_Instancias, instancia);
+	char* i = dictionary_remove(lista_Instancias, instancia);
+	free(i);
 	dictionary_put(lista_Instancias, instancia, aux);
 }
 
@@ -485,14 +535,13 @@ char* formatear_mensaje_esi(int id, TipoSentencia t, char* clave, char* valor) {
 
 void destruir_estructuras_globales() {
 	log_destroy(log_operaciones);
-	dictionary_destroy(instancias_Claves);
-	dictionary_destroy_and_destroy_elements(lista_Instancias, (void*)nodo_inst_conexion_destroyer);
-	list_destroy(listaSoloInstancias);
-	//free(lista_Instancias);
+	dictionary_destroy_and_destroy_elements(instancias_Claves, free);
+	dictionary_destroy_and_destroy_elements(lista_Instancias, free);
+	list_clean_and_destroy_elements(listaSoloInstancias, free);
+	free(listaSoloInstancias);
 }
 
 void finalizar_proceso() {
-	printf("Coordinador muriendo..");
 	destruir_estructuras_globales();
 	exit(0);
 }
@@ -575,18 +624,18 @@ int existe_instancia(char* nombre) {
 }
 
 void imprimir_cfg_en_log() {
-	log_info(log_operaciones, string_from_format("PUERTO_ESCUCHA: %d", configuracion.puerto_escucha));
-	log_info(log_operaciones, string_from_format("PUERTO_PLANIF: %d", configuracion.puerto_planificador));
-	log_info(log_operaciones, string_from_format("IP_PLANIF: %s", configuracion.ip_planificador));
+	logear_info(string_from_format("PUERTO_ESCUCHA: %d", configuracion.puerto_escucha));
+	logear_info(string_from_format("PUERTO_PLANIF: %d", configuracion.puerto_planificador));
+	logear_info(string_from_format("IP_PLANIF: %s", configuracion.ip_planificador));
 	if(configuracion.algoritmo == el)
 		log_info(log_operaciones, "ALGORITMO_DISTRIBUCION: EQ");
 	if(configuracion.algoritmo == lsu)
 		log_info(log_operaciones, "ALGORITMO_DISTRIBUCION: LSU");
 	if(configuracion.algoritmo == ke)
 		log_info(log_operaciones, "ALGORITMO_DISTRIBUCION: KE");
-	log_info(log_operaciones, string_from_format("CANTIDAD_ENTRADAS: %d", configuracion.cant_entradas));
-	log_info(log_operaciones, string_from_format("TAMANIO_ENTRADA: %d", configuracion.tamanio_entrada));
-	log_info(log_operaciones, string_from_format("RETARDO: %d", configuracion.retardo));
+	logear_info(string_from_format("CANTIDAD_ENTRADAS: %d", configuracion.cant_entradas));
+	logear_info(string_from_format("TAMANIO_ENTRADA: %d", configuracion.tamanio_entrada));
+	logear_info(string_from_format("RETARDO: %d", configuracion.retardo));
 }
 
 void imprimir_configuracion() {

@@ -47,8 +47,6 @@ int recibirMensaje(int socket, void** stream) {
 		/*else
 			perror("\nError al recibir el stream");*/ //me ensucia la consola
 	}
-
-
 	return heder.accion;
 }
 
