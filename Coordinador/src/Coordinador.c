@@ -46,6 +46,7 @@ int main(int argc, char* argv[]) {
 	lista_Instancias = dictionary_create();
 	int listener = crear_socket_de_escucha(configuracion.puerto_escucha);
 	int nuevo_socket, modulo;
+	signal(SIGINT, finalizar_proceso);
 	while(1){
 		if(banderaPlanificador == 0){
 			nuevo_socket = aceptar_nueva_conexion(listener);
@@ -102,6 +103,7 @@ void configurar_instancia(int socket){
 	memcpy(dim,&configuracion.cant_entradas,sizeof(int));
 	memcpy(dim+1,&configuracion.tamanio_entrada,sizeof(int));
 	enviarMensaje(socket, config_inst, dim,sizeof(int)*2);
+	free(dim);
 }
 
 void *rutina_ESI(void* argumento) {
@@ -296,6 +298,7 @@ void avisar_guardado_planif(char* instancia, char* clave) {
 	strcpy(respuesta->clave, clave);
 	strcpy(respuesta->instancia, instancia);
 	enviarMensaje(socket_plan, clave_guardada_en_instancia, respuesta, sizeof(t_clave));
+	free(respuesta);
 }
 
 
@@ -482,9 +485,16 @@ char* formatear_mensaje_esi(int id, TipoSentencia t, char* clave, char* valor) {
 
 void destruir_estructuras_globales() {
 	log_destroy(log_operaciones);
-	dictionary_destroy_and_destroy_elements(instancias_Claves, free);
+	dictionary_destroy(instancias_Claves);
 	dictionary_destroy_and_destroy_elements(lista_Instancias, (void*)nodo_inst_conexion_destroyer);
-	list_destroy_and_destroy_elements(listaSoloInstancias, free);
+	list_destroy(listaSoloInstancias);
+	//free(lista_Instancias);
+}
+
+void finalizar_proceso() {
+	printf("Coordinador muriendo..");
+	destruir_estructuras_globales();
+	exit(0);
 }
 
 void imprimir_sentencia(t_sentencia sentencia) {

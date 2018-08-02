@@ -47,6 +47,7 @@ int existe_instancia(char* nombre);
 char* formatear_mensaje_esi(int, TipoSentencia, char*, char*);
 void configurar_instancia(int socket);
 void imprimir_cfg_en_log();
+void finalizar_proceso();
 void destruir_estructuras_globales();
 char* aplicar_algoritmo(t_sentencia sentencia);
 int clave_tiene_instancia(char* clave);
