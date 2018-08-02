@@ -80,12 +80,13 @@ void *rutina_instancia(void * arg) {
 	void * stream;
 	recibirMensaje(socket_INST, &stream);
 	char* nombre_inst = strdup((char*)stream);
-	free(stream);
 	if(!existe_instancia(nombre_inst))
 		nueva_instancia(socket_INST, nombre_inst);
 
 	logear_info(string_from_format("Se conecto la %s", nombre_inst));
 
+	free(nombre_inst);
+	free(stream);
 	return NULL;
 }
 
@@ -99,8 +100,7 @@ void nueva_instancia(int socket, char* nombre) {
 	instancia_conexion->socket = socket;
 	instancia_conexion->entradas_disponibles = configuracion.cant_entradas;
 	dictionary_put(lista_Instancias, nombre, instancia_conexion);
-	char* nom = strdup(nombre);
-	list_add(listaSoloInstancias, nom);
+	list_add(listaSoloInstancias, strdup(nombre));
 	configurar_instancia(socket);
 	printf(GREEN"\nNueva instancia"CYAN" %s "GREEN"conectada en socket"RED" %d"RESET, nombre, socket);
 	logear_info(string_from_format("Se creo una nueva instancia. Nombre: %s. Socket: %d", nombre, socket));
@@ -117,11 +117,13 @@ void configurar_instancia(int socket){
 }
 
 void *rutina_ESI(void* argumento) {
-	log_info(log_operaciones, "Se ha creado un hilo con rutina ESI");
 	int socket_esi = *(int*)(&argumento);
 	int id_esi;
-	void* stream;
+
+	log_info(log_operaciones, "Se ha creado un hilo con rutina ESI");
 	printf(BLUE "\nNueva rutina ESI en socket"CYAN" %d."RESET, socket_esi);
+
+	void* stream;
 	while (recibirMensaje(socket_esi, &stream) == ejecutar_sentencia_coordinador) {
 		t_sentencia sentencia = *(t_sentencia*)stream;
 		free(stream);
@@ -132,8 +134,10 @@ void *rutina_ESI(void* argumento) {
 		usleep(configuracion.retardo * 1000);
 		procesar_permiso_planificador(accion, sentencia, socket_esi);
 	}
+
 	printf(YELLOW"\nEl ESI %d ha terminado su rutina. Finalizando ESI...\n"RESET, id_esi);
 	enviarMensaje(socket_plan, terminar_esi, &id_esi, sizeof(id_esi));
+	free(stream);
 	return NULL;
 }
 
@@ -160,8 +164,9 @@ void procesar_permiso_planificador(Accion mensaje, t_sentencia sentencia, int so
 
 void GET(t_sentencia sentencia) {
 	if(!existe_clave(sentencia.clave)) {
-		char* a = malloc(strlen("0"));
-		strcpy(a, "0");
+		char* cero = "0";
+		char* a = malloc(strlen(cero) + 1); //'0' + barra cero
+		strcpy(a, cero);
 		dictionary_put(instancias_Claves, sentencia.clave, a);
 		logear_info(formatear_mensaje_esi(sentencia.id_esi, S_GET, sentencia.clave, NULL));
 	}
@@ -185,6 +190,7 @@ void SET(t_sentencia sentencia) {
 
 	void* asd;
 	int operacion = recibirMensaje(socket, &asd);
+	free(asd);
 	procesar_pedido_instancia(operacion, instancia, sentencia.id_esi);
 }
 

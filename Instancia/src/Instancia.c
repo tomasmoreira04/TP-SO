@@ -41,6 +41,7 @@ int32_t tamEntrada;
 int32_t cantEntradasDisp;
 ConfigInstancia config;
 int socketServer;
+pthread_t thread_dump;
 
 pthread_mutex_t semaforo_compactacion = PTHREAD_MUTEX_INITIALIZER;
 sem_t compactacion_espera; //contador de inst conectadas
@@ -68,6 +69,8 @@ void terminar_programa(int sig) {
 	printf(GREEN"\nResultados finales:"RESET);
 	mostrar_storage();
 	destruirlo_todo();
+	pthread_cancel(thread_dump);
+	pthread_join(thread_dump, NULL);
 	exit(0);
 }
 
@@ -164,6 +167,7 @@ int recuperar_claves(char* ruta) {
 
 	if ((fd_directorio = opendir(ruta)) == NULL) {
 		printf(RED"\nNo existe el punto de montaje"GREEN" %s"RED", se creara al momento de hacer DUMP"RESET, ruta);
+		closedir(fd_directorio);
 		return 0;
 	}
 	printf(CYAN"\nBuscando claves en"GREEN" %s...\n"RESET, ruta);
@@ -181,7 +185,9 @@ int recuperar_claves(char* ruta) {
 	  else
 		  cargar_clave_montaje(nombre_archivo, dp->d_name);
 	 }
-	 return 1;
+
+	closedir(fd_directorio);
+	return 1;
 }
 
 void cargar_claves_iniciales() {
@@ -206,8 +212,9 @@ void cargar_clave_montaje(char* archivo, char* clave) {
 		list_add(claves_iniciales, c);
 
 		if(!laListaLoContiene(clave))
-			list_add(lista_Claves, clave);
+			list_add(lista_Claves, strdup(clave));
 	}
+	fclose(file);
 }
 
 void* rutina_sentencia(void* arg) {
@@ -466,7 +473,7 @@ void ejecutarSentencia(t_sentencia* sentencia){
 			mostrarListaReemplazos(reemplazos);
 		}
 		if(!laListaLoContiene(sentencia->clave))
-			list_add(lista_Claves,sentencia->clave);
+			list_add(lista_Claves, strdup(sentencia->clave));
 		break;
 
 	case S_STORE:
@@ -598,7 +605,7 @@ t_list* reemplazoSegunAlgoritmo(int cantNecesita){
 
 void reemplazarValor(char* clave, char* valor, int tamEnEntradas){
 
-	t_list* paraReemplazar = reemplazoSegunAlgoritmo (tamEnEntradas);
+	t_list* paraReemplazar = reemplazoSegunAlgoritmo(tamEnEntradas);
 
 	int i;
 	for(i=0;i<list_size(paraReemplazar);i++){
@@ -607,7 +614,7 @@ void reemplazarValor(char* clave, char* valor, int tamEnEntradas){
 	}
 
 	list_clean_and_destroy_elements(paraReemplazar,(void*) nodoRempDestroyer);
-	//free(paraReemplazar);
+	free(paraReemplazar);
 	almacenarValor(clave, valor);
 }
 
@@ -692,7 +699,8 @@ void destruirlo_todo(){
 	list_clean_and_destroy_elements(claves_iniciales, (void*)clavesInicialDestroyer);
 	free(claves_iniciales);
 
-	list_destroy(lista_Claves);
+	list_clean_and_destroy_elements(lista_Claves, free);
+	free(lista_Claves);
 
 	free(storage);
 
@@ -704,17 +712,19 @@ void destruirlo_todo(){
 void crear_hilo(HiloInstancia tipo, t_sentencia* sentencia) {
 	pthread_attr_t attr;
 	pthread_t hilo;
-	int  res = pthread_attr_init(&attr);
-	res = pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+	int res;
+	pthread_attr_init(&attr);
 	switch(tipo) {
 	case hilo_sentencia:
+		pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 		res = pthread_create (&hilo ,&attr, rutina_sentencia, sentencia);
 		break;
 	case hilo_dump:
-		res = pthread_create (&hilo ,&attr, rutina_Dump, NULL);
+		res = pthread_create (&thread_dump, &attr, rutina_Dump, NULL);
 		break;
 	case hilo_compactar:
-		res = pthread_create (&hilo ,&attr, compactacion, NULL);
+		pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+		res = pthread_create (&hilo, &attr, compactacion, NULL);
 		break;
 	}
 	if (res != 0) {
