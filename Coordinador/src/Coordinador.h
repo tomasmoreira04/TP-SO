@@ -55,7 +55,10 @@ char* aplicar_algoritmo(t_sentencia sentencia);
 int clave_tiene_instancia(char* clave);
 char* instancia_con_mas_espacio();
 void avisar_guardado_planif(char* instancia, char* clave);
-void actualizar_instancia(char* instancia, int valor);
+
+void actualizar_instancia(char* instancia, int socket);
+void actualizar_entradas(char* instancia, int entradas);
+
 void nodo_inst_conexion_destroyer(instancia_Estado_Conexion* inst);
 int indice_instancia_por_nombre(char* nombre);
 char* instancia_por_socket(int socket);

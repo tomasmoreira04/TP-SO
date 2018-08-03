@@ -16,5 +16,6 @@ void ejecutar_operacion(t_esi_operacion operacion);
 FILE* cargar_script(char* ruta);
 int cantidad_de_sentencias(FILE* script);
 void informar_nuevo_esi(int socket, int rafagas, char* nombre);
+void morir(t_esi_operacion operacion, char* linea);
 
 #endif /* ESI_H_ */

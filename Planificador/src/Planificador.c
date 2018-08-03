@@ -27,11 +27,12 @@ t_list* cola_de_bloqueados;
 t_list* cola_de_finalizados;
 t_list* lista_claves_bloqueadas;
 ESI* esi_ejecutando = NULL;
-t_dictionary* estimaciones_actuales;
 int ultimo_id;
 int coordinador_conectado = 0;
 int hay_hilo_coordinador = 0;
 int socket_coordinador;
+
+pthread_t thread_consola, thread_output, thread_coordinador;
 
 FILE* output; //salida en la otra ventanita
 
@@ -56,21 +57,31 @@ int main(int argc, char* argv[]) {
 	config = cargar_config_planificador(argv[1]);
 	imprimir_configuracion();
 	bloquear_claves_iniciales(config.claves_bloqueadas, config.n_claves);
-	pthread_t thread_consola, thread_output;
 	pthread_create(&thread_consola, NULL, iniciar_consola, NULL);
 	pthread_create(&thread_output, NULL, crear_ventana_output, NULL);
 	ultimo_id = 0;
 	signal(SIGINT, terminar_programa);
 	recibir_conexiones();
-	pthread_join(thread_consola, NULL);
-	pthread_join(thread_output, NULL);
-	destruir_estructuras();
-	fclose(output);
+	terminar_programa(0);
+}
+
+void imprimir_cola(t_list* cola, char* nombre) {
+	printf("\n\n%s:", nombre);
+	for (int i = 0; i < list_size(cola); i++) {
+		ESI* esi = list_get(cola, i);
+		printf("\nesi %d", esi->id);
+	}
 }
 
 void terminar_programa(int sig) {
 	printf(GREEN"\nOrden de finalizacion:"RESET);
 	imprimir_orden_finalizacion();
+	/*imprimir_cola(cola_de_listos, "COLA DE LISTOS");
+	imprimir_cola(cola_de_bloqueados, "COLA DE BLOQUEADOS");
+	imprimir_cola(cola_de_finalizados, "COLA DE FINALIZADOS");
+	if (esi_ejecutando != NULL)
+		printf("\nESI ejecutando: %d", esi_ejecutando->id);*/
+	destruir_estructuras();
 	exit(0);
 }
 
@@ -102,7 +113,12 @@ void bloquear_claves_iniciales(char** claves, int n) {
 	for (int i = 0; i < n; i++) {
 		bloquear_clave(bloqueadas[i], NULL);
 		fprintf(output, RED"\n%s"RESET, bloqueadas[i]);
+		free(bloqueadas[i]);
 	}
+	free(bloqueadas);
+	for (int i = 0; i < n; i++)
+		free(claves[i]);
+	free(claves);
 }
 
 void recibir_conexiones() {
@@ -154,18 +170,13 @@ void recibir_mensajes(int socket, int listener, int socket_coordinador) {
 	}
 }
 
-
 void* procesar_mensaje_coordinador(void* sock) {
-
 	int coordinador = (int)sock;
 
-	void* mensaje;
-	Accion accion;
-
 	while(1) {
-		accion = recibirMensaje(coordinador, &mensaje);
+		void* mensaje;
+		Accion accion = recibirMensaje(coordinador, &mensaje);
 		s_wait(&coord_ok);
-
 		switch(accion) {
 				case conectar_coord_planif:
 					s_wait(&mutex_coord_con);
@@ -175,7 +186,6 @@ void* procesar_mensaje_coordinador(void* sock) {
 				case sentencia_coordinador: {
 					t_sentencia sentencia = *(t_sentencia*)mensaje;
 					while (obtener_esi(sentencia.id_esi) == NULL);
-					//esperar_que_exista(sentencia.id_esi);
 					nueva_sentencia(sentencia, coordinador);
 					break;
 				}
@@ -195,23 +205,11 @@ void* procesar_mensaje_coordinador(void* sock) {
 			break;
 		}
 		s_signal(&coord_ok);
+		free(mensaje);
 	}
-	free(mensaje);
 	return NULL;
 }
 
-/*
-void esperar_que_exista(int id_esi) { //para que el coordi no me meta una sentencia sin que esté cargado ese esi
-	ESI* esi;
-	while(true) {
-		esi = obtener_esi(id_esi);
-		if (esi != NULL) {
-			if (esi->id == id_esi)
-				break;
-		}
-	}
-}
-*/
 int ver_disponibilidad_clave(char* clave) { //0: no, 1: disponible
 	if (esta_bloqueada(clave))
 		return 0;
@@ -221,7 +219,9 @@ int ver_disponibilidad_clave(char* clave) { //0: no, 1: disponible
 void* procesar_mensaje_esi(void* sock) {
 	int socket = (int)sock;
 	void* mensaje;
+
 	while(1) {
+
 		Accion accion = recibirMensaje(socket, &mensaje);
 		switch(accion) {
 			case nuevo_esi:
@@ -237,8 +237,8 @@ void* procesar_mensaje_esi(void* sock) {
 			fprintf(output, RED"\n\nEL ESI EN SOCKET %d SE HA DESCONECTADO"RESET, socket);
 			break;
 		}
+		free(mensaje);
 	}
-	//free(mensaje);
 	return NULL;
 }
 
@@ -253,12 +253,14 @@ void crear_hilo(int nuevo_socket, Modulo modulo) {
 	pthread_attr_t attr;
 	pthread_t hilo;
 	pthread_attr_init(&attr);
-	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 
-	if (modulo == esi)
+	if (modulo == esi) {
+		pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 		pthread_create (&hilo ,&attr, procesar_mensaje_esi, (void*)nuevo_socket);
-	else
-		pthread_create (&hilo ,&attr, procesar_mensaje_coordinador , (void *)nuevo_socket);
+	}
+	else {
+		pthread_create (&thread_coordinador ,&attr, procesar_mensaje_coordinador, (void *)nuevo_socket);
+	}
 
 	pthread_attr_destroy(&attr);
 }
@@ -322,29 +324,29 @@ ESI* obtener_esi(int id) { //al menos una vez voy a tener que filtrar en todo el
 
 	ESI* esi;
 	for (int i = 0; i < list_size(cola_de_listos); i++){
-		s_wait(&lista_disponible);
+		//s_wait(&lista_disponible);
 		esi = list_get(cola_de_listos, i);
-		s_signal(&lista_disponible);
+		//s_signal(&lista_disponible);
 		if (esi->id == id)
 			return esi;
 	}
 
 	for (int i = 0; i < list_size(cola_de_bloqueados); i++){
-		s_wait(&lista_disponible);
+		//s_wait(&lista_disponible);
 		esi = list_get(cola_de_bloqueados, i);
-		s_signal(&lista_disponible);
+		//s_signal(&lista_disponible);
 		if (esi->id == id)
 			return esi;
 	}
 
-	s_wait(&ejecucion);
+	//s_wait(&ejecucion);
 	if (esi_ejecutando != NULL) {
 		if (esi_ejecutando->id == id) {
-			s_signal(&ejecucion);
+		//	s_signal(&ejecucion);
 			return esi_ejecutando;
 		}
 	}
-	s_signal(&ejecucion);
+//	s_signal(&ejecucion);
 
 	return NULL;
 }
@@ -461,18 +463,17 @@ void liberar_recursos(ESI* esi) {
 		char* clave = list_get(claves, i);
 		liberar_clave(clave);
 	}
+	list_clean_and_destroy_elements(claves, free);
+	free(claves);
 }
 
 t_list* claves_de_esi(ESI* esi) {
 	t_list* claves = list_create();
 	for (int i = 0; i < list_size(lista_claves_bloqueadas); i++) {
 		t_clave* clave = list_get(lista_claves_bloqueadas, i);
-		if(clave!=NULL && clave->esi_duenio!=NULL){
-
-
+		if(clave!=NULL && clave->esi_duenio!=NULL)
 			if (clave->esi_duenio->id == esi->id)
-				list_add(claves, clave->clave);
-		}
+				list_add(claves, strdup(clave->clave));
 	}
 	return claves;
 }
@@ -530,6 +531,31 @@ int liberar_clave(char* clave) {
 	return 0; //error
 }
 
+void desbloquear_esi_consola(ESI* esi) {
+	mover_esi(esi, cola_de_listos);
+	fprintf(output, GREEN"\nSE HA DESBLOQUEADO EL ESI %d\n"RESET, esi->id);
+}
+
+int liberar_clave_consola(char* clave) {
+	t_clave* c = buscar_clave_bloqueada(clave);
+	if (c != NULL) {
+		ESI* esi_a_desbloquear = list_remove(c->esis_esperando, 0); //el primero en haberse bloqueado, y lo saco
+		if (esi_a_desbloquear != NULL) {
+			desbloquear_esi_consola(esi_a_desbloquear);
+			c->esi_duenio = esi_a_desbloquear;
+			c->bloqueada = 1; //ahora esta bloqueada por el esi q taba esprando
+			fprintf(output, "\nClave"RED" %s "RESET"liberada. Ahora pertenece a ESI %d", clave, esi_a_desbloquear->id);
+		}
+		else {
+			c->bloqueada = 0; //queda libre en el aire
+			c->esi_duenio = NULL;
+			fprintf(output, "\nClave"RED" %s "RESET"desbloqueada y libre.", clave);
+		}
+		return esi_a_desbloquear->id;
+	}
+	return -1;
+}
+
 int esta_bloqueada(char* clave) {
 	t_clave* bloq = buscar_clave_bloqueada(clave);
 	if (bloq != NULL)
@@ -563,9 +589,12 @@ void bloquear_esi(ESI* esi) {
 }
 
 void desbloquear_esi(ESI* esi) {
+	printf("voy a desbloquear esi %d", esi->id);
 	ingreso_cola_de_listos(esi);
 	fprintf(output, GREEN"\nSE HA DESBLOQUEADO EL ESI %d\n"RESET, esi->id);
 }
+
+
 
 void proceso_nuevo(t_nuevo_esi esi, int socket) {
 	ESI* nuevo_esi = malloc(sizeof(ESI));
@@ -578,7 +607,6 @@ void proceso_nuevo(t_nuevo_esi esi, int socket) {
 	nuevo_esi->tiempo_esperado = 0;
 	nuevo_esi->socket_planif = socket;
 	nuevo_esi->cola_actual = NULL;
-	nuevo_esi->claves = list_create();
 	strcpy(nuevo_esi->nombre, esi.nombre);
 	imprimir_nuevo_esi(nuevo_esi);
 	ingreso_cola_de_listos(nuevo_esi);
@@ -669,16 +697,35 @@ void inicializar_estructuras() {
 	cola_de_bloqueados = list_create();
 	cola_de_finalizados = list_create();
 	lista_claves_bloqueadas = list_create();
-	estimaciones_actuales = dictionary_create();
+}
+
+void destruir_esi(ESI* esi) {
+	free(esi);
+}
+
+void destruir_clave(t_clave* clave) {
+	free(clave->esis_esperando);
+	free(clave);
 }
 
 void destruir_estructuras() {
-	list_destroy(cola_de_listos);
-	list_destroy(cola_de_bloqueados);
-	list_destroy(cola_de_finalizados);
-	list_destroy(lista_claves_bloqueadas);
-	dictionary_destroy(estimaciones_actuales);
+	list_destroy_and_destroy_elements(cola_de_listos, (void*)destruir_esi);
+	list_destroy_and_destroy_elements(cola_de_bloqueados, (void*)destruir_esi);
+	list_destroy_and_destroy_elements(cola_de_finalizados, (void*)destruir_esi);
+	list_destroy_and_destroy_elements(lista_claves_bloqueadas, (void*)destruir_clave);
+
+	if (esi_ejecutando != NULL)
+		free(esi_ejecutando);
+
 	close(file_descriptors[1]);
+	//free(buffer);
+	fclose(output);
+
+	pthread_cancel(thread_coordinador);
+	pthread_join(thread_coordinador, NULL);
+
+	pthread_cancel(thread_output);
+	pthread_join(thread_output, NULL);
 }
 
 void ejecutar_por_fifo() {

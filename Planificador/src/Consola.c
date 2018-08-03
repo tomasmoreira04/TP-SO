@@ -13,16 +13,19 @@
 
 int file_descriptors[2];
 FILE* outPlanif;
+char* buffer;
+int unlock_hecho = 0;
 
 void* iniciar_consola() {
 	size_t tamanio_buffer = 50;
 	Operacion operacion;
-	char *buffer = malloc(tamanio_buffer);
 
 	while(true) {
+		buffer = malloc(tamanio_buffer);
 		printf(GREEN"\nIngrese un comando "RESET"\n>> ");
 		getline(&buffer, &tamanio_buffer, stdin);
 		operacion = crear_operacion(buffer);
+		free(buffer);
 		validar_operacion(operacion);
 	}
 }
@@ -125,6 +128,10 @@ void pausar_planificacion() {
 void continuar_planificacion() {
 	printf(GREEN"\n\nSE HA REANUDADO LA PLANIFICACION\n\n"RESET);
 	s_signal(&mutex_planificar);
+	if (unlock_hecho) {
+		unlock_hecho = 0;
+		replanificar();
+	}
 }
 
 t_clave* buscar_clave_que_necesita(ESI* esi) {
@@ -174,9 +181,14 @@ int tiene_clave(ESI* esi, char* clave) {
 	t_list* claves = claves_de_esi(esi);
 	for (int i = 0; i < list_size(claves); i++) {
 		t_clave* clave2  = list_get(claves, i);
-		if (strcmp(clave, clave2->clave) == 0)
+		if (strcmp(clave, clave2->clave) == 0) {
+			list_clean_and_destroy_elements(claves, free);
+			free(claves);
 			return 1;
+		}
 	}
+	list_clean_and_destroy_elements(claves, free);
+	free(claves);
 	return 0;
 }
 
@@ -241,9 +253,12 @@ void destruir_deadlocks(t_list* bloqueos, t_list* deadlocks) {
 }
 
 void desbloquear_clave(char* clave) {
-	int ok = liberar_clave(clave);
-	if (!ok)
+	//s_signal(&mutex_planificar);
+	int esi = liberar_clave_consola(clave);
+	if (esi == -1)
 		printf(RED"\nNo se ha podido liberar la clave"CYAN" %s"RESET, clave);
+	unlock_hecho = 1;
+	aviso_get_clave(clave, esi);
 }
 
 void listar_esis_recurso(char* clave) {
@@ -341,4 +356,20 @@ char* consultar_simulacion(char* clave) {
 	enviarMensaje(coordinador, consulta_simulacion, clave, strlen(clave) + 1);
 	recibirMensaje(coordinador, &mensaje);
 	return (char*)mensaje;
+}
+
+void aviso_get_clave(char* clave, int esi) {
+	int coordinador = conexion_con_servidor(config.ip_coordinador, config.puerto_coordinador);
+	/*t_aviso_clave aviso;
+	aviso.esi = esi;
+	strcpy(aviso.clave, clave);*/
+
+	handShake(coordinador, consola);
+
+	int* pepito = malloc(sizeof(int) + strlen(clave) + 1);
+	memcpy(pepito, &esi, sizeof(int));
+	memcpy(pepito + 1, &clave, strlen(clave) + 1);
+	enviarMensaje(coordinador, aviso_bloqueo_clave, pepito, sizeof(int) + strlen(clave) + 1);
+
+	//enviarMensaje(coordinador, aviso_bloqueo_clave, &aviso, sizeof(t_aviso_clave));
 }

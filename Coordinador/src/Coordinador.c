@@ -73,15 +73,24 @@ int main(int argc, char* argv[]) {
 	return 0;
 }
 
-//ACCIONES DE LOS HILOS
+void actualizar_instancia(char* nombre, int nuevo_socket) {
+	instancia_Estado_Conexion *instancia_conexion = dictionary_get(lista_Instancias, nombre);
+	instancia_conexion->socket = nuevo_socket;
+	configurar_instancia(nuevo_socket);
+	printf(GREEN"\nLa instancia"CYAN" %s "GREEN"se ha vuelto a conectar en socket "RED" %d"RESET, nombre, nuevo_socket);
+}
+
 void *rutina_instancia(void * arg) {
 	log_info(log_operaciones, "Se creo un hilo con rutina instancia");
 	int socket_INST = (int)arg;
 	void * stream;
 	recibirMensaje(socket_INST, &stream);
 	char* nombre_inst = strdup((char*)stream);
+
 	if(!existe_instancia(nombre_inst))
 		nueva_instancia(socket_INST, nombre_inst);
+	else
+		actualizar_instancia(nombre_inst, socket_INST);
 
 	logear_info(string_from_format("Se conecto la %s", nombre_inst));
 
@@ -137,7 +146,6 @@ void *rutina_ESI(void* argumento) {
 
 	printf(YELLOW"\nEl ESI %d ha terminado su rutina. Finalizando ESI...\n"RESET, id_esi);
 	enviarMensaje(socket_plan, terminar_esi, &id_esi, sizeof(id_esi));
-	free(stream);
 	return NULL;
 }
 
@@ -179,8 +187,6 @@ void SET(t_sentencia sentencia) {
 	if(!clave_tiene_instancia(sentencia.clave))
 		instancia = aplicar_algoritmo(sentencia);
 
-
-
 	instancia_Estado_Conexion* conexion = dictionary_get(lista_Instancias , instancia);
 	int socket = conexion->socket;
 
@@ -204,7 +210,8 @@ void STORE(t_sentencia sentencia) {
 
 	void* cantidad_entradas;
 	int operacion = recibirMensaje(socket, &cantidad_entradas);
-	actualizar_instancia(instancia, *((int*)cantidad_entradas));
+	actualizar_entradas(instancia, *((int*)cantidad_entradas));
+	free(cantidad_entradas);
 	procesar_pedido_instancia(operacion, instancia, sentencia.id_esi);
 }
 
@@ -345,7 +352,10 @@ void avisar_guardado_planif(char* instancia, char* clave) {
 
 
 int clave_tiene_instancia(char* clave) {
-	return strcmp((char*)dictionary_get(instancias_Claves, clave), "0") == 0 ? 0 : 1;
+	char* inst = (char*)dictionary_get(instancias_Claves, clave);
+	if (inst != NULL)
+		return strcmp(inst, "0") == 0 ? 0 : 1;
+	return 0;
 }
 
 
@@ -430,12 +440,9 @@ void modificar_clave(char* clave, char* instancia) {
 	dictionary_put(instancias_Claves, clave, inst);
 }
 
-void actualizar_instancia(char* instancia, int entradas) {
-	instancia_Estado_Conexion *aux = (instancia_Estado_Conexion*) dictionary_get(lista_Instancias, instancia);
+void actualizar_entradas(char* instancia, int entradas) {
+	instancia_Estado_Conexion* aux = dictionary_get(lista_Instancias, instancia);
 	aux->entradas_disponibles = entradas;
-	char* i = dictionary_remove(lista_Instancias, instancia);
-	free(i);
-	dictionary_put(lista_Instancias, instancia, aux);
 }
 
 void equitative_load(char* claveSentencia){
@@ -581,10 +588,40 @@ void* rutina_consulta(void* argumento) {
 	int socket_consola = (int)argumento;
 	void* stream;
 	Accion accion = recibirMensaje(socket_consola, &stream);
-	char* instancia = "ERROR";
-	if (accion == consulta_simulacion)
-		instancia = simular_algoritmo((char*)stream);
-	enviarMensaje(socket_consola, consulta_simulacion, instancia, strlen(instancia) + 1);
+
+	switch(accion) {
+		case consulta_simulacion: {
+			char* instancia = "ERROR";
+			instancia = simular_algoritmo((char*)stream);
+			enviarMensaje(socket_consola, consulta_simulacion, instancia, strlen(instancia) + 1);
+			break;
+		}
+		case aviso_bloqueo_clave: {
+			//t_aviso_clave aviso = *(t_aviso_clave*)stream;
+			int esi;
+			int tamanio;
+			char* clave;
+			memcpy(&esi, (int*)stream, sizeof(int));
+			memcpy(clave, (char*)stream+1, sizeof(stream) - sizeof(int));
+
+			printf("\nEl planificador ha desbloqueado "GREEN"ESI %d"RESET" con clave"RED" %s"RESET, esi, clave);
+			if(!existe_clave(clave)) {
+				char* cero = "0";
+				char* a = malloc(strlen(cero) + 1); //'0' + barra cero
+				strcpy(a, cero);
+				dictionary_put(instancias_Claves, clave, a);
+				logear_info(formatear_mensaje_esi(esi, S_GET, clave, NULL));
+			}
+			free(clave);
+
+			break;
+		}
+		default:
+			break;
+	}
+
+	free(stream);
+
 	return NULL;
 }
 

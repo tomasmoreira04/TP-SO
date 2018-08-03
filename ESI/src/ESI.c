@@ -13,8 +13,7 @@
 #include "ESI.h"
 #include <parsi/parser.h>
 
-//Clonen repo y instalen el parsi en su VM: https://github.com/sisoputnfrba/parsi
-//VER https://github.com/sisoputnfrba/parsi/blob/master/src/parsi/parser.h para entender funciones
+FILE* script;
 
 int main(int argc, char* argv[]) {
 	ConfigESI config = cargar_config_esi();
@@ -27,11 +26,9 @@ int main(int argc, char* argv[]) {
 
 	FILE* script = cargar_script(ruta);
 	int rafagas = cantidad_de_sentencias(script);
+	fclose(script);
 	informar_nuevo_esi(planificador, rafagas, nombre);
 	leer_sentencias(planificador, coordinador, ruta); //si paso puntero a FILE no me anda el getline xD, asi que abro de nuevo
-
-	fclose(script);
-	free(ruta);
 
 	return EXIT_SUCCESS;
 }
@@ -72,20 +69,40 @@ t_sentencia convertir_operacion(t_esi_operacion a) { //necesario porque los char
 	return b;
 }
 
+void morir(t_esi_operacion operacion, char* linea) {
+	destruir_operacion(operacion);
+	fclose(script);
+	if(linea)
+		free(linea);
+	exit(EXIT_FAILURE);
+}
+
+void handler(int sig) {
+	printf("MURIENDO SIGPIPE");
+	fclose(script);
+	exit(EXIT_FAILURE);
+}
+
 void leer_sentencias(int planificador, int coordinador, char* ruta) {
-	void* stream;
-	FILE* script = cargar_script(ruta);
+	script = cargar_script(ruta);
+	free(ruta);
 	char* linea = NULL;
 	size_t largo = 0;
 	ssize_t leidas = 0;
 	int id_esi = 0;
+	signal(SIGPIPE, handler);
 
 	while ((leidas = getline(&linea, &largo, script)) != -1) {
-
+			void* stream;
 			if (recibirMensaje(planificador, &stream) == ejecutar_proxima_sentencia)
 				printf(GREEN"\nEjecutando: "RESET);
-			else
+			else {
 				printf(RED"\nERROR"RESET);
+				fclose(script);
+				if(linea)
+					free(linea);
+				exit(EXIT_FAILURE);
+			}
 
 			id_esi = *(int*)stream;
 			free(stream);
@@ -100,25 +117,28 @@ void leer_sentencias(int planificador, int coordinador, char* ruta) {
 
 				ejecutar_operacion(operacion); //imprime nada mas en el ESI
 
-				void* resultado;
-				recibirMensaje(coordinador, &resultado);
+				void* asd;
+				int mensaje_coordi = recibirMensaje(coordinador, &asd);
+				int resultado = (int)asd;
 
-				enviarMensaje(planificador, resultado_ejecucion, (int*)resultado, sizeof(resultado));
-				free(resultado);
+				if (mensaje_coordi != error) {
+					enviarMensaje(planificador, resultado_ejecucion, &resultado, sizeof(resultado));
+					free(asd);
+				}
+				else morir(operacion, linea);
 			}
 			else {
 				printf(RED "\nNo se pudo interpretar " CYAN "%s\n" RESET, linea);
-				exit(EXIT_FAILURE);
+				morir(operacion, linea);
 			}
 			destruir_operacion(operacion);
-			//hacer los free
 	}
 
 	enviarMensaje(coordinador, no_hay_mas_sentencias, NULL, 0);
 	printf(GREEN"\n\nEjecucion finalizada!\n"RESET);
 
 	fclose(script);
-	if (linea)
+	if(linea)
 		free(linea);
 }
 

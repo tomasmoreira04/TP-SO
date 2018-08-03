@@ -104,4 +104,9 @@ sem_t* semaforo_esi(int id_esi);
 void mostrar_bloqueados();
 
 
+//sida
+int liberar_clave_consola(char* clave);
+void desbloquear_esi_consola(ESI* esi);
+
+
 #endif

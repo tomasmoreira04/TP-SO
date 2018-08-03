@@ -6,6 +6,7 @@
 
 extern int file_descriptors[2];
 extern FILE* outPlanif;
+extern char* buffer;
 
 typedef enum {
 	_pause,
@@ -52,7 +53,7 @@ void imprimir_deadlock(t_deadlock* deadlock);
 void mostrar_deadlocks();
 t_list* buscar_deadlocks();
 
-
+void aviso_get_clave(char* clave, int esi);
 void desbloquear_clave(char* clave);
 void listar_esis_recurso(char* clave);
 void matar_esi(char* id);

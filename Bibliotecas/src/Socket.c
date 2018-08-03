@@ -34,18 +34,13 @@ int recibirMensaje(int socket, void** stream) {
 	if((verificador = recv(socket, &heder, sizeof(header), MSG_WAITALL)) <= 0){
 		if(verificador == 0)
 			return 0;
-		/*else {
-			perror("\nError en el recv"); //me ensucia la consola
-		}*/
 	}
 
-	*stream=malloc(heder.tamano);
+	*stream = malloc(heder.tamano);
+
 	if((verificador = recv(socket, *stream, heder.tamano, MSG_WAITALL))<=0){
-		if(verificador == 0){
+		if(verificador == 0)
 			return 0;
-		}
-		/*else
-			perror("\nError al recibir el stream");*/ //me ensucia la consola
 	}
 	return heder.accion;
 }

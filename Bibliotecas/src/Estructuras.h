@@ -13,7 +13,6 @@ typedef struct {
 	int tiempo_esperado; //para hrrn
 	float rafagas_restantes; //para sjf
 	float response_ratio; //para hrrn
-	t_list* claves;
 	t_list* cola_actual;
 	int socket_planif;
 	char nombre[LARGO_ESI];
@@ -48,6 +47,11 @@ typedef enum {
 	dudoso
 } ResultadoEjecucion;
 
+typedef struct {
+	char clave[LARGO_CLAVE];
+	int esi;
+} t_aviso_clave;
+
 typedef enum {
 	error = 0,
 	conectar_coord_planif,
@@ -79,7 +83,8 @@ typedef enum {
 	consulta_simulacion,
 	inicializacion_instancia,
 	verificar_conexion, //coordi checkea que la instancia este conectada
-	esi_matado
+	esi_matado,
+	aviso_bloqueo_clave
 } Accion;
 
 typedef struct {
