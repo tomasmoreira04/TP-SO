@@ -15,6 +15,7 @@ int file_descriptors[2];
 FILE* outPlanif;
 char* buffer;
 int unlock_hecho = 0;
+int pausado = 0;
 
 void* iniciar_consola() {
 	size_t tamanio_buffer = 50;
@@ -123,11 +124,13 @@ void ejecutar_comando(Operacion comando) {
 void pausar_planificacion() {
 	printf(RED"\n\nSE HA PAUSADO LA PLANIFICACION\n\n"RESET);
 	s_wait(&mutex_planificar);
+	pausado = 1;
 }
 
 void continuar_planificacion() {
 	printf(GREEN"\n\nSE HA REANUDADO LA PLANIFICACION\n\n"RESET);
 	s_signal(&mutex_planificar);
+	pausado = 0;
 	if (unlock_hecho) {
 		unlock_hecho = 0;
 		replanificar();
@@ -259,6 +262,8 @@ void desbloquear_clave(char* clave) {
 		printf(RED"\nNo se ha podido liberar la clave"CYAN" %s"RESET, clave);
 	unlock_hecho = 1;
 	aviso_get_clave(clave, esi);
+	if (!pausado)
+		replanificar();
 }
 
 void listar_esis_recurso(char* clave) {
@@ -359,17 +364,23 @@ char* consultar_simulacion(char* clave) {
 }
 
 void aviso_get_clave(char* clave, int esi) {
+
+	printf("\n%s", clave);
+
+	char* otro = strdup(clave);
+
 	int coordinador = conexion_con_servidor(config.ip_coordinador, config.puerto_coordinador);
-	/*t_aviso_clave aviso;
-	aviso.esi = esi;
-	strcpy(aviso.clave, clave);*/
+	int largo = strlen(otro) + 1;
+	int tam = sizeof(int) * 2 + largo;
 
 	handShake(coordinador, consola);
 
-	int* pepito = malloc(sizeof(int) + strlen(clave) + 1);
-	memcpy(pepito, &esi, sizeof(int));
-	memcpy(pepito + 1, &clave, strlen(clave) + 1);
-	enviarMensaje(coordinador, aviso_bloqueo_clave, pepito, sizeof(int) + strlen(clave) + 1);
+	void* asd = malloc(tam);
 
-	//enviarMensaje(coordinador, aviso_bloqueo_clave, &aviso, sizeof(t_aviso_clave));
+	memcpy(asd, &esi, sizeof(int));
+	memcpy(asd + sizeof(int), &largo, sizeof(int));
+	memcpy(asd + sizeof(int) * 2, otro, largo);
+	free(otro);
+	enviarMensaje(coordinador, aviso_bloqueo_clave, asd, tam);
+
 }

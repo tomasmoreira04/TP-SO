@@ -153,6 +153,7 @@ void procesar_permiso_planificador(Accion mensaje, t_sentencia sentencia, int so
 	int resultado; //lo mando luego de ejecutar
 	switch (mensaje) {
 		case sentencia_coordinador:
+			printf("el planif me dijo que haga sent con clave %s de esi %d", sentencia.clave, sentencia.id_esi);
 			realizar_sentencia(sentencia);
 			resultado = exitoso;
 			break;
@@ -194,9 +195,10 @@ void SET(t_sentencia sentencia) {
 
 	avisar_guardado_planif(instancia, sentencia.clave); //aviso de clave guardada en tal instancia
 
-	void* asd;
+	void* asd = NULL;
 	int operacion = recibirMensaje(socket, &asd);
-	free(asd);
+	if (asd)
+		free(asd);
 	procesar_pedido_instancia(operacion, instancia, sentencia.id_esi);
 }
 
@@ -343,10 +345,15 @@ void* rutina_compactacion(void* sock) {
 }
 
 void avisar_guardado_planif(char* instancia, char* clave) {
-	t_clave* respuesta = malloc(sizeof(t_clave));
-	strcpy(respuesta->clave, clave);
-	strcpy(respuesta->instancia, instancia);
-	enviarMensaje(socket_plan, clave_guardada_en_instancia, respuesta, sizeof(t_clave));
+	int largo_clave = strlen(clave) + 1, largo_instancia = strlen(instancia) + 1;
+	int tam_total = sizeof(int) * 2 + largo_clave + largo_instancia;
+	void* respuesta = malloc(tam_total);
+	memcpy(respuesta, &largo_clave, sizeof(int));
+	memcpy(respuesta + sizeof(int), &largo_instancia, sizeof(int));
+	memcpy(respuesta + sizeof(int) * 2, clave, largo_clave);
+	memcpy(respuesta + sizeof(int) * 2 + largo_clave, instancia, largo_instancia);
+
+	enviarMensaje(socket_plan, clave_guardada_en_instancia, respuesta, tam_total);
 	free(respuesta);
 }
 
@@ -597,14 +604,15 @@ void* rutina_consulta(void* argumento) {
 			break;
 		}
 		case aviso_bloqueo_clave: {
-			//t_aviso_clave aviso = *(t_aviso_clave*)stream;
-			int esi;
-			int tamanio;
-			char* clave;
-			memcpy(&esi, (int*)stream, sizeof(int));
-			memcpy(clave, (char*)stream+1, sizeof(stream) - sizeof(int));
+			int esi, largo;
+
+			memcpy(&esi, stream, sizeof(int));
+			memcpy(&largo, stream + sizeof(int), sizeof(int));
+			char* clave = malloc(largo);
+			memcpy(clave, stream + sizeof(int) * 2, largo);
 
 			printf("\nEl planificador ha desbloqueado "GREEN"ESI %d"RESET" con clave"RED" %s"RESET, esi, clave);
+
 			if(!existe_clave(clave)) {
 				char* cero = "0";
 				char* a = malloc(strlen(cero) + 1); //'0' + barra cero
@@ -612,7 +620,6 @@ void* rutina_consulta(void* argumento) {
 				dictionary_put(instancias_Claves, clave, a);
 				logear_info(formatear_mensaje_esi(esi, S_GET, clave, NULL));
 			}
-			free(clave);
 
 			break;
 		}

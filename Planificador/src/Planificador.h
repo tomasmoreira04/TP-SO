@@ -66,7 +66,7 @@ void imprimir_nuevo_esi(ESI* esi);
 void calcular_response_ratios();
 void bloquear_claves_iniciales(char** claves, int n);
 void copiar_lista_strings(char** destino, char** claves, int n);
-void actualizar_clave(t_clave respuesta);
+void actualizar_clave(char* clave, char* instancia);
 
 void terminar_programa(int sig);
 void imprimir_orden_finalizacion();

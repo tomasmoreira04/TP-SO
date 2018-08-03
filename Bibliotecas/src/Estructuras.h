@@ -47,11 +47,6 @@ typedef enum {
 	dudoso
 } ResultadoEjecucion;
 
-typedef struct {
-	char clave[LARGO_CLAVE];
-	int esi;
-} t_aviso_clave;
-
 typedef enum {
 	error = 0,
 	conectar_coord_planif,
