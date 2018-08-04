@@ -80,8 +80,6 @@ void ordenar_reemplazos(int algoritmo) {
 		list_sort(reemplazos, (void*)comparadorMayorTam);
 }
 
-
-
 int numero_entrada(Nodo_Reemplazo* nodo) {
 	return buscar_entrada(nodo->clave)->entrada;
 }
@@ -219,9 +217,16 @@ void cargar_clave_montaje(char* archivo, char* clave) {
 void* rutina_sentencia(void* arg) {
 	t_sentencia* sentencia = (t_sentencia*)arg;
 	ejecutarSentencia(sentencia);
-	free(sentencia);
-	enviarMensaje(socketServer,ejecucion_ok,&cantEntradasDisp,sizeof(int));
 	return NULL;
+}
+
+t_sentencia copiar_sentencia(t_sentencia* stream) {
+	t_sentencia s;
+	strcpy(s.clave, stream->clave);
+	strcpy(s.valor, stream->valor);
+	s.id_esi = stream->id_esi;
+	s.tipo = stream->tipo;
+	return s;
 }
 
 void rutina_principal() {
@@ -232,10 +237,14 @@ void rutina_principal() {
 			void* stream;
 			Accion accion = recibirMensaje(socketServer, &stream);
 
+			pthread_mutex_lock(&semaforo_compactacion);
+
 			switch(accion){
-				case ejecutar_sentencia_instancia:
-					crear_hilo(hilo_sentencia, (t_sentencia*)stream);
+				case ejecutar_sentencia_instancia: {
+					t_sentencia sent = copiar_sentencia(stream);
+					crear_hilo(hilo_sentencia, &sent);
 					break;
+				}
 				case compactar:
 					crear_hilo(hilo_compactar, NULL);
 					break;
@@ -245,8 +254,14 @@ void rutina_principal() {
 				default:
 					printf(RED "\nError!\n"RESET);
 					printf(RED "\nSe desconecto el coordinador!\n"RESET);
+					//free(stream);
 					terminar_programa(0);
 			}
+
+			free(stream);
+
+			pthread_mutex_unlock(&semaforo_compactacion);
+
 		}
 }
 
@@ -355,10 +370,9 @@ int* bits_disponibles(t_bitarray* bitarray) {
 
 void* compactacion() {
 
-	pthread_mutex_lock(&semaforo_compactacion);
-
 	printf(RED"\nCOMPACTANDO...\n"RESET);
 
+	pthread_mutex_lock(&semaforo_compactacion);
 	int* disponibles_antes = bits_disponibles(disponibles);
 	compact();
 	int* disponibles_ahora = bits_disponibles(disponibles);
@@ -370,7 +384,6 @@ void* compactacion() {
 
 	avisar(socketServer, compactacion_ok);
 	sem_post(&compactacion_espera);
-
 	pthread_mutex_unlock(&semaforo_compactacion);
 
 	return NULL;
@@ -465,7 +478,7 @@ void ejecutarSentencia(t_sentencia* sentencia){
 	case S_SET:
 		aumentarTiempoRef();
 		almacenarValor(sentencia->clave, sentencia->valor);
-		printf(GREEN "\nSe ejecuto un SET correctamente, de clave "CYAN"%s"GREEN" con valor"RED" %s."RESET, sentencia->clave, sentencia->valor);
+		printf(GREEN "\nSET de clave "CYAN"%s"GREEN" con valor"RED" %s."RESET, sentencia->clave, sentencia->valor);
 		if (config.mostrar_storage) {
 			mostrar_storage();
 			printf("\n");
@@ -473,14 +486,21 @@ void ejecutarSentencia(t_sentencia* sentencia){
 		}
 		if(!laListaLoContiene(sentencia->clave))
 			list_add(lista_Claves, strdup(sentencia->clave));
+		enviarMensaje(socketServer, ejecucion_ok, &cantEntradasDisp, sizeof(int));
 		break;
 
-	case S_STORE:
+	case S_STORE: {
 		aumentarTiempoRef();
-		persistirValor(sentencia->clave);
-		printf(GREEN "\nSe ejecuto un STORE correctamente, de clave "CYAN"%s."RESET, sentencia->clave);
+		printf(GREEN "\nSTORE de clave "CYAN"%s."RESET, sentencia->clave);
+		int result = persistirValor(sentencia->clave);
+		if (result != 0)
+			enviarMensaje(socketServer, ejecucion_ok, &cantEntradasDisp, sizeof(int));
+		else {
+			printf(RED"\nNo se pudo persistir valor de clave %s, se abortara ESI."RESET, sentencia->clave);
+			enviarMensaje(socketServer, ejecucion_no_ok, &cantEntradasDisp, sizeof(int));
+		}
 		break;
-
+	}
 	default:
 		printf(RED "\nTipo de sentencia no valida!\n" RESET);
 		terminar_programa(0);
@@ -550,7 +570,7 @@ void almacenarValor(char* clave, char* valor){
 
 	} else {
 		if(tamEnEntradas <= list_size(reemplazos)) {
-			printf(YELLOW "\nEl valor de la clave %s reemplazara %d valor(es) existente(s)\n"RESET,clave,tamEnEntradas);
+			printf(YELLOW "\nReemplazo por clave %s"RESET, clave);
 			reemplazarValor(clave, valor, tamEnEntradas);
 		} else {
 			printf(RED "\nNo existen suficientes entradas de reemplazo para ubicar valor de clave: %s!\n\n"RESET,clave);
@@ -559,7 +579,7 @@ void almacenarValor(char* clave, char* valor){
 	}
 }
 
-void persistirValor(char* clave){
+int persistirValor(char* clave){
 	char* path = malloc(strlen(clave) + strlen(config.punto_montaje) + 1);
 
 	struct stat st = {0};
@@ -571,11 +591,19 @@ void persistirValor(char* clave){
 
 	char* valor = devolver_valor(clave);
 
-	FILE* arch = fopen(path, "w+");
+	if (valor != NULL) {
+		FILE* arch = fopen(path, "w+");
 		fputs(valor, arch);
-	fclose(arch);
+		fclose(arch);
+	} else {
+		free(valor);
+		free(path);
+		return 0;
+	}
+
 	free(valor);
 	free(path);
+	return 1;
 }
 
 t_list* reemplazoSegunAlgoritmo(int cantNecesita){
@@ -618,14 +646,16 @@ void reemplazarValor(char* clave, char* valor, int tamEnEntradas){
 	almacenarValor(clave, valor);
 }
 
-
 char* devolver_valor(char* clave) {
 	Reg_TablaEntradas* registro = buscar_entrada(clave);
-	char* valor = malloc(sizeof(char) * registro->tamanio);
-	memcpy(valor, storage + (tamEntrada * registro->entrada), registro->tamanio);
-	char* con = agregar_barra_cero(valor, registro->tamanio);
-	free(valor);
-	return con;
+	if (registro != NULL) {
+		char* valor = malloc(sizeof(char) * registro->tamanio);
+		memcpy(valor, storage + (tamEntrada * registro->entrada), registro->tamanio);
+		char* con = agregar_barra_cero(valor, registro->tamanio);
+		free(valor);
+		return con;
+	}
+	return NULL;
 }
 
 void limpiarStorage(int desde, int hasta) {
@@ -736,7 +766,9 @@ void crear_hilo(HiloInstancia tipo, t_sentencia* sentencia) {
 void *rutina_Dump(void * arg) {
 	while(1){
 		usleep(config.intervalo_dump * 1000 * 1000);
+		pthread_mutex_lock(&semaforo_compactacion);
 		guardarLaWea();
+		pthread_mutex_unlock(&semaforo_compactacion);
 	}
 	return NULL;
 }
@@ -752,6 +784,8 @@ int laListaLoContiene(char * clave){
 
 void guardarLaWea()
 {
+	printf(GREEN"\nHaciendo dump..."RESET);
+
 	for(int i=0;i<(list_size(lista_Claves));i++)
 	{
 		char* clave = (char*)list_get(lista_Claves, i);

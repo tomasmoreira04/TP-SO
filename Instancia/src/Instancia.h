@@ -43,7 +43,7 @@ void almacenarValor(char* clave, char* valor);
 void ejecutarSentencia(t_sentencia* sentencia);
 char* devolver_valor(char* clave);
 void mostrarValor(char* clave);
-void persistirValor(char* clave);
+int persistirValor(char* clave);
 t_list* reemplazoSegunAlgoritmo(int cantNecesita);
 void reemplazarValor(char* clave, char* valor, int tamEnEntradas);
 void mostrarListaReemplazos(t_list* list);

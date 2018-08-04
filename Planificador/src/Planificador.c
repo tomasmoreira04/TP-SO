@@ -212,12 +212,14 @@ void* procesar_mensaje_coordinador(void* sock) {
 		pthread_mutex_lock(&coord_ok);
 		switch(accion) {
 				case conectar_coord_planif:
+					free(mensaje);
 					pthread_mutex_lock(&mutex_coord_con);
 					coordinador_conectado = 1;
 					pthread_mutex_unlock(&mutex_coord_con);
 					break;
 				case sentencia_coordinador: {
 					t_sentencia sentencia = *(t_sentencia*)mensaje;
+					free(mensaje);
 					while (obtener_esi(sentencia.id_esi) == NULL);
 					nueva_sentencia(sentencia, coordinador);
 					break;
@@ -231,24 +233,38 @@ void* procesar_mensaje_coordinador(void* sock) {
 					memcpy(clave, mensaje + sizeof(int) * 2, lclave);
 					memcpy(instancia, mensaje + sizeof(int) * 2 + lclave, linstancia);
 					actualizar_clave(clave, instancia);
+					free(mensaje);
+					free(instancia);
+					free(clave);
 					break;
 				}
 				case terminar_esi: {
 					int id = *(int*)mensaje;
-					//printf("\nel coordi me mando a terminar esi %d", id);
 					finalizar_esi(id);
 					pthread_mutex_unlock(&respuesta_recibida);
+					free(mensaje);
 					break;
 				}
+				case abortar_esi: {
+					int id = *(int*)mensaje;
+					fprintf(output, RED"\nAbortando ESI %d por pedido del coordinador"RESET, id);
+					//finalizar_esi(id);
+					ESI* esi = obtener_esi(id);
+					close(esi->socket_planif);
+					pthread_mutex_unlock(&respuesta_recibida);
+					free(mensaje);
+					break;
+				}
+				case error:
 				default:
+					fprintf(output, RED"\n\nEL COORDINADOR SE HA DESCONECTADO"RESET);
 					break;
 			}
-		if (accion == error) {
-			fprintf(output, RED"\n\nEL COORDINADOR SE HA DESCONECTADO"RESET);
-			break;
-		}
 		pthread_mutex_unlock(&coord_ok);
-		free(mensaje);
+		if (accion == error)
+			break;
+
+
 	}
 	return NULL;
 }
@@ -261,7 +277,7 @@ int ver_disponibilidad_clave(char* clave) { //0: no, 1: disponible
 
 void* procesar_mensaje_esi(void* sock) {
 	int socket = (int)sock;
-	void* mensaje;
+	void* mensaje = NULL;
 
 	while(1) {
 
@@ -269,10 +285,12 @@ void* procesar_mensaje_esi(void* sock) {
 		switch(accion) {
 			case nuevo_esi:
 				proceso_nuevo(*(t_nuevo_esi*)mensaje, socket);
+				free(mensaje);
 				break;
 			case resultado_ejecucion: {
 				int muerte = *(int*)mensaje;
 				procesar_resultado(muerte);
+				free(mensaje);
 				break;
 				}
 			default:
@@ -282,7 +300,6 @@ void* procesar_mensaje_esi(void* sock) {
 			fprintf(output, RED"\n\nEL ESI EN SOCKET %d SE HA DESCONECTADO"RESET, socket);
 			break;
 		}
-		free(mensaje);
 	}
 	return NULL;
 }
@@ -290,6 +307,7 @@ void* procesar_mensaje_esi(void* sock) {
 void actualizar_clave(char* clave, char* instancia) { //guardo en qué instancia se guardo esa clave
 	t_clave* registro = buscar_clave_bloqueada(clave);
 	strcpy(registro->instancia, instancia);
+
 }
 
 void crear_hilo(int nuevo_socket, Modulo modulo) {
@@ -492,21 +510,22 @@ void STORE(char* clave, ESI* esi, int coordinador) { //esi: esi que hace el pedi
 }
 
 void finalizar_esi_ref(ESI* esi) {
-	fprintf(output, YELLOW"\nFinalizando ESI %d."CYAN"(%s)"RESET, esi->id, esi->nombre);
 
-	if (config.algoritmo == sjf_sd || config.algoritmo == sjf_cd) {
-		if (esi->sentencias_restantes > 0)
-			fprintf(output, "\nSobraron" RED " %.2f " RESET "UT de la estimacion.", esi->sentencias_restantes);
-		else if (esi->sentencias_restantes == 0)
-			fprintf(output, "\nNo sobraron UT de la estimacion.");
-		else fprintf(output, "\nFaltaron" RED " %.2f " RESET "UT en la estimacion.", esi->sentencias_restantes * -1);
+	if (esi != NULL) {
+		fprintf(output, YELLOW"\nFinalizando ESI %d."CYAN"(%s)"RESET, esi->id, esi->nombre);
+
+		if (config.algoritmo == sjf_sd || config.algoritmo == sjf_cd) {
+			if (esi->sentencias_restantes > 0)
+				fprintf(output, "\nSobraron" RED " %.2f " RESET "UT de la estimacion.", esi->sentencias_restantes);
+			else if (esi->sentencias_restantes == 0)
+				fprintf(output, "\nNo sobraron UT de la estimacion.");
+			else fprintf(output, "\nFaltaron" RED " %.2f " RESET "UT en la estimacion.", esi->sentencias_restantes * -1);
+		}
+
+		mover_esi(esi, cola_de_finalizados);
+		liberar_recursos(esi);
+		flag_desalojo = 1;
 	}
-
-	mover_esi(esi, cola_de_finalizados);
-	liberar_recursos(esi);
-	//pthread_mutex_lock(&mutex_flag_desalojo);
-	flag_desalojo = 1;
-	//pthread_mutex_unlock(&mutex_flag_desalojo);
 }
 
 void finalizar_esi(int id_esi) {
@@ -770,6 +789,16 @@ void destruir_clave(t_clave* clave) {
 }
 
 void destruir_estructuras() {
+
+	pthread_cancel(thread_coordinador);
+	pthread_join(thread_coordinador, NULL);
+
+	pthread_cancel(thread_output);
+	pthread_join(thread_output, NULL);
+
+	//pthread_cancel(thread_planificar);
+	//pthread_join(thread_planificar, NULL);
+
 	list_destroy_and_destroy_elements(cola_de_listos, (void*)destruir_esi);
 	list_destroy_and_destroy_elements(cola_de_bloqueados, (void*)destruir_esi);
 	list_destroy_and_destroy_elements(cola_de_finalizados, (void*)destruir_esi);
@@ -782,11 +811,7 @@ void destruir_estructuras() {
 	//free(buffer);
 	fclose(output);
 
-	pthread_cancel(thread_coordinador);
-	pthread_join(thread_coordinador, NULL);
 
-	pthread_cancel(thread_output);
-	pthread_join(thread_output, NULL);
 }
 
 
@@ -841,7 +866,8 @@ void ejecutar_por_sjf(int desalojar) {
 
 void imprimir_rr_esi(ESI* esi) {
 	if (esi != NULL)
-		fprintf(output, GREEN"\nESI %d: "RED"%.2f RR"RESET"\t(S = %.2f\tW = %.2f)", esi->id, esi->response_ratio, esi->sentencias_restantes, esi->tiempo_esperado);
+		fprintf(output, YELLOW"\nESI %d: "RED"%.2f RR"RESET"\t(S = %.2f\tW = %d)",
+				esi->id, esi->response_ratio, esi->sentencias_restantes, esi->tiempo_esperado);
 }
 
 void imprimir_rr_lista(t_list* lista) {

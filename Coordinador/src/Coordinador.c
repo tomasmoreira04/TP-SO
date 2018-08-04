@@ -27,9 +27,13 @@ t_list *listaSoloInstancias;
 int contadorEquitativeLoad;
 int instancia_muerta;
 
+int ejecutando = 0;
+
 pthread_mutex_t semaforo_avisando_compactacion = PTHREAD_MUTEX_INITIALIZER;
 sem_t semaforo_compactacion;
 sem_t contador_instancias;
+
+t_sentencia ultima_sentencia;
 
 int main(int argc, char* argv[]) {
 	setbuf(stdout, NULL); //a veces el printf no andaba, se puede hacer esto o un fflush
@@ -142,6 +146,7 @@ void *rutina_ESI(void* argumento) {
 		usleep(configuracion.retardo * 1000);
 		procesar_permiso_planificador(accion, sentencia, socket_esi);
 	}
+	//free(stream);
 
 	printf(YELLOW"\nEl ESI %d ha terminado su rutina. Finalizando ESI...\n"RESET, id_esi);
 	enviarMensaje(socket_plan, terminar_esi, &id_esi, sizeof(id_esi));
@@ -156,7 +161,7 @@ void procesar_permiso_planificador(Accion mensaje, t_sentencia sentencia, int so
 			resultado = exitoso;
 			break;
 		case esi_bloqueado:
-			printf(YELLOW "\nESI bloqueado por el planificador" RESET);
+			//printf(YELLOW "\nESI bloqueado por el planificador" RESET);
 			resultado = bloqueado; //antes era exitoso /?
 			break;
 		case error_sentencia:
@@ -188,45 +193,43 @@ void SET(t_sentencia sentencia) {
 
 	instancia_Estado_Conexion* conexion = dictionary_get(lista_Instancias , instancia);
 	int socket = conexion->socket;
-
 	enviarMensaje(socket, ejecutar_sentencia_instancia, &sentencia, sizeof(t_sentencia));
-
 	avisar_guardado_planif(instancia, sentencia.clave); //aviso de clave guardada en tal instancia
-
-	void* asd = NULL;
-	int operacion = recibirMensaje(socket, &asd);
-	if (asd)
-		free(asd);
+	void* cantidad;
+	int operacion = recibirMensaje(socket, &cantidad);
+	actualizar_entradas(instancia, *((int*)cantidad));
+	free(cantidad);
 	procesar_pedido_instancia(operacion, instancia, sentencia.id_esi);
+
 }
 
 void STORE(t_sentencia sentencia) {
 
 	char* instancia = buscar_instancia(sentencia.clave);
 
+	if(!clave_tiene_instancia(sentencia.clave))
+		instancia = aplicar_algoritmo(sentencia);
+
 	instancia_Estado_Conexion* conexion = dictionary_get(lista_Instancias, instancia);
 	int socket = conexion->socket;
 	enviarMensaje(socket, ejecutar_sentencia_instancia, &sentencia, sizeof(t_sentencia));
-
-	void* cantidad_entradas;
-	int operacion = recibirMensaje(socket, &cantidad_entradas);
-	actualizar_entradas(instancia, *((int*)cantidad_entradas));
-	free(cantidad_entradas);
+	void* cantidad;
+	int operacion = recibirMensaje(socket, &cantidad);
+	actualizar_entradas(instancia, *((int*)cantidad));
+	free(cantidad);
 	procesar_pedido_instancia(operacion, instancia, sentencia.id_esi);
 }
 
-t_sentencia ultima_sentencia;
-
 void realizar_sentencia(t_sentencia sentencia) {
 
+	pthread_mutex_lock(&semaforo_avisando_compactacion);
+	ejecutando = 1;
 	int i;
 	sem_getvalue(&contador_instancias, &i);
 	if (i == 0) {
 		printf(RED"\nEsperando que haya instancias..."RESET);
 		sem_wait(&contador_instancias);
 	}
-
-	pthread_mutex_lock(&semaforo_avisando_compactacion);
 
 	ultima_sentencia = sentencia; //por si falla la instancia, la vuelvo a hacer con otra
 
@@ -243,14 +246,26 @@ void realizar_sentencia(t_sentencia sentencia) {
 		sem_post(&contador_instancias);
 
 	pthread_mutex_unlock(&semaforo_avisando_compactacion);
+
+	ejecutando = 0;
 }
 
+
+
 void procesar_pedido_instancia(Accion operacion, char* instancia, int esi) {
+
 	switch(operacion) {
+		case compactacion_ok:
 		case ejecucion_ok:
-			printf(GREEN"\nLa instancia ejecuto la operacion de forma exitosa."RESET);
+			//printf(GREEN"\nLa instancia ejecuto la operacion de forma exitosa."RESET);
 			logear_info(string_from_format("La %s ejecuto correctamente", instancia));
 			break;
+		case ejecucion_no_ok: {
+			int id = esi;
+			printf(RED"\nError de STORE por instancia desconectada, abortando ESI %d"RESET, id);
+			enviarMensaje(socket_plan, abortar_esi, &id, sizeof(int));
+			break;
+		}
 		case compactar:
 			hilo_avisar_compactacion(); //creo un hilo que espera las compactaciones
 			break;
@@ -264,6 +279,7 @@ void procesar_pedido_instancia(Accion operacion, char* instancia, int esi) {
 			logear_info(string_from_format("Se desconecto la %s", instancia));
 			break;
 	}
+
 }
 
 void reintentar_sentencia(t_sentencia sentencia) {
@@ -273,16 +289,33 @@ void reintentar_sentencia(t_sentencia sentencia) {
 	realizar_sentencia(ultima_sentencia); //vuelvo a intentar con la lista de inst actualizada
 }
 
+void liberar_claves(char* instancia) {
+
+	printf(RED"\nLiberando claves de instancia %s..."RESET, instancia);
+
+	void lib_clave(char* clave, void* el) {
+
+		char* inst = dictionary_get(instancias_Claves, clave);
+		if (strcmp(inst, instancia) == 0) {
+			dictionary_remove(instancias_Claves, clave);
+		}
+	}
+
+	dictionary_iterator(instancias_Claves, (void*)lib_clave);
+}
+
 void eliminar_instancia(char* nombre_instancia) {
 	int indice = indice_instancia_por_nombre(nombre_instancia);
 	contadorEquitativeLoad = 0;
 	list_remove(listaSoloInstancias, indice);
-	dictionary_remove(lista_Instancias, nombre_instancia);
+	//dictionary_remove(lista_Instancias, nombre_instancia);
+	liberar_claves(nombre_instancia);
 
 	sem_wait(&contador_instancias);
 }
 
 void* avisar_compactacion() {
+
 	pthread_mutex_lock(&semaforo_avisando_compactacion);
 	t_list* instancias = listaSoloInstancias;
 	int cantidad = list_size(instancias);
@@ -327,16 +360,19 @@ void* rutina_compactacion(void* sock) {
 	avisar(socket_instancia, compactar); //aviso a la instancia que debe compactar
 
 	int resultado = recibirMensaje(socket_instancia, &stream); //espero que compacte
+	free(stream);
 	switch(resultado) {
+	case ejecucion_ok:
 	case compactacion_ok:
 		printf(GREEN"\nTermino de compactar la instancia del socket %d"RESET, socket_instancia);
 		sem_post(&semaforo_compactacion);
 		break;
 	case error:
 	default:
+		//printf("\nerror accion = %d", resultado);
 		printf(RED"\nFallo una instancia al compactar (socket %d)"RESET, socket_instancia);
-		sem_post(&semaforo_compactacion);
 		eliminar_instancia(instancia_por_socket(socket_instancia));
+		sem_post(&semaforo_compactacion);
 		break;
 	}
 	return NULL;
@@ -366,15 +402,6 @@ int clave_tiene_instancia(char* clave) {
 
 
 char* aplicar_algoritmo(t_sentencia sentencia) { //DEVUELVE EL NOMBRE DE LA INSTANCIA ASIGNADA
-/*
-	int ya_imprimio = 0;
-
-	while(list_size(listaSoloInstancias) <= 0) {
-		if (!ya_imprimio) {
-			printf(RED"\nNo hay instancias para operar."RESET);
-			ya_imprimio = 1;
-		}
-	}*/
 
 	switch(configuracion.algoritmo) {
 		case el:	equitative_load(sentencia.clave);	break;

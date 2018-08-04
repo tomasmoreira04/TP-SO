@@ -80,7 +80,8 @@ typedef enum {
 	inicializacion_instancia,
 	verificar_conexion, //coordi checkea que la instancia este conectada
 	esi_matado,
-	aviso_bloqueo_clave
+	aviso_bloqueo_clave,
+	abortar_esi
 } Accion;
 
 typedef struct {
