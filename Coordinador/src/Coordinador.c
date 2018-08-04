@@ -197,8 +197,10 @@ void SET(t_sentencia sentencia) {
 	avisar_guardado_planif(instancia, sentencia.clave); //aviso de clave guardada en tal instancia
 	void* cantidad;
 	int operacion = recibirMensaje(socket, &cantidad);
-	actualizar_entradas(instancia, *((int*)cantidad));
-	free(cantidad);
+	if (operacion != error) {
+		actualizar_entradas(instancia, *((int*)cantidad));
+		free(cantidad);
+	}
 	procesar_pedido_instancia(operacion, instancia, sentencia.id_esi);
 
 }
@@ -216,7 +218,10 @@ void STORE(t_sentencia sentencia) {
 	void* cantidad;
 	int operacion = recibirMensaje(socket, &cantidad);
 	actualizar_entradas(instancia, *((int*)cantidad));
-	free(cantidad);
+	if (operacion != error) {
+		actualizar_entradas(instancia, *((int*)cantidad));
+		free(cantidad);
+	}
 	procesar_pedido_instancia(operacion, instancia, sentencia.id_esi);
 }
 

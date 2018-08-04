@@ -53,7 +53,16 @@ pthread_mutex_t mutex_flag_desalojo = PTHREAD_MUTEX_INITIALIZER;
 
 pthread_mutex_t respuesta_recibida = PTHREAD_MUTEX_INITIALIZER;
 
+sem_t contador_esis_disponibles;
+
 int flag_desalojo = 0;
+
+void restar_esis() {
+	int i;
+	sem_getvalue(&contador_esis_disponibles, &i);
+	if (i > 0)
+		sem_wait(&contador_esis_disponibles);
+}
 
 int main(int argc, char* argv[]) {
 	inicializar_estructuras();
@@ -76,14 +85,19 @@ int hay_esis() {
 void* rutina_planificacion() {
 	pthread_mutex_unlock(&respuesta_recibida);
 
+	sem_init(&contador_esis_disponibles, true, 0);
+
 	while (1) {
 		pthread_mutex_lock(&respuesta_recibida);
+
+		sem_wait(&contador_esis_disponibles);
 		pthread_mutex_lock(&mutex_planificar);
-		if (hay_esis()) {
+		//if (hay_esis()) {
 			ejecutar(flag_desalojo);
 			flag_desalojo = 0;
-		}
-		else pthread_mutex_unlock(&respuesta_recibida);
+		//}
+		//else pthread_mutex_unlock(&respuesta_recibida);
+
 		pthread_mutex_unlock(&mutex_planificar);
 	}
 	return NULL;
@@ -250,6 +264,7 @@ void* procesar_mensaje_coordinador(void* sock) {
 					fprintf(output, RED"\nAbortando ESI %d por pedido del coordinador"RESET, id);
 					//finalizar_esi(id);
 					ESI* esi = obtener_esi(id);
+					finalizar_esi(id);
 					close(esi->socket_planif);
 					pthread_mutex_unlock(&respuesta_recibida);
 					free(mensaje);
@@ -356,6 +371,7 @@ void ejecutar_esi(ESI* esi) {
 
 	pthread_mutex_lock(&ejecucion);
 	esi_ejecutando = esi;
+	sem_post(&contador_esis_disponibles);
 	pthread_mutex_unlock(&ejecucion);
 }
 
@@ -525,6 +541,8 @@ void finalizar_esi_ref(ESI* esi) {
 		mover_esi(esi, cola_de_finalizados);
 		liberar_recursos(esi);
 		flag_desalojo = 1;
+
+		restar_esis();
 	}
 }
 
@@ -614,6 +632,7 @@ void desbloquear_esi_consola(ESI* esi) {
 	fprintf(output, GREEN"\nSe ha desbloqueado el ESI %d\n"RESET, esi->id);
 	if (config.algoritmo == sjf_sd || config.algoritmo == sjf_cd)
 		fprintf(output, GREEN"con "RED"%.2f"GREEN" sentencias restantes\n", esi->sentencias_restantes);
+	sem_post(&contador_esis_disponibles);
 }
 
 int liberar_clave_consola(char* clave) {
@@ -663,6 +682,7 @@ t_clave* buscar_clave_bloqueada(char* clave) {
 void bloquear_esi(ESI* esi) {
 	mover_esi(esi, cola_de_bloqueados);
 	flag_desalojo = 1;
+	restar_esis();
 }
 
 void desbloquear_esi(ESI* esi) {
@@ -707,6 +727,7 @@ void imprimir_nuevo_esi(ESI* esi) {
 void ingreso_cola_de_listos(ESI* esi) {
 	mover_esi(esi, cola_de_listos);
 	flag_desalojo = 1;
+	sem_post(&contador_esis_disponibles);
 }
 
 int hay_desalojo(AlgoritmoPlanif algoritmo) {
