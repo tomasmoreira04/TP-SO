@@ -13,23 +13,6 @@ cd parsi
 sudo make install
 echo "Compilando"
 
-
-cd ESI/Debug
-rm ESI
-make ESI
-
-cd ../../Instancia/Debug
-rm Instancia
-make Instancia
-
-cd ../../Planificador/Debug
-rm Planificador
-make Planificador
-
-cd ../../Coordinador/Debug
-rm Coordinador
-make Coordinador
-
 chmod 0777 *
 
 
