@@ -1,0 +1,552 @@
+[32m
+Claves inicialmente bloqueadas:[0m[31m
+spoiler2[0m[31m
+principal3[0m[31m
+spoiler3[0m[31m
+principal4[0m[35m
+COORDINADOR [0mconectado en socket [32m5
+[0m
+Clave[31m principal3 [0mdesbloqueada y libre.
+Nuevo ESI [32m1[0m con [31m19[0m de rafagas totales. Script: [36mESI_Spoilers[0m
+Nuevo ESI [32m2[0m con [31m18[0m de rafagas totales. Script: [36mESI_Westworld[0m
+Nuevo ESI [32m3[0m con [31m7[0m de rafagas totales. Script: [36mESI_Fargo[0m
+
+
+Response ratios de esis:[33m
+ESI 1: [31m1.00 RR[0m	(S = 3.00	W = 0)[33m
+ESI 2: [31m1.00 RR[0m	(S = 3.00	W = 0)[33m
+ESI 3: [31m1.00 RR[0m	(S = 3.00	W = 0)
+
+
+
+
+Response ratios de esis:[33m
+ESI 1: [31m1.00 RR[0m	(S = 3.00	W = 0)[33m
+ESI 2: [31m1.00 RR[0m	(S = 3.00	W = 0)[33m
+ESI 3: [31m1.00 RR[0m	(S = 3.00	W = 0)
+
+[32m
+ESI elegido -> [31m1
+[0m
+(GET) La clave [32mspoiler1 [0mse asigno a [32mESI 1[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 2: [31m1.33 RR[0m	(S = 3.00	W = 1)[33m
+ESI 3: [31m1.33 RR[0m	(S = 3.00	W = 1)[33m
+ESI 1: [31m1.00 RR[0m	(S = 2.00	W = 0)
+
+[33m
+(GET) de clave[31m spoiler2[33m, pero se encuentra bloqueada, se bloqueará el [32mESI 1.[0m[32m
+ESI 1[0m agregado a la lista de espera de la clave[35m spoiler2[0m[33m
+El esi se ha bloqueado.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 2: [31m1.67 RR[0m	(S = 3.00	W = 2)[33m
+ESI 3: [31m1.67 RR[0m	(S = 3.00	W = 2)[33m
+ESI 1: [31m1.00 RR[0m	(S = 1.00	W = 0)
+
+
+
+
+Response ratios de esis:[33m
+ESI 2: [31m1.67 RR[0m	(S = 3.00	W = 2)[33m
+ESI 3: [31m1.67 RR[0m	(S = 3.00	W = 2)[33m
+ESI 1: [31m1.00 RR[0m	(S = 1.00	W = 0)
+
+[32m
+ESI elegido -> [31m2
+[0m
+(GET) La clave [32mprincipal1 [0mse asigno a [32mESI 2[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 3: [31m2.00 RR[0m	(S = 3.00	W = 3)[33m
+ESI 1: [31m1.00 RR[0m	(S = 1.00	W = 0)[33m
+ESI 2: [31m1.67 RR[0m	(S = 2.00	W = 2)
+
+
+(GET) La clave [32mprincipal2 [0mse asigno a [32mESI 2[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 3: [31m2.33 RR[0m	(S = 3.00	W = 4)[33m
+ESI 1: [31m1.00 RR[0m	(S = 1.00	W = 0)[33m
+ESI 2: [31m1.67 RR[0m	(S = 1.00	W = 2)
+
+
+(SET) El [32mESI 2[0m ha seteado la clave[32m principal1[0m con valor[35m dolores[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 3: [31m2.67 RR[0m	(S = 3.00	W = 5)[33m
+ESI 1: [31m1.00 RR[0m	(S = 1.00	W = 0)[33m
+ESI 2: [31m1.67 RR[0m	(S = 0.00	W = 2)
+
+
+(SET) El [32mESI 2[0m ha seteado la clave[32m principal1[0m con valor[35m teddy[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m[32m
+Se ha desbloqueado el ESI 1
+[0m
+Clave[31m spoiler2 [0mliberada. Ahora pertenece a ESI 1
+
+
+Response ratios de esis:[33m
+ESI 3: [31m3.00 RR[0m	(S = 3.00	W = 6)[33m
+ESI 1: [31m1.00 RR[0m	(S = 2.50	W = 0)[33m
+ESI 2: [31m1.67 RR[0m	(S = -1.00	W = 2)
+
+
+(SET) El [32mESI 2[0m ha seteado la clave[32m principal2[0m con valor[35m maeve[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 3: [31m3.33 RR[0m	(S = 3.00	W = 7)[33m
+ESI 1: [31m1.40 RR[0m	(S = 2.50	W = 1)[33m
+ESI 2: [31m1.67 RR[0m	(S = -2.00	W = 2)
+
+
+(GET) La clave [32mprincipal3 [0mse asigno a [32mESI 2[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 3: [31m3.67 RR[0m	(S = 3.00	W = 8)[33m
+ESI 1: [31m1.80 RR[0m	(S = 2.50	W = 2)[33m
+ESI 2: [31m1.67 RR[0m	(S = -3.00	W = 2)
+
+
+Clave[31m principal1 [0mdesbloqueada y libre.
+(STORE) El[32m ESI 2 [0mha liberado la clave[32m principal1[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 3: [31m4.00 RR[0m	(S = 3.00	W = 9)[33m
+ESI 1: [31m2.20 RR[0m	(S = 2.50	W = 3)[33m
+ESI 2: [31m1.67 RR[0m	(S = -4.00	W = 2)
+
+
+(SET) El [32mESI 2[0m ha seteado la clave[32m principal3[0m con valor[35m bernard[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 3: [31m4.33 RR[0m	(S = 3.00	W = 10)[33m
+ESI 1: [31m2.60 RR[0m	(S = 2.50	W = 4)[33m
+ESI 2: [31m1.67 RR[0m	(S = -5.00	W = 2)
+
+
+Clave[31m principal2 [0mdesbloqueada y libre.
+(STORE) El[32m ESI 2 [0mha liberado la clave[32m principal2[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 3: [31m4.67 RR[0m	(S = 3.00	W = 11)[33m
+ESI 1: [31m3.00 RR[0m	(S = 2.50	W = 5)[33m
+ESI 2: [31m1.67 RR[0m	(S = -6.00	W = 2)
+
+[33m
+(GET) de clave[31m principal4[33m, pero se encuentra bloqueada, se bloqueará el [32mESI 2.[0m[32m
+ESI 2[0m agregado a la lista de espera de la clave[35m principal4[0m[33m
+El esi se ha bloqueado.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 3: [31m5.00 RR[0m	(S = 3.00	W = 12)[33m
+ESI 1: [31m3.40 RR[0m	(S = 2.50	W = 6)[33m
+ESI 2: [31m0.71 RR[0m	(S = -7.00	W = 2)
+
+
+
+
+Response ratios de esis:[33m
+ESI 3: [31m5.00 RR[0m	(S = 3.00	W = 12)[33m
+ESI 1: [31m3.40 RR[0m	(S = 2.50	W = 6)[33m
+ESI 2: [31m0.71 RR[0m	(S = -7.00	W = 2)
+
+[32m
+ESI elegido -> [31m3
+[0m
+(GET) La clave [32mprincipal1 [0mse asigno a [32mESI 3[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 1: [31m3.80 RR[0m	(S = 2.50	W = 7)[33m
+ESI 2: [31m0.71 RR[0m	(S = -7.00	W = 2)[33m
+ESI 3: [31m5.00 RR[0m	(S = 2.00	W = 12)
+
+
+(GET) La clave [32mprincipal2 [0mse asigno a [32mESI 3[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 1: [31m4.20 RR[0m	(S = 2.50	W = 8)[33m
+ESI 2: [31m0.71 RR[0m	(S = -7.00	W = 2)[33m
+ESI 3: [31m5.00 RR[0m	(S = 1.00	W = 12)
+
+
+(SET) El [32mESI 3[0m ha seteado la clave[32m principal1[0m con valor[35m lester[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 1: [31m4.60 RR[0m	(S = 2.50	W = 9)[33m
+ESI 2: [31m0.71 RR[0m	(S = -7.00	W = 2)[33m
+ESI 3: [31m5.00 RR[0m	(S = 0.00	W = 12)
+
+
+(SET) El [32mESI 3[0m ha seteado la clave[32m principal2[0m con valor[35m malvo[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 1: [31m5.00 RR[0m	(S = 2.50	W = 10)[33m
+ESI 2: [31m0.71 RR[0m	(S = -7.00	W = 2)[33m
+ESI 3: [31m5.00 RR[0m	(S = -1.00	W = 12)
+
+
+Clave[31m principal1 [0mdesbloqueada y libre.
+(STORE) El[32m ESI 3 [0mha liberado la clave[32m principal1[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 1: [31m5.40 RR[0m	(S = 2.50	W = 11)[33m
+ESI 2: [31m0.71 RR[0m	(S = -7.00	W = 2)[33m
+ESI 3: [31m5.00 RR[0m	(S = -2.00	W = 12)
+
+
+Clave[31m principal2 [0mdesbloqueada y libre.
+(STORE) El[32m ESI 3 [0mha liberado la clave[32m principal2[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 1: [31m5.80 RR[0m	(S = 2.50	W = 12)[33m
+ESI 2: [31m0.71 RR[0m	(S = -7.00	W = 2)[33m
+ESI 3: [31m5.00 RR[0m	(S = -3.00	W = 12)
+
+[31m
+
+EL ESI EN SOCKET 10 SE HA DESCONECTADO[0m[33m
+Finalizando ESI 3.[36m(ESI_Fargo)[0m
+
+
+Response ratios de esis:[33m
+ESI 1: [31m6.20 RR[0m	(S = 2.50	W = 13)[33m
+ESI 2: [31m0.71 RR[0m	(S = -7.00	W = 2)
+
+
+
+
+Response ratios de esis:[33m
+ESI 1: [31m6.20 RR[0m	(S = 2.50	W = 13)[33m
+ESI 2: [31m0.71 RR[0m	(S = -7.00	W = 2)
+
+[32m
+ESI elegido -> [31m1
+[0m
+(SET) El [32mESI 1[0m ha seteado la clave[32m spoiler1[0m con valor[35m era-el-padre-de-luke[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 2: [31m0.71 RR[0m	(S = -7.00	W = 2)[33m
+ESI 1: [31m6.20 RR[0m	(S = 1.50	W = 13)
+
+
+(SET) El [32mESI 1[0m ha seteado la clave[32m spoiler2[0m con valor[35m tambien-esta-muerto[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 2: [31m0.71 RR[0m	(S = -7.00	W = 2)[33m
+ESI 1: [31m6.20 RR[0m	(S = 0.50	W = 13)
+
+
+Clave[31m spoiler1 [0mdesbloqueada y libre.
+(STORE) El[32m ESI 1 [0mha liberado la clave[32m spoiler1[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 2: [31m0.71 RR[0m	(S = -7.00	W = 2)[33m
+ESI 1: [31m6.20 RR[0m	(S = -0.50	W = 13)
+
+[33m
+(GET) de clave[31m spoiler3[33m, pero se encuentra bloqueada, se bloqueará el [32mESI 1.[0m[32m
+ESI 1[0m agregado a la lista de espera de la clave[35m spoiler3[0m[33m
+El esi se ha bloqueado.
+[0m[32m
+Se ha desbloqueado el ESI 1
+[0m
+Clave[31m spoiler3 [0mliberada. Ahora pertenece a ESI 1[32m
+Se ha desbloqueado el ESI 2
+[0m
+Clave[31m principal4 [0mliberada. Ahora pertenece a ESI 2
+
+
+Response ratios de esis:[33m
+ESI 1: [31m4.47 RR[0m	(S = 3.75	W = 13)[33m
+ESI 2: [31m1.31 RR[0m	(S = 6.50	W = 2)
+
+
+
+
+Response ratios de esis:[33m
+ESI 1: [31m4.47 RR[0m	(S = 3.75	W = 13)[33m
+ESI 2: [31m1.31 RR[0m	(S = 6.50	W = 2)
+
+[32m
+ESI elegido -> [31m1
+[0m
+(GET) La clave [32mspoiler1 [0mse asigno a [32mESI 1[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 2: [31m1.46 RR[0m	(S = 6.50	W = 3)[33m
+ESI 1: [31m4.47 RR[0m	(S = 2.75	W = 13)
+
+
+(SET) El [32mESI 1[0m ha seteado la clave[32m spoiler1[0m con valor[35m y-de-leia[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 2: [31m1.62 RR[0m	(S = 6.50	W = 4)[33m
+ESI 1: [31m4.47 RR[0m	(S = 1.75	W = 13)
+
+
+(SET) El [32mESI 1[0m ha seteado la clave[32m spoiler1[0m con valor[35m de-chewie-no[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 2: [31m1.77 RR[0m	(S = 6.50	W = 5)[33m
+ESI 1: [31m4.47 RR[0m	(S = 0.75	W = 13)
+
+
+(SET) El [32mESI 1[0m ha seteado la clave[32m spoiler1[0m con valor[35m era-el-padre-de-luke[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 2: [31m1.92 RR[0m	(S = 6.50	W = 6)[33m
+ESI 1: [31m4.47 RR[0m	(S = -0.25	W = 13)
+
+
+(SET) El [32mESI 1[0m ha seteado la clave[32m spoiler1[0m con valor[35m y-de-leia[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 2: [31m2.08 RR[0m	(S = 6.50	W = 7)[33m
+ESI 1: [31m4.47 RR[0m	(S = -1.25	W = 13)
+
+
+(SET) El [32mESI 1[0m ha seteado la clave[32m spoiler1[0m con valor[35m era-el-padre-de-luke[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 2: [31m2.23 RR[0m	(S = 6.50	W = 8)[33m
+ESI 1: [31m4.47 RR[0m	(S = -2.25	W = 13)
+
+
+(SET) El [32mESI 1[0m ha seteado la clave[32m spoiler1[0m con valor[35m y-de-leia[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 2: [31m2.38 RR[0m	(S = 6.50	W = 9)[33m
+ESI 1: [31m4.47 RR[0m	(S = -3.25	W = 13)
+
+
+(SET) El [32mESI 1[0m ha seteado la clave[32m spoiler1[0m con valor[35m era-el-padre-de-luke[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 2: [31m2.54 RR[0m	(S = 6.50	W = 10)[33m
+ESI 1: [31m4.47 RR[0m	(S = -4.25	W = 13)
+
+
+Clave[31m spoiler2 [0mdesbloqueada y libre.
+(STORE) El[32m ESI 1 [0mha liberado la clave[32m spoiler2[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 2: [31m2.69 RR[0m	(S = 6.50	W = 11)[33m
+ESI 1: [31m4.47 RR[0m	(S = -5.25	W = 13)
+
+
+(SET) El [32mESI 1[0m ha seteado la clave[32m spoiler3[0m con valor[35m es-keyzer-soze[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 2: [31m2.85 RR[0m	(S = 6.50	W = 12)[33m
+ESI 1: [31m4.47 RR[0m	(S = -6.25	W = 13)
+
+
+(SET) El [32mESI 1[0m ha seteado la clave[32m spoiler3[0m con valor[35m son-la-misma-persona[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 2: [31m3.00 RR[0m	(S = 6.50	W = 13)[33m
+ESI 1: [31m4.47 RR[0m	(S = -7.25	W = 13)
+
+
+Clave[31m spoiler3 [0mdesbloqueada y libre.
+(STORE) El[32m ESI 1 [0mha liberado la clave[32m spoiler3[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 2: [31m3.15 RR[0m	(S = 6.50	W = 14)[33m
+ESI 1: [31m4.47 RR[0m	(S = -8.25	W = 13)
+
+[31m
+
+EL ESI EN SOCKET 8 SE HA DESCONECTADO[0m[33m
+Finalizando ESI 1.[36m(ESI_Spoilers)[0m
+Clave[31m spoiler1 [0mdesbloqueada y libre.
+
+
+Response ratios de esis:[33m
+ESI 2: [31m3.31 RR[0m	(S = 6.50	W = 15)
+
+
+
+
+Response ratios de esis:[33m
+ESI 2: [31m3.31 RR[0m	(S = 6.50	W = 15)
+
+[32m
+ESI elegido -> [31m2
+[0m
+(SET) El [32mESI 2[0m ha seteado la clave[32m principal4[0m con valor[35m man-in-black[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 2: [31m3.31 RR[0m	(S = 5.50	W = 15)
+
+
+(GET) La clave [32mprincipal1 [0mse asigno a [32mESI 2[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 2: [31m3.31 RR[0m	(S = 4.50	W = 15)
+
+
+(SET) El [32mESI 2[0m ha seteado la clave[32m principal1[0m con valor[35m ford[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 2: [31m3.31 RR[0m	(S = 3.50	W = 15)
+
+
+Clave[31m principal4 [0mdesbloqueada y libre.
+(STORE) El[32m ESI 2 [0mha liberado la clave[32m principal4[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 2: [31m3.31 RR[0m	(S = 2.50	W = 15)
+
+
+(GET) La clave [32mprincipal2 [0mse asigno a [32mESI 2[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 2: [31m3.31 RR[0m	(S = 1.50	W = 15)
+
+
+(SET) El [32mESI 2[0m ha seteado la clave[32m principal2[0m con valor[35m billy[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 2: [31m3.31 RR[0m	(S = 0.50	W = 15)
+
+
+Clave[31m principal3 [0mdesbloqueada y libre.
+(STORE) El[32m ESI 2 [0mha liberado la clave[32m principal3[0m[32m
+El esi pudo ejecutar la sentencia.
+[0m
+
+
+Response ratios de esis:[33m
+ESI 2: [31m3.31 RR[0m	(S = -0.50	W = 15)
+
+[31m
+
+EL ESI EN SOCKET 9 SE HA DESCONECTADO[0m[33m
+Finalizando ESI 2.[36m(ESI_Westworld)[0m
+Clave[31m principal1 [0mdesbloqueada y libre.
+Clave[31m principal2 [0mdesbloqueada y libre.[31m
+
+EL COORDINADOR SE HA DESCONECTADO[0m
+
+[33m
+COLA DE LISTOS:[0m[33m
+COLA DE BLOQUEADOS:[0m[33m
+COLA DE FINALIZADOS:[0m	esi 3	esi 1	esi 2[32m
+EJECUTANDO:[0m
+
