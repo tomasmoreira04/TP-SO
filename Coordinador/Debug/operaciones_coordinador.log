@@ -20162,3 +20162,1448 @@
 [INFO] 07:59:23:812 coordinador/(24726:24752): La Inst1 ejecuto correctamente
 [INFO] 07:59:24:314 coordinador/(24726:24752): La Inst2 ejecuto correctamente
 [INFO] 07:59:24:608 coordinador/(24726:24752): La Inst1 ejecuto correctamente
+[INFO] 11:22:41:632 coordinador/(6208:6208): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 11:22:41:635 coordinador/(6208:6208): PUERTO_ESCUCHA: 9035
+[INFO] 11:22:41:635 coordinador/(6208:6208): PUERTO_PLANIF: 9034
+[INFO] 11:22:41:635 coordinador/(6208:6208): IP_PLANIF: 127.0.0.1
+[INFO] 11:22:41:635 coordinador/(6208:6208): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 11:22:41:635 coordinador/(6208:6208): CANTIDAD_ENTRADAS: 50
+[INFO] 11:22:41:635 coordinador/(6208:6208): TAMANIO_ENTRADA: 50
+[INFO] 11:22:41:635 coordinador/(6208:6208): RETARDO: 250
+[INFO] 11:24:35:394 coordinador/(6208:6208): Conectado con planificador
+[INFO] 11:24:35:394 coordinador/(6208:6349): Se creo un hilo con rutina instancia
+[INFO] 11:24:35:395 coordinador/(6208:6349): Se creo una nueva instancia. Nombre: Inst1. Socket: 5
+[INFO] 11:24:35:395 coordinador/(6208:6349): Se conecto la Inst1
+[INFO] 11:24:36:425 coordinador/(6208:6355): Se creo un hilo con rutina instancia
+[INFO] 11:24:36:426 coordinador/(6208:6355): Se creo una nueva instancia. Nombre: Inst2. Socket: 8
+[INFO] 11:24:36:426 coordinador/(6208:6355): Se conecto la Inst2
+[INFO] 11:24:43:264 coordinador/(6208:6358): Se ha creado un hilo con rutina ESI
+[INFO] 11:24:43:530 coordinador/(6208:6358): El ESI 1 hizo un GET de la clave sony:consola:ps1
+[INFO] 11:24:43:782 coordinador/(6208:6358): El ESI 1 hizo un GET de la clave sony:consola:ps2
+[INFO] 11:24:44:32 coordinador/(6208:6358): El ESI 1 hizo un GET de la clave sony:consola:ps3
+[INFO] 11:24:44:199 coordinador/(6208:6361): Se ha creado un hilo con rutina ESI
+[INFO] 11:24:44:282 coordinador/(6208:6358): El ESI 1 hizo un GET de la clave sony:consola:ps4
+[INFO] 11:24:44:533 coordinador/(6208:6358): El ESI 1 hizo un GET de la clave microsoft:consola:xbox
+[INFO] 11:24:44:786 coordinador/(6208:6358): El ESI 1 hizo un GET de la clave microsoft:consola:xbox360
+[INFO] 11:24:45:36 coordinador/(6208:6358): El ESI 1 hizo un GET de la clave microsoft:consola:xboxone
+[INFO] 11:24:45:288 coordinador/(6208:6358): El ESI 1 hizo un GET de la clave nintendo:consola:nes
+[INFO] 11:24:45:432 coordinador/(6208:6364): Se ha creado un hilo con rutina ESI
+[INFO] 11:24:45:539 coordinador/(6208:6358): El ESI 1 hizo un GET de la clave nintendo:consola:snes
+[INFO] 11:24:45:791 coordinador/(6208:6358): El ESI 1 hizo un GET de la clave nintendo:consola:nintendo64
+[INFO] 11:24:46:42 coordinador/(6208:6358): El ESI 1 hizo un GET de la clave nintendo:consola:gamecube
+[INFO] 11:24:46:294 coordinador/(6208:6358): El ESI 1 hizo un GET de la clave nintendo:consola:wii
+[INFO] 11:24:46:519 coordinador/(6208:6367): Se ha creado un hilo con rutina ESI
+[INFO] 11:24:46:545 coordinador/(6208:6358): El ESI 1 hizo un GET de la clave nintendo:consola:wiiu
+[INFO] 11:24:46:795 coordinador/(6208:6358): El ESI 1 hizo un GET de la clave nintendo:consola:switch
+[INFO] 11:24:47:47 coordinador/(6208:6358): El ESI 1 hizo un SET sobre la clave nintendo:consola:nes con valor: Mario
+[INFO] 11:24:47:49 coordinador/(6208:6358): La Inst1 ejecuto correctamente
+[INFO] 11:24:47:335 coordinador/(6208:6358): El ESI 1 hizo un SET sobre la clave nintendo:consola:snes con valor: SuperMario
+[INFO] 11:24:47:335 coordinador/(6208:6358): La Inst2 ejecuto correctamente
+[INFO] 11:24:47:624 coordinador/(6208:6358): El ESI 1 hizo un SET sobre la clave nintendo:consola:nintendo64 con valor: Mario64
+[INFO] 11:24:47:625 coordinador/(6208:6358): La Inst1 ejecuto correctamente
+[INFO] 11:24:47:911 coordinador/(6208:6358): El ESI 1 hizo un SET sobre la clave nintendo:consola:gamecube con valor: Mario
+[INFO] 11:24:47:912 coordinador/(6208:6358): La Inst2 ejecuto correctamente
+[INFO] 11:24:48:199 coordinador/(6208:6358): El ESI 1 hizo un SET sobre la clave nintendo:consola:wii con valor: MarioGalaxy
+[INFO] 11:24:48:200 coordinador/(6208:6358): La Inst1 ejecuto correctamente
+[INFO] 11:24:48:486 coordinador/(6208:6358): El ESI 1 hizo un SET sobre la clave nintendo:consola:wiiu con valor: RIP
+[INFO] 11:24:48:487 coordinador/(6208:6358): La Inst2 ejecuto correctamente
+[INFO] 11:24:48:774 coordinador/(6208:6358): El ESI 1 hizo un SET sobre la clave nintendo:consola:switch con valor: MarioOddysey
+[INFO] 11:24:48:774 coordinador/(6208:6358): La Inst1 ejecuto correctamente
+[INFO] 11:24:49:63 coordinador/(6208:6358): El ESI 1 hizo un SET sobre la clave sony:consola:ps1 con valor: FinalFantasy
+[INFO] 11:24:49:64 coordinador/(6208:6358): La Inst2 ejecuto correctamente
+[INFO] 11:24:49:350 coordinador/(6208:6358): El ESI 1 hizo un SET sobre la clave sony:consola:ps2 con valor: GodOfWar
+[INFO] 11:24:49:351 coordinador/(6208:6358): La Inst1 ejecuto correctamente
+[INFO] 11:24:49:639 coordinador/(6208:6358): El ESI 1 hizo un SET sobre la clave sony:consola:ps3 con valor: TLOU
+[INFO] 11:24:49:640 coordinador/(6208:6358): La Inst2 ejecuto correctamente
+[INFO] 11:24:49:927 coordinador/(6208:6358): El ESI 1 hizo un SET sobre la clave sony:consola:ps4 con valor: Bloodborne
+[INFO] 11:24:49:927 coordinador/(6208:6358): La Inst1 ejecuto correctamente
+[INFO] 11:24:50:215 coordinador/(6208:6358): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox con valor: Halo
+[INFO] 11:24:50:216 coordinador/(6208:6358): La Inst2 ejecuto correctamente
+[INFO] 11:24:50:502 coordinador/(6208:6358): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox360 con valor: Halo
+[INFO] 11:24:50:503 coordinador/(6208:6358): La Inst1 ejecuto correctamente
+[INFO] 11:24:50:790 coordinador/(6208:6358): El ESI 1 hizo un SET sobre la clave microsoft:consola:xboxone con valor: Halo
+[INFO] 11:24:50:790 coordinador/(6208:6358): La Inst2 ejecuto correctamente
+[INFO] 11:24:54:600 coordinador/(6208:6361): La Inst1 ejecuto correctamente
+[INFO] 11:24:54:887 coordinador/(6208:6361): La Inst2 ejecuto correctamente
+[INFO] 11:24:55:175 coordinador/(6208:6361): La Inst1 ejecuto correctamente
+[INFO] 11:24:55:463 coordinador/(6208:6361): La Inst2 ejecuto correctamente
+[INFO] 11:24:55:753 coordinador/(6208:6361): La Inst1 ejecuto correctamente
+[INFO] 11:24:56:44 coordinador/(6208:6361): La Inst1 ejecuto correctamente
+[INFO] 11:24:56:331 coordinador/(6208:6361): La Inst2 ejecuto correctamente
+[INFO] 11:24:56:619 coordinador/(6208:6361): La Inst1 ejecuto correctamente
+[INFO] 11:24:56:907 coordinador/(6208:6361): La Inst2 ejecuto correctamente
+[INFO] 11:24:57:196 coordinador/(6208:6361): La Inst1 ejecuto correctamente
+[INFO] 11:24:57:484 coordinador/(6208:6361): La Inst1 ejecuto correctamente
+[INFO] 11:24:57:770 coordinador/(6208:6361): La Inst2 ejecuto correctamente
+[INFO] 11:24:58:59 coordinador/(6208:6361): La Inst2 ejecuto correctamente
+[INFO] 11:24:58:347 coordinador/(6208:6361): La Inst1 ejecuto correctamente
+[INFO] 11:24:58:635 coordinador/(6208:6361): La Inst1 ejecuto correctamente
+[INFO] 11:24:58:924 coordinador/(6208:6361): La Inst2 ejecuto correctamente
+[INFO] 11:24:59:211 coordinador/(6208:6361): La Inst2 ejecuto correctamente
+[INFO] 11:24:59:499 coordinador/(6208:6361): La Inst1 ejecuto correctamente
+[INFO] 11:24:59:787 coordinador/(6208:6361): La Inst2 ejecuto correctamente
+[INFO] 11:25:00:75 coordinador/(6208:6361): La Inst1 ejecuto correctamente
+[INFO] 11:25:00:362 coordinador/(6208:6364): El ESI 3 hizo un GET de la clave primerplato:ingrediente1
+[INFO] 11:25:00:613 coordinador/(6208:6364): El ESI 3 hizo un GET de la clave platoprincipal:ingrediente1
+[INFO] 11:25:00:865 coordinador/(6208:6364): El ESI 3 hizo un GET de la clave segundoplato:ingrediente1
+[INFO] 11:25:01:117 coordinador/(6208:6364): El ESI 3 hizo un GET de la clave postre:ingrediente1
+[INFO] 11:25:01:369 coordinador/(6208:6364): El ESI 3 hizo un GET de la clave primerplato:ingrediente2
+[INFO] 11:25:01:620 coordinador/(6208:6364): El ESI 3 hizo un GET de la clave platoprincipal:ingrediente2
+[INFO] 11:25:01:872 coordinador/(6208:6364): El ESI 3 hizo un GET de la clave segundoplato:ingrediente2
+[INFO] 11:25:02:124 coordinador/(6208:6364): El ESI 3 hizo un GET de la clave postre:ingrediente2
+[INFO] 11:25:02:376 coordinador/(6208:6364): El ESI 3 hizo un GET de la clave primerplato:ingrediente3
+[INFO] 11:25:02:628 coordinador/(6208:6364): El ESI 3 hizo un GET de la clave platoprincipal:ingrediente3
+[INFO] 11:25:03:131 coordinador/(6208:6367): El ESI 4 hizo un GET de la clave bebida1
+[INFO] 11:25:03:384 coordinador/(6208:6367): El ESI 4 hizo un GET de la clave bebida10
+[INFO] 11:25:03:634 coordinador/(6208:6367): El ESI 4 hizo un GET de la clave bebida11
+[INFO] 11:25:03:886 coordinador/(6208:6367): El ESI 4 hizo un GET de la clave bebida12
+[INFO] 11:25:15:631 coordinador/(6208:6404): Se ha creado un hilo con rutina ESI
+[INFO] 11:25:15:883 coordinador/(6208:6404): El ESI 5 hizo un GET de la clave platoprincipal:ingrediente5
+[INFO] 11:25:16:135 coordinador/(6208:6404): El ESI 5 hizo un GET de la clave platoprincipal:ingrediente4
+[INFO] 11:25:16:871 coordinador/(6208:6407): Se ha creado un hilo con rutina ESI
+[INFO] 11:25:17:123 coordinador/(6208:6407): El ESI 6 hizo un GET de la clave bebida2
+[INFO] 11:25:17:375 coordinador/(6208:6407): El ESI 6 hizo un GET de la clave bebida3
+[INFO] 11:25:17:627 coordinador/(6208:6407): El ESI 6 hizo un GET de la clave bebida4
+[INFO] 11:25:17:878 coordinador/(6208:6407): El ESI 6 hizo un GET de la clave bebida5
+[INFO] 11:25:18:130 coordinador/(6208:6407): El ESI 6 hizo un GET de la clave bebida6
+[INFO] 11:25:18:381 coordinador/(6208:6407): El ESI 6 hizo un GET de la clave bebida7
+[INFO] 11:25:18:633 coordinador/(6208:6407): El ESI 6 hizo un GET de la clave bebida8
+[INFO] 11:25:18:885 coordinador/(6208:6407): El ESI 6 hizo un GET de la clave bebida9
+[INFO] 11:25:36:863 coordinador/(6208:6422): El ESI 4 hizo un GET de la clave bebida13
+[INFO] 11:25:37:113 coordinador/(6208:6367): El ESI 4 hizo un GET de la clave bebida14
+[INFO] 11:25:37:365 coordinador/(6208:6367): El ESI 4 hizo un GET de la clave bebida15
+[INFO] 11:25:55:135 coordinador/(6208:6423): El ESI 3 hizo un GET de la clave segundoplato:ingrediente3
+[INFO] 11:25:55:385 coordinador/(6208:6364): El ESI 3 hizo un GET de la clave postre:ingrediente3
+[INFO] 11:25:55:636 coordinador/(6208:6364): El ESI 3 hizo un GET de la clave primerplato:ingrediente4
+[INFO] 11:28:49:633 coordinador/(6559:6559): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 11:28:49:646 coordinador/(6559:6559): PUERTO_ESCUCHA: 9035
+[INFO] 11:28:49:646 coordinador/(6559:6559): PUERTO_PLANIF: 9034
+[INFO] 11:28:49:646 coordinador/(6559:6559): IP_PLANIF: 127.0.0.1
+[INFO] 11:28:49:646 coordinador/(6559:6559): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 11:28:49:646 coordinador/(6559:6559): CANTIDAD_ENTRADAS: 50
+[INFO] 11:28:49:646 coordinador/(6559:6559): TAMANIO_ENTRADA: 50
+[INFO] 11:28:49:646 coordinador/(6559:6559): RETARDO: 250
+[INFO] 11:28:51:113 coordinador/(6559:6559): Conectado con planificador
+[INFO] 11:28:51:113 coordinador/(6559:6567): Se creo un hilo con rutina instancia
+[INFO] 11:28:51:114 coordinador/(6559:6567): Se creo una nueva instancia. Nombre: Inst1. Socket: 5
+[INFO] 11:28:51:114 coordinador/(6559:6567): Se conecto la Inst1
+[INFO] 11:28:51:561 coordinador/(6559:6571): Se creo un hilo con rutina instancia
+[INFO] 11:28:51:562 coordinador/(6559:6571): Se creo una nueva instancia. Nombre: Inst2. Socket: 8
+[INFO] 11:28:51:562 coordinador/(6559:6571): Se conecto la Inst2
+[INFO] 11:28:57:72 coordinador/(6559:6575): Se ha creado un hilo con rutina ESI
+[INFO] 11:28:57:334 coordinador/(6559:6575): El ESI 1 hizo un GET de la clave sony:consola:ps1
+[INFO] 11:28:57:480 coordinador/(6559:6578): Se ha creado un hilo con rutina ESI
+[INFO] 11:28:57:584 coordinador/(6559:6575): El ESI 1 hizo un GET de la clave sony:consola:ps2
+[INFO] 11:28:57:835 coordinador/(6559:6575): El ESI 1 hizo un GET de la clave sony:consola:ps3
+[INFO] 11:28:58:85 coordinador/(6559:6575): El ESI 1 hizo un GET de la clave sony:consola:ps4
+[INFO] 11:28:58:88 coordinador/(6559:6581): Se ha creado un hilo con rutina ESI
+[INFO] 11:28:58:336 coordinador/(6559:6575): El ESI 1 hizo un GET de la clave microsoft:consola:xbox
+[INFO] 11:28:58:588 coordinador/(6559:6575): El ESI 1 hizo un GET de la clave microsoft:consola:xbox360
+[INFO] 11:28:58:609 coordinador/(6559:6584): Se ha creado un hilo con rutina ESI
+[INFO] 11:28:58:839 coordinador/(6559:6575): El ESI 1 hizo un GET de la clave microsoft:consola:xboxone
+[INFO] 11:28:59:90 coordinador/(6559:6575): El ESI 1 hizo un GET de la clave nintendo:consola:nes
+[INFO] 11:28:59:342 coordinador/(6559:6575): El ESI 1 hizo un GET de la clave nintendo:consola:snes
+[INFO] 11:28:59:594 coordinador/(6559:6575): El ESI 1 hizo un GET de la clave nintendo:consola:nintendo64
+[INFO] 11:28:59:845 coordinador/(6559:6575): El ESI 1 hizo un GET de la clave nintendo:consola:gamecube
+[INFO] 11:29:00:96 coordinador/(6559:6575): El ESI 1 hizo un GET de la clave nintendo:consola:wii
+[INFO] 11:29:00:347 coordinador/(6559:6575): El ESI 1 hizo un GET de la clave nintendo:consola:wiiu
+[INFO] 11:29:00:598 coordinador/(6559:6575): El ESI 1 hizo un GET de la clave nintendo:consola:switch
+[INFO] 11:29:00:850 coordinador/(6559:6575): El ESI 1 hizo un SET sobre la clave nintendo:consola:nes con valor: Mario
+[INFO] 11:29:00:850 coordinador/(6559:6575): La Inst1 ejecuto correctamente
+[INFO] 11:29:01:139 coordinador/(6559:6575): El ESI 1 hizo un SET sobre la clave nintendo:consola:snes con valor: SuperMario
+[INFO] 11:29:01:140 coordinador/(6559:6575): La Inst2 ejecuto correctamente
+[INFO] 11:29:01:426 coordinador/(6559:6575): El ESI 1 hizo un SET sobre la clave nintendo:consola:nintendo64 con valor: Mario64
+[INFO] 11:29:01:427 coordinador/(6559:6575): La Inst1 ejecuto correctamente
+[INFO] 11:29:01:715 coordinador/(6559:6575): El ESI 1 hizo un SET sobre la clave nintendo:consola:gamecube con valor: Mario
+[INFO] 11:29:01:716 coordinador/(6559:6575): La Inst2 ejecuto correctamente
+[INFO] 11:29:02:3 coordinador/(6559:6575): El ESI 1 hizo un SET sobre la clave nintendo:consola:wii con valor: MarioGalaxy
+[INFO] 11:29:02:3 coordinador/(6559:6575): La Inst1 ejecuto correctamente
+[INFO] 11:29:02:291 coordinador/(6559:6575): El ESI 1 hizo un SET sobre la clave nintendo:consola:wiiu con valor: RIP
+[INFO] 11:29:02:291 coordinador/(6559:6575): La Inst2 ejecuto correctamente
+[INFO] 11:29:02:579 coordinador/(6559:6575): El ESI 1 hizo un SET sobre la clave nintendo:consola:switch con valor: MarioOddysey
+[INFO] 11:29:02:580 coordinador/(6559:6575): La Inst1 ejecuto correctamente
+[INFO] 11:29:02:867 coordinador/(6559:6575): El ESI 1 hizo un SET sobre la clave sony:consola:ps1 con valor: FinalFantasy
+[INFO] 11:29:02:868 coordinador/(6559:6575): La Inst2 ejecuto correctamente
+[INFO] 11:29:03:154 coordinador/(6559:6575): El ESI 1 hizo un SET sobre la clave sony:consola:ps2 con valor: GodOfWar
+[INFO] 11:29:03:155 coordinador/(6559:6575): La Inst1 ejecuto correctamente
+[INFO] 11:29:03:442 coordinador/(6559:6575): El ESI 1 hizo un SET sobre la clave sony:consola:ps3 con valor: TLOU
+[INFO] 11:29:03:442 coordinador/(6559:6575): La Inst2 ejecuto correctamente
+[INFO] 11:29:03:731 coordinador/(6559:6575): El ESI 1 hizo un SET sobre la clave sony:consola:ps4 con valor: Bloodborne
+[INFO] 11:29:03:732 coordinador/(6559:6575): La Inst1 ejecuto correctamente
+[INFO] 11:29:04:19 coordinador/(6559:6575): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox con valor: Halo
+[INFO] 11:29:04:20 coordinador/(6559:6575): La Inst2 ejecuto correctamente
+[INFO] 11:29:04:306 coordinador/(6559:6575): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox360 con valor: Halo
+[INFO] 11:29:04:307 coordinador/(6559:6575): La Inst1 ejecuto correctamente
+[INFO] 11:29:04:595 coordinador/(6559:6575): El ESI 1 hizo un SET sobre la clave microsoft:consola:xboxone con valor: Halo
+[INFO] 11:29:04:595 coordinador/(6559:6575): La Inst2 ejecuto correctamente
+[INFO] 11:29:08:402 coordinador/(6559:6578): La Inst1 ejecuto correctamente
+[INFO] 11:29:08:691 coordinador/(6559:6578): La Inst2 ejecuto correctamente
+[INFO] 11:29:08:979 coordinador/(6559:6578): La Inst1 ejecuto correctamente
+[INFO] 11:29:09:267 coordinador/(6559:6578): La Inst2 ejecuto correctamente
+[INFO] 11:29:09:555 coordinador/(6559:6578): La Inst1 ejecuto correctamente
+[INFO] 11:29:09:843 coordinador/(6559:6578): La Inst1 ejecuto correctamente
+[INFO] 11:29:10:131 coordinador/(6559:6578): La Inst2 ejecuto correctamente
+[INFO] 11:29:10:419 coordinador/(6559:6578): La Inst1 ejecuto correctamente
+[INFO] 11:29:10:707 coordinador/(6559:6578): La Inst2 ejecuto correctamente
+[INFO] 11:29:10:996 coordinador/(6559:6578): La Inst1 ejecuto correctamente
+[INFO] 11:29:11:282 coordinador/(6559:6578): La Inst1 ejecuto correctamente
+[INFO] 11:29:11:571 coordinador/(6559:6578): La Inst2 ejecuto correctamente
+[INFO] 11:29:11:859 coordinador/(6559:6578): La Inst2 ejecuto correctamente
+[INFO] 11:29:12:147 coordinador/(6559:6578): La Inst1 ejecuto correctamente
+[INFO] 11:29:12:435 coordinador/(6559:6578): La Inst1 ejecuto correctamente
+[INFO] 11:29:12:723 coordinador/(6559:6578): La Inst2 ejecuto correctamente
+[INFO] 11:29:13:11 coordinador/(6559:6578): La Inst2 ejecuto correctamente
+[INFO] 11:29:13:299 coordinador/(6559:6578): La Inst1 ejecuto correctamente
+[INFO] 11:29:13:587 coordinador/(6559:6578): La Inst2 ejecuto correctamente
+[INFO] 11:29:13:875 coordinador/(6559:6578): La Inst1 ejecuto correctamente
+[INFO] 11:29:14:163 coordinador/(6559:6581): El ESI 3 hizo un GET de la clave primerplato:ingrediente1
+[INFO] 11:29:14:414 coordinador/(6559:6581): El ESI 3 hizo un GET de la clave platoprincipal:ingrediente1
+[INFO] 11:29:14:666 coordinador/(6559:6581): El ESI 3 hizo un GET de la clave segundoplato:ingrediente1
+[INFO] 11:29:14:917 coordinador/(6559:6581): El ESI 3 hizo un GET de la clave postre:ingrediente1
+[INFO] 11:29:15:168 coordinador/(6559:6581): El ESI 3 hizo un GET de la clave primerplato:ingrediente2
+[INFO] 11:29:15:419 coordinador/(6559:6581): El ESI 3 hizo un GET de la clave platoprincipal:ingrediente2
+[INFO] 11:29:15:671 coordinador/(6559:6581): El ESI 3 hizo un GET de la clave segundoplato:ingrediente2
+[INFO] 11:29:15:922 coordinador/(6559:6581): El ESI 3 hizo un GET de la clave postre:ingrediente2
+[INFO] 11:29:16:173 coordinador/(6559:6581): El ESI 3 hizo un GET de la clave primerplato:ingrediente3
+[INFO] 11:29:16:425 coordinador/(6559:6581): El ESI 3 hizo un GET de la clave platoprincipal:ingrediente3
+[INFO] 11:29:16:928 coordinador/(6559:6584): El ESI 4 hizo un GET de la clave bebida1
+[INFO] 11:29:17:180 coordinador/(6559:6584): El ESI 4 hizo un GET de la clave bebida10
+[INFO] 11:29:17:432 coordinador/(6559:6584): El ESI 4 hizo un GET de la clave bebida11
+[INFO] 11:29:17:684 coordinador/(6559:6584): El ESI 4 hizo un GET de la clave bebida12
+[INFO] 11:29:31:840 coordinador/(6559:6625): El ESI 4 hizo un GET de la clave bebida13
+[INFO] 11:29:32:90 coordinador/(6559:6584): El ESI 4 hizo un GET de la clave bebida14
+[INFO] 11:29:32:342 coordinador/(6559:6584): El ESI 4 hizo un GET de la clave bebida15
+[INFO] 11:29:32:593 coordinador/(6559:6584): El ESI 4 hizo un GET de la clave bebida2
+[INFO] 11:29:32:845 coordinador/(6559:6584): El ESI 4 hizo un GET de la clave bebida3
+[INFO] 11:29:33:96 coordinador/(6559:6584): El ESI 4 hizo un GET de la clave bebida4
+[INFO] 11:29:33:348 coordinador/(6559:6584): El ESI 4 hizo un GET de la clave bebida5
+[INFO] 11:29:33:599 coordinador/(6559:6584): El ESI 4 hizo un GET de la clave bebida6
+[INFO] 11:29:33:851 coordinador/(6559:6584): El ESI 4 hizo un GET de la clave bebida7
+[INFO] 11:29:34:102 coordinador/(6559:6584): El ESI 4 hizo un GET de la clave bebida8
+[INFO] 11:29:34:353 coordinador/(6559:6584): El ESI 4 hizo un GET de la clave bebida9
+[INFO] 11:29:34:604 coordinador/(6559:6584): El ESI 4 hizo un SET sobre la clave bebida1 con valor: cerveza
+[INFO] 11:29:34:605 coordinador/(6559:6584): La Inst1 ejecuto correctamente
+[INFO] 11:29:34:894 coordinador/(6559:6584): El ESI 4 hizo un SET sobre la clave bebida2 con valor: fernet
+[INFO] 11:29:34:895 coordinador/(6559:6584): La Inst2 ejecuto correctamente
+[INFO] 11:29:35:184 coordinador/(6559:6584): El ESI 4 hizo un SET sobre la clave bebida3 con valor: cocacola
+[INFO] 11:29:35:185 coordinador/(6559:6584): La Inst1 ejecuto correctamente
+[INFO] 11:29:35:475 coordinador/(6559:6584): El ESI 4 hizo un SET sobre la clave bebida4 con valor: smirnoff
+[INFO] 11:29:35:476 coordinador/(6559:6584): La Inst2 ejecuto correctamente
+[INFO] 11:29:35:762 coordinador/(6559:6584): El ESI 4 hizo un SET sobre la clave bebida5 con valor: whisky
+[INFO] 11:29:35:762 coordinador/(6559:6584): La Inst1 ejecuto correctamente
+[INFO] 11:29:36:50 coordinador/(6559:6584): El ESI 4 hizo un SET sobre la clave bebida6 con valor: ron
+[INFO] 11:29:36:51 coordinador/(6559:6584): La Inst2 ejecuto correctamente
+[INFO] 11:29:36:338 coordinador/(6559:6584): El ESI 4 hizo un SET sobre la clave bebida7 con valor: gin
+[INFO] 11:29:36:339 coordinador/(6559:6584): La Inst1 ejecuto correctamente
+[INFO] 11:29:36:626 coordinador/(6559:6584): El ESI 4 hizo un SET sobre la clave bebida8 con valor: gancia
+[INFO] 11:29:36:627 coordinador/(6559:6584): La Inst2 ejecuto correctamente
+[INFO] 11:29:36:914 coordinador/(6559:6584): El ESI 4 hizo un SET sobre la clave bebida9 con valor: sprite
+[INFO] 11:29:36:914 coordinador/(6559:6584): La Inst1 ejecuto correctamente
+[INFO] 11:29:37:202 coordinador/(6559:6584): El ESI 4 hizo un SET sobre la clave bebida10 con valor: tequila
+[INFO] 11:29:37:203 coordinador/(6559:6584): La Inst2 ejecuto correctamente
+[INFO] 11:29:37:490 coordinador/(6559:6584): El ESI 4 hizo un SET sobre la clave bebida11 con valor: cachaza
+[INFO] 11:29:37:490 coordinador/(6559:6584): La Inst1 ejecuto correctamente
+[INFO] 11:29:37:779 coordinador/(6559:6584): El ESI 4 hizo un SET sobre la clave bebida12 con valor: caña
+[INFO] 11:29:37:780 coordinador/(6559:6584): La Inst2 ejecuto correctamente
+[INFO] 11:29:38:66 coordinador/(6559:6584): El ESI 4 hizo un SET sobre la clave bebida13 con valor: vinoespumante
+[INFO] 11:29:38:66 coordinador/(6559:6584): La Inst1 ejecuto correctamente
+[INFO] 11:29:38:354 coordinador/(6559:6584): El ESI 4 hizo un SET sobre la clave bebida14 con valor: speed
+[INFO] 11:29:38:355 coordinador/(6559:6584): La Inst2 ejecuto correctamente
+[INFO] 11:29:38:642 coordinador/(6559:6584): El ESI 4 hizo un SET sobre la clave bebida15 con valor: agua
+[INFO] 11:29:38:643 coordinador/(6559:6584): La Inst1 ejecuto correctamente
+[INFO] 11:29:40:256 coordinador/(6559:6644): El ESI 3 hizo un GET de la clave segundoplato:ingrediente3
+[INFO] 11:29:40:506 coordinador/(6559:6581): El ESI 3 hizo un GET de la clave postre:ingrediente3
+[INFO] 11:29:40:758 coordinador/(6559:6581): El ESI 3 hizo un GET de la clave primerplato:ingrediente4
+[INFO] 11:29:41:10 coordinador/(6559:6581): El ESI 3 hizo un GET de la clave platoprincipal:ingrediente4
+[INFO] 11:29:41:261 coordinador/(6559:6581): El ESI 3 hizo un GET de la clave segundoplato:ingrediente4
+[INFO] 11:29:41:512 coordinador/(6559:6581): El ESI 3 hizo un GET de la clave postre:ingrediente4
+[INFO] 11:29:41:763 coordinador/(6559:6581): El ESI 3 hizo un GET de la clave primerplato:ingrediente5
+[INFO] 11:29:42:14 coordinador/(6559:6581): El ESI 3 hizo un GET de la clave platoprincipal:ingrediente5
+[INFO] 11:29:42:265 coordinador/(6559:6581): El ESI 3 hizo un GET de la clave segundoplato:ingrediente5
+[INFO] 11:29:42:517 coordinador/(6559:6581): El ESI 3 hizo un GET de la clave postre:ingrediente5
+[INFO] 11:29:42:769 coordinador/(6559:6581): El ESI 3 hizo un SET sobre la clave primerplato:ingrediente1 con valor: jamon
+[INFO] 11:29:42:769 coordinador/(6559:6581): La Inst2 ejecuto correctamente
+[INFO] 11:29:43:59 coordinador/(6559:6581): El ESI 3 hizo un SET sobre la clave primerplato:ingrediente2 con valor: queso
+[INFO] 11:29:43:59 coordinador/(6559:6581): La Inst1 ejecuto correctamente
+[INFO] 11:29:43:347 coordinador/(6559:6581): El ESI 3 hizo un SET sobre la clave primerplato:ingrediente3 con valor: harina
+[INFO] 11:29:43:347 coordinador/(6559:6581): La Inst2 ejecuto correctamente
+[INFO] 11:29:43:635 coordinador/(6559:6581): El ESI 3 hizo un SET sobre la clave primerplato:ingrediente4 con valor: aceite
+[INFO] 11:29:43:635 coordinador/(6559:6581): La Inst1 ejecuto correctamente
+[INFO] 11:29:43:922 coordinador/(6559:6581): El ESI 3 hizo un SET sobre la clave primerplato:ingrediente5 con valor: levadura
+[INFO] 11:29:43:922 coordinador/(6559:6581): La Inst2 ejecuto correctamente
+[INFO] 11:29:44:210 coordinador/(6559:6581): El ESI 3 hizo un SET sobre la clave platoprincipal:ingrediente1 con valor: carne
+[INFO] 11:29:44:211 coordinador/(6559:6581): La Inst1 ejecuto correctamente
+[INFO] 11:29:44:498 coordinador/(6559:6581): El ESI 3 hizo un SET sobre la clave platoprincipal:ingrediente2 con valor: morrones
+[INFO] 11:29:44:498 coordinador/(6559:6581): La Inst2 ejecuto correctamente
+[INFO] 11:29:44:786 coordinador/(6559:6581): El ESI 3 hizo un SET sobre la clave platoprincipal:ingrediente3 con valor: papas
+[INFO] 11:29:44:787 coordinador/(6559:6581): La Inst1 ejecuto correctamente
+[INFO] 11:29:45:74 coordinador/(6559:6581): El ESI 3 hizo un SET sobre la clave platoprincipal:ingrediente4 con valor: tomate
+[INFO] 11:29:45:75 coordinador/(6559:6581): La Inst2 ejecuto correctamente
+[INFO] 11:29:45:362 coordinador/(6559:6581): El ESI 3 hizo un SET sobre la clave platoprincipal:ingrediente5 con valor: oregano
+[INFO] 11:29:45:363 coordinador/(6559:6581): La Inst1 ejecuto correctamente
+[INFO] 11:29:45:650 coordinador/(6559:6581): El ESI 3 hizo un SET sobre la clave segundoplato:ingrediente1 con valor: lechuga
+[INFO] 11:29:45:651 coordinador/(6559:6581): La Inst2 ejecuto correctamente
+[INFO] 11:29:45:938 coordinador/(6559:6581): El ESI 3 hizo un SET sobre la clave segundoplato:ingrediente2 con valor: tomate
+[INFO] 11:29:45:939 coordinador/(6559:6581): La Inst1 ejecuto correctamente
+[INFO] 11:29:46:226 coordinador/(6559:6581): El ESI 3 hizo un SET sobre la clave segundoplato:ingrediente3 con valor: cebolla
+[INFO] 11:29:46:227 coordinador/(6559:6581): La Inst2 ejecuto correctamente
+[INFO] 11:29:46:514 coordinador/(6559:6581): El ESI 3 hizo un SET sobre la clave segundoplato:ingrediente4 con valor: aceite
+[INFO] 11:29:46:515 coordinador/(6559:6581): La Inst1 ejecuto correctamente
+[INFO] 11:29:46:803 coordinador/(6559:6581): El ESI 3 hizo un SET sobre la clave segundoplato:ingrediente5 con valor: aceto
+[INFO] 11:29:46:804 coordinador/(6559:6581): La Inst2 ejecuto correctamente
+[INFO] 11:29:47:90 coordinador/(6559:6581): El ESI 3 hizo un SET sobre la clave postre:ingrediente1 con valor: yogurt
+[INFO] 11:29:47:91 coordinador/(6559:6581): La Inst1 ejecuto correctamente
+[INFO] 11:29:47:378 coordinador/(6559:6581): El ESI 3 hizo un SET sobre la clave postre:ingrediente2 con valor: helado
+[INFO] 11:29:47:380 coordinador/(6559:6581): La Inst2 ejecuto correctamente
+[INFO] 11:29:47:666 coordinador/(6559:6581): El ESI 3 hizo un SET sobre la clave postre:ingrediente3 con valor: arandanos
+[INFO] 11:29:47:667 coordinador/(6559:6581): La Inst1 ejecuto correctamente
+[INFO] 11:29:47:954 coordinador/(6559:6581): El ESI 3 hizo un SET sobre la clave postre:ingrediente4 con valor: frutillas
+[INFO] 11:29:47:955 coordinador/(6559:6581): La Inst2 ejecuto correctamente
+[INFO] 11:29:48:243 coordinador/(6559:6581): El ESI 3 hizo un SET sobre la clave postre:ingrediente5 con valor: azucar
+[INFO] 11:29:48:244 coordinador/(6559:6581): La Inst1 ejecuto correctamente
+[INFO] 11:30:05:953 coordinador/(6666:6666): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 11:30:05:953 coordinador/(6666:6666): PUERTO_ESCUCHA: 9035
+[INFO] 11:30:05:953 coordinador/(6666:6666): PUERTO_PLANIF: 9034
+[INFO] 11:30:05:953 coordinador/(6666:6666): IP_PLANIF: 127.0.0.1
+[INFO] 11:30:05:953 coordinador/(6666:6666): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 11:30:05:953 coordinador/(6666:6666): CANTIDAD_ENTRADAS: 50
+[INFO] 11:30:05:953 coordinador/(6666:6666): TAMANIO_ENTRADA: 50
+[INFO] 11:30:05:953 coordinador/(6666:6666): RETARDO: 250
+[INFO] 11:30:06:954 coordinador/(6666:6666): Conectado con planificador
+[INFO] 11:30:06:954 coordinador/(6666:6674): Se creo un hilo con rutina instancia
+[INFO] 11:30:06:956 coordinador/(6666:6674): Se creo una nueva instancia. Nombre: Inst1. Socket: 5
+[INFO] 11:30:06:956 coordinador/(6666:6674): Se conecto la Inst1
+[INFO] 11:30:07:418 coordinador/(6666:6678): Se creo un hilo con rutina instancia
+[INFO] 11:30:07:419 coordinador/(6666:6678): Se creo una nueva instancia. Nombre: Inst2. Socket: 8
+[INFO] 11:30:07:419 coordinador/(6666:6678): Se conecto la Inst2
+[INFO] 11:30:13:897 coordinador/(6666:6687): Se ha creado un hilo con rutina ESI
+[INFO] 11:30:14:148 coordinador/(6666:6687): El ESI 1 hizo un GET de la clave sony:consola:ps1
+[INFO] 11:30:14:297 coordinador/(6666:6690): Se ha creado un hilo con rutina ESI
+[INFO] 11:30:14:399 coordinador/(6666:6687): El ESI 1 hizo un GET de la clave sony:consola:ps2
+[INFO] 11:30:14:651 coordinador/(6666:6687): El ESI 1 hizo un GET de la clave sony:consola:ps3
+[INFO] 11:30:14:902 coordinador/(6666:6687): El ESI 1 hizo un GET de la clave sony:consola:ps4
+[INFO] 11:30:14:993 coordinador/(6666:6693): Se ha creado un hilo con rutina ESI
+[INFO] 11:30:15:153 coordinador/(6666:6687): El ESI 1 hizo un GET de la clave microsoft:consola:xbox
+[INFO] 11:30:15:404 coordinador/(6666:6687): El ESI 1 hizo un GET de la clave microsoft:consola:xbox360
+[INFO] 11:30:15:545 coordinador/(6666:6696): Se ha creado un hilo con rutina ESI
+[INFO] 11:30:15:654 coordinador/(6666:6687): El ESI 1 hizo un GET de la clave microsoft:consola:xboxone
+[INFO] 11:30:15:905 coordinador/(6666:6687): El ESI 1 hizo un GET de la clave nintendo:consola:nes
+[INFO] 11:30:16:157 coordinador/(6666:6687): El ESI 1 hizo un GET de la clave nintendo:consola:snes
+[INFO] 11:30:16:409 coordinador/(6666:6687): El ESI 1 hizo un GET de la clave nintendo:consola:nintendo64
+[INFO] 11:30:16:660 coordinador/(6666:6687): El ESI 1 hizo un GET de la clave nintendo:consola:gamecube
+[INFO] 11:30:16:911 coordinador/(6666:6687): El ESI 1 hizo un GET de la clave nintendo:consola:wii
+[INFO] 11:30:17:162 coordinador/(6666:6687): El ESI 1 hizo un GET de la clave nintendo:consola:wiiu
+[INFO] 11:30:17:414 coordinador/(6666:6687): El ESI 1 hizo un GET de la clave nintendo:consola:switch
+[INFO] 11:30:17:664 coordinador/(6666:6687): El ESI 1 hizo un SET sobre la clave nintendo:consola:nes con valor: Mario
+[INFO] 11:30:17:666 coordinador/(6666:6687): La Inst1 ejecuto correctamente
+[INFO] 11:30:17:954 coordinador/(6666:6687): El ESI 1 hizo un SET sobre la clave nintendo:consola:snes con valor: SuperMario
+[INFO] 11:30:17:955 coordinador/(6666:6687): La Inst2 ejecuto correctamente
+[INFO] 11:30:18:243 coordinador/(6666:6687): El ESI 1 hizo un SET sobre la clave nintendo:consola:nintendo64 con valor: Mario64
+[INFO] 11:30:18:243 coordinador/(6666:6687): La Inst1 ejecuto correctamente
+[INFO] 11:30:18:531 coordinador/(6666:6687): El ESI 1 hizo un SET sobre la clave nintendo:consola:gamecube con valor: Mario
+[INFO] 11:30:18:531 coordinador/(6666:6687): La Inst2 ejecuto correctamente
+[INFO] 11:30:18:818 coordinador/(6666:6687): El ESI 1 hizo un SET sobre la clave nintendo:consola:wii con valor: MarioGalaxy
+[INFO] 11:30:18:819 coordinador/(6666:6687): La Inst1 ejecuto correctamente
+[INFO] 11:30:19:107 coordinador/(6666:6687): El ESI 1 hizo un SET sobre la clave nintendo:consola:wiiu con valor: RIP
+[INFO] 11:30:19:107 coordinador/(6666:6687): La Inst2 ejecuto correctamente
+[INFO] 11:30:19:394 coordinador/(6666:6687): El ESI 1 hizo un SET sobre la clave nintendo:consola:switch con valor: MarioOddysey
+[INFO] 11:30:19:395 coordinador/(6666:6687): La Inst1 ejecuto correctamente
+[INFO] 11:30:19:683 coordinador/(6666:6687): El ESI 1 hizo un SET sobre la clave sony:consola:ps1 con valor: FinalFantasy
+[INFO] 11:30:19:683 coordinador/(6666:6687): La Inst2 ejecuto correctamente
+[INFO] 11:30:19:970 coordinador/(6666:6687): El ESI 1 hizo un SET sobre la clave sony:consola:ps2 con valor: GodOfWar
+[INFO] 11:30:19:971 coordinador/(6666:6687): La Inst1 ejecuto correctamente
+[INFO] 11:30:20:258 coordinador/(6666:6687): El ESI 1 hizo un SET sobre la clave sony:consola:ps3 con valor: TLOU
+[INFO] 11:30:20:259 coordinador/(6666:6687): La Inst2 ejecuto correctamente
+[INFO] 11:30:20:546 coordinador/(6666:6687): El ESI 1 hizo un SET sobre la clave sony:consola:ps4 con valor: Bloodborne
+[INFO] 11:30:20:547 coordinador/(6666:6687): La Inst1 ejecuto correctamente
+[INFO] 11:30:20:834 coordinador/(6666:6687): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox con valor: Halo
+[INFO] 11:30:20:835 coordinador/(6666:6687): La Inst2 ejecuto correctamente
+[INFO] 11:30:21:122 coordinador/(6666:6687): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox360 con valor: Halo
+[INFO] 11:30:21:123 coordinador/(6666:6687): La Inst1 ejecuto correctamente
+[INFO] 11:30:21:410 coordinador/(6666:6687): El ESI 1 hizo un SET sobre la clave microsoft:consola:xboxone con valor: Halo
+[INFO] 11:30:21:411 coordinador/(6666:6687): La Inst2 ejecuto correctamente
+[INFO] 11:30:25:217 coordinador/(6666:6690): La Inst1 ejecuto correctamente
+[INFO] 11:30:25:507 coordinador/(6666:6690): La Inst2 ejecuto correctamente
+[INFO] 11:30:25:795 coordinador/(6666:6690): La Inst1 ejecuto correctamente
+[INFO] 11:30:26:83 coordinador/(6666:6690): La Inst2 ejecuto correctamente
+[INFO] 11:30:26:371 coordinador/(6666:6690): La Inst1 ejecuto correctamente
+[INFO] 11:30:26:659 coordinador/(6666:6690): La Inst1 ejecuto correctamente
+[INFO] 11:30:26:947 coordinador/(6666:6690): La Inst2 ejecuto correctamente
+[INFO] 11:30:27:235 coordinador/(6666:6690): La Inst1 ejecuto correctamente
+[INFO] 11:30:27:523 coordinador/(6666:6690): La Inst2 ejecuto correctamente
+[INFO] 11:30:27:811 coordinador/(6666:6690): La Inst1 ejecuto correctamente
+[INFO] 11:30:28:99 coordinador/(6666:6690): La Inst1 ejecuto correctamente
+[INFO] 11:30:28:387 coordinador/(6666:6690): La Inst2 ejecuto correctamente
+[INFO] 11:30:28:675 coordinador/(6666:6690): La Inst2 ejecuto correctamente
+[INFO] 11:30:28:963 coordinador/(6666:6690): La Inst1 ejecuto correctamente
+[INFO] 11:30:29:251 coordinador/(6666:6690): La Inst1 ejecuto correctamente
+[INFO] 11:30:29:539 coordinador/(6666:6690): La Inst2 ejecuto correctamente
+[INFO] 11:30:29:828 coordinador/(6666:6690): La Inst2 ejecuto correctamente
+[INFO] 11:30:30:115 coordinador/(6666:6690): La Inst1 ejecuto correctamente
+[INFO] 11:30:30:403 coordinador/(6666:6690): La Inst2 ejecuto correctamente
+[INFO] 11:30:30:693 coordinador/(6666:6690): La Inst1 ejecuto correctamente
+[INFO] 11:30:30:979 coordinador/(6666:6693): El ESI 3 hizo un GET de la clave primerplato:ingrediente1
+[INFO] 11:30:31:231 coordinador/(6666:6693): El ESI 3 hizo un GET de la clave platoprincipal:ingrediente1
+[INFO] 11:30:31:482 coordinador/(6666:6693): El ESI 3 hizo un GET de la clave segundoplato:ingrediente1
+[INFO] 11:30:31:733 coordinador/(6666:6693): El ESI 3 hizo un GET de la clave postre:ingrediente1
+[INFO] 11:30:31:985 coordinador/(6666:6693): El ESI 3 hizo un GET de la clave primerplato:ingrediente2
+[INFO] 11:30:32:236 coordinador/(6666:6693): El ESI 3 hizo un GET de la clave platoprincipal:ingrediente2
+[INFO] 11:30:32:489 coordinador/(6666:6693): El ESI 3 hizo un GET de la clave segundoplato:ingrediente2
+[INFO] 11:30:32:741 coordinador/(6666:6693): El ESI 3 hizo un GET de la clave postre:ingrediente2
+[INFO] 11:30:32:996 coordinador/(6666:6693): El ESI 3 hizo un GET de la clave primerplato:ingrediente3
+[INFO] 11:30:33:248 coordinador/(6666:6693): El ESI 3 hizo un GET de la clave platoprincipal:ingrediente3
+[INFO] 11:30:33:751 coordinador/(6666:6696): El ESI 4 hizo un GET de la clave bebida1
+[INFO] 11:30:34:3 coordinador/(6666:6696): El ESI 4 hizo un GET de la clave bebida10
+[INFO] 11:30:34:253 coordinador/(6666:6696): El ESI 4 hizo un GET de la clave bebida11
+[INFO] 11:30:34:504 coordinador/(6666:6696): El ESI 4 hizo un GET de la clave bebida12
+[INFO] 11:30:39:306 coordinador/(6666:6742): Se ha creado un hilo con rutina ESI
+[INFO] 11:30:39:556 coordinador/(6666:6742): El ESI 5 hizo un GET de la clave platoprincipal:ingrediente5
+[INFO] 11:30:39:808 coordinador/(6666:6742): El ESI 5 hizo un GET de la clave platoprincipal:ingrediente4
+[INFO] 11:30:39:2 coordinador/(6666:6745): Se ha creado un hilo con rutina ESI
+[INFO] 11:30:40:310 coordinador/(6666:6745): El ESI 6 hizo un GET de la clave bebida2
+[INFO] 11:30:40:562 coordinador/(6666:6745): El ESI 6 hizo un GET de la clave bebida3
+[INFO] 11:30:40:813 coordinador/(6666:6745): El ESI 6 hizo un GET de la clave bebida4
+[INFO] 11:30:41:64 coordinador/(6666:6745): El ESI 6 hizo un GET de la clave bebida5
+[INFO] 11:30:41:316 coordinador/(6666:6745): El ESI 6 hizo un GET de la clave bebida6
+[INFO] 11:30:41:567 coordinador/(6666:6745): El ESI 6 hizo un GET de la clave bebida7
+[INFO] 11:30:41:820 coordinador/(6666:6745): El ESI 6 hizo un GET de la clave bebida8
+[INFO] 11:30:42:71 coordinador/(6666:6745): El ESI 6 hizo un GET de la clave bebida9
+[INFO] 11:30:46:505 coordinador/(6666:6747): El ESI 4 hizo un GET de la clave bebida13
+[INFO] 11:30:46:755 coordinador/(6666:6696): El ESI 4 hizo un GET de la clave bebida14
+[INFO] 11:30:47:6 coordinador/(6666:6696): El ESI 4 hizo un GET de la clave bebida15
+[INFO] 11:30:54:433 coordinador/(6666:6748): El ESI 3 hizo un GET de la clave segundoplato:ingrediente3
+[INFO] 11:30:54:683 coordinador/(6666:6693): El ESI 3 hizo un GET de la clave postre:ingrediente3
+[INFO] 11:30:54:934 coordinador/(6666:6693): El ESI 3 hizo un GET de la clave primerplato:ingrediente4
+[INFO] 11:31:00:184 coordinador/(6666:6742): El ESI 5 hizo un SET sobre la clave platoprincipal:ingrediente1 con valor: milanesadecarne
+[INFO] 11:31:00:185 coordinador/(6666:6742): La Inst1 ejecuto correctamente
+[INFO] 11:31:00:475 coordinador/(6666:6742): El ESI 5 hizo un SET sobre la clave platoprincipal:ingrediente2 con valor: queso
+[INFO] 11:31:00:475 coordinador/(6666:6742): La Inst2 ejecuto correctamente
+[INFO] 11:31:00:762 coordinador/(6666:6742): El ESI 5 hizo un SET sobre la clave platoprincipal:ingrediente3 con valor: jamon
+[INFO] 11:31:00:763 coordinador/(6666:6742): La Inst1 ejecuto correctamente
+[INFO] 11:31:01:50 coordinador/(6666:6742): El ESI 5 hizo un SET sobre la clave platoprincipal:ingrediente4 con valor: lechuga
+[INFO] 11:31:01:50 coordinador/(6666:6742): La Inst2 ejecuto correctamente
+[INFO] 11:31:01:338 coordinador/(6666:6742): El ESI 5 hizo un SET sobre la clave platoprincipal:ingrediente5 con valor: tomate
+[INFO] 11:31:01:339 coordinador/(6666:6742): La Inst1 ejecuto correctamente
+[INFO] 11:31:01:632 coordinador/(6666:6742): La Inst1 ejecuto correctamente
+[INFO] 11:31:01:885 coordinador/(6666:6742): La Inst2 ejecuto correctamente
+[INFO] 11:31:02:136 coordinador/(6666:6742): La Inst1 ejecuto correctamente
+[INFO] 11:31:02:387 coordinador/(6666:6742): La Inst2 ejecuto correctamente
+[INFO] 11:31:02:641 coordinador/(6666:6742): La Inst1 ejecuto correctamente
+[INFO] 11:31:02:935 coordinador/(6666:6693): El ESI 3 hizo un GET de la clave segundoplato:ingrediente4
+[INFO] 11:31:03:186 coordinador/(6666:6693): El ESI 3 hizo un GET de la clave postre:ingrediente4
+[INFO] 11:31:03:438 coordinador/(6666:6693): El ESI 3 hizo un GET de la clave primerplato:ingrediente5
+[INFO] 11:31:03:940 coordinador/(6666:6693): El ESI 3 hizo un GET de la clave segundoplato:ingrediente5
+[INFO] 11:31:04:191 coordinador/(6666:6693): El ESI 3 hizo un GET de la clave postre:ingrediente5
+[INFO] 11:36:32:685 coordinador/(6918:6918): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 11:36:32:685 coordinador/(6918:6918): PUERTO_ESCUCHA: 9035
+[INFO] 11:36:32:685 coordinador/(6918:6918): PUERTO_PLANIF: 9034
+[INFO] 11:36:32:685 coordinador/(6918:6918): IP_PLANIF: 127.0.0.1
+[INFO] 11:36:32:685 coordinador/(6918:6918): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 11:36:32:685 coordinador/(6918:6918): CANTIDAD_ENTRADAS: 50
+[INFO] 11:36:32:685 coordinador/(6918:6918): TAMANIO_ENTRADA: 50
+[INFO] 11:36:32:685 coordinador/(6918:6918): RETARDO: 250
+[INFO] 11:36:33:386 coordinador/(6918:6918): Conectado con planificador
+[INFO] 11:36:33:386 coordinador/(6918:6926): Se creo un hilo con rutina instancia
+[INFO] 11:36:33:386 coordinador/(6918:6926): Se creo una nueva instancia. Nombre: Inst1. Socket: 5
+[INFO] 11:36:33:386 coordinador/(6918:6926): Se conecto la Inst1
+[INFO] 11:36:33:757 coordinador/(6918:6930): Se creo un hilo con rutina instancia
+[INFO] 11:36:33:757 coordinador/(6918:6930): Se creo una nueva instancia. Nombre: Inst2. Socket: 8
+[INFO] 11:36:33:757 coordinador/(6918:6930): Se conecto la Inst2
+[INFO] 11:36:43:745 coordinador/(6918:6935): Se ha creado un hilo con rutina ESI
+[INFO] 11:36:43:995 coordinador/(6918:6935): El ESI 1 hizo un GET de la clave sony:consola:ps1
+[INFO] 11:36:44:145 coordinador/(6918:6938): Se ha creado un hilo con rutina ESI
+[INFO] 11:36:44:245 coordinador/(6918:6935): El ESI 1 hizo un GET de la clave sony:consola:ps2
+[INFO] 11:36:44:496 coordinador/(6918:6935): El ESI 1 hizo un GET de la clave sony:consola:ps3
+[INFO] 11:36:44:532 coordinador/(6918:6941): Se ha creado un hilo con rutina ESI
+[INFO] 11:36:44:747 coordinador/(6918:6935): El ESI 1 hizo un GET de la clave sony:consola:ps4
+[INFO] 11:36:44:999 coordinador/(6918:6935): El ESI 1 hizo un GET de la clave microsoft:consola:xbox
+[INFO] 11:36:45:250 coordinador/(6918:6935): El ESI 1 hizo un GET de la clave microsoft:consola:xbox360
+[INFO] 11:36:45:461 coordinador/(6918:6944): Se ha creado un hilo con rutina ESI
+[INFO] 11:36:45:500 coordinador/(6918:6935): El ESI 1 hizo un GET de la clave microsoft:consola:xboxone
+[INFO] 11:36:45:751 coordinador/(6918:6935): El ESI 1 hizo un GET de la clave nintendo:consola:nes
+[INFO] 11:36:46:7 coordinador/(6918:6935): El ESI 1 hizo un GET de la clave nintendo:consola:snes
+[INFO] 11:36:46:258 coordinador/(6918:6935): El ESI 1 hizo un GET de la clave nintendo:consola:nintendo64
+[INFO] 11:36:46:510 coordinador/(6918:6935): El ESI 1 hizo un GET de la clave nintendo:consola:gamecube
+[INFO] 11:36:46:763 coordinador/(6918:6935): El ESI 1 hizo un GET de la clave nintendo:consola:wii
+[INFO] 11:36:47:14 coordinador/(6918:6935): El ESI 1 hizo un GET de la clave nintendo:consola:wiiu
+[INFO] 11:36:47:265 coordinador/(6918:6935): El ESI 1 hizo un GET de la clave nintendo:consola:switch
+[INFO] 11:36:47:516 coordinador/(6918:6935): El ESI 1 hizo un SET sobre la clave nintendo:consola:nes con valor: Mario
+[INFO] 11:36:47:517 coordinador/(6918:6935): La Inst1 ejecuto correctamente
+[INFO] 11:36:47:807 coordinador/(6918:6935): El ESI 1 hizo un SET sobre la clave nintendo:consola:snes con valor: SuperMario
+[INFO] 11:36:47:808 coordinador/(6918:6935): La Inst2 ejecuto correctamente
+[INFO] 11:36:48:95 coordinador/(6918:6935): El ESI 1 hizo un SET sobre la clave nintendo:consola:nintendo64 con valor: Mario64
+[INFO] 11:36:48:96 coordinador/(6918:6935): La Inst1 ejecuto correctamente
+[INFO] 11:36:48:383 coordinador/(6918:6935): El ESI 1 hizo un SET sobre la clave nintendo:consola:gamecube con valor: Mario
+[INFO] 11:36:48:384 coordinador/(6918:6935): La Inst2 ejecuto correctamente
+[INFO] 11:36:48:671 coordinador/(6918:6935): El ESI 1 hizo un SET sobre la clave nintendo:consola:wii con valor: MarioGalaxy
+[INFO] 11:36:48:671 coordinador/(6918:6935): La Inst1 ejecuto correctamente
+[INFO] 11:36:48:958 coordinador/(6918:6935): El ESI 1 hizo un SET sobre la clave nintendo:consola:wiiu con valor: RIP
+[INFO] 11:36:48:959 coordinador/(6918:6935): La Inst2 ejecuto correctamente
+[INFO] 11:36:49:246 coordinador/(6918:6935): El ESI 1 hizo un SET sobre la clave nintendo:consola:switch con valor: MarioOddysey
+[INFO] 11:36:49:247 coordinador/(6918:6935): La Inst1 ejecuto correctamente
+[INFO] 11:36:49:534 coordinador/(6918:6935): El ESI 1 hizo un SET sobre la clave sony:consola:ps1 con valor: FinalFantasy
+[INFO] 11:36:49:535 coordinador/(6918:6935): La Inst2 ejecuto correctamente
+[INFO] 11:36:49:823 coordinador/(6918:6935): El ESI 1 hizo un SET sobre la clave sony:consola:ps2 con valor: GodOfWar
+[INFO] 11:36:49:823 coordinador/(6918:6935): La Inst1 ejecuto correctamente
+[INFO] 11:36:50:110 coordinador/(6918:6935): El ESI 1 hizo un SET sobre la clave sony:consola:ps3 con valor: TLOU
+[INFO] 11:36:50:111 coordinador/(6918:6935): La Inst2 ejecuto correctamente
+[INFO] 11:36:50:398 coordinador/(6918:6935): El ESI 1 hizo un SET sobre la clave sony:consola:ps4 con valor: Bloodborne
+[INFO] 11:36:50:399 coordinador/(6918:6935): La Inst1 ejecuto correctamente
+[INFO] 11:36:50:686 coordinador/(6918:6935): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox con valor: Halo
+[INFO] 11:36:50:687 coordinador/(6918:6935): La Inst2 ejecuto correctamente
+[INFO] 11:36:50:974 coordinador/(6918:6935): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox360 con valor: Halo
+[INFO] 11:36:50:975 coordinador/(6918:6935): La Inst1 ejecuto correctamente
+[INFO] 11:36:51:262 coordinador/(6918:6935): El ESI 1 hizo un SET sobre la clave microsoft:consola:xboxone con valor: Halo
+[INFO] 11:36:51:263 coordinador/(6918:6935): La Inst2 ejecuto correctamente
+[INFO] 11:37:20:897 coordinador/(6960:6960): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 11:37:20:897 coordinador/(6960:6960): PUERTO_ESCUCHA: 9035
+[INFO] 11:37:20:897 coordinador/(6960:6960): PUERTO_PLANIF: 9034
+[INFO] 11:37:20:897 coordinador/(6960:6960): IP_PLANIF: 127.0.0.1
+[INFO] 11:37:20:897 coordinador/(6960:6960): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 11:37:20:897 coordinador/(6960:6960): CANTIDAD_ENTRADAS: 50
+[INFO] 11:37:20:897 coordinador/(6960:6960): TAMANIO_ENTRADA: 50
+[INFO] 11:37:20:897 coordinador/(6960:6960): RETARDO: 250
+[INFO] 11:37:22:110 coordinador/(6960:6960): Conectado con planificador
+[INFO] 11:37:22:110 coordinador/(6960:6968): Se creo un hilo con rutina instancia
+[INFO] 11:37:22:112 coordinador/(6960:6968): Se creo una nueva instancia. Nombre: Inst1. Socket: 5
+[INFO] 11:37:22:112 coordinador/(6960:6968): Se conecto la Inst1
+[INFO] 11:37:22:660 coordinador/(6960:6972): Se creo un hilo con rutina instancia
+[INFO] 11:37:22:662 coordinador/(6960:6972): Se creo una nueva instancia. Nombre: Inst2. Socket: 8
+[INFO] 11:37:22:662 coordinador/(6960:6972): Se conecto la Inst2
+[INFO] 11:37:26:227 coordinador/(6960:6975): Se ha creado un hilo con rutina ESI
+[INFO] 11:37:26:478 coordinador/(6960:6975): El ESI 1 hizo un GET de la clave sony:consola:ps1
+[INFO] 11:37:26:668 coordinador/(6960:6978): Se ha creado un hilo con rutina ESI
+[INFO] 11:37:26:729 coordinador/(6960:6975): El ESI 1 hizo un GET de la clave sony:consola:ps2
+[INFO] 11:37:26:979 coordinador/(6960:6975): El ESI 1 hizo un GET de la clave sony:consola:ps3
+[INFO] 11:37:27:198 coordinador/(6960:6981): Se ha creado un hilo con rutina ESI
+[INFO] 11:37:27:229 coordinador/(6960:6975): El ESI 1 hizo un GET de la clave sony:consola:ps4
+[INFO] 11:37:27:480 coordinador/(6960:6975): El ESI 1 hizo un GET de la clave microsoft:consola:xbox
+[INFO] 11:37:27:732 coordinador/(6960:6975): El ESI 1 hizo un GET de la clave microsoft:consola:xbox360
+[INFO] 11:37:27:983 coordinador/(6960:6975): El ESI 1 hizo un GET de la clave microsoft:consola:xboxone
+[INFO] 11:37:28:235 coordinador/(6960:6975): El ESI 1 hizo un GET de la clave nintendo:consola:nes
+[INFO] 11:37:28:486 coordinador/(6960:6975): El ESI 1 hizo un GET de la clave nintendo:consola:snes
+[INFO] 11:37:28:737 coordinador/(6960:6975): El ESI 1 hizo un GET de la clave nintendo:consola:nintendo64
+[INFO] 11:37:28:988 coordinador/(6960:6975): El ESI 1 hizo un GET de la clave nintendo:consola:gamecube
+[INFO] 11:37:29:240 coordinador/(6960:6975): El ESI 1 hizo un GET de la clave nintendo:consola:wii
+[INFO] 11:37:29:492 coordinador/(6960:6975): El ESI 1 hizo un GET de la clave nintendo:consola:wiiu
+[INFO] 11:37:29:744 coordinador/(6960:6975): El ESI 1 hizo un GET de la clave nintendo:consola:switch
+[INFO] 11:37:29:995 coordinador/(6960:6975): El ESI 1 hizo un SET sobre la clave nintendo:consola:nes con valor: Mario
+[INFO] 11:37:29:996 coordinador/(6960:6975): La Inst1 ejecuto correctamente
+[INFO] 11:37:30:283 coordinador/(6960:6975): El ESI 1 hizo un SET sobre la clave nintendo:consola:snes con valor: SuperMario
+[INFO] 11:37:30:283 coordinador/(6960:6975): La Inst2 ejecuto correctamente
+[INFO] 11:37:30:570 coordinador/(6960:6975): El ESI 1 hizo un SET sobre la clave nintendo:consola:nintendo64 con valor: Mario64
+[INFO] 11:37:30:571 coordinador/(6960:6975): La Inst1 ejecuto correctamente
+[INFO] 11:37:30:859 coordinador/(6960:6975): El ESI 1 hizo un SET sobre la clave nintendo:consola:gamecube con valor: Mario
+[INFO] 11:37:30:859 coordinador/(6960:6975): La Inst2 ejecuto correctamente
+[INFO] 11:37:31:146 coordinador/(6960:6975): El ESI 1 hizo un SET sobre la clave nintendo:consola:wii con valor: MarioGalaxy
+[INFO] 11:37:31:147 coordinador/(6960:6975): La Inst1 ejecuto correctamente
+[INFO] 11:37:31:434 coordinador/(6960:6975): El ESI 1 hizo un SET sobre la clave nintendo:consola:wiiu con valor: RIP
+[INFO] 11:37:31:435 coordinador/(6960:6975): La Inst2 ejecuto correctamente
+[INFO] 11:37:31:723 coordinador/(6960:6975): El ESI 1 hizo un SET sobre la clave nintendo:consola:switch con valor: MarioOddysey
+[INFO] 11:37:31:724 coordinador/(6960:6975): La Inst1 ejecuto correctamente
+[INFO] 11:37:32:10 coordinador/(6960:6975): El ESI 1 hizo un SET sobre la clave sony:consola:ps1 con valor: FinalFantasy
+[INFO] 11:37:32:10 coordinador/(6960:6975): La Inst2 ejecuto correctamente
+[INFO] 11:37:32:298 coordinador/(6960:6975): El ESI 1 hizo un SET sobre la clave sony:consola:ps2 con valor: GodOfWar
+[INFO] 11:37:32:299 coordinador/(6960:6975): La Inst1 ejecuto correctamente
+[INFO] 11:37:32:586 coordinador/(6960:6975): El ESI 1 hizo un SET sobre la clave sony:consola:ps3 con valor: TLOU
+[INFO] 11:37:32:587 coordinador/(6960:6975): La Inst2 ejecuto correctamente
+[INFO] 11:37:32:874 coordinador/(6960:6975): El ESI 1 hizo un SET sobre la clave sony:consola:ps4 con valor: Bloodborne
+[INFO] 11:37:32:875 coordinador/(6960:6975): La Inst1 ejecuto correctamente
+[INFO] 11:37:33:162 coordinador/(6960:6975): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox con valor: Halo
+[INFO] 11:37:33:163 coordinador/(6960:6975): La Inst2 ejecuto correctamente
+[INFO] 11:37:33:450 coordinador/(6960:6975): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox360 con valor: Halo
+[INFO] 11:37:33:451 coordinador/(6960:6975): La Inst1 ejecuto correctamente
+[INFO] 11:37:33:738 coordinador/(6960:6975): El ESI 1 hizo un SET sobre la clave microsoft:consola:xboxone con valor: Halo
+[INFO] 11:37:33:739 coordinador/(6960:6975): La Inst2 ejecuto correctamente
+[INFO] 11:38:45:1 coordinador/(7088:7088): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 11:38:45:1 coordinador/(7088:7088): PUERTO_ESCUCHA: 9035
+[INFO] 11:38:45:1 coordinador/(7088:7088): PUERTO_PLANIF: 9034
+[INFO] 11:38:45:1 coordinador/(7088:7088): IP_PLANIF: 127.0.0.1
+[INFO] 11:38:45:1 coordinador/(7088:7088): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 11:38:45:1 coordinador/(7088:7088): CANTIDAD_ENTRADAS: 50
+[INFO] 11:38:45:1 coordinador/(7088:7088): TAMANIO_ENTRADA: 50
+[INFO] 11:38:45:1 coordinador/(7088:7088): RETARDO: 250
+[INFO] 11:38:47:338 coordinador/(7088:7088): Conectado con planificador
+[INFO] 11:38:47:338 coordinador/(7088:7096): Se creo un hilo con rutina instancia
+[INFO] 11:38:47:339 coordinador/(7088:7096): Se creo una nueva instancia. Nombre: Inst1. Socket: 5
+[INFO] 11:38:47:339 coordinador/(7088:7096): Se conecto la Inst1
+[INFO] 11:38:47:701 coordinador/(7088:7100): Se creo un hilo con rutina instancia
+[INFO] 11:38:47:702 coordinador/(7088:7100): Se creo una nueva instancia. Nombre: Inst2. Socket: 8
+[INFO] 11:38:47:702 coordinador/(7088:7100): Se conecto la Inst2
+[INFO] 11:38:50:740 coordinador/(7088:7108): Se ha creado un hilo con rutina ESI
+[INFO] 11:38:50:991 coordinador/(7088:7108): El ESI 1 hizo un GET de la clave sony:consola:ps1
+[INFO] 11:38:51:109 coordinador/(7088:7111): Se ha creado un hilo con rutina ESI
+[INFO] 11:38:51:241 coordinador/(7088:7108): El ESI 1 hizo un GET de la clave sony:consola:ps2
+[INFO] 11:38:51:493 coordinador/(7088:7108): El ESI 1 hizo un GET de la clave sony:consola:ps3
+[INFO] 11:38:51:511 coordinador/(7088:7114): Se ha creado un hilo con rutina ESI
+[INFO] 11:38:51:743 coordinador/(7088:7108): El ESI 1 hizo un GET de la clave sony:consola:ps4
+[INFO] 11:38:51:993 coordinador/(7088:7108): El ESI 1 hizo un GET de la clave microsoft:consola:xbox
+[INFO] 11:38:52:29 coordinador/(7088:7117): Se ha creado un hilo con rutina ESI
+[INFO] 11:38:52:244 coordinador/(7088:7108): El ESI 1 hizo un GET de la clave microsoft:consola:xbox360
+[INFO] 11:38:52:495 coordinador/(7088:7108): El ESI 1 hizo un GET de la clave microsoft:consola:xboxone
+[INFO] 11:38:52:746 coordinador/(7088:7108): El ESI 1 hizo un GET de la clave nintendo:consola:nes
+[INFO] 11:38:52:997 coordinador/(7088:7108): El ESI 1 hizo un GET de la clave nintendo:consola:snes
+[INFO] 11:38:53:250 coordinador/(7088:7108): El ESI 1 hizo un GET de la clave nintendo:consola:nintendo64
+[INFO] 11:38:53:501 coordinador/(7088:7108): El ESI 1 hizo un GET de la clave nintendo:consola:gamecube
+[INFO] 11:38:53:753 coordinador/(7088:7108): El ESI 1 hizo un GET de la clave nintendo:consola:wii
+[INFO] 11:38:54:5 coordinador/(7088:7108): El ESI 1 hizo un GET de la clave nintendo:consola:wiiu
+[INFO] 11:38:54:256 coordinador/(7088:7108): El ESI 1 hizo un GET de la clave nintendo:consola:switch
+[INFO] 11:38:54:508 coordinador/(7088:7108): El ESI 1 hizo un SET sobre la clave nintendo:consola:nes con valor: Mario
+[INFO] 11:38:54:509 coordinador/(7088:7108): La Inst1 ejecuto correctamente
+[INFO] 11:38:54:802 coordinador/(7088:7108): El ESI 1 hizo un SET sobre la clave nintendo:consola:snes con valor: SuperMario
+[INFO] 11:38:54:803 coordinador/(7088:7108): La Inst2 ejecuto correctamente
+[INFO] 11:38:55:90 coordinador/(7088:7108): El ESI 1 hizo un SET sobre la clave nintendo:consola:nintendo64 con valor: Mario64
+[INFO] 11:38:55:91 coordinador/(7088:7108): La Inst1 ejecuto correctamente
+[INFO] 11:38:55:379 coordinador/(7088:7108): El ESI 1 hizo un SET sobre la clave nintendo:consola:gamecube con valor: Mario
+[INFO] 11:38:55:379 coordinador/(7088:7108): La Inst2 ejecuto correctamente
+[INFO] 11:38:55:666 coordinador/(7088:7108): El ESI 1 hizo un SET sobre la clave nintendo:consola:wii con valor: MarioGalaxy
+[INFO] 11:38:55:666 coordinador/(7088:7108): La Inst1 ejecuto correctamente
+[INFO] 11:38:55:954 coordinador/(7088:7108): El ESI 1 hizo un SET sobre la clave nintendo:consola:wiiu con valor: RIP
+[INFO] 11:38:55:955 coordinador/(7088:7108): La Inst2 ejecuto correctamente
+[INFO] 11:38:56:243 coordinador/(7088:7108): El ESI 1 hizo un SET sobre la clave nintendo:consola:switch con valor: MarioOddysey
+[INFO] 11:38:56:244 coordinador/(7088:7108): La Inst1 ejecuto correctamente
+[INFO] 11:38:56:530 coordinador/(7088:7108): El ESI 1 hizo un SET sobre la clave sony:consola:ps1 con valor: FinalFantasy
+[INFO] 11:38:56:531 coordinador/(7088:7108): La Inst2 ejecuto correctamente
+[INFO] 11:38:56:818 coordinador/(7088:7108): El ESI 1 hizo un SET sobre la clave sony:consola:ps2 con valor: GodOfWar
+[INFO] 11:38:56:819 coordinador/(7088:7108): La Inst1 ejecuto correctamente
+[INFO] 11:38:57:106 coordinador/(7088:7108): El ESI 1 hizo un SET sobre la clave sony:consola:ps3 con valor: TLOU
+[INFO] 11:38:57:106 coordinador/(7088:7108): La Inst2 ejecuto correctamente
+[INFO] 11:38:57:395 coordinador/(7088:7108): El ESI 1 hizo un SET sobre la clave sony:consola:ps4 con valor: Bloodborne
+[INFO] 11:38:57:397 coordinador/(7088:7108): La Inst1 ejecuto correctamente
+[INFO] 11:38:57:683 coordinador/(7088:7108): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox con valor: Halo
+[INFO] 11:38:57:684 coordinador/(7088:7108): La Inst2 ejecuto correctamente
+[INFO] 11:38:57:971 coordinador/(7088:7108): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox360 con valor: Halo
+[INFO] 11:38:57:971 coordinador/(7088:7108): La Inst1 ejecuto correctamente
+[INFO] 11:38:58:258 coordinador/(7088:7108): El ESI 1 hizo un SET sobre la clave microsoft:consola:xboxone con valor: Halo
+[INFO] 11:38:58:259 coordinador/(7088:7108): La Inst2 ejecuto correctamente
+[INFO] 11:39:02:66 coordinador/(7088:7111): La Inst1 ejecuto correctamente
+[INFO] 11:39:02:355 coordinador/(7088:7111): La Inst2 ejecuto correctamente
+[INFO] 11:39:02:643 coordinador/(7088:7111): La Inst1 ejecuto correctamente
+[INFO] 11:39:02:930 coordinador/(7088:7111): La Inst2 ejecuto correctamente
+[INFO] 11:39:03:220 coordinador/(7088:7111): La Inst1 ejecuto correctamente
+[INFO] 11:39:03:507 coordinador/(7088:7111): La Inst1 ejecuto correctamente
+[INFO] 11:39:03:795 coordinador/(7088:7111): La Inst2 ejecuto correctamente
+[INFO] 11:39:04:84 coordinador/(7088:7111): La Inst1 ejecuto correctamente
+[INFO] 11:39:04:372 coordinador/(7088:7111): La Inst2 ejecuto correctamente
+[INFO] 11:39:04:659 coordinador/(7088:7111): La Inst1 ejecuto correctamente
+[INFO] 11:39:04:947 coordinador/(7088:7111): La Inst1 ejecuto correctamente
+[INFO] 11:39:05:235 coordinador/(7088:7111): La Inst2 ejecuto correctamente
+[INFO] 11:39:05:523 coordinador/(7088:7111): La Inst2 ejecuto correctamente
+[INFO] 11:39:05:811 coordinador/(7088:7111): La Inst1 ejecuto correctamente
+[INFO] 11:39:06:99 coordinador/(7088:7111): La Inst1 ejecuto correctamente
+[INFO] 11:39:06:388 coordinador/(7088:7111): La Inst2 ejecuto correctamente
+[INFO] 11:39:06:676 coordinador/(7088:7111): La Inst2 ejecuto correctamente
+[INFO] 11:39:06:964 coordinador/(7088:7111): La Inst1 ejecuto correctamente
+[INFO] 11:39:07:251 coordinador/(7088:7111): La Inst2 ejecuto correctamente
+[INFO] 11:39:07:539 coordinador/(7088:7111): La Inst1 ejecuto correctamente
+[INFO] 11:39:07:826 coordinador/(7088:7114): El ESI 3 hizo un GET de la clave primerplato:ingrediente1
+[INFO] 11:39:08:77 coordinador/(7088:7114): El ESI 3 hizo un GET de la clave platoprincipal:ingrediente1
+[INFO] 11:39:08:328 coordinador/(7088:7114): El ESI 3 hizo un GET de la clave segundoplato:ingrediente1
+[INFO] 11:39:08:579 coordinador/(7088:7114): El ESI 3 hizo un GET de la clave postre:ingrediente1
+[INFO] 11:39:08:830 coordinador/(7088:7114): El ESI 3 hizo un GET de la clave primerplato:ingrediente2
+[INFO] 11:39:09:82 coordinador/(7088:7114): El ESI 3 hizo un GET de la clave platoprincipal:ingrediente2
+[INFO] 11:39:09:333 coordinador/(7088:7114): El ESI 3 hizo un GET de la clave segundoplato:ingrediente2
+[INFO] 11:39:09:584 coordinador/(7088:7114): El ESI 3 hizo un GET de la clave postre:ingrediente2
+[INFO] 11:39:09:836 coordinador/(7088:7114): El ESI 3 hizo un GET de la clave primerplato:ingrediente3
+[INFO] 11:39:10:87 coordinador/(7088:7114): El ESI 3 hizo un GET de la clave platoprincipal:ingrediente3
+[INFO] 11:39:10:589 coordinador/(7088:7117): El ESI 4 hizo un GET de la clave bebida1
+[INFO] 11:39:10:841 coordinador/(7088:7117): El ESI 4 hizo un GET de la clave bebida10
+[INFO] 11:39:11:92 coordinador/(7088:7117): El ESI 4 hizo un GET de la clave bebida11
+[INFO] 11:39:11:342 coordinador/(7088:7117): El ESI 4 hizo un GET de la clave bebida12
+[INFO] 11:39:14:532 coordinador/(7088:7154): Se ha creado un hilo con rutina ESI
+[INFO] 11:39:14:800 coordinador/(7088:7154): El ESI 5 hizo un GET de la clave platoprincipal:ingrediente5
+[INFO] 11:39:14:868 coordinador/(7088:7157): Se ha creado un hilo con rutina ESI
+[INFO] 11:39:15:50 coordinador/(7088:7154): El ESI 5 hizo un GET de la clave platoprincipal:ingrediente4
+[INFO] 11:39:15:552 coordinador/(7088:7157): El ESI 6 hizo un GET de la clave bebida2
+[INFO] 11:39:15:803 coordinador/(7088:7157): El ESI 6 hizo un GET de la clave bebida3
+[INFO] 11:39:16:55 coordinador/(7088:7157): El ESI 6 hizo un GET de la clave bebida4
+[INFO] 11:39:16:306 coordinador/(7088:7157): El ESI 6 hizo un GET de la clave bebida5
+[INFO] 11:39:16:558 coordinador/(7088:7157): El ESI 6 hizo un GET de la clave bebida6
+[INFO] 11:39:16:810 coordinador/(7088:7157): El ESI 6 hizo un GET de la clave bebida7
+[INFO] 11:39:17:61 coordinador/(7088:7157): El ESI 6 hizo un GET de la clave bebida8
+[INFO] 11:39:17:312 coordinador/(7088:7157): El ESI 6 hizo un GET de la clave bebida9
+[INFO] 11:39:24:683 coordinador/(7088:7164): El ESI 4 hizo un GET de la clave bebida13
+[INFO] 11:39:24:933 coordinador/(7088:7117): El ESI 4 hizo un GET de la clave bebida14
+[INFO] 11:39:25:186 coordinador/(7088:7117): El ESI 4 hizo un GET de la clave bebida15
+[INFO] 11:39:29:787 coordinador/(7088:7165): El ESI 3 hizo un GET de la clave segundoplato:ingrediente3
+[INFO] 11:39:30:37 coordinador/(7088:7114): El ESI 3 hizo un GET de la clave postre:ingrediente3
+[INFO] 11:39:30:290 coordinador/(7088:7114): El ESI 3 hizo un GET de la clave primerplato:ingrediente4
+[INFO] 11:39:38:818 coordinador/(7088:7154): El ESI 5 hizo un SET sobre la clave platoprincipal:ingrediente1 con valor: milanesadecarne
+[INFO] 11:39:38:818 coordinador/(7088:7154): La Inst1 ejecuto correctamente
+[INFO] 11:39:39:107 coordinador/(7088:7154): El ESI 5 hizo un SET sobre la clave platoprincipal:ingrediente2 con valor: queso
+[INFO] 11:39:39:107 coordinador/(7088:7154): La Inst2 ejecuto correctamente
+[INFO] 11:39:39:394 coordinador/(7088:7154): El ESI 5 hizo un SET sobre la clave platoprincipal:ingrediente3 con valor: jamon
+[INFO] 11:39:39:395 coordinador/(7088:7154): La Inst1 ejecuto correctamente
+[INFO] 11:39:39:682 coordinador/(7088:7154): El ESI 5 hizo un SET sobre la clave platoprincipal:ingrediente4 con valor: lechuga
+[INFO] 11:39:39:684 coordinador/(7088:7154): La Inst2 ejecuto correctamente
+[INFO] 11:39:39:970 coordinador/(7088:7154): El ESI 5 hizo un SET sobre la clave platoprincipal:ingrediente5 con valor: tomate
+[INFO] 11:39:39:971 coordinador/(7088:7154): La Inst1 ejecuto correctamente
+[INFO] 11:39:40:259 coordinador/(7088:7154): La Inst1 ejecuto correctamente
+[INFO] 11:39:40:512 coordinador/(7088:7154): La Inst2 ejecuto correctamente
+[INFO] 11:39:40:764 coordinador/(7088:7154): La Inst1 ejecuto correctamente
+[INFO] 11:39:41:16 coordinador/(7088:7154): La Inst2 ejecuto correctamente
+[INFO] 11:39:41:268 coordinador/(7088:7154): La Inst1 ejecuto correctamente
+[INFO] 11:43:04:327 coordinador/(7281:7281): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 11:43:04:327 coordinador/(7281:7281): PUERTO_ESCUCHA: 9035
+[INFO] 11:43:04:328 coordinador/(7281:7281): PUERTO_PLANIF: 9034
+[INFO] 11:43:04:328 coordinador/(7281:7281): IP_PLANIF: 127.0.0.1
+[INFO] 11:43:04:328 coordinador/(7281:7281): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 11:43:04:328 coordinador/(7281:7281): CANTIDAD_ENTRADAS: 50
+[INFO] 11:43:04:328 coordinador/(7281:7281): TAMANIO_ENTRADA: 50
+[INFO] 11:43:04:328 coordinador/(7281:7281): RETARDO: 250
+[INFO] 11:43:05:570 coordinador/(7281:7281): Conectado con planificador
+[INFO] 11:43:05:570 coordinador/(7281:7289): Se creo un hilo con rutina instancia
+[INFO] 11:43:05:571 coordinador/(7281:7289): Se creo una nueva instancia. Nombre: Inst1. Socket: 5
+[INFO] 11:43:05:571 coordinador/(7281:7289): Se conecto la Inst1
+[INFO] 11:43:06:65 coordinador/(7281:7293): Se creo un hilo con rutina instancia
+[INFO] 11:43:06:65 coordinador/(7281:7293): Se creo una nueva instancia. Nombre: Inst2. Socket: 8
+[INFO] 11:43:06:65 coordinador/(7281:7293): Se conecto la Inst2
+[INFO] 11:43:08:242 coordinador/(7281:7296): Se ha creado un hilo con rutina ESI
+[INFO] 11:43:08:493 coordinador/(7281:7296): El ESI 1 hizo un GET de la clave sony:consola:ps1
+[INFO] 11:43:08:546 coordinador/(7281:7299): Se ha creado un hilo con rutina ESI
+[INFO] 11:43:08:743 coordinador/(7281:7296): El ESI 1 hizo un GET de la clave sony:consola:ps2
+[INFO] 11:43:08:995 coordinador/(7281:7296): El ESI 1 hizo un GET de la clave sony:consola:ps3
+[INFO] 11:43:09:69 coordinador/(7281:7302): Se ha creado un hilo con rutina ESI
+[INFO] 11:43:09:245 coordinador/(7281:7296): El ESI 1 hizo un GET de la clave sony:consola:ps4
+[INFO] 11:43:09:496 coordinador/(7281:7296): El ESI 1 hizo un GET de la clave microsoft:consola:xbox
+[INFO] 11:43:09:585 coordinador/(7281:7305): Se ha creado un hilo con rutina ESI
+[INFO] 11:43:09:748 coordinador/(7281:7296): El ESI 1 hizo un GET de la clave microsoft:consola:xbox360
+[INFO] 11:43:09:999 coordinador/(7281:7296): El ESI 1 hizo un GET de la clave microsoft:consola:xboxone
+[INFO] 11:43:10:250 coordinador/(7281:7296): El ESI 1 hizo un GET de la clave nintendo:consola:nes
+[INFO] 11:43:10:501 coordinador/(7281:7296): El ESI 1 hizo un GET de la clave nintendo:consola:snes
+[INFO] 11:43:10:752 coordinador/(7281:7296): El ESI 1 hizo un GET de la clave nintendo:consola:nintendo64
+[INFO] 11:43:11:4 coordinador/(7281:7296): El ESI 1 hizo un GET de la clave nintendo:consola:gamecube
+[INFO] 11:43:11:256 coordinador/(7281:7296): El ESI 1 hizo un GET de la clave nintendo:consola:wii
+[INFO] 11:43:11:507 coordinador/(7281:7296): El ESI 1 hizo un GET de la clave nintendo:consola:wiiu
+[INFO] 11:43:11:759 coordinador/(7281:7296): El ESI 1 hizo un GET de la clave nintendo:consola:switch
+[INFO] 11:43:12:11 coordinador/(7281:7296): El ESI 1 hizo un SET sobre la clave nintendo:consola:nes con valor: Mario
+[INFO] 11:43:12:11 coordinador/(7281:7296): La Inst1 ejecuto correctamente
+[INFO] 11:43:12:299 coordinador/(7281:7296): El ESI 1 hizo un SET sobre la clave nintendo:consola:snes con valor: SuperMario
+[INFO] 11:43:12:300 coordinador/(7281:7296): La Inst2 ejecuto correctamente
+[INFO] 11:43:12:587 coordinador/(7281:7296): El ESI 1 hizo un SET sobre la clave nintendo:consola:nintendo64 con valor: Mario64
+[INFO] 11:43:12:587 coordinador/(7281:7296): La Inst1 ejecuto correctamente
+[INFO] 11:43:12:875 coordinador/(7281:7296): El ESI 1 hizo un SET sobre la clave nintendo:consola:gamecube con valor: Mario
+[INFO] 11:43:12:883 coordinador/(7281:7296): La Inst2 ejecuto correctamente
+[INFO] 11:43:13:163 coordinador/(7281:7296): El ESI 1 hizo un SET sobre la clave nintendo:consola:wii con valor: MarioGalaxy
+[INFO] 11:43:13:164 coordinador/(7281:7296): La Inst1 ejecuto correctamente
+[INFO] 11:43:13:451 coordinador/(7281:7296): El ESI 1 hizo un SET sobre la clave nintendo:consola:wiiu con valor: RIP
+[INFO] 11:43:13:452 coordinador/(7281:7296): La Inst2 ejecuto correctamente
+[INFO] 11:43:13:738 coordinador/(7281:7296): El ESI 1 hizo un SET sobre la clave nintendo:consola:switch con valor: MarioOddysey
+[INFO] 11:43:13:739 coordinador/(7281:7296): La Inst1 ejecuto correctamente
+[INFO] 11:43:14:26 coordinador/(7281:7296): El ESI 1 hizo un SET sobre la clave sony:consola:ps1 con valor: FinalFantasy
+[INFO] 11:43:14:27 coordinador/(7281:7296): La Inst2 ejecuto correctamente
+[INFO] 11:43:14:314 coordinador/(7281:7296): El ESI 1 hizo un SET sobre la clave sony:consola:ps2 con valor: GodOfWar
+[INFO] 11:43:14:315 coordinador/(7281:7296): La Inst1 ejecuto correctamente
+[INFO] 11:43:14:602 coordinador/(7281:7296): El ESI 1 hizo un SET sobre la clave sony:consola:ps3 con valor: TLOU
+[INFO] 11:43:14:603 coordinador/(7281:7296): La Inst2 ejecuto correctamente
+[INFO] 11:43:14:891 coordinador/(7281:7296): El ESI 1 hizo un SET sobre la clave sony:consola:ps4 con valor: Bloodborne
+[INFO] 11:43:14:891 coordinador/(7281:7296): La Inst1 ejecuto correctamente
+[INFO] 11:43:15:178 coordinador/(7281:7296): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox con valor: Halo
+[INFO] 11:43:15:180 coordinador/(7281:7296): La Inst2 ejecuto correctamente
+[INFO] 11:43:15:467 coordinador/(7281:7296): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox360 con valor: Halo
+[INFO] 11:43:15:467 coordinador/(7281:7296): La Inst1 ejecuto correctamente
+[INFO] 11:43:15:755 coordinador/(7281:7296): El ESI 1 hizo un SET sobre la clave microsoft:consola:xboxone con valor: Halo
+[INFO] 11:43:15:756 coordinador/(7281:7296): La Inst2 ejecuto correctamente
+[INFO] 11:43:19:562 coordinador/(7281:7299): La Inst1 ejecuto correctamente
+[INFO] 11:43:19:850 coordinador/(7281:7299): La Inst2 ejecuto correctamente
+[INFO] 11:43:20:139 coordinador/(7281:7299): La Inst1 ejecuto correctamente
+[INFO] 11:43:20:428 coordinador/(7281:7299): La Inst2 ejecuto correctamente
+[INFO] 11:43:20:716 coordinador/(7281:7299): La Inst1 ejecuto correctamente
+[INFO] 11:43:21:3 coordinador/(7281:7299): La Inst1 ejecuto correctamente
+[INFO] 11:43:21:291 coordinador/(7281:7299): La Inst2 ejecuto correctamente
+[INFO] 11:43:21:580 coordinador/(7281:7299): La Inst1 ejecuto correctamente
+[INFO] 11:43:21:868 coordinador/(7281:7299): La Inst2 ejecuto correctamente
+[INFO] 11:43:22:155 coordinador/(7281:7299): La Inst1 ejecuto correctamente
+[INFO] 11:43:22:443 coordinador/(7281:7299): La Inst1 ejecuto correctamente
+[INFO] 11:43:22:732 coordinador/(7281:7299): La Inst2 ejecuto correctamente
+[INFO] 11:43:23:18 coordinador/(7281:7299): La Inst2 ejecuto correctamente
+[INFO] 11:43:23:308 coordinador/(7281:7299): La Inst1 ejecuto correctamente
+[INFO] 11:43:23:596 coordinador/(7281:7299): La Inst1 ejecuto correctamente
+[INFO] 11:43:23:884 coordinador/(7281:7299): La Inst2 ejecuto correctamente
+[INFO] 11:43:24:171 coordinador/(7281:7299): La Inst2 ejecuto correctamente
+[INFO] 11:43:24:460 coordinador/(7281:7299): La Inst1 ejecuto correctamente
+[INFO] 11:43:24:748 coordinador/(7281:7299): La Inst2 ejecuto correctamente
+[INFO] 11:43:25:35 coordinador/(7281:7299): La Inst1 ejecuto correctamente
+[INFO] 11:43:25:323 coordinador/(7281:7302): El ESI 3 hizo un GET de la clave primerplato:ingrediente1
+[INFO] 11:43:25:575 coordinador/(7281:7302): El ESI 3 hizo un GET de la clave platoprincipal:ingrediente1
+[INFO] 11:43:25:826 coordinador/(7281:7302): El ESI 3 hizo un GET de la clave segundoplato:ingrediente1
+[INFO] 11:43:26:77 coordinador/(7281:7302): El ESI 3 hizo un GET de la clave postre:ingrediente1
+[INFO] 11:43:26:329 coordinador/(7281:7302): El ESI 3 hizo un GET de la clave primerplato:ingrediente2
+[INFO] 11:43:26:581 coordinador/(7281:7302): El ESI 3 hizo un GET de la clave platoprincipal:ingrediente2
+[INFO] 11:43:26:833 coordinador/(7281:7302): El ESI 3 hizo un GET de la clave segundoplato:ingrediente2
+[INFO] 11:43:27:84 coordinador/(7281:7302): El ESI 3 hizo un GET de la clave postre:ingrediente2
+[INFO] 11:43:27:335 coordinador/(7281:7302): El ESI 3 hizo un GET de la clave primerplato:ingrediente3
+[INFO] 11:43:27:587 coordinador/(7281:7302): El ESI 3 hizo un GET de la clave platoprincipal:ingrediente3
+[INFO] 11:43:28:90 coordinador/(7281:7305): El ESI 4 hizo un GET de la clave bebida1
+[INFO] 11:43:28:342 coordinador/(7281:7305): El ESI 4 hizo un GET de la clave bebida10
+[INFO] 11:43:28:594 coordinador/(7281:7305): El ESI 4 hizo un GET de la clave bebida11
+[INFO] 11:43:28:846 coordinador/(7281:7305): El ESI 4 hizo un GET de la clave bebida12
+[INFO] 11:43:30:368 coordinador/(7281:7343): Se ha creado un hilo con rutina ESI
+[INFO] 11:43:30:619 coordinador/(7281:7343): El ESI 5 hizo un GET de la clave platoprincipal:ingrediente5
+[INFO] 11:43:30:871 coordinador/(7281:7343): El ESI 5 hizo un GET de la clave platoprincipal:ingrediente4
+[INFO] 11:43:30:925 coordinador/(7281:7346): Se ha creado un hilo con rutina ESI
+[INFO] 11:43:31:372 coordinador/(7281:7346): El ESI 6 hizo un GET de la clave bebida2
+[INFO] 11:43:31:624 coordinador/(7281:7346): El ESI 6 hizo un GET de la clave bebida3
+[INFO] 11:43:31:875 coordinador/(7281:7346): El ESI 6 hizo un GET de la clave bebida4
+[INFO] 11:43:32:127 coordinador/(7281:7346): El ESI 6 hizo un GET de la clave bebida5
+[INFO] 11:43:32:378 coordinador/(7281:7346): El ESI 6 hizo un GET de la clave bebida6
+[INFO] 11:43:32:630 coordinador/(7281:7346): El ESI 6 hizo un GET de la clave bebida7
+[INFO] 11:43:32:881 coordinador/(7281:7346): El ESI 6 hizo un GET de la clave bebida8
+[INFO] 11:43:33:132 coordinador/(7281:7346): El ESI 6 hizo un GET de la clave bebida9
+[INFO] 11:43:37:535 coordinador/(7281:7355): El ESI 4 hizo un GET de la clave bebida13
+[INFO] 11:43:37:785 coordinador/(7281:7305): El ESI 4 hizo un GET de la clave bebida14
+[INFO] 11:43:38:36 coordinador/(7281:7305): El ESI 4 hizo un GET de la clave bebida15
+[INFO] 11:43:42:590 coordinador/(7281:7356): El ESI 3 hizo un GET de la clave segundoplato:ingrediente3
+[INFO] 11:43:42:840 coordinador/(7281:7302): El ESI 3 hizo un GET de la clave postre:ingrediente3
+[INFO] 11:43:43:92 coordinador/(7281:7302): El ESI 3 hizo un GET de la clave primerplato:ingrediente4
+[INFO] 11:43:48:917 coordinador/(7281:7343): El ESI 5 hizo un SET sobre la clave platoprincipal:ingrediente1 con valor: milanesadecarne
+[INFO] 11:43:48:918 coordinador/(7281:7343): La Inst1 ejecuto correctamente
+[INFO] 11:43:49:207 coordinador/(7281:7343): El ESI 5 hizo un SET sobre la clave platoprincipal:ingrediente2 con valor: queso
+[INFO] 11:43:49:207 coordinador/(7281:7343): La Inst2 ejecuto correctamente
+[INFO] 11:43:49:494 coordinador/(7281:7343): El ESI 5 hizo un SET sobre la clave platoprincipal:ingrediente3 con valor: jamon
+[INFO] 11:43:49:495 coordinador/(7281:7343): La Inst1 ejecuto correctamente
+[INFO] 11:43:49:783 coordinador/(7281:7343): El ESI 5 hizo un SET sobre la clave platoprincipal:ingrediente4 con valor: lechuga
+[INFO] 11:43:49:783 coordinador/(7281:7343): La Inst2 ejecuto correctamente
+[INFO] 11:43:50:71 coordinador/(7281:7343): El ESI 5 hizo un SET sobre la clave platoprincipal:ingrediente5 con valor: tomate
+[INFO] 11:43:50:72 coordinador/(7281:7343): La Inst1 ejecuto correctamente
+[INFO] 11:43:50:359 coordinador/(7281:7343): La Inst1 ejecuto correctamente
+[INFO] 11:43:50:612 coordinador/(7281:7343): La Inst2 ejecuto correctamente
+[INFO] 11:43:50:865 coordinador/(7281:7343): La Inst1 ejecuto correctamente
+[INFO] 11:43:51:118 coordinador/(7281:7343): La Inst2 ejecuto correctamente
+[INFO] 11:43:51:371 coordinador/(7281:7343): La Inst1 ejecuto correctamente
+[INFO] 11:46:32:723 coordinador/(7470:7470): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 11:46:32:723 coordinador/(7470:7470): PUERTO_ESCUCHA: 9035
+[INFO] 11:46:32:723 coordinador/(7470:7470): PUERTO_PLANIF: 9034
+[INFO] 11:46:32:723 coordinador/(7470:7470): IP_PLANIF: 127.0.0.1
+[INFO] 11:46:32:723 coordinador/(7470:7470): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 11:46:32:723 coordinador/(7470:7470): CANTIDAD_ENTRADAS: 50
+[INFO] 11:46:32:723 coordinador/(7470:7470): TAMANIO_ENTRADA: 50
+[INFO] 11:46:32:723 coordinador/(7470:7470): RETARDO: 250
+[INFO] 11:46:34:190 coordinador/(7470:7470): Conectado con planificador
+[INFO] 11:46:34:190 coordinador/(7470:7478): Se creo un hilo con rutina instancia
+[INFO] 11:46:34:191 coordinador/(7470:7478): Se creo una nueva instancia. Nombre: Inst1. Socket: 5
+[INFO] 11:46:34:191 coordinador/(7470:7478): Se conecto la Inst1
+[INFO] 11:46:34:883 coordinador/(7470:7482): Se creo un hilo con rutina instancia
+[INFO] 11:46:34:883 coordinador/(7470:7482): Se creo una nueva instancia. Nombre: Inst2. Socket: 8
+[INFO] 11:46:34:883 coordinador/(7470:7482): Se conecto la Inst2
+[INFO] 11:46:37:754 coordinador/(7470:7487): Se ha creado un hilo con rutina ESI
+[INFO] 11:46:38:5 coordinador/(7470:7487): El ESI 1 hizo un GET de la clave sony:consola:ps1
+[INFO] 11:46:38:171 coordinador/(7470:7490): Se ha creado un hilo con rutina ESI
+[INFO] 11:46:38:256 coordinador/(7470:7487): El ESI 1 hizo un GET de la clave sony:consola:ps2
+[INFO] 11:46:38:509 coordinador/(7470:7487): El ESI 1 hizo un GET de la clave sony:consola:ps3
+[INFO] 11:46:38:760 coordinador/(7470:7487): El ESI 1 hizo un GET de la clave sony:consola:ps4
+[INFO] 11:46:38:858 coordinador/(7470:7493): Se ha creado un hilo con rutina ESI
+[INFO] 11:46:39:11 coordinador/(7470:7487): El ESI 1 hizo un GET de la clave microsoft:consola:xbox
+[INFO] 11:46:39:262 coordinador/(7470:7487): El ESI 1 hizo un GET de la clave microsoft:consola:xbox360
+[INFO] 11:46:39:513 coordinador/(7470:7487): El ESI 1 hizo un GET de la clave microsoft:consola:xboxone
+[INFO] 11:46:39:687 coordinador/(7470:7496): Se ha creado un hilo con rutina ESI
+[INFO] 11:46:39:763 coordinador/(7470:7487): El ESI 1 hizo un GET de la clave nintendo:consola:nes
+[INFO] 11:46:40:14 coordinador/(7470:7487): El ESI 1 hizo un GET de la clave nintendo:consola:snes
+[INFO] 11:46:40:266 coordinador/(7470:7487): El ESI 1 hizo un GET de la clave nintendo:consola:nintendo64
+[INFO] 11:46:40:517 coordinador/(7470:7487): El ESI 1 hizo un GET de la clave nintendo:consola:gamecube
+[INFO] 11:46:40:768 coordinador/(7470:7487): El ESI 1 hizo un GET de la clave nintendo:consola:wii
+[INFO] 11:46:41:21 coordinador/(7470:7487): El ESI 1 hizo un GET de la clave nintendo:consola:wiiu
+[INFO] 11:46:41:272 coordinador/(7470:7487): El ESI 1 hizo un GET de la clave nintendo:consola:switch
+[INFO] 11:46:41:523 coordinador/(7470:7487): El ESI 1 hizo un SET sobre la clave nintendo:consola:nes con valor: Mario
+[INFO] 11:46:41:524 coordinador/(7470:7487): La Inst1 ejecuto correctamente
+[INFO] 11:46:41:811 coordinador/(7470:7487): El ESI 1 hizo un SET sobre la clave nintendo:consola:snes con valor: SuperMario
+[INFO] 11:46:41:811 coordinador/(7470:7487): La Inst2 ejecuto correctamente
+[INFO] 11:46:42:98 coordinador/(7470:7487): El ESI 1 hizo un SET sobre la clave nintendo:consola:nintendo64 con valor: Mario64
+[INFO] 11:46:42:99 coordinador/(7470:7487): La Inst1 ejecuto correctamente
+[INFO] 11:46:42:387 coordinador/(7470:7487): El ESI 1 hizo un SET sobre la clave nintendo:consola:gamecube con valor: Mario
+[INFO] 11:46:42:388 coordinador/(7470:7487): La Inst2 ejecuto correctamente
+[INFO] 11:46:42:675 coordinador/(7470:7487): El ESI 1 hizo un SET sobre la clave nintendo:consola:wii con valor: MarioGalaxy
+[INFO] 11:46:42:676 coordinador/(7470:7487): La Inst1 ejecuto correctamente
+[INFO] 11:46:42:968 coordinador/(7470:7487): El ESI 1 hizo un SET sobre la clave nintendo:consola:wiiu con valor: RIP
+[INFO] 11:46:42:969 coordinador/(7470:7487): La Inst2 ejecuto correctamente
+[INFO] 11:46:43:258 coordinador/(7470:7487): El ESI 1 hizo un SET sobre la clave nintendo:consola:switch con valor: MarioOddysey
+[INFO] 11:46:43:258 coordinador/(7470:7487): La Inst1 ejecuto correctamente
+[INFO] 11:46:43:546 coordinador/(7470:7487): El ESI 1 hizo un SET sobre la clave sony:consola:ps1 con valor: FinalFantasy
+[INFO] 11:46:43:547 coordinador/(7470:7487): La Inst2 ejecuto correctamente
+[INFO] 11:46:43:834 coordinador/(7470:7487): El ESI 1 hizo un SET sobre la clave sony:consola:ps2 con valor: GodOfWar
+[INFO] 11:46:43:834 coordinador/(7470:7487): La Inst1 ejecuto correctamente
+[INFO] 11:46:44:122 coordinador/(7470:7487): El ESI 1 hizo un SET sobre la clave sony:consola:ps3 con valor: TLOU
+[INFO] 11:46:44:123 coordinador/(7470:7487): La Inst2 ejecuto correctamente
+[INFO] 11:46:44:411 coordinador/(7470:7487): El ESI 1 hizo un SET sobre la clave sony:consola:ps4 con valor: Bloodborne
+[INFO] 11:46:44:412 coordinador/(7470:7487): La Inst1 ejecuto correctamente
+[INFO] 11:46:44:698 coordinador/(7470:7487): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox con valor: Halo
+[INFO] 11:46:44:699 coordinador/(7470:7487): La Inst2 ejecuto correctamente
+[INFO] 11:46:44:987 coordinador/(7470:7487): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox360 con valor: Halo
+[INFO] 11:46:44:988 coordinador/(7470:7487): La Inst1 ejecuto correctamente
+[INFO] 11:46:45:275 coordinador/(7470:7487): El ESI 1 hizo un SET sobre la clave microsoft:consola:xboxone con valor: Halo
+[INFO] 11:46:45:275 coordinador/(7470:7487): La Inst2 ejecuto correctamente
+[INFO] 11:46:49:83 coordinador/(7470:7490): La Inst1 ejecuto correctamente
+[INFO] 11:46:49:371 coordinador/(7470:7490): La Inst2 ejecuto correctamente
+[INFO] 11:46:49:659 coordinador/(7470:7490): La Inst1 ejecuto correctamente
+[INFO] 11:46:49:947 coordinador/(7470:7490): La Inst2 ejecuto correctamente
+[INFO] 11:46:50:235 coordinador/(7470:7490): La Inst1 ejecuto correctamente
+[INFO] 11:46:50:523 coordinador/(7470:7490): La Inst1 ejecuto correctamente
+[INFO] 11:46:50:811 coordinador/(7470:7490): La Inst2 ejecuto correctamente
+[INFO] 11:46:51:99 coordinador/(7470:7490): La Inst1 ejecuto correctamente
+[INFO] 11:46:51:387 coordinador/(7470:7490): La Inst2 ejecuto correctamente
+[INFO] 11:46:51:675 coordinador/(7470:7490): La Inst1 ejecuto correctamente
+[INFO] 11:46:51:963 coordinador/(7470:7490): La Inst1 ejecuto correctamente
+[INFO] 11:46:52:250 coordinador/(7470:7490): La Inst2 ejecuto correctamente
+[INFO] 11:46:52:539 coordinador/(7470:7490): La Inst2 ejecuto correctamente
+[INFO] 11:46:52:827 coordinador/(7470:7490): La Inst1 ejecuto correctamente
+[INFO] 11:46:53:115 coordinador/(7470:7490): La Inst1 ejecuto correctamente
+[INFO] 11:46:53:403 coordinador/(7470:7490): La Inst2 ejecuto correctamente
+[INFO] 11:46:53:691 coordinador/(7470:7490): La Inst2 ejecuto correctamente
+[INFO] 11:46:53:979 coordinador/(7470:7490): La Inst1 ejecuto correctamente
+[INFO] 11:46:54:266 coordinador/(7470:7490): La Inst2 ejecuto correctamente
+[INFO] 11:46:54:555 coordinador/(7470:7490): La Inst1 ejecuto correctamente
+[INFO] 11:46:54:842 coordinador/(7470:7493): El ESI 3 hizo un GET de la clave primerplato:ingrediente1
+[INFO] 11:46:55:93 coordinador/(7470:7493): El ESI 3 hizo un GET de la clave platoprincipal:ingrediente1
+[INFO] 11:46:55:344 coordinador/(7470:7493): El ESI 3 hizo un GET de la clave segundoplato:ingrediente1
+[INFO] 11:46:55:595 coordinador/(7470:7493): El ESI 3 hizo un GET de la clave postre:ingrediente1
+[INFO] 11:46:55:847 coordinador/(7470:7493): El ESI 3 hizo un GET de la clave primerplato:ingrediente2
+[INFO] 11:46:56:98 coordinador/(7470:7493): El ESI 3 hizo un GET de la clave platoprincipal:ingrediente2
+[INFO] 11:46:56:350 coordinador/(7470:7493): El ESI 3 hizo un GET de la clave segundoplato:ingrediente2
+[INFO] 11:46:56:601 coordinador/(7470:7493): El ESI 3 hizo un GET de la clave postre:ingrediente2
+[INFO] 11:46:56:853 coordinador/(7470:7493): El ESI 3 hizo un GET de la clave primerplato:ingrediente3
+[INFO] 11:46:57:104 coordinador/(7470:7493): El ESI 3 hizo un GET de la clave platoprincipal:ingrediente3
+[INFO] 11:46:57:607 coordinador/(7470:7496): El ESI 4 hizo un GET de la clave bebida1
+[INFO] 11:46:57:858 coordinador/(7470:7496): El ESI 4 hizo un GET de la clave bebida10
+[INFO] 11:46:58:109 coordinador/(7470:7496): El ESI 4 hizo un GET de la clave bebida11
+[INFO] 11:46:58:361 coordinador/(7470:7496): El ESI 4 hizo un GET de la clave bebida12
+[INFO] 11:47:18:353 coordinador/(7470:7533): Se ha creado un hilo con rutina ESI
+[INFO] 11:47:18:605 coordinador/(7470:7533): El ESI 5 hizo un GET de la clave platoprincipal:ingrediente5
+[INFO] 11:47:18:856 coordinador/(7470:7533): El ESI 5 hizo un GET de la clave platoprincipal:ingrediente4
+[INFO] 11:47:19:897 coordinador/(7470:7536): Se ha creado un hilo con rutina ESI
+[INFO] 11:47:20:148 coordinador/(7470:7536): El ESI 6 hizo un GET de la clave bebida2
+[INFO] 11:47:20:400 coordinador/(7470:7536): El ESI 6 hizo un GET de la clave bebida3
+[INFO] 11:47:20:652 coordinador/(7470:7536): El ESI 6 hizo un GET de la clave bebida4
+[INFO] 11:47:20:903 coordinador/(7470:7536): El ESI 6 hizo un GET de la clave bebida5
+[INFO] 11:47:21:155 coordinador/(7470:7536): El ESI 6 hizo un GET de la clave bebida6
+[INFO] 11:47:21:406 coordinador/(7470:7536): El ESI 6 hizo un GET de la clave bebida7
+[INFO] 11:47:21:657 coordinador/(7470:7536): El ESI 6 hizo un GET de la clave bebida8
+[INFO] 11:47:21:908 coordinador/(7470:7536): El ESI 6 hizo un GET de la clave bebida9
+[INFO] 11:47:31:96 coordinador/(7470:7538): El ESI 4 hizo un GET de la clave bebida13
+[INFO] 11:47:31:346 coordinador/(7470:7496): El ESI 4 hizo un GET de la clave bebida14
+[INFO] 11:47:31:597 coordinador/(7470:7496): El ESI 4 hizo un GET de la clave bebida15
+[INFO] 11:47:36:279 coordinador/(7470:7544): El ESI 3 hizo un GET de la clave segundoplato:ingrediente3
+[INFO] 11:47:36:530 coordinador/(7470:7493): El ESI 3 hizo un GET de la clave postre:ingrediente3
+[INFO] 11:47:36:781 coordinador/(7470:7493): El ESI 3 hizo un GET de la clave primerplato:ingrediente4
+[INFO] 11:47:40:438 coordinador/(7470:7533): El ESI 5 hizo un SET sobre la clave platoprincipal:ingrediente1 con valor: milanesadecarne
+[INFO] 11:47:40:438 coordinador/(7470:7533): La Inst1 ejecuto correctamente
+[INFO] 11:47:40:726 coordinador/(7470:7533): El ESI 5 hizo un SET sobre la clave platoprincipal:ingrediente2 con valor: queso
+[INFO] 11:47:40:727 coordinador/(7470:7533): La Inst2 ejecuto correctamente
+[INFO] 11:47:41:14 coordinador/(7470:7533): El ESI 5 hizo un SET sobre la clave platoprincipal:ingrediente3 con valor: jamon
+[INFO] 11:47:41:15 coordinador/(7470:7533): La Inst1 ejecuto correctamente
+[INFO] 11:47:41:302 coordinador/(7470:7533): El ESI 5 hizo un SET sobre la clave platoprincipal:ingrediente4 con valor: lechuga
+[INFO] 11:47:41:303 coordinador/(7470:7533): La Inst2 ejecuto correctamente
+[INFO] 11:47:41:591 coordinador/(7470:7533): El ESI 5 hizo un SET sobre la clave platoprincipal:ingrediente5 con valor: tomate
+[INFO] 11:47:41:592 coordinador/(7470:7533): La Inst1 ejecuto correctamente
+[INFO] 11:47:41:879 coordinador/(7470:7533): La Inst1 ejecuto correctamente
+[INFO] 11:47:42:132 coordinador/(7470:7533): La Inst2 ejecuto correctamente
+[INFO] 11:47:42:385 coordinador/(7470:7533): La Inst1 ejecuto correctamente
+[INFO] 11:47:42:637 coordinador/(7470:7533): La Inst2 ejecuto correctamente
+[INFO] 11:47:42:890 coordinador/(7470:7533): La Inst1 ejecuto correctamente
+[INFO] 11:50:40:483 coordinador/(7765:7765): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 11:50:40:483 coordinador/(7765:7765): PUERTO_ESCUCHA: 9035
+[INFO] 11:50:40:483 coordinador/(7765:7765): PUERTO_PLANIF: 9034
+[INFO] 11:50:40:483 coordinador/(7765:7765): IP_PLANIF: 127.0.0.1
+[INFO] 11:50:40:483 coordinador/(7765:7765): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 11:50:40:483 coordinador/(7765:7765): CANTIDAD_ENTRADAS: 50
+[INFO] 11:50:40:483 coordinador/(7765:7765): TAMANIO_ENTRADA: 50
+[INFO] 11:50:40:483 coordinador/(7765:7765): RETARDO: 250
+[INFO] 11:50:41:49 coordinador/(7765:7765): Conectado con planificador
+[INFO] 11:50:41:49 coordinador/(7765:7767): Se creo un hilo con rutina instancia
+[INFO] 11:50:41:52 coordinador/(7765:7767): Se creo una nueva instancia. Nombre: Inst1. Socket: 5
+[INFO] 11:50:41:52 coordinador/(7765:7767): Se conecto la Inst1
+[INFO] 11:50:41:546 coordinador/(7765:7771): Se creo un hilo con rutina instancia
+[INFO] 11:50:41:549 coordinador/(7765:7771): Se creo una nueva instancia. Nombre: Inst2. Socket: 8
+[INFO] 11:50:41:549 coordinador/(7765:7771): Se conecto la Inst2
+[INFO] 11:50:44:228 coordinador/(7765:7774): Se ha creado un hilo con rutina ESI
+[INFO] 11:50:44:479 coordinador/(7765:7774): El ESI 1 hizo un GET de la clave sony:consola:ps1
+[INFO] 11:50:44:639 coordinador/(7765:7777): Se ha creado un hilo con rutina ESI
+[INFO] 11:50:44:732 coordinador/(7765:7774): El ESI 1 hizo un GET de la clave sony:consola:ps2
+[INFO] 11:50:44:983 coordinador/(7765:7774): El ESI 1 hizo un GET de la clave sony:consola:ps3
+[INFO] 11:50:45:139 coordinador/(7765:7780): Se ha creado un hilo con rutina ESI
+[INFO] 11:50:45:234 coordinador/(7765:7774): El ESI 1 hizo un GET de la clave sony:consola:ps4
+[INFO] 11:50:45:485 coordinador/(7765:7774): El ESI 1 hizo un GET de la clave microsoft:consola:xbox
+[INFO] 11:50:45:657 coordinador/(7765:7783): Se ha creado un hilo con rutina ESI
+[INFO] 11:50:45:735 coordinador/(7765:7774): El ESI 1 hizo un GET de la clave microsoft:consola:xbox360
+[INFO] 11:50:45:986 coordinador/(7765:7774): El ESI 1 hizo un GET de la clave microsoft:consola:xboxone
+[INFO] 11:50:46:237 coordinador/(7765:7774): El ESI 1 hizo un GET de la clave nintendo:consola:nes
+[INFO] 11:50:46:488 coordinador/(7765:7774): El ESI 1 hizo un GET de la clave nintendo:consola:snes
+[INFO] 11:50:46:739 coordinador/(7765:7774): El ESI 1 hizo un GET de la clave nintendo:consola:nintendo64
+[INFO] 11:50:46:991 coordinador/(7765:7774): El ESI 1 hizo un GET de la clave nintendo:consola:gamecube
+[INFO] 11:50:47:242 coordinador/(7765:7774): El ESI 1 hizo un GET de la clave nintendo:consola:wii
+[INFO] 11:50:47:492 coordinador/(7765:7774): El ESI 1 hizo un GET de la clave nintendo:consola:wiiu
+[INFO] 11:50:47:743 coordinador/(7765:7774): El ESI 1 hizo un GET de la clave nintendo:consola:switch
+[INFO] 11:50:47:994 coordinador/(7765:7774): El ESI 1 hizo un SET sobre la clave nintendo:consola:nes con valor: Mario
+[INFO] 11:50:47:995 coordinador/(7765:7774): La Inst1 ejecuto correctamente
+[INFO] 11:50:48:283 coordinador/(7765:7774): El ESI 1 hizo un SET sobre la clave nintendo:consola:snes con valor: SuperMario
+[INFO] 11:50:48:283 coordinador/(7765:7774): La Inst2 ejecuto correctamente
+[INFO] 11:50:48:570 coordinador/(7765:7774): El ESI 1 hizo un SET sobre la clave nintendo:consola:nintendo64 con valor: Mario64
+[INFO] 11:50:48:571 coordinador/(7765:7774): La Inst1 ejecuto correctamente
+[INFO] 11:50:48:858 coordinador/(7765:7774): El ESI 1 hizo un SET sobre la clave nintendo:consola:gamecube con valor: Mario
+[INFO] 11:50:48:859 coordinador/(7765:7774): La Inst2 ejecuto correctamente
+[INFO] 11:50:49:146 coordinador/(7765:7774): El ESI 1 hizo un SET sobre la clave nintendo:consola:wii con valor: MarioGalaxy
+[INFO] 11:50:49:147 coordinador/(7765:7774): La Inst1 ejecuto correctamente
+[INFO] 11:50:49:435 coordinador/(7765:7774): El ESI 1 hizo un SET sobre la clave nintendo:consola:wiiu con valor: RIP
+[INFO] 11:50:49:437 coordinador/(7765:7774): La Inst2 ejecuto correctamente
+[INFO] 11:50:49:722 coordinador/(7765:7774): El ESI 1 hizo un SET sobre la clave nintendo:consola:switch con valor: MarioOddysey
+[INFO] 11:50:49:723 coordinador/(7765:7774): La Inst1 ejecuto correctamente
+[INFO] 11:50:50:12 coordinador/(7765:7774): El ESI 1 hizo un SET sobre la clave sony:consola:ps1 con valor: FinalFantasy
+[INFO] 11:50:50:13 coordinador/(7765:7774): La Inst2 ejecuto correctamente
+[INFO] 11:50:50:298 coordinador/(7765:7774): El ESI 1 hizo un SET sobre la clave sony:consola:ps2 con valor: GodOfWar
+[INFO] 11:50:50:299 coordinador/(7765:7774): La Inst1 ejecuto correctamente
+[INFO] 11:50:50:586 coordinador/(7765:7774): El ESI 1 hizo un SET sobre la clave sony:consola:ps3 con valor: TLOU
+[INFO] 11:50:50:587 coordinador/(7765:7774): La Inst2 ejecuto correctamente
+[INFO] 11:50:50:875 coordinador/(7765:7774): El ESI 1 hizo un SET sobre la clave sony:consola:ps4 con valor: Bloodborne
+[INFO] 11:50:50:875 coordinador/(7765:7774): La Inst1 ejecuto correctamente
+[INFO] 11:50:51:162 coordinador/(7765:7774): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox con valor: Halo
+[INFO] 11:50:51:163 coordinador/(7765:7774): La Inst2 ejecuto correctamente
+[INFO] 11:50:51:451 coordinador/(7765:7774): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox360 con valor: Halo
+[INFO] 11:50:51:451 coordinador/(7765:7774): La Inst1 ejecuto correctamente
+[INFO] 11:50:51:739 coordinador/(7765:7774): El ESI 1 hizo un SET sobre la clave microsoft:consola:xboxone con valor: Halo
+[INFO] 11:50:51:739 coordinador/(7765:7774): La Inst2 ejecuto correctamente
+[INFO] 11:50:55:546 coordinador/(7765:7777): La Inst1 ejecuto correctamente
+[INFO] 11:50:55:836 coordinador/(7765:7777): La Inst2 ejecuto correctamente
+[INFO] 11:50:56:123 coordinador/(7765:7777): La Inst1 ejecuto correctamente
+[INFO] 11:50:56:412 coordinador/(7765:7777): La Inst2 ejecuto correctamente
+[INFO] 11:50:56:699 coordinador/(7765:7777): La Inst1 ejecuto correctamente
+[INFO] 11:50:56:988 coordinador/(7765:7777): La Inst1 ejecuto correctamente
+[INFO] 11:50:57:275 coordinador/(7765:7777): La Inst2 ejecuto correctamente
+[INFO] 11:50:57:564 coordinador/(7765:7777): La Inst1 ejecuto correctamente
+[INFO] 11:50:57:851 coordinador/(7765:7777): La Inst2 ejecuto correctamente
+[INFO] 11:50:58:139 coordinador/(7765:7777): La Inst1 ejecuto correctamente
+[INFO] 11:50:58:427 coordinador/(7765:7777): La Inst1 ejecuto correctamente
+[INFO] 11:50:58:715 coordinador/(7765:7777): La Inst2 ejecuto correctamente
+[INFO] 11:50:58:4 coordinador/(7765:7777): La Inst2 ejecuto correctamente
+[INFO] 11:50:59:291 coordinador/(7765:7777): La Inst1 ejecuto correctamente
+[INFO] 11:50:59:579 coordinador/(7765:7777): La Inst1 ejecuto correctamente
+[INFO] 11:50:59:868 coordinador/(7765:7777): La Inst2 ejecuto correctamente
+[INFO] 11:51:00:155 coordinador/(7765:7777): La Inst2 ejecuto correctamente
+[INFO] 11:51:00:443 coordinador/(7765:7777): La Inst1 ejecuto correctamente
+[INFO] 11:51:00:731 coordinador/(7765:7777): La Inst2 ejecuto correctamente
+[INFO] 11:51:01:19 coordinador/(7765:7777): La Inst1 ejecuto correctamente
+[INFO] 11:51:01:306 coordinador/(7765:7780): El ESI 3 hizo un GET de la clave primerplato:ingrediente1
+[INFO] 11:51:01:557 coordinador/(7765:7780): El ESI 3 hizo un GET de la clave platoprincipal:ingrediente1
+[INFO] 11:51:01:808 coordinador/(7765:7780): El ESI 3 hizo un GET de la clave segundoplato:ingrediente1
+[INFO] 11:51:02:61 coordinador/(7765:7780): El ESI 3 hizo un GET de la clave postre:ingrediente1
+[INFO] 11:51:02:312 coordinador/(7765:7780): El ESI 3 hizo un GET de la clave primerplato:ingrediente2
+[INFO] 11:51:02:564 coordinador/(7765:7780): El ESI 3 hizo un GET de la clave platoprincipal:ingrediente2
+[INFO] 11:51:02:815 coordinador/(7765:7780): El ESI 3 hizo un GET de la clave segundoplato:ingrediente2
+[INFO] 11:51:03:68 coordinador/(7765:7780): El ESI 3 hizo un GET de la clave postre:ingrediente2
+[INFO] 11:51:03:320 coordinador/(7765:7780): El ESI 3 hizo un GET de la clave primerplato:ingrediente3
+[INFO] 11:51:03:571 coordinador/(7765:7780): El ESI 3 hizo un GET de la clave platoprincipal:ingrediente3
+[INFO] 11:51:04:74 coordinador/(7765:7783): El ESI 4 hizo un GET de la clave bebida1
+[INFO] 11:51:04:326 coordinador/(7765:7783): El ESI 4 hizo un GET de la clave bebida10
+[INFO] 11:51:04:577 coordinador/(7765:7783): El ESI 4 hizo un GET de la clave bebida11
+[INFO] 11:51:04:829 coordinador/(7765:7783): El ESI 4 hizo un GET de la clave bebida12
+[INFO] 11:51:07:954 coordinador/(7765:7820): Se ha creado un hilo con rutina ESI
+[INFO] 11:51:08:204 coordinador/(7765:7820): El ESI 5 hizo un GET de la clave platoprincipal:ingrediente5
+[INFO] 11:51:08:391 coordinador/(7765:7823): Se ha creado un hilo con rutina ESI
+[INFO] 11:51:08:455 coordinador/(7765:7820): El ESI 5 hizo un GET de la clave platoprincipal:ingrediente4
+[INFO] 11:51:08:958 coordinador/(7765:7823): El ESI 6 hizo un GET de la clave bebida2
+[INFO] 11:51:09:209 coordinador/(7765:7823): El ESI 6 hizo un GET de la clave bebida3
+[INFO] 11:51:09:461 coordinador/(7765:7823): El ESI 6 hizo un GET de la clave bebida4
+[INFO] 11:51:09:712 coordinador/(7765:7823): El ESI 6 hizo un GET de la clave bebida5
+[INFO] 11:51:09:963 coordinador/(7765:7823): El ESI 6 hizo un GET de la clave bebida6
+[INFO] 11:51:10:215 coordinador/(7765:7823): El ESI 6 hizo un GET de la clave bebida7
+[INFO] 11:51:10:466 coordinador/(7765:7823): El ESI 6 hizo un GET de la clave bebida8
+[INFO] 11:51:10:717 coordinador/(7765:7823): El ESI 6 hizo un GET de la clave bebida9
+[INFO] 11:51:15:585 coordinador/(7765:7825): El ESI 4 hizo un GET de la clave bebida13
+[INFO] 11:51:15:835 coordinador/(7765:7783): El ESI 4 hizo un GET de la clave bebida14
+[INFO] 11:51:16:86 coordinador/(7765:7783): El ESI 4 hizo un GET de la clave bebida15
+[INFO] 11:51:19:824 coordinador/(7765:7826): El ESI 3 hizo un GET de la clave segundoplato:ingrediente3
+[INFO] 11:51:20:74 coordinador/(7765:7780): El ESI 3 hizo un GET de la clave postre:ingrediente3
+[INFO] 11:51:20:326 coordinador/(7765:7780): El ESI 3 hizo un GET de la clave primerplato:ingrediente4
+[INFO] 11:51:26:698 coordinador/(7765:7820): El ESI 5 hizo un SET sobre la clave platoprincipal:ingrediente1 con valor: milanesadecarne
+[INFO] 11:51:26:699 coordinador/(7765:7820): La Inst1 ejecuto correctamente
+[INFO] 11:51:26:986 coordinador/(7765:7820): El ESI 5 hizo un SET sobre la clave platoprincipal:ingrediente2 con valor: queso
+[INFO] 11:51:26:987 coordinador/(7765:7820): La Inst2 ejecuto correctamente
+[INFO] 11:51:27:275 coordinador/(7765:7820): El ESI 5 hizo un SET sobre la clave platoprincipal:ingrediente3 con valor: jamon
+[INFO] 11:51:27:276 coordinador/(7765:7820): La Inst1 ejecuto correctamente
+[INFO] 11:51:27:563 coordinador/(7765:7820): El ESI 5 hizo un SET sobre la clave platoprincipal:ingrediente4 con valor: lechuga
+[INFO] 11:51:27:563 coordinador/(7765:7820): La Inst2 ejecuto correctamente
+[INFO] 11:51:27:850 coordinador/(7765:7820): El ESI 5 hizo un SET sobre la clave platoprincipal:ingrediente5 con valor: tomate
+[INFO] 11:51:27:851 coordinador/(7765:7820): La Inst1 ejecuto correctamente
+[INFO] 11:51:28:140 coordinador/(7765:7820): La Inst1 ejecuto correctamente
+[INFO] 11:51:28:391 coordinador/(7765:7820): La Inst2 ejecuto correctamente
+[INFO] 11:51:28:643 coordinador/(7765:7820): La Inst1 ejecuto correctamente
+[INFO] 11:51:28:896 coordinador/(7765:7820): La Inst2 ejecuto correctamente
+[INFO] 11:51:29:149 coordinador/(7765:7820): La Inst1 ejecuto correctamente
+[INFO] 11:51:50:230 coordinador/(7765:7823): El ESI 6 hizo un SET sobre la clave bebida1 con valor: cerveza
+[INFO] 11:51:50:231 coordinador/(7765:7823): La Inst2 ejecuto correctamente
+[INFO] 11:51:50:519 coordinador/(7765:7823): El ESI 6 hizo un SET sobre la clave bebida2 con valor: fernet
+[INFO] 11:51:50:519 coordinador/(7765:7823): La Inst1 ejecuto correctamente
+[INFO] 11:51:50:807 coordinador/(7765:7823): El ESI 6 hizo un SET sobre la clave bebida3 con valor: cocacola
+[INFO] 11:51:50:808 coordinador/(7765:7823): La Inst2 ejecuto correctamente
+[INFO] 11:51:51:95 coordinador/(7765:7823): El ESI 6 hizo un SET sobre la clave bebida4 con valor: smirnoff
+[INFO] 11:51:51:95 coordinador/(7765:7823): La Inst1 ejecuto correctamente
+[INFO] 11:51:51:383 coordinador/(7765:7823): El ESI 6 hizo un SET sobre la clave bebida5 con valor: whisky
+[INFO] 11:51:51:384 coordinador/(7765:7823): La Inst2 ejecuto correctamente
+[INFO] 11:51:51:670 coordinador/(7765:7823): El ESI 6 hizo un SET sobre la clave bebida6 con valor: ron
+[INFO] 11:51:51:671 coordinador/(7765:7823): La Inst1 ejecuto correctamente
+[INFO] 11:51:51:958 coordinador/(7765:7823): El ESI 6 hizo un SET sobre la clave bebida7 con valor: gin
+[INFO] 11:51:51:959 coordinador/(7765:7823): La Inst2 ejecuto correctamente
+[INFO] 11:51:52:246 coordinador/(7765:7823): El ESI 6 hizo un SET sobre la clave bebida8 con valor: gancia
+[INFO] 11:51:52:246 coordinador/(7765:7823): La Inst1 ejecuto correctamente
+[INFO] 11:51:52:536 coordinador/(7765:7823): El ESI 6 hizo un SET sobre la clave bebida9 con valor: sprite
+[INFO] 11:51:52:537 coordinador/(7765:7823): La Inst2 ejecuto correctamente
+[INFO] 11:51:52:822 coordinador/(7765:7823): El ESI 6 hizo un SET sobre la clave bebida10 con valor: tequila
+[INFO] 11:51:52:823 coordinador/(7765:7823): La Inst1 ejecuto correctamente
+[INFO] 11:51:53:110 coordinador/(7765:7823): El ESI 6 hizo un SET sobre la clave bebida11 con valor: cachaza
+[INFO] 11:51:53:111 coordinador/(7765:7823): La Inst2 ejecuto correctamente
+[INFO] 11:51:53:399 coordinador/(7765:7823): El ESI 6 hizo un SET sobre la clave bebida12 con valor: caña
+[INFO] 11:51:53:399 coordinador/(7765:7823): La Inst1 ejecuto correctamente
+[INFO] 11:51:53:687 coordinador/(7765:7823): El ESI 6 hizo un SET sobre la clave bebida13 con valor: vinoespumante
+[INFO] 11:51:53:688 coordinador/(7765:7823): La Inst2 ejecuto correctamente
+[INFO] 11:51:53:974 coordinador/(7765:7823): El ESI 6 hizo un SET sobre la clave bebida14 con valor: speed
+[INFO] 11:51:53:975 coordinador/(7765:7823): La Inst1 ejecuto correctamente
+[INFO] 11:51:54:262 coordinador/(7765:7823): El ESI 6 hizo un SET sobre la clave bebida15 con valor: agua
+[INFO] 11:51:54:263 coordinador/(7765:7823): La Inst2 ejecuto correctamente
+[INFO] 11:53:04:579 coordinador/(7914:7914): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 11:53:04:580 coordinador/(7914:7914): PUERTO_ESCUCHA: 9035
+[INFO] 11:53:04:580 coordinador/(7914:7914): PUERTO_PLANIF: 9034
+[INFO] 11:53:04:580 coordinador/(7914:7914): IP_PLANIF: 127.0.0.1
+[INFO] 11:53:04:580 coordinador/(7914:7914): ALGORITMO_DISTRIBUCION: EQ
+[INFO] 11:53:04:580 coordinador/(7914:7914): CANTIDAD_ENTRADAS: 50
+[INFO] 11:53:04:580 coordinador/(7914:7914): TAMANIO_ENTRADA: 50
+[INFO] 11:53:04:580 coordinador/(7914:7914): RETARDO: 250
+[INFO] 11:53:07:10 coordinador/(7914:7914): Conectado con planificador
+[INFO] 11:53:07:10 coordinador/(7914:7922): Se creo un hilo con rutina instancia
+[INFO] 11:53:07:10 coordinador/(7914:7922): Se creo una nueva instancia. Nombre: Inst1. Socket: 5
+[INFO] 11:53:07:10 coordinador/(7914:7922): Se conecto la Inst1
+[INFO] 11:53:07:672 coordinador/(7914:7926): Se creo un hilo con rutina instancia
+[INFO] 11:53:07:673 coordinador/(7914:7926): Se creo una nueva instancia. Nombre: Inst2. Socket: 8
+[INFO] 11:53:07:673 coordinador/(7914:7926): Se conecto la Inst2
+[INFO] 11:53:11:619 coordinador/(7914:7929): Se ha creado un hilo con rutina ESI
+[INFO] 11:53:11:890 coordinador/(7914:7929): El ESI 1 hizo un GET de la clave sony:consola:ps1
+[INFO] 11:53:11:951 coordinador/(7914:7932): Se ha creado un hilo con rutina ESI
+[INFO] 11:53:12:140 coordinador/(7914:7929): El ESI 1 hizo un GET de la clave sony:consola:ps2
+[INFO] 11:53:12:347 coordinador/(7914:7935): Se ha creado un hilo con rutina ESI
+[INFO] 11:53:12:391 coordinador/(7914:7929): El ESI 1 hizo un GET de la clave sony:consola:ps3
+[INFO] 11:53:12:643 coordinador/(7914:7929): El ESI 1 hizo un GET de la clave sony:consola:ps4
+[INFO] 11:53:12:785 coordinador/(7914:7938): Se ha creado un hilo con rutina ESI
+[INFO] 11:53:12:894 coordinador/(7914:7929): El ESI 1 hizo un GET de la clave microsoft:consola:xbox
+[INFO] 11:53:13:144 coordinador/(7914:7929): El ESI 1 hizo un GET de la clave microsoft:consola:xbox360
+[INFO] 11:53:13:395 coordinador/(7914:7929): El ESI 1 hizo un GET de la clave microsoft:consola:xboxone
+[INFO] 11:53:13:647 coordinador/(7914:7929): El ESI 1 hizo un GET de la clave nintendo:consola:nes
+[INFO] 11:53:13:899 coordinador/(7914:7929): El ESI 1 hizo un GET de la clave nintendo:consola:snes
+[INFO] 11:53:14:151 coordinador/(7914:7929): El ESI 1 hizo un GET de la clave nintendo:consola:nintendo64
+[INFO] 11:53:14:402 coordinador/(7914:7929): El ESI 1 hizo un GET de la clave nintendo:consola:gamecube
+[INFO] 11:53:14:653 coordinador/(7914:7929): El ESI 1 hizo un GET de la clave nintendo:consola:wii
+[INFO] 11:53:14:904 coordinador/(7914:7929): El ESI 1 hizo un GET de la clave nintendo:consola:wiiu
+[INFO] 11:53:15:156 coordinador/(7914:7929): El ESI 1 hizo un GET de la clave nintendo:consola:switch
+[INFO] 11:53:15:408 coordinador/(7914:7929): El ESI 1 hizo un SET sobre la clave nintendo:consola:nes con valor: Mario
+[INFO] 11:53:15:409 coordinador/(7914:7929): La Inst1 ejecuto correctamente
+[INFO] 11:53:15:699 coordinador/(7914:7929): El ESI 1 hizo un SET sobre la clave nintendo:consola:snes con valor: SuperMario
+[INFO] 11:53:15:700 coordinador/(7914:7929): La Inst2 ejecuto correctamente
+[INFO] 11:53:15:986 coordinador/(7914:7929): El ESI 1 hizo un SET sobre la clave nintendo:consola:nintendo64 con valor: Mario64
+[INFO] 11:53:15:987 coordinador/(7914:7929): La Inst1 ejecuto correctamente
+[INFO] 11:53:16:274 coordinador/(7914:7929): El ESI 1 hizo un SET sobre la clave nintendo:consola:gamecube con valor: Mario
+[INFO] 11:53:16:274 coordinador/(7914:7929): La Inst2 ejecuto correctamente
+[INFO] 11:53:16:562 coordinador/(7914:7929): El ESI 1 hizo un SET sobre la clave nintendo:consola:wii con valor: MarioGalaxy
+[INFO] 11:53:16:563 coordinador/(7914:7929): La Inst1 ejecuto correctamente
+[INFO] 11:53:16:852 coordinador/(7914:7929): El ESI 1 hizo un SET sobre la clave nintendo:consola:wiiu con valor: RIP
+[INFO] 11:53:16:853 coordinador/(7914:7929): La Inst2 ejecuto correctamente
+[INFO] 11:53:17:142 coordinador/(7914:7929): El ESI 1 hizo un SET sobre la clave nintendo:consola:switch con valor: MarioOddysey
+[INFO] 11:53:17:142 coordinador/(7914:7929): La Inst1 ejecuto correctamente
+[INFO] 11:53:17:430 coordinador/(7914:7929): El ESI 1 hizo un SET sobre la clave sony:consola:ps1 con valor: FinalFantasy
+[INFO] 11:53:17:431 coordinador/(7914:7929): La Inst2 ejecuto correctamente
+[INFO] 11:53:17:718 coordinador/(7914:7929): El ESI 1 hizo un SET sobre la clave sony:consola:ps2 con valor: GodOfWar
+[INFO] 11:53:17:719 coordinador/(7914:7929): La Inst1 ejecuto correctamente
+[INFO] 11:53:18:6 coordinador/(7914:7929): El ESI 1 hizo un SET sobre la clave sony:consola:ps3 con valor: TLOU
+[INFO] 11:53:18:7 coordinador/(7914:7929): La Inst2 ejecuto correctamente
+[INFO] 11:53:18:294 coordinador/(7914:7929): El ESI 1 hizo un SET sobre la clave sony:consola:ps4 con valor: Bloodborne
+[INFO] 11:53:18:295 coordinador/(7914:7929): La Inst1 ejecuto correctamente
+[INFO] 11:53:18:582 coordinador/(7914:7929): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox con valor: Halo
+[INFO] 11:53:18:583 coordinador/(7914:7929): La Inst2 ejecuto correctamente
+[INFO] 11:53:18:871 coordinador/(7914:7929): El ESI 1 hizo un SET sobre la clave microsoft:consola:xbox360 con valor: Halo
+[INFO] 11:53:18:872 coordinador/(7914:7929): La Inst1 ejecuto correctamente
+[INFO] 11:53:19:158 coordinador/(7914:7929): El ESI 1 hizo un SET sobre la clave microsoft:consola:xboxone con valor: Halo
+[INFO] 11:53:19:159 coordinador/(7914:7929): La Inst2 ejecuto correctamente
+[INFO] 11:53:22:928 coordinador/(7914:7932): La Inst1 ejecuto correctamente
+[INFO] 11:53:23:215 coordinador/(7914:7932): La Inst2 ejecuto correctamente
+[INFO] 11:53:23:503 coordinador/(7914:7932): La Inst1 ejecuto correctamente
+[INFO] 11:53:23:791 coordinador/(7914:7932): La Inst2 ejecuto correctamente
+[INFO] 11:53:24:79 coordinador/(7914:7932): La Inst1 ejecuto correctamente
+[INFO] 11:53:24:367 coordinador/(7914:7932): La Inst1 ejecuto correctamente
+[INFO] 11:53:24:655 coordinador/(7914:7932): La Inst2 ejecuto correctamente
+[INFO] 11:53:24:944 coordinador/(7914:7932): La Inst1 ejecuto correctamente
+[INFO] 11:53:25:231 coordinador/(7914:7932): La Inst2 ejecuto correctamente
+[INFO] 11:53:25:520 coordinador/(7914:7932): La Inst1 ejecuto correctamente
+[INFO] 11:53:25:809 coordinador/(7914:7932): La Inst1 ejecuto correctamente
+[INFO] 11:53:26:96 coordinador/(7914:7932): La Inst2 ejecuto correctamente
+[INFO] 11:53:26:384 coordinador/(7914:7932): La Inst2 ejecuto correctamente
+[INFO] 11:53:26:671 coordinador/(7914:7932): La Inst1 ejecuto correctamente
+[INFO] 11:53:26:959 coordinador/(7914:7932): La Inst1 ejecuto correctamente
+[INFO] 11:53:27:247 coordinador/(7914:7932): La Inst2 ejecuto correctamente
+[INFO] 11:53:27:535 coordinador/(7914:7932): La Inst2 ejecuto correctamente
+[INFO] 11:53:27:824 coordinador/(7914:7932): La Inst1 ejecuto correctamente
+[INFO] 11:53:28:111 coordinador/(7914:7932): La Inst2 ejecuto correctamente
+[INFO] 11:53:28:398 coordinador/(7914:7932): La Inst1 ejecuto correctamente
+[INFO] 11:53:28:687 coordinador/(7914:7938): El ESI 4 hizo un GET de la clave bebida1
+[INFO] 11:53:28:937 coordinador/(7914:7938): El ESI 4 hizo un GET de la clave bebida10
+[INFO] 11:53:29:188 coordinador/(7914:7938): El ESI 4 hizo un GET de la clave bebida11
+[INFO] 11:53:29:440 coordinador/(7914:7938): El ESI 4 hizo un GET de la clave bebida12
+[INFO] 11:55:05:915 coordinador/(7990:7990): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 11:55:05:915 coordinador/(7990:7990): PUERTO_ESCUCHA: 9035
+[INFO] 11:55:05:915 coordinador/(7990:7990): PUERTO_PLANIF: 9034
+[INFO] 11:55:05:915 coordinador/(7990:7990): IP_PLANIF: 127.0.0.1
+[INFO] 11:55:05:915 coordinador/(7990:7990): ALGORITMO_DISTRIBUCION: KE
+[INFO] 11:55:05:915 coordinador/(7990:7990): CANTIDAD_ENTRADAS: 20
+[INFO] 11:55:05:915 coordinador/(7990:7990): TAMANIO_ENTRADA: 10
+[INFO] 11:55:05:915 coordinador/(7990:7990): RETARDO: 250
+[INFO] 11:55:15:567 coordinador/(7990:7990): Conectado con planificador
+[INFO] 11:55:15:567 coordinador/(7990:7998): Se creo un hilo con rutina instancia
+[INFO] 11:55:15:570 coordinador/(7990:7998): Se creo una nueva instancia. Nombre: Inst1. Socket: 5
+[INFO] 11:55:15:570 coordinador/(7990:7998): Se conecto la Inst1
+[INFO] 11:55:24:145 coordinador/(7990:8002): Se creo un hilo con rutina instancia
+[INFO] 11:55:24:147 coordinador/(7990:8002): Se creo una nueva instancia. Nombre: Inst2. Socket: 8
+[INFO] 11:55:24:147 coordinador/(7990:8002): Se conecto la Inst2
+[INFO] 11:56:08:836 coordinador/(8006:8006): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 11:56:08:836 coordinador/(8006:8006): PUERTO_ESCUCHA: 9035
+[INFO] 11:56:08:836 coordinador/(8006:8006): PUERTO_PLANIF: 9034
+[INFO] 11:56:08:836 coordinador/(8006:8006): IP_PLANIF: 127.0.0.1
+[INFO] 11:56:08:836 coordinador/(8006:8006): ALGORITMO_DISTRIBUCION: KE
+[INFO] 11:56:08:836 coordinador/(8006:8006): CANTIDAD_ENTRADAS: 20
+[INFO] 11:56:08:836 coordinador/(8006:8006): TAMANIO_ENTRADA: 10
+[INFO] 11:56:08:836 coordinador/(8006:8006): RETARDO: 250
+[INFO] 11:56:31:260 coordinador/(8006:8006): Conectado con planificador
+[INFO] 11:56:31:260 coordinador/(8006:8021): Se creo un hilo con rutina instancia
+[INFO] 11:56:31:261 coordinador/(8006:8021): Se creo una nueva instancia. Nombre: Inst1. Socket: 5
+[INFO] 11:56:31:261 coordinador/(8006:8021): Se conecto la Inst1
+[INFO] 11:56:31:773 coordinador/(8006:8025): Se creo un hilo con rutina instancia
+[INFO] 11:56:31:773 coordinador/(8006:8025): Se creo una nueva instancia. Nombre: Inst2. Socket: 8
+[INFO] 11:56:31:773 coordinador/(8006:8025): Se conecto la Inst2
+[INFO] 11:56:34:988 coordinador/(8006:8028): Se ha creado un hilo con rutina ESI
+[INFO] 11:56:35:238 coordinador/(8006:8028): El ESI 1 hizo un GET de la clave bebida1
+[INFO] 11:56:35:347 coordinador/(8006:8031): Se ha creado un hilo con rutina ESI
+[INFO] 11:56:35:489 coordinador/(8006:8028): El ESI 1 hizo un GET de la clave bebida10
+[INFO] 11:56:35:723 coordinador/(8006:8034): Se ha creado un hilo con rutina ESI
+[INFO] 11:56:35:740 coordinador/(8006:8028): El ESI 1 hizo un GET de la clave bebida11
+[INFO] 11:56:35:992 coordinador/(8006:8028): El ESI 1 hizo un GET de la clave bebida12
+[INFO] 11:56:36:163 coordinador/(8006:8037): Se ha creado un hilo con rutina ESI
+[INFO] 11:56:36:243 coordinador/(8006:8028): El ESI 1 hizo un GET de la clave bebida13
+[INFO] 11:56:36:494 coordinador/(8006:8028): El ESI 1 hizo un GET de la clave bebida14
+[INFO] 11:56:36:746 coordinador/(8006:8028): El ESI 1 hizo un GET de la clave bebida15
+[INFO] 11:56:36:998 coordinador/(8006:8028): El ESI 1 hizo un GET de la clave bebida2
+[INFO] 11:56:37:250 coordinador/(8006:8028): El ESI 1 hizo un GET de la clave bebida3
+[INFO] 11:56:37:501 coordinador/(8006:8028): El ESI 1 hizo un GET de la clave bebida4
+[INFO] 11:56:37:752 coordinador/(8006:8028): El ESI 1 hizo un GET de la clave bebida5
+[INFO] 11:56:38:3 coordinador/(8006:8028): El ESI 1 hizo un GET de la clave bebida6
+[INFO] 11:56:38:255 coordinador/(8006:8028): El ESI 1 hizo un GET de la clave bebida7
+[INFO] 11:56:38:506 coordinador/(8006:8028): El ESI 1 hizo un GET de la clave bebida8
+[INFO] 11:56:38:758 coordinador/(8006:8028): El ESI 1 hizo un GET de la clave bebida9
+[INFO] 11:56:39:10 coordinador/(8006:8028): El ESI 1 hizo un SET sobre la clave bebida1 con valor: cerveza
+[INFO] 11:56:39:10 coordinador/(8006:8028): La Inst1 ejecuto correctamente
+[INFO] 11:56:39:299 coordinador/(8006:8028): El ESI 1 hizo un SET sobre la clave bebida2 con valor: fernet
+[INFO] 11:56:39:300 coordinador/(8006:8028): La Inst1 ejecuto correctamente
+[INFO] 11:56:39:586 coordinador/(8006:8028): El ESI 1 hizo un SET sobre la clave bebida3 con valor: cocacola
+[INFO] 11:56:39:587 coordinador/(8006:8028): La Inst1 ejecuto correctamente
+[INFO] 11:56:39:875 coordinador/(8006:8028): El ESI 1 hizo un SET sobre la clave bebida4 con valor: smirnoff
+[INFO] 11:56:39:875 coordinador/(8006:8028): La Inst1 ejecuto correctamente
+[INFO] 11:56:40:163 coordinador/(8006:8028): El ESI 1 hizo un SET sobre la clave bebida5 con valor: whisky
+[INFO] 11:56:40:164 coordinador/(8006:8028): La Inst1 ejecuto correctamente
+[INFO] 11:56:40:450 coordinador/(8006:8028): El ESI 1 hizo un SET sobre la clave bebida6 con valor: ron
+[INFO] 11:56:40:451 coordinador/(8006:8028): La Inst1 ejecuto correctamente
+[INFO] 11:56:40:738 coordinador/(8006:8028): El ESI 1 hizo un SET sobre la clave bebida7 con valor: gin
+[INFO] 11:56:40:739 coordinador/(8006:8028): La Inst1 ejecuto correctamente
+[INFO] 11:56:41:27 coordinador/(8006:8028): El ESI 1 hizo un SET sobre la clave bebida8 con valor: gancia
+[INFO] 11:56:41:27 coordinador/(8006:8028): La Inst1 ejecuto correctamente
+[INFO] 11:56:41:314 coordinador/(8006:8028): El ESI 1 hizo un SET sobre la clave bebida9 con valor: sprite
+[INFO] 11:56:41:315 coordinador/(8006:8028): La Inst1 ejecuto correctamente
+[INFO] 11:56:41:602 coordinador/(8006:8028): El ESI 1 hizo un SET sobre la clave bebida10 con valor: tequila
+[INFO] 11:56:41:603 coordinador/(8006:8028): La Inst1 ejecuto correctamente
+[INFO] 11:56:41:892 coordinador/(8006:8028): El ESI 1 hizo un SET sobre la clave bebida11 con valor: cachaza
+[INFO] 11:56:41:892 coordinador/(8006:8028): La Inst1 ejecuto correctamente
+[INFO] 11:56:42:179 coordinador/(8006:8028): El ESI 1 hizo un SET sobre la clave bebida12 con valor: caña
+[INFO] 11:56:42:179 coordinador/(8006:8028): La Inst1 ejecuto correctamente
+[INFO] 11:56:42:467 coordinador/(8006:8028): El ESI 1 hizo un SET sobre la clave bebida13 con valor: vinoespumante
+[INFO] 11:56:42:468 coordinador/(8006:8028): La Inst1 ejecuto correctamente
+[INFO] 11:56:42:754 coordinador/(8006:8028): El ESI 1 hizo un SET sobre la clave bebida14 con valor: speed
+[INFO] 11:56:42:755 coordinador/(8006:8028): La Inst1 ejecuto correctamente
+[INFO] 11:56:43:42 coordinador/(8006:8028): El ESI 1 hizo un SET sobre la clave bebida15 con valor: agua
+[INFO] 11:56:43:43 coordinador/(8006:8028): La Inst1 ejecuto correctamente
+[INFO] 11:56:43:331 coordinador/(8006:8031): El ESI 2 hizo un GET de la clave platoprincipal:ingrediente5
+[INFO] 11:56:43:583 coordinador/(8006:8031): El ESI 2 hizo un GET de la clave platoprincipal:ingrediente4
+[INFO] 11:56:43:834 coordinador/(8006:8031): El ESI 2 hizo un GET de la clave platoprincipal:ingrediente3
+[INFO] 11:56:44:85 coordinador/(8006:8031): El ESI 2 hizo un GET de la clave platoprincipal:ingrediente2
+[INFO] 11:56:44:336 coordinador/(8006:8031): El ESI 2 hizo un GET de la clave platoprincipal:ingrediente1
+[INFO] 11:56:44:588 coordinador/(8006:8031): El ESI 2 hizo un SET sobre la clave platoprincipal:ingrediente1 con valor: milanesadecarne
+[INFO] 11:56:44:589 coordinador/(8006:8031): La Inst2 ejecuto correctamente
+[INFO] 11:56:44:875 coordinador/(8006:8031): El ESI 2 hizo un SET sobre la clave platoprincipal:ingrediente2 con valor: queso
+[INFO] 11:56:44:876 coordinador/(8006:8031): La Inst2 ejecuto correctamente
+[INFO] 11:56:45:162 coordinador/(8006:8031): El ESI 2 hizo un SET sobre la clave platoprincipal:ingrediente3 con valor: jamon
+[INFO] 11:56:45:163 coordinador/(8006:8031): La Inst2 ejecuto correctamente
+[INFO] 11:56:45:451 coordinador/(8006:8031): El ESI 2 hizo un SET sobre la clave platoprincipal:ingrediente4 con valor: lechuga
+[INFO] 11:56:45:452 coordinador/(8006:8031): La Inst2 ejecuto correctamente
+[INFO] 11:56:45:738 coordinador/(8006:8031): El ESI 2 hizo un SET sobre la clave platoprincipal:ingrediente5 con valor: tomate
+[INFO] 11:56:45:739 coordinador/(8006:8031): La Inst2 ejecuto correctamente
+[INFO] 11:56:46:31 coordinador/(8006:8031): La Inst2 ejecuto correctamente
+[INFO] 11:56:46:283 coordinador/(8006:8031): La Inst2 ejecuto correctamente
+[INFO] 11:56:46:534 coordinador/(8006:8031): La Inst2 ejecuto correctamente
+[INFO] 11:56:46:785 coordinador/(8006:8031): La Inst2 ejecuto correctamente
+[INFO] 11:56:47:37 coordinador/(8006:8031): La Inst2 ejecuto correctamente
+[INFO] 11:56:47:327 coordinador/(8006:8034): El ESI 3 hizo un GET de la clave sony:consola:ps1
+[INFO] 11:56:47:577 coordinador/(8006:8034): El ESI 3 hizo un GET de la clave sony:consola:ps2
+[INFO] 11:56:47:828 coordinador/(8006:8034): El ESI 3 hizo un GET de la clave sony:consola:ps3
+[INFO] 11:56:48:80 coordinador/(8006:8034): El ESI 3 hizo un GET de la clave sony:consola:ps4
+[INFO] 11:56:48:331 coordinador/(8006:8034): El ESI 3 hizo un GET de la clave microsoft:consola:xbox
+[INFO] 11:56:48:583 coordinador/(8006:8034): El ESI 3 hizo un GET de la clave microsoft:consola:xbox360
+[INFO] 11:56:48:835 coordinador/(8006:8034): El ESI 3 hizo un GET de la clave microsoft:consola:xboxone
+[INFO] 11:56:49:86 coordinador/(8006:8034): El ESI 3 hizo un GET de la clave nintendo:consola:nes
+[INFO] 11:56:49:337 coordinador/(8006:8034): El ESI 3 hizo un GET de la clave nintendo:consola:snes
+[INFO] 11:56:49:589 coordinador/(8006:8034): El ESI 3 hizo un GET de la clave nintendo:consola:nintendo64
+[INFO] 11:56:49:840 coordinador/(8006:8034): El ESI 3 hizo un GET de la clave nintendo:consola:gamecube
+[INFO] 11:56:50:92 coordinador/(8006:8034): El ESI 3 hizo un GET de la clave nintendo:consola:wii
+[INFO] 11:56:50:343 coordinador/(8006:8034): El ESI 3 hizo un GET de la clave nintendo:consola:wiiu
+[INFO] 11:56:50:595 coordinador/(8006:8034): El ESI 3 hizo un GET de la clave nintendo:consola:switch
+[INFO] 11:56:50:847 coordinador/(8006:8034): El ESI 3 hizo un SET sobre la clave nintendo:consola:nes con valor: Mario
+[INFO] 11:56:50:847 coordinador/(8006:8034): La Inst2 ejecuto correctamente
+[INFO] 11:56:51:135 coordinador/(8006:8034): El ESI 3 hizo un SET sobre la clave nintendo:consola:snes con valor: SuperMario
+[INFO] 11:56:51:135 coordinador/(8006:8034): La Inst2 ejecuto correctamente
+[INFO] 11:56:51:423 coordinador/(8006:8034): El ESI 3 hizo un SET sobre la clave nintendo:consola:nintendo64 con valor: Mario64
+[INFO] 11:56:51:424 coordinador/(8006:8034): La Inst2 ejecuto correctamente
+[INFO] 11:56:51:710 coordinador/(8006:8034): El ESI 3 hizo un SET sobre la clave nintendo:consola:gamecube con valor: Mario
+[INFO] 11:56:51:711 coordinador/(8006:8034): La Inst2 ejecuto correctamente
+[INFO] 11:56:51:998 coordinador/(8006:8034): El ESI 3 hizo un SET sobre la clave nintendo:consola:wii con valor: MarioGalaxy
+[INFO] 11:56:51:0 coordinador/(8006:8034): La Inst2 ejecuto correctamente
+[INFO] 11:56:52:286 coordinador/(8006:8034): El ESI 3 hizo un SET sobre la clave nintendo:consola:wiiu con valor: RIP
+[INFO] 11:56:52:286 coordinador/(8006:8034): La Inst2 ejecuto correctamente
+[INFO] 11:56:52:575 coordinador/(8006:8034): El ESI 3 hizo un SET sobre la clave nintendo:consola:switch con valor: MarioOddysey
+[INFO] 11:56:52:575 coordinador/(8006:8034): La Inst2 ejecuto correctamente
+[INFO] 11:56:52:862 coordinador/(8006:8034): El ESI 3 hizo un SET sobre la clave sony:consola:ps1 con valor: FinalFantasy
+[INFO] 11:56:52:863 coordinador/(8006:8034): La Inst2 ejecuto correctamente
+[INFO] 11:56:53:151 coordinador/(8006:8034): El ESI 3 hizo un SET sobre la clave sony:consola:ps2 con valor: GodOfWar
+[INFO] 11:56:53:152 coordinador/(8006:8034): La Inst2 ejecuto correctamente
+[INFO] 11:56:53:439 coordinador/(8006:8034): El ESI 3 hizo un SET sobre la clave sony:consola:ps3 con valor: TLOU
+[INFO] 11:56:53:440 coordinador/(8006:8034): La Inst2 ejecuto correctamente
+[INFO] 11:56:53:726 coordinador/(8006:8034): El ESI 3 hizo un SET sobre la clave sony:consola:ps4 con valor: Bloodborne
+[INFO] 11:56:53:727 coordinador/(8006:8034): La Inst2 ejecuto correctamente
+[INFO] 11:56:54:14 coordinador/(8006:8034): El ESI 3 hizo un SET sobre la clave microsoft:consola:xbox con valor: Halo
+[INFO] 11:56:54:14 coordinador/(8006:8034): La Inst1 ejecuto correctamente
+[INFO] 11:56:54:302 coordinador/(8006:8034): El ESI 3 hizo un SET sobre la clave microsoft:consola:xbox360 con valor: Halo
+[INFO] 11:56:54:303 coordinador/(8006:8034): La Inst1 ejecuto correctamente
+[INFO] 11:56:54:591 coordinador/(8006:8034): El ESI 3 hizo un SET sobre la clave microsoft:consola:xboxone con valor: Halo
+[INFO] 11:56:54:592 coordinador/(8006:8034): La Inst1 ejecuto correctamente
+[INFO] 11:57:07:915 coordinador/(8086:8086): Se ha cargado la configuracion inicial del Coordinador:
+[INFO] 11:57:07:915 coordinador/(8086:8086): PUERTO_ESCUCHA: 9035
+[INFO] 11:57:07:915 coordinador/(8086:8086): PUERTO_PLANIF: 9034
+[INFO] 11:57:07:915 coordinador/(8086:8086): IP_PLANIF: 127.0.0.1
+[INFO] 11:57:07:915 coordinador/(8086:8086): ALGORITMO_DISTRIBUCION: KE
+[INFO] 11:57:07:915 coordinador/(8086:8086): CANTIDAD_ENTRADAS: 20
+[INFO] 11:57:07:915 coordinador/(8086:8086): TAMANIO_ENTRADA: 10
+[INFO] 11:57:07:915 coordinador/(8086:8086): RETARDO: 250
+[INFO] 11:57:08:908 coordinador/(8086:8086): Conectado con planificador
+[INFO] 11:57:08:908 coordinador/(8086:8094): Se creo un hilo con rutina instancia
+[INFO] 11:57:08:908 coordinador/(8086:8094): Se creo una nueva instancia. Nombre: Inst1. Socket: 5
+[INFO] 11:57:08:908 coordinador/(8086:8094): Se conecto la Inst1
+[INFO] 11:57:09:459 coordinador/(8086:8098): Se creo un hilo con rutina instancia
+[INFO] 11:57:09:459 coordinador/(8086:8098): Se creo una nueva instancia. Nombre: Inst2. Socket: 8
+[INFO] 11:57:09:459 coordinador/(8086:8098): Se conecto la Inst2
+[INFO] 11:57:11:13 coordinador/(8086:8101): Se ha creado un hilo con rutina ESI
+[INFO] 11:57:11:263 coordinador/(8086:8101): El ESI 1 hizo un GET de la clave bebida1
+[INFO] 11:57:11:403 coordinador/(8086:8104): Se ha creado un hilo con rutina ESI
+[INFO] 11:57:11:514 coordinador/(8086:8101): El ESI 1 hizo un GET de la clave bebida10
+[INFO] 11:57:11:763 coordinador/(8086:8107): Se ha creado un hilo con rutina ESI
+[INFO] 11:57:11:766 coordinador/(8086:8101): El ESI 1 hizo un GET de la clave bebida11
+[INFO] 11:57:12:17 coordinador/(8086:8101): El ESI 1 hizo un GET de la clave bebida12
+[INFO] 11:57:12:233 coordinador/(8086:8110): Se ha creado un hilo con rutina ESI
+[INFO] 11:57:12:267 coordinador/(8086:8101): El ESI 1 hizo un GET de la clave bebida13
+[INFO] 11:57:12:518 coordinador/(8086:8101): El ESI 1 hizo un GET de la clave bebida14
+[INFO] 11:57:12:769 coordinador/(8086:8101): El ESI 1 hizo un GET de la clave bebida15
+[INFO] 11:57:13:21 coordinador/(8086:8101): El ESI 1 hizo un GET de la clave bebida2
+[INFO] 11:57:13:271 coordinador/(8086:8101): El ESI 1 hizo un GET de la clave bebida3
+[INFO] 11:57:13:523 coordinador/(8086:8101): El ESI 1 hizo un GET de la clave bebida4
+[INFO] 11:57:13:773 coordinador/(8086:8101): El ESI 1 hizo un GET de la clave bebida5
+[INFO] 11:57:14:24 coordinador/(8086:8101): El ESI 1 hizo un GET de la clave bebida6
+[INFO] 11:57:14:275 coordinador/(8086:8101): El ESI 1 hizo un GET de la clave bebida7
+[INFO] 11:57:14:526 coordinador/(8086:8101): El ESI 1 hizo un GET de la clave bebida8
+[INFO] 11:57:14:777 coordinador/(8086:8101): El ESI 1 hizo un GET de la clave bebida9
+[INFO] 11:57:15:28 coordinador/(8086:8101): El ESI 1 hizo un SET sobre la clave bebida1 con valor: cerveza
+[INFO] 11:57:15:29 coordinador/(8086:8101): La Inst1 ejecuto correctamente
+[INFO] 11:57:15:319 coordinador/(8086:8101): El ESI 1 hizo un SET sobre la clave bebida2 con valor: fernet
+[INFO] 11:57:15:319 coordinador/(8086:8101): La Inst1 ejecuto correctamente
+[INFO] 11:57:15:606 coordinador/(8086:8101): El ESI 1 hizo un SET sobre la clave bebida3 con valor: cocacola
+[INFO] 11:57:15:607 coordinador/(8086:8101): La Inst1 ejecuto correctamente
+[INFO] 11:57:15:894 coordinador/(8086:8101): El ESI 1 hizo un SET sobre la clave bebida4 con valor: smirnoff
+[INFO] 11:57:15:895 coordinador/(8086:8101): La Inst1 ejecuto correctamente
+[INFO] 11:57:16:183 coordinador/(8086:8101): El ESI 1 hizo un SET sobre la clave bebida5 con valor: whisky
+[INFO] 11:57:16:184 coordinador/(8086:8101): La Inst1 ejecuto correctamente
+[INFO] 11:57:16:471 coordinador/(8086:8101): El ESI 1 hizo un SET sobre la clave bebida6 con valor: ron
+[INFO] 11:57:16:472 coordinador/(8086:8101): La Inst1 ejecuto correctamente
+[INFO] 11:57:16:758 coordinador/(8086:8101): El ESI 1 hizo un SET sobre la clave bebida7 con valor: gin
+[INFO] 11:57:16:758 coordinador/(8086:8101): La Inst1 ejecuto correctamente
+[INFO] 11:57:17:46 coordinador/(8086:8101): El ESI 1 hizo un SET sobre la clave bebida8 con valor: gancia
+[INFO] 11:57:17:47 coordinador/(8086:8101): La Inst1 ejecuto correctamente
+[INFO] 11:57:17:334 coordinador/(8086:8101): El ESI 1 hizo un SET sobre la clave bebida9 con valor: sprite
+[INFO] 11:57:17:335 coordinador/(8086:8101): La Inst1 ejecuto correctamente
+[INFO] 11:57:17:622 coordinador/(8086:8101): El ESI 1 hizo un SET sobre la clave bebida10 con valor: tequila
+[INFO] 11:57:17:623 coordinador/(8086:8101): La Inst1 ejecuto correctamente
+[INFO] 11:57:17:910 coordinador/(8086:8101): El ESI 1 hizo un SET sobre la clave bebida11 con valor: cachaza
+[INFO] 11:57:17:910 coordinador/(8086:8101): La Inst1 ejecuto correctamente
+[INFO] 11:57:18:200 coordinador/(8086:8101): El ESI 1 hizo un SET sobre la clave bebida12 con valor: caña
+[INFO] 11:57:18:200 coordinador/(8086:8101): La Inst1 ejecuto correctamente
+[INFO] 11:57:18:487 coordinador/(8086:8101): El ESI 1 hizo un SET sobre la clave bebida13 con valor: vinoespumante
+[INFO] 11:57:18:487 coordinador/(8086:8101): La Inst1 ejecuto correctamente
+[INFO] 11:57:18:774 coordinador/(8086:8101): El ESI 1 hizo un SET sobre la clave bebida14 con valor: speed
+[INFO] 11:57:18:775 coordinador/(8086:8101): La Inst1 ejecuto correctamente
+[INFO] 11:57:19:62 coordinador/(8086:8101): El ESI 1 hizo un SET sobre la clave bebida15 con valor: agua
+[INFO] 11:57:19:63 coordinador/(8086:8101): La Inst1 ejecuto correctamente
+[INFO] 11:57:19:351 coordinador/(8086:8104): El ESI 2 hizo un GET de la clave platoprincipal:ingrediente5
+[INFO] 11:57:19:602 coordinador/(8086:8104): El ESI 2 hizo un GET de la clave platoprincipal:ingrediente4
+[INFO] 11:57:19:852 coordinador/(8086:8104): El ESI 2 hizo un GET de la clave platoprincipal:ingrediente3
+[INFO] 11:57:20:104 coordinador/(8086:8104): El ESI 2 hizo un GET de la clave platoprincipal:ingrediente2
+[INFO] 11:57:20:355 coordinador/(8086:8104): El ESI 2 hizo un GET de la clave platoprincipal:ingrediente1
+[INFO] 11:57:20:606 coordinador/(8086:8104): El ESI 2 hizo un SET sobre la clave platoprincipal:ingrediente1 con valor: milanesadecarne
+[INFO] 11:57:20:607 coordinador/(8086:8104): La Inst2 ejecuto correctamente
+[INFO] 11:57:20:894 coordinador/(8086:8104): El ESI 2 hizo un SET sobre la clave platoprincipal:ingrediente2 con valor: queso
+[INFO] 11:57:20:895 coordinador/(8086:8104): La Inst2 ejecuto correctamente
+[INFO] 11:57:21:183 coordinador/(8086:8104): El ESI 2 hizo un SET sobre la clave platoprincipal:ingrediente3 con valor: jamon
+[INFO] 11:57:21:184 coordinador/(8086:8104): La Inst2 ejecuto correctamente
+[INFO] 11:57:21:470 coordinador/(8086:8104): El ESI 2 hizo un SET sobre la clave platoprincipal:ingrediente4 con valor: lechuga
+[INFO] 11:57:21:471 coordinador/(8086:8104): El ESI 2 hizo un SET sobre la clave platoprincipal:ingrediente4 con valor: lechuga
+[INFO] 11:57:21:471 coordinador/(8086:8104): La Inst1 ejecuto correctamente
+[INFO] 11:57:21:471 coordinador/(8086:8104): Se desconecto la Inst2
+[INFO] 11:57:21:758 coordinador/(8086:8104): El ESI 2 hizo un SET sobre la clave platoprincipal:ingrediente5 con valor: tomate
+[INFO] 11:57:21:759 coordinador/(8086:8104): La Inst1 ejecuto correctamente
+[INFO] 11:57:22:46 coordinador/(8086:8104): El ESI 2 hizo un SET sobre la clave platoprincipal:ingrediente1 con valor: 
+[INFO] 11:57:22:335 coordinador/(8086:8107): El ESI 3 hizo un GET de la clave sony:consola:ps1
+[INFO] 11:57:22:585 coordinador/(8086:8107): El ESI 3 hizo un GET de la clave sony:consola:ps2
+[INFO] 11:57:22:836 coordinador/(8086:8107): El ESI 3 hizo un GET de la clave sony:consola:ps3
+[INFO] 11:57:23:88 coordinador/(8086:8107): El ESI 3 hizo un GET de la clave sony:consola:ps4
+[INFO] 11:57:23:339 coordinador/(8086:8107): El ESI 3 hizo un GET de la clave microsoft:consola:xbox
+[INFO] 11:57:23:591 coordinador/(8086:8107): El ESI 3 hizo un GET de la clave microsoft:consola:xbox360
+[INFO] 11:57:23:843 coordinador/(8086:8107): El ESI 3 hizo un GET de la clave microsoft:consola:xboxone
+[INFO] 11:57:24:93 coordinador/(8086:8107): El ESI 3 hizo un GET de la clave nintendo:consola:nes
+[INFO] 11:57:24:345 coordinador/(8086:8107): El ESI 3 hizo un GET de la clave nintendo:consola:snes
+[INFO] 11:57:24:597 coordinador/(8086:8107): El ESI 3 hizo un GET de la clave nintendo:consola:nintendo64
+[INFO] 11:57:24:849 coordinador/(8086:8107): El ESI 3 hizo un GET de la clave nintendo:consola:gamecube
+[INFO] 11:57:25:100 coordinador/(8086:8107): El ESI 3 hizo un GET de la clave nintendo:consola:wii
+[INFO] 11:57:25:351 coordinador/(8086:8107): El ESI 3 hizo un GET de la clave nintendo:consola:wiiu
+[INFO] 11:57:25:603 coordinador/(8086:8107): El ESI 3 hizo un GET de la clave nintendo:consola:switch
+[INFO] 11:57:25:855 coordinador/(8086:8107): El ESI 3 hizo un SET sobre la clave nintendo:consola:nes con valor: Mario
+[INFO] 11:57:25:855 coordinador/(8086:8107): La Inst1 ejecuto correctamente
+[INFO] 11:57:26:142 coordinador/(8086:8107): El ESI 3 hizo un SET sobre la clave nintendo:consola:snes con valor: SuperMario
+[INFO] 11:57:26:142 coordinador/(8086:8107): La Inst1 ejecuto correctamente
+[INFO] 11:57:26:431 coordinador/(8086:8107): El ESI 3 hizo un SET sobre la clave nintendo:consola:nintendo64 con valor: Mario64
+[INFO] 11:57:26:431 coordinador/(8086:8107): La Inst1 ejecuto correctamente
+[INFO] 11:57:26:718 coordinador/(8086:8107): El ESI 3 hizo un SET sobre la clave nintendo:consola:gamecube con valor: Mario
+[INFO] 11:57:26:718 coordinador/(8086:8107): La Inst1 ejecuto correctamente
+[INFO] 11:57:27:7 coordinador/(8086:8107): El ESI 3 hizo un SET sobre la clave nintendo:consola:wii con valor: MarioGalaxy
+[INFO] 11:57:27:8 coordinador/(8086:8107): La Inst1 ejecuto correctamente
+[INFO] 11:57:27:294 coordinador/(8086:8107): El ESI 3 hizo un SET sobre la clave nintendo:consola:wiiu con valor: RIP
+[INFO] 11:57:27:295 coordinador/(8086:8107): La Inst1 ejecuto correctamente
+[INFO] 11:57:27:582 coordinador/(8086:8107): El ESI 3 hizo un SET sobre la clave nintendo:consola:switch con valor: MarioOddysey
+[INFO] 11:57:27:582 coordinador/(8086:8107): La Inst1 ejecuto correctamente
+[INFO] 11:57:27:870 coordinador/(8086:8107): El ESI 3 hizo un SET sobre la clave sony:consola:ps1 con valor: FinalFantasy
+[INFO] 11:57:27:871 coordinador/(8086:8107): La Inst1 ejecuto correctamente
+[INFO] 11:57:28:158 coordinador/(8086:8107): El ESI 3 hizo un SET sobre la clave sony:consola:ps2 con valor: GodOfWar
+[INFO] 11:57:28:159 coordinador/(8086:8107): La Inst1 ejecuto correctamente
+[INFO] 11:57:28:446 coordinador/(8086:8107): El ESI 3 hizo un SET sobre la clave sony:consola:ps3 con valor: TLOU
+[INFO] 11:57:28:446 coordinador/(8086:8107): La Inst1 ejecuto correctamente
+[INFO] 11:57:28:734 coordinador/(8086:8107): El ESI 3 hizo un SET sobre la clave sony:consola:ps4 con valor: Bloodborne
+[INFO] 11:57:28:736 coordinador/(8086:8107): La Inst1 ejecuto correctamente
+[INFO] 11:57:29:23 coordinador/(8086:8107): El ESI 3 hizo un SET sobre la clave microsoft:consola:xbox con valor: Halo
+[INFO] 11:57:29:24 coordinador/(8086:8107): La Inst1 ejecuto correctamente
+[INFO] 11:57:29:311 coordinador/(8086:8107): El ESI 3 hizo un SET sobre la clave microsoft:consola:xbox360 con valor: Halo
+[INFO] 11:57:29:311 coordinador/(8086:8107): La Inst1 ejecuto correctamente
+[INFO] 11:57:29:598 coordinador/(8086:8107): El ESI 3 hizo un SET sobre la clave microsoft:consola:xboxone con valor: Halo
+[INFO] 11:57:29:599 coordinador/(8086:8107): La Inst1 ejecuto correctamente

@@ -28,6 +28,7 @@ extern t_dictionary* estimaciones_actuales;
 extern int ultimo_id;
 extern pthread_mutex_t mutex_planificar;
 extern pthread_mutex_t sem_ejecutar;
+extern sem_t contador_esis_disponibles;
 
 void* rutina_planificacion();
 void restar_esis();

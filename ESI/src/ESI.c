@@ -94,8 +94,13 @@ void leer_sentencias(int planificador, int coordinador, char* ruta) {
 
 	while ((leidas = getline(&linea, &largo, script)) != -1) {
 			void* stream;
-			if (recibirMensaje(planificador, &stream) == ejecutar_proxima_sentencia)
+			int accion = recibirMensaje(planificador, &stream);
+			if (accion == ejecutar_proxima_sentencia)
 				printf(GREEN"\nEjecutando: "RESET);
+			else if (accion == terminar_esi) {
+				printf(YELLOW"\nFinalizando..."RESET);
+				exit(0);
+			}
 			else {
 				printf(RED"\nERROR"RESET);
 				fclose(script);

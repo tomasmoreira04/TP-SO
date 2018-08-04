@@ -280,7 +280,9 @@ void matar_esi(char* id) {
 	if (esi != NULL) {
 		ESI* esi = obtener_esi(id_esi);
 		finalizar_esi_ref(esi);
+		avisar(esi->socket_planif, terminar_esi);
 		printf(RED"\n\nSe ha finalizado el ESI %d"RESET, id_esi);
+		sem_post(&contador_esis_disponibles);
 	}
 	else {
 		printf(RED"\nNo existe el ESI %d en ninguna cola ni ejecutando\n"GREEN, id_esi);

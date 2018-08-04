@@ -265,7 +265,8 @@ void* procesar_mensaje_coordinador(void* sock) {
 					//finalizar_esi(id);
 					ESI* esi = obtener_esi(id);
 					finalizar_esi(id);
-					close(esi->socket_planif);
+					//close(esi->socket_planif);
+					avisar(esi->socket_planif, terminar_esi);
 					pthread_mutex_unlock(&respuesta_recibida);
 					free(mensaje);
 					break;
@@ -539,6 +540,9 @@ void finalizar_esi_ref(ESI* esi) {
 		}
 
 		mover_esi(esi, cola_de_finalizados);
+
+		imprimir_colas();
+
 		liberar_recursos(esi);
 		flag_desalojo = 1;
 
@@ -605,7 +609,7 @@ int liberar_clave(char* clave) {
 	pthread_mutex_lock(&operando_claves);
 	if (c != NULL) {
 		ESI* esi_a_desbloquear = list_remove(c->esis_esperando, 0); //el primero en haberse bloqueado, y lo saco
-		if (esi_a_desbloquear != NULL) {
+		if (esi_a_desbloquear != NULL && esi_a_desbloquear->cola_actual != cola_de_finalizados) {
 			desbloquear_esi(esi_a_desbloquear);
 			c->esi_duenio = esi_a_desbloquear;
 			c->bloqueada = 1; //ahora esta bloqueada por ebuscnl esi q taba esprando
