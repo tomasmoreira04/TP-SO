@@ -14,7 +14,7 @@ sudo make install
 echo "Compilando"
 
 
-cd /home/utnso/tp-2018-1c-PMD/ESI/Debug
+cd ESI/Debug
 rm ESI
 make ESI
 
