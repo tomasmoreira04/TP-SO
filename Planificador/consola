@@ -1,13 +1,9 @@
 [32m
 Claves inicialmente bloqueadas:[0m[31m
-postre:ingrediente1[0m[35m
+spoiler2[0m[31m
+principal3[0m[31m
+spoiler3[0m[31m
+principal4[0m[35m
 COORDINADOR [0mconectado en socket [32m5
 [0m
-Nuevo ESI [32m1[0m con [31m17.00[0m de tiempo estimado. Script: [36mESI_Tiramisu[0m[33m
-(GET) de clave[31m postre:ingrediente1[33m, pero se encuentra bloqueada, se bloqueará el [32mESI 1.[0m[32m
-ESI 1[0m agregado a la lista de espera de la clave[35m postre:ingrediente1[0m[32m
-SE HA DESBLOQUEADO EL ESI 1
-[0m
-Clave[31m postre:ingrediente1 [0mliberada. Ahora pertenece a ESI 1[31m
-
-EL COORDINADOR SE HA DESCONECTADO[0m
+Clave[31m principal3 [0mdesbloqueada y libre.

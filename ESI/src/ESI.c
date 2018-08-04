@@ -119,7 +119,7 @@ void leer_sentencias(int planificador, int coordinador, char* ruta) {
 
 				void* asd;
 				int mensaje_coordi = recibirMensaje(coordinador, &asd);
-				int resultado = (int)asd;
+				int resultado = *(int*)asd;
 
 				if (mensaje_coordi != error) {
 					enviarMensaje(planificador, resultado_ejecucion, &resultado, sizeof(resultado));

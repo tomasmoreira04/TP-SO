@@ -6,19 +6,16 @@
 C_SRCS += \
 ../src/Bibliotecas.c \
 ../src/Configuracion.c \
-../src/Semaforo.c \
 ../src/Socket.c 
 
 OBJS += \
 ./src/Bibliotecas.o \
 ./src/Configuracion.o \
-./src/Semaforo.o \
 ./src/Socket.o 
 
 C_DEPS += \
 ./src/Bibliotecas.d \
 ./src/Configuracion.d \
-./src/Semaforo.d \
 ./src/Socket.d 
 
 

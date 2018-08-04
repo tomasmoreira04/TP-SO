@@ -9,9 +9,10 @@ typedef enum { S_GET, S_SET, S_STORE } TipoSentencia;
 typedef struct {
 	int id;
 	float estimacion_anterior; //la inicial esta dada por arch de config
-	int rafagas_totales;
+	int sentencias_totales;
 	int tiempo_esperado; //para hrrn
-	float rafagas_restantes; //para sjf
+	float sentencias_restantes; //para sjf
+	float sentencias_ejecutadas; //para sjf
 	float response_ratio; //para hrrn
 	t_list* cola_actual;
 	int socket_planif;

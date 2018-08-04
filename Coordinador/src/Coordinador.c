@@ -10,7 +10,6 @@
 #include "../../Bibliotecas/src/Configuracion.c"
 #include "../../Bibliotecas/src/Estructuras.h"
 #include "../../Bibliotecas/src/Color.h"
-#include "../../Bibliotecas/src/Semaforo.c"
 #include <errno.h>
 #include <netdb.h>
 #include <pthread.h>
@@ -228,7 +227,7 @@ void realizar_sentencia(t_sentencia sentencia) {
 		sem_wait(&contador_instancias);
 	}
 
-	s_wait(&semaforo_avisando_compactacion);
+	pthread_mutex_lock(&semaforo_avisando_compactacion);
 
 	ultima_sentencia = sentencia; //por si falla la instancia, la vuelvo a hacer con otra
 
@@ -244,7 +243,7 @@ void realizar_sentencia(t_sentencia sentencia) {
 	if (i == 0)
 		sem_post(&contador_instancias);
 
-	s_signal(&semaforo_avisando_compactacion);
+	pthread_mutex_unlock(&semaforo_avisando_compactacion);
 }
 
 void procesar_pedido_instancia(Accion operacion, char* instancia, int esi) {
@@ -270,7 +269,7 @@ void procesar_pedido_instancia(Accion operacion, char* instancia, int esi) {
 
 void reintentar_sentencia(t_sentencia sentencia) {
 	modificar_clave(sentencia.clave, "0"); //la clave queda libre para que la nueva inst la agarre
-	s_signal(&semaforo_avisando_compactacion);
+	pthread_mutex_unlock(&semaforo_avisando_compactacion);
 	printf(GREEN"\n\nReintentando ultima sentencia con otra instancia..."RESET);
 	realizar_sentencia(ultima_sentencia); //vuelvo a intentar con la lista de inst actualizada
 }
@@ -285,7 +284,7 @@ void eliminar_instancia(char* nombre_instancia) {
 }
 
 void* avisar_compactacion() {
-	s_wait(&semaforo_avisando_compactacion);
+	pthread_mutex_lock(&semaforo_avisando_compactacion);
 	t_list* instancias = listaSoloInstancias;
 	int cantidad = list_size(instancias);
 
@@ -300,7 +299,7 @@ void* avisar_compactacion() {
 	printf(RED"\nCOMPACTANDO INSTANCIAS\n"RESET);
 	esperar_compactacion(cantidad);
 	printf(GREEN"\nCOMPACTACION FINALIZADA\n"RESET);
-	s_signal(&semaforo_avisando_compactacion);
+	pthread_mutex_unlock(&semaforo_avisando_compactacion);
 	return NULL;
 }
 
@@ -611,7 +610,10 @@ void* rutina_consulta(void* argumento) {
 			char* clave = malloc(largo);
 			memcpy(clave, stream + sizeof(int) * 2, largo);
 
-			printf("\nEl planificador ha desbloqueado "GREEN"ESI %d"RESET" con clave"RED" %s"RESET, esi, clave);
+			if (esi != 0)
+				printf("\nEl planificador ha desbloqueado "GREEN"ESI %d"RESET" con clave"RED" %s"RESET, esi, clave);
+			else
+				printf("\nEl planificador ha desbloqueado la clave sin ESI"RED" %s"RESET, clave);
 
 			if(!existe_clave(clave)) {
 				char* cero = "0";

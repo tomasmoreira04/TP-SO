@@ -123,18 +123,18 @@ void ejecutar_comando(Operacion comando) {
 
 void pausar_planificacion() {
 	printf(RED"\n\nSE HA PAUSADO LA PLANIFICACION\n\n"RESET);
-	s_wait(&mutex_planificar);
+	pthread_mutex_lock(&mutex_planificar);
 	pausado = 1;
 }
 
 void continuar_planificacion() {
 	printf(GREEN"\n\nSE HA REANUDADO LA PLANIFICACION\n\n"RESET);
-	s_signal(&mutex_planificar);
+	pthread_mutex_unlock(&mutex_planificar);
 	pausado = 0;
-	if (unlock_hecho) {
+	/*if (unlock_hecho) {
 		unlock_hecho = 0;
 		replanificar();
-	}
+	}*/
 }
 
 t_clave* buscar_clave_que_necesita(ESI* esi) {
@@ -256,14 +256,11 @@ void destruir_deadlocks(t_list* bloqueos, t_list* deadlocks) {
 }
 
 void desbloquear_clave(char* clave) {
-	//s_signal(&mutex_planificar);
 	int esi = liberar_clave_consola(clave);
 	if (esi == -1)
 		printf(RED"\nNo se ha podido liberar la clave"CYAN" %s"RESET, clave);
 	unlock_hecho = 1;
 	aviso_get_clave(clave, esi);
-	if (!pausado)
-		replanificar();
 }
 
 void listar_esis_recurso(char* clave) {
@@ -281,11 +278,9 @@ void matar_esi(char* id) {
 	int id_esi = atoi(id);
 	ESI* esi = obtener_esi(id_esi);
 	if (esi != NULL) {
-		s_wait(&sem_ejecutar);
 		ESI* esi = obtener_esi(id_esi);
 		finalizar_esi_ref(esi);
 		printf(RED"\n\nSe ha finalizado el ESI %d"RESET, id_esi);
-		s_signal(&sem_ejecutar);
 	}
 	else {
 		printf(RED"\nNo existe el ESI %d en ninguna cola ni ejecutando\n"GREEN, id_esi);
@@ -364,8 +359,6 @@ char* consultar_simulacion(char* clave) {
 }
 
 void aviso_get_clave(char* clave, int esi) {
-
-	printf("\n%s", clave);
 
 	char* otro = strdup(clave);
 

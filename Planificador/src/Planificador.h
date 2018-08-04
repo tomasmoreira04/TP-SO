@@ -29,6 +29,10 @@ extern int ultimo_id;
 extern pthread_mutex_t mutex_planificar;
 extern pthread_mutex_t sem_ejecutar;
 
+void* rutina_planificacion();
+void restar_esis();
+void imprimir_colas();
+
 void* crear_ventana_output();
 
 //funciones del servidor
@@ -47,12 +51,12 @@ void ejecutar_esi();
 ESI* obtener_esi(int id);
 void bloquear_esi(ESI* esi);
 void desbloquear_esi(ESI* esi);
-t_clave* buscar_clave_bloqueada(const char* clave);
+t_clave* buscar_clave_bloqueada(char* clave);
 int esta_bloqueada(char* clave);
 ESI* primero_llegado();
 int liberar_clave(char* clave);
 void nueva_solicitud_clave(char* clave, ESI* esi);
-void bloquear_clave(const char* clave, ESI* esi);
+void bloquear_clave(char* clave, ESI* esi);
 void liberar_recursos(ESI* esi);
 void finalizar_esi(int id_esi);
 void finalizar_esi_ref(ESI* esi);

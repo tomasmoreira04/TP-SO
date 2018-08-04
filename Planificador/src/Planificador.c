@@ -15,7 +15,6 @@
 #include "../../Bibliotecas/src/Socket.c"
 #include "../../Bibliotecas/src/Configuracion.c"
 #include "../../Bibliotecas/src/Estructuras.h"
-#include "../../Bibliotecas/src/Semaforo.c"
 #include <commons/collections/list.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
@@ -32,7 +31,7 @@ int coordinador_conectado = 0;
 int hay_hilo_coordinador = 0;
 int socket_coordinador;
 
-pthread_t thread_consola, thread_output, thread_coordinador;
+pthread_t thread_consola, thread_output, thread_coordinador, thread_planificar;
 
 FILE* output; //salida en la otra ventanita
 
@@ -46,10 +45,15 @@ pthread_mutex_t mutex_coord_con = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t coord_ok = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t numero_esi = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t num_esis = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t sem_ejecutar = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t operando_claves = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t mutex_planificar = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t sincro_magica = PTHREAD_MUTEX_INITIALIZER;
 
+pthread_mutex_t mutex_flag_desalojo = PTHREAD_MUTEX_INITIALIZER;
+
+pthread_mutex_t respuesta_recibida = PTHREAD_MUTEX_INITIALIZER;
+
+int flag_desalojo = 0;
 
 int main(int argc, char* argv[]) {
 	inicializar_estructuras();
@@ -58,30 +62,52 @@ int main(int argc, char* argv[]) {
 	bloquear_claves_iniciales(config.claves_bloqueadas, config.n_claves);
 	pthread_create(&thread_consola, NULL, iniciar_consola, NULL);
 	pthread_create(&thread_output, NULL, crear_ventana_output, NULL);
+	pthread_create(&thread_planificar, NULL, rutina_planificacion, NULL);
 	ultimo_id = 0;
 	signal(SIGINT, terminar_programa);
 	recibir_conexiones();
 	terminar_programa(0);
 }
 
+int hay_esis() {
+	return list_size(cola_de_listos) > 0 || esi_ejecutando != NULL;
+}
+
+void* rutina_planificacion() {
+	pthread_mutex_unlock(&respuesta_recibida);
+
+	while (1) {
+		pthread_mutex_lock(&respuesta_recibida);
+		pthread_mutex_lock(&mutex_planificar);
+		if (hay_esis()) {
+			ejecutar(flag_desalojo);
+			flag_desalojo = 0;
+		}
+		else pthread_mutex_unlock(&respuesta_recibida);
+		pthread_mutex_unlock(&mutex_planificar);
+	}
+	return NULL;
+}
+
 void imprimir_cola(t_list* cola, char* nombre) {
-	s_wait(&lista_disponible);
-	fprintf(output, "\n\n%s:", nombre);
+	pthread_mutex_lock(&lista_disponible);
+	fprintf(output, YELLOW"\n%s:"RESET, nombre);
 	for (int i = 0; i < list_size(cola); i++) {
 		ESI* esi = list_get(cola, i);
-		fprintf(output, "\nesi %d", esi->id);
+		fprintf(output, "\tesi %d", esi->id);
 	}
-	s_signal(&lista_disponible);
+	pthread_mutex_unlock(&lista_disponible);
 }
 
 void imprimir_colas() {
+	fprintf(output, "\n\n");
 	imprimir_cola(cola_de_listos, "COLA DE LISTOS");
 	imprimir_cola(cola_de_bloqueados, "COLA DE BLOQUEADOS");
 	imprimir_cola(cola_de_finalizados, "COLA DE FINALIZADOS");
-	s_wait(&ejecucion);
+	fprintf(output, GREEN"\nEJECUTANDO:"RESET);
 	if (esi_ejecutando != NULL)
-		fprintf(output, "\nESI ejecutando: %d", esi_ejecutando->id);
-	s_signal(&ejecucion);
+		fprintf(output,"\t%d", esi_ejecutando->id);
+	fprintf(output, "\n\n");
 }
 
 void terminar_programa(int sig) {
@@ -139,11 +165,11 @@ void recibir_conexiones() {
 
 	while (1) {
 		int n = fdmax + 1;
-		s_wait(&fds_disponibles);
+		pthread_mutex_lock(&fds_disponibles);
 		read_fds = master;
 		if (select(n, &read_fds, NULL, NULL, NULL) == -1)
 			exit(1);
-		s_signal(&fds_disponibles);
+		pthread_mutex_unlock(&fds_disponibles);
 
 		for (int i = listener; i < n; i++)
 			if (FD_ISSET(i, &read_fds))
@@ -166,13 +192,13 @@ void recibir_mensajes(int socket, int listener, int socket_coordinador) {
 		crear_hilo(socket_coordinador, coordinador);
 	}
 	else {
-		s_wait(&mutex_coord_con);
+		pthread_mutex_lock(&mutex_coord_con);
 		if (coordinador_conectado == 1) {
-			s_signal(&mutex_coord_con);
+			pthread_mutex_unlock(&mutex_coord_con);
 			FD_CLR(socket, &master);
 			crear_hilo(socket, esi);
 		}
-		s_signal(&mutex_coord_con);
+		pthread_mutex_unlock(&mutex_coord_con);
 
 	}
 }
@@ -183,12 +209,12 @@ void* procesar_mensaje_coordinador(void* sock) {
 	while(1) {
 		void* mensaje;
 		Accion accion = recibirMensaje(coordinador, &mensaje);
-		s_wait(&coord_ok);
+		pthread_mutex_lock(&coord_ok);
 		switch(accion) {
 				case conectar_coord_planif:
-					s_wait(&mutex_coord_con);
+					pthread_mutex_lock(&mutex_coord_con);
 					coordinador_conectado = 1;
-					s_signal(&mutex_coord_con);
+					pthread_mutex_unlock(&mutex_coord_con);
 					break;
 				case sentencia_coordinador: {
 					t_sentencia sentencia = *(t_sentencia*)mensaje;
@@ -209,8 +235,9 @@ void* procesar_mensaje_coordinador(void* sock) {
 				}
 				case terminar_esi: {
 					int id = *(int*)mensaje;
-					printf("\nel coordi me mando a terminar esi %d", id);
+					//printf("\nel coordi me mando a terminar esi %d", id);
 					finalizar_esi(id);
+					pthread_mutex_unlock(&respuesta_recibida);
 					break;
 				}
 				default:
@@ -220,7 +247,7 @@ void* procesar_mensaje_coordinador(void* sock) {
 			fprintf(output, RED"\n\nEL COORDINADOR SE HA DESCONECTADO"RESET);
 			break;
 		}
-		s_signal(&coord_ok);
+		pthread_mutex_unlock(&coord_ok);
 		free(mensaje);
 	}
 	return NULL;
@@ -243,9 +270,11 @@ void* procesar_mensaje_esi(void* sock) {
 			case nuevo_esi:
 				proceso_nuevo(*(t_nuevo_esi*)mensaje, socket);
 				break;
-			case resultado_ejecucion:
-				procesar_resultado(*(int*)mensaje);
+			case resultado_ejecucion: {
+				int muerte = *(int*)mensaje;
+				procesar_resultado(muerte);
 				break;
+				}
 			default:
 				break;
 		}
@@ -272,16 +301,14 @@ void crear_hilo(int nuevo_socket, Modulo modulo) {
 		pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 		pthread_create (&hilo ,&attr, procesar_mensaje_esi, (void*)nuevo_socket);
 	}
-	else {
+	else
 		pthread_create (&thread_coordinador ,&attr, procesar_mensaje_coordinador, (void *)nuevo_socket);
-	}
 
 	pthread_attr_destroy(&attr);
 }
 
 void procesar_resultado(ResultadoEjecucion resultado) {
 
-	s_wait(&ejecucion);
 	switch (resultado) {
 	case no_exitoso:
 		fprintf(output, RED "\nEl esi no pudo ejecutar la sentencia.\n" RESET);
@@ -293,22 +320,39 @@ void procesar_resultado(ResultadoEjecucion resultado) {
 		fprintf(output, YELLOW "\nEl esi se ha bloqueado.\n" RESET);
 		break;
 	case dudoso:
+	default:
 		break;
 	}
-	s_signal(&ejecucion);
-	ejecutar(false);
+	pthread_mutex_unlock(&respuesta_recibida);
+}
+
+
+char* donde_mierda_esta(int id_esi) {
+	ESI* e = obtener_esi(id_esi);
+	if (e == NULL)
+		return "aun no esta en ninguna cola ni exec";
+	if (e->cola_actual == cola_de_listos)
+		return "cola de listos";
+	if (e->cola_actual == cola_de_bloqueados)
+		return "cola de bloqueados";
+	if (e->cola_actual == cola_de_finalizados)
+		return "cola de finalizados";
+	return "ejecutando";
+}
+
+int puedo_ejecutarlo(ESI* esi) {
+	return esi != NULL && esi->cola_actual != cola_de_bloqueados && esi->cola_actual != cola_de_finalizados;
 }
 
 void ejecutar_esi(ESI* esi) {
-	s_wait(&ejecucion);
 	int id = esi->id;
+
 	enviarMensaje(esi->socket_planif, ejecutar_proxima_sentencia, &id, sizeof(int));
 	esi->cola_actual = NULL;
-	esi_ejecutando = esi;
-	if (config.algoritmo == hrrn)
-		sumar_tiempo_hrrn();
-	s_signal(&ejecucion);
 
+	pthread_mutex_lock(&ejecucion);
+	esi_ejecutando = esi;
+	pthread_mutex_unlock(&ejecucion);
 }
 
 void sumar_tiempo_hrrn() {
@@ -319,10 +363,6 @@ void sumar_tiempo_hrrn() {
 
 void nueva_sentencia(t_sentencia sentencia, int coordinador) {
 	ESI* esi = obtener_esi(sentencia.id_esi);
-	if (esi != NULL)
-		printf("\nobtenido esi %d", esi->id);
-	else
-		printf("\nno pude obtener esi %d", sentencia.id_esi);
 	switch (sentencia.tipo) {
 	case S_GET:
 		GET(sentencia.clave, esi, coordinador);
@@ -338,11 +378,11 @@ void nueva_sentencia(t_sentencia sentencia, int coordinador) {
 
 ESI* obtener_esi(int id) { //al menos una vez voy a tener que filtrar en todo el planificador
 	ESI* esi;
-	s_wait(&lista_disponible);
+	pthread_mutex_lock(&lista_disponible);
 	for (int i = 0; i < list_size(cola_de_listos); i++){
 		esi = list_get(cola_de_listos, i);
 		if (esi->id == id) {
-			s_signal(&lista_disponible);
+			pthread_mutex_unlock(&lista_disponible);
 			esi->cola_actual = cola_de_listos;
 			return esi;
 		}
@@ -350,21 +390,21 @@ ESI* obtener_esi(int id) { //al menos una vez voy a tener que filtrar en todo el
 	for (int i = 0; i < list_size(cola_de_bloqueados); i++){
 		esi = list_get(cola_de_bloqueados, i);
 		if (esi->id == id) {
-			s_signal(&lista_disponible);
+			pthread_mutex_unlock(&lista_disponible);
 			esi->cola_actual = cola_de_bloqueados;
 			return esi;
 		}
 	}
-	s_signal(&lista_disponible);
+	pthread_mutex_unlock(&lista_disponible);
 
-	s_wait(&ejecucion);
+	pthread_mutex_lock(&ejecucion);
 	if (esi_ejecutando != NULL) {
 		if (esi_ejecutando->id == id) {
-			s_signal(&ejecucion);
+			pthread_mutex_unlock(&ejecucion);
 			return esi_ejecutando;
 		}
 	}
-	s_signal(&ejecucion);
+	pthread_mutex_unlock(&ejecucion);
 
 
 	return NULL;
@@ -392,8 +432,10 @@ void error_operacion(ErrorOperacion tipo, char* clave, int esi) {
 }
 
 void GET(char* clave, ESI* esi, int coordinador) {
+
 	if (esta_bloqueada(clave) == 1) {
 		fprintf(output, YELLOW"\n(GET) de clave"RED" %s"YELLOW", pero se encuentra bloqueada, se bloqueará el "GREEN"ESI %d."RESET, clave, esi->id);
+		fprintf(output, "\nsent execut anteriores: %.2f", esi->sentencias_ejecutadas);
 		nueva_solicitud_clave(clave, esi); //va bien esto
 		bloquear_esi(esi);
 		avisar(coordinador, esi_bloqueado);
@@ -401,9 +443,15 @@ void GET(char* clave, ESI* esi, int coordinador) {
 	else {
 		bloquear_clave(clave, esi);
 		fprintf(output, "\n(GET) La clave "GREEN"%s "RESET"se asigno a "GREEN"ESI %d"RESET, clave, esi->id);
-		esi->rafagas_restantes--;
+		fprintf(output, "\nsent execut anteriores: %.2f", esi->sentencias_ejecutadas);
 		avisar(coordinador, sentencia_coordinador);
 	}
+
+	esi->sentencias_ejecutadas++;
+	esi->sentencias_restantes--;
+
+	fprintf(output, "\nsent execut ahora: %.2f", esi->sentencias_ejecutadas);
+
 }
 
 int esi_es_duenio(ESI* esi, t_clave* clave) {
@@ -421,7 +469,8 @@ void SET(char* clave, char* valor, ESI* esi, int coordinador) {
 		else { //puedo hacer set
 			strcpy(c->valor, valor);
 			fprintf(output, "\n(SET) El "GREEN"ESI %d"RESET" ha seteado la clave" GREEN " %s" RESET " con valor" MAGENTA " %s" RESET, esi->id, c->clave, c->valor);
-			esi->rafagas_restantes--;
+			esi->sentencias_restantes--;
+			esi->sentencias_ejecutadas++;
 			avisar(coordinador, sentencia_coordinador);
 		}
 	}
@@ -433,47 +482,50 @@ void SET(char* clave, char* valor, ESI* esi, int coordinador) {
 
 }
 
+int parche_sidoso(ESI* esi) {
+	return esi_ejecutando == esi;
+}
+
 void STORE(char* clave, ESI* esi, int coordinador) { //esi: esi que hace el pedido de store
 	t_clave* c = buscar_clave_bloqueada(clave); //aca adentro hay mutex
 
-	if (c->bloqueada != 1 || !esi_es_duenio(esi, c)) {
-		error_operacion(error_clave_no_bloqueada, clave, esi->id);
-		finalizar_esi_ref(esi);
-		avisar(coordinador, error_sentencia);
-	}
-	else if (c == NULL) {
-		error_operacion(error_clave_no_identificada, clave, esi->id);
-		finalizar_esi_ref(esi);
-		avisar(coordinador, error_sentencia);
-	}
-	else { //puedo hacer store
-		liberar_clave(clave);
-		fprintf(output, "\n(STORE) El"GREEN" ESI %d "RESET"ha liberado la clave" GREEN " %s" RESET, esi->id, c->clave);
-		esi->rafagas_restantes--;
-		avisar(coordinador, sentencia_coordinador);
-	}
+		if (c->bloqueada != 1 || !esi_es_duenio(esi, c)) {
+				error_operacion(error_clave_no_bloqueada, clave, esi->id);
+				finalizar_esi_ref(esi);
+				avisar(coordinador, error_sentencia);
+			}
+			else if (c == NULL) {
+				error_operacion(error_clave_no_identificada, clave, esi->id);
+				finalizar_esi_ref(esi);
+				avisar(coordinador, error_sentencia);
+			}
+			else { //puedo hacer store
+				liberar_clave(clave);
+				fprintf(output, "\n(STORE) El"GREEN" ESI %d "RESET"ha liberado la clave" GREEN " %s" RESET, esi->id, c->clave);
+				esi->sentencias_restantes--;
+				esi->sentencias_ejecutadas++;
+				avisar(coordinador, sentencia_coordinador);
+			}
+
+
 }
 
 void finalizar_esi_ref(ESI* esi) {
 	fprintf(output, YELLOW"\nFinalizando ESI %d."CYAN"(%s)"RESET, esi->id, esi->nombre);
 
 	if (config.algoritmo == sjf_sd || config.algoritmo == sjf_cd) {
-		if (esi->rafagas_restantes > 0)
-			fprintf(output, "\nSobraron" RED " %.2f " RESET "UT de la estimacion.", esi->rafagas_restantes);
-		else if (esi->rafagas_restantes == 0)
+		if (esi->sentencias_restantes > 0)
+			fprintf(output, "\nSobraron" RED " %.2f " RESET "UT de la estimacion.", esi->sentencias_restantes);
+		else if (esi->sentencias_restantes == 0)
 			fprintf(output, "\nNo sobraron UT de la estimacion.");
-		else fprintf(output, "\nFaltaron" RED " %.2f " RESET "UT en la estimacion.", esi->rafagas_restantes * -1);
+		else fprintf(output, "\nFaltaron" RED " %.2f " RESET "UT en la estimacion.", esi->sentencias_restantes * -1);
 	}
 
 	mover_esi(esi, cola_de_finalizados);
-
-	s_wait(&ejecucion);
-	if (esi_ejecutando != NULL)
-		if (esi_ejecutando->id == esi->id)
-			esi_ejecutando = NULL;
-	s_signal(&ejecucion);
 	liberar_recursos(esi);
-	replanificar();
+	//pthread_mutex_lock(&mutex_flag_desalojo);
+	flag_desalojo = 1;
+	//pthread_mutex_unlock(&mutex_flag_desalojo);
 }
 
 void finalizar_esi(int id_esi) {
@@ -502,9 +554,9 @@ t_list* claves_de_esi(ESI* esi) {
 	return claves;
 }
 
-void bloquear_clave(const char* clave, ESI* esi) {
+void bloquear_clave(char* clave, ESI* esi) {
 	t_clave* entrada = buscar_clave_bloqueada(clave);
-	s_wait(&operando_claves);
+	pthread_mutex_lock(&operando_claves);
 	if (entrada == NULL) { //no existe -> la creo
 		entrada = malloc(sizeof(t_clave));
 		entrada->bloqueada = 1;
@@ -518,7 +570,7 @@ void bloquear_clave(const char* clave, ESI* esi) {
 		entrada->bloqueada = 1;
 		entrada->esi_duenio = esi;
 	}
-	s_signal(&operando_claves);
+	pthread_mutex_unlock(&operando_claves);
 }
 
 void nueva_solicitud_clave(char* clave, ESI* esi) {
@@ -532,13 +584,13 @@ void nueva_solicitud_clave(char* clave, ESI* esi) {
 
 int liberar_clave(char* clave) {
 	t_clave* c = buscar_clave_bloqueada(clave);
-	s_wait(&operando_claves);
+	pthread_mutex_lock(&operando_claves);
 	if (c != NULL) {
 		ESI* esi_a_desbloquear = list_remove(c->esis_esperando, 0); //el primero en haberse bloqueado, y lo saco
 		if (esi_a_desbloquear != NULL) {
 			desbloquear_esi(esi_a_desbloquear);
 			c->esi_duenio = esi_a_desbloquear;
-			c->bloqueada = 1; //ahora esta bloqueada por el esi q taba esprando
+			c->bloqueada = 1; //ahora esta bloqueada por ebuscnl esi q taba esprando
 			fprintf(output, "\nClave"RED" %s "RESET"liberada. Ahora pertenece a ESI %d", clave, esi_a_desbloquear->id);
 		}
 		else {
@@ -546,16 +598,22 @@ int liberar_clave(char* clave) {
 			c->esi_duenio = NULL;
 			fprintf(output, "\nClave"RED" %s "RESET"desbloqueada y libre.", clave);
 		}
-		s_signal(&operando_claves);
+		pthread_mutex_unlock(&operando_claves);
 		return 1;
 	}
-	s_signal(&operando_claves);
+	pthread_mutex_unlock(&operando_claves);
 	return 0; //error
 }
 
 void desbloquear_esi_consola(ESI* esi) {
 	mover_esi(esi, cola_de_listos);
-	fprintf(output, GREEN"\nSE HA DESBLOQUEADO EL ESI %d\n"RESET, esi->id);
+	float estimacion = estimar(esi);
+	esi->sentencias_restantes = estimacion;
+	esi->estimacion_anterior = estimacion;
+	esi->sentencias_ejecutadas = 1; //cuenta la toma de la clave al desbloquearse
+	fprintf(output, GREEN"\nSe ha desbloqueado el ESI %d\n"RESET, esi->id);
+	if (config.algoritmo == sjf_sd || config.algoritmo == sjf_cd)
+		fprintf(output, GREEN"con "RED"%.2f"GREEN" sentencias restantes\n", esi->sentencias_restantes);
 }
 
 int liberar_clave_consola(char* clave) {
@@ -567,13 +625,14 @@ int liberar_clave_consola(char* clave) {
 			c->esi_duenio = esi_a_desbloquear;
 			c->bloqueada = 1; //ahora esta bloqueada por el esi q taba esprando
 			fprintf(output, "\nClave"RED" %s "RESET"liberada. Ahora pertenece a ESI %d", clave, esi_a_desbloquear->id);
+			return esi_a_desbloquear->id;
 		}
 		else {
 			c->bloqueada = 0; //queda libre en el aire
 			c->esi_duenio = NULL;
 			fprintf(output, "\nClave"RED" %s "RESET"desbloqueada y libre.", clave);
+			return 0;
 		}
-		return esi_a_desbloquear->id;
 	}
 	return -1;
 }
@@ -585,45 +644,51 @@ int esta_bloqueada(char* clave) {
 	return 0;
 }
 
-t_clave* buscar_clave_bloqueada(const char* clave) {
-	s_wait(&operando_claves);
+t_clave* buscar_clave_bloqueada(char* clave) {
+	pthread_mutex_lock(&operando_claves);
 	for (int i = 0; i < list_size(lista_claves_bloqueadas); i++) {
 		t_clave* c = list_get(lista_claves_bloqueadas, i);
-		if (strcmp(clave, c->clave) == 0) {
-			s_signal(&operando_claves);
-			return c;
+		if (c != NULL) {
+			if (strcmp(clave, c->clave) == 0) {
+				pthread_mutex_unlock(&operando_claves);
+				return c;
+			}
 		}
 	}
-	s_signal(&operando_claves);
+	pthread_mutex_unlock(&operando_claves);
 	return NULL;
 }
 
 
 void bloquear_esi(ESI* esi) {
 	mover_esi(esi, cola_de_bloqueados);
-	s_wait(&ejecucion);
-		if (esi_ejecutando != NULL)
-			if (esi_ejecutando->id == esi->id)
-				esi_ejecutando = NULL;
-	s_signal(&ejecucion);
-	replanificar();
+	//pthread_mutex_lock(&mutex_flag_desalojo);
+	flag_desalojo = 1;
+	//pthread_mutex_unlock(&mutex_flag_desalojo);
 }
 
 void desbloquear_esi(ESI* esi) {
 	ingreso_cola_de_listos(esi);
-	fprintf(output, GREEN"\nSE HA DESBLOQUEADO EL ESI %d\n"RESET, esi->id);
+	//if (config.algoritmo == sjf_cd)
+	float estimacion = estimar(esi);
+	esi->sentencias_restantes = estimacion;
+	esi->estimacion_anterior = estimacion;
+	esi->sentencias_ejecutadas = 1; //cuenta la toma de la clave al desbloquearse
+	fprintf(output, GREEN"\nSe ha desbloqueado el ESI %d\n"RESET, esi->id);
+	if (config.algoritmo == sjf_sd || config.algoritmo == sjf_cd)
+		fprintf(output, GREEN"con "RED"%.2f"GREEN" sentencias restantes\n", esi->sentencias_restantes);
 }
-
-
 
 void proceso_nuevo(t_nuevo_esi esi, int socket) {
 	ESI* nuevo_esi = malloc(sizeof(ESI));
 	nuevo_esi->estimacion_anterior = config.estimacion_inicial;
-	s_wait(&numero_esi);
+	pthread_mutex_lock(&numero_esi);
 	nuevo_esi->id = ++ultimo_id;
-	s_signal(&numero_esi);
-	nuevo_esi->rafagas_totales = esi.rafagas;
-	nuevo_esi->rafagas_restantes = estimar(nuevo_esi);
+	pthread_mutex_unlock(&numero_esi);
+	nuevo_esi->sentencias_totales = esi.rafagas;
+	//nuevo_esi->sentencias_restantes = esi.rafagas;
+	nuevo_esi->sentencias_ejecutadas = 0;
+	nuevo_esi->sentencias_restantes = config.estimacion_inicial;
 	nuevo_esi->tiempo_esperado = 0;
 	nuevo_esi->socket_planif = socket;
 	nuevo_esi->cola_actual = NULL;
@@ -635,20 +700,19 @@ void proceso_nuevo(t_nuevo_esi esi, int socket) {
 void imprimir_nuevo_esi(ESI* esi) {
 	fprintf(output, "\nNuevo ESI " GREEN "%d" RESET " con ", esi->id);
 	if (config.algoritmo == fifo || config.algoritmo == hrrn)
-		fprintf(output, RED"%d"RESET" de rafagas totales.", esi->rafagas_totales);
+		fprintf(output, RED"%d"RESET" de rafagas totales.", esi->sentencias_totales);
 	else //sjf
-		fprintf(output, RED"%.2f"RESET" de tiempo estimado.", esi->rafagas_restantes);
+		fprintf(output, RED"%.2f"RESET" de tiempo estimado.", esi->sentencias_restantes);
 	fprintf(output, " Script: "CYAN"%s"RESET, esi->nombre);
 }
 
 
 void ingreso_cola_de_listos(ESI* esi) {
 	mover_esi(esi, cola_de_listos);
-	replanificar();
-}
 
-void replanificar() {
-	ejecutar(true);
+	//pthread_mutex_lock(&mutex_flag_desalojo);
+	flag_desalojo = 1;
+	//pthread_mutex_unlock(&mutex_flag_desalojo);
 }
 
 int hay_desalojo(AlgoritmoPlanif algoritmo) {
@@ -658,10 +722,6 @@ int hay_desalojo(AlgoritmoPlanif algoritmo) {
 }
 
 void ejecutar(int desalojar) {
-
-	s_wait(&mutex_planificar);
-	s_wait(&sem_ejecutar);
-
 	switch(config.algoritmo) {
 	case fifo:
 		ejecutar_por_fifo();
@@ -676,11 +736,6 @@ void ejecutar(int desalojar) {
 		ejecutar_por_hrrn();
 		break;
 	}
-
-	imprimir_colas();
-
-	s_signal(&sem_ejecutar);
-	s_signal(&mutex_planificar);
 }
 
 int _es_esi(ESI* a, ESI* b) {
@@ -698,7 +753,7 @@ int indice_en_lista(ESI* esi, t_list* lista) {
 
 void mover_esi(ESI* esi, t_list* nueva_lista) {
 
-	s_wait(&lista_disponible);
+	pthread_mutex_lock(&lista_disponible);
 
 	if (esi != NULL) {
 		if (esi->cola_actual != NULL) {
@@ -708,11 +763,15 @@ void mover_esi(ESI* esi, t_list* nueva_lista) {
 		}
 		list_add(nueva_lista, esi);
 		esi->cola_actual = nueva_lista;
-
-
 	}
 
-	s_signal(&lista_disponible);
+	pthread_mutex_unlock(&lista_disponible);
+
+	pthread_mutex_lock(&ejecucion);
+	if (esi_ejecutando != NULL)
+		if (esi_ejecutando->id == esi->id)
+			esi_ejecutando = NULL;
+	pthread_mutex_unlock(&ejecucion);
 
 }
 
@@ -753,52 +812,104 @@ void destruir_estructuras() {
 
 	pthread_cancel(thread_output);
 	pthread_join(thread_output, NULL);
+
+	//pthread_cancel(thread_planificar);
+	//pthread_join(thread_planificar, NULL);
+
 }
+
+
 
 void ejecutar_por_fifo() {
 	ESI* esi;
-	s_wait(&ejecucion);
+	pthread_mutex_lock(&ejecucion);
 	if(esi_ejecutando == NULL)
 		esi = primero_llegado();
 	else
 		esi = esi_ejecutando;
-	s_signal(&ejecucion);
-	if (esi != NULL)
+	pthread_mutex_unlock(&ejecucion);
+	if (esi != NULL && puedo_ejecutarlo(esi))
 		ejecutar_esi(esi);
+}
+
+void imprimir_estimaciones() {
+	fprintf(output, "\n\n");
+	fprintf(output, "\nEstimaciones de esis:");
+	for (int i = 0; i < list_size(cola_de_listos); i++) {
+		ESI* e = list_get(cola_de_listos, i);
+		fprintf(output, GREEN"\nESI %d: "RED"%.2f sentencias restantes"RESET, e->id, e->sentencias_restantes);
+	}
+	for (int i = 0; i < list_size(cola_de_bloqueados); i++) {
+		ESI* e = list_get(cola_de_bloqueados, i);
+		fprintf(output, GREEN"\nESI %d: "RED"%.2f sentencias restantes"RESET, e->id, e->sentencias_restantes);
+	}
+	if (esi_ejecutando != NULL)
+		fprintf(output, GREEN"\nESI %d: "RED"%.2f sentencias restantes"RESET, esi_ejecutando->id, esi_ejecutando->sentencias_restantes);
+	fprintf(output, "\n\n");
 }
 
 void ejecutar_por_sjf(int desalojar) {
 	ESI* esi;
-	s_wait(&ejecucion);
+
+	char* asd = desalojar ? "si" : "no";
+	printf("\nsjf cd, desalojo?: %s", asd);
+	imprimir_estimaciones();
+	imprimir_colas();
+
 	if (esi_ejecutando == NULL || desalojar) {
-		 esi = esi_rafaga_mas_corta();
-		 if (esi_ejecutando != NULL && esi->id != esi_ejecutando->id) //desalojo si es otro
-		 	mover_esi(esi_ejecutando, cola_de_listos);
+		esi = esi_rafaga_mas_corta();
+		if (esi_ejecutando != NULL && esi->id != esi_ejecutando->id) {
+			int esi_anterior = esi_ejecutando->id;
+			mover_esi(esi_ejecutando, cola_de_listos);
+			printf("\ndesalojado esi %d", esi_anterior);
+		}
+		printf("\nayuda");
 	}
 	else
 		esi = esi_ejecutando;
-	s_signal(&ejecucion);
-	if (esi != NULL) {
-		fprintf(output, "\nESI %d" RED " %.2f " RESET "estimacion", esi->id, esi->rafagas_restantes);
+
+	printf("\nmas corto: %d", esi->id);
+
+	if (esi != NULL && puedo_ejecutarlo(esi))
 		ejecutar_esi(esi);
+}
+
+void imprimir_ratios() {
+	fprintf(output, "\n\n");
+	fprintf(output, "\nResponse ratios de esis:");
+	for (int i = 0; i < list_size(cola_de_listos); i++) {
+		ESI* e = list_get(cola_de_listos, i);
+		fprintf(output, GREEN"\nESI %d: "RED"%.2f RR"RESET, e->id, e->response_ratio);
 	}
+	for (int i = 0; i < list_size(cola_de_bloqueados); i++) {
+		ESI* e = list_get(cola_de_bloqueados, i);
+		fprintf(output, GREEN"\nESI %d: "RED"%.2f RR"RESET, e->id,e->response_ratio);
+	}
+	if (esi_ejecutando != NULL)
+		fprintf(output, GREEN"\nESI %d: "RED"%.2f RR"RESET, esi_ejecutando->id, esi_ejecutando->response_ratio);
+	fprintf(output, "\n\n");
 }
 
 void ejecutar_por_hrrn() {
 	ESI* esi;
-	s_wait(&ejecucion);
+	pthread_mutex_lock(&ejecucion);
+
+	calcular_response_ratios();
+	imprimir_ratios();
+	imprimir_colas();
+
 	if (esi_ejecutando == NULL) {
-		s_wait(&lista_disponible); //cambiar a otro semaforo para cola de listos
-
-		calcular_response_ratios();
+		pthread_mutex_lock(&lista_disponible); //cambiar a otro semaforo para cola de listos
 		esi = esi_resp_ratio_mas_alto();
-
-		s_signal(&lista_disponible); //cambiar a otro semaforo para cola de listos
+		pthread_mutex_unlock(&lista_disponible); //cambiar a otro semaforo para cola de listos
 	}
 	else
 		esi = esi_ejecutando;
-	s_signal(&ejecucion);
-	if (esi != NULL)
+	pthread_mutex_unlock(&ejecucion);
+
+	sumar_tiempo_hrrn();
+
+	if (esi != NULL && puedo_ejecutarlo(esi))
 		ejecutar_esi(esi);
 }
 
@@ -806,24 +917,28 @@ void ejecutar_por_hrrn() {
 
 float estimar(ESI* esi) {
 	float a = config.alfa_planif / 100.0;
-	int raf = esi->rafagas_totales;
-	int est = esi->estimacion_anterior;
+	float est = esi->estimacion_anterior;
 
-	return a * raf + (1 - a) * est;
+	printf("Estimando esi %d con est anterior %.2f y sent ejecut %.2f", esi->id, esi->estimacion_anterior, esi->sentencias_ejecutadas);
+
+	return a * esi->sentencias_ejecutadas + (1 - a) * est;
 }
 
 float response_ratio(ESI* esi) {
-	int raf = esi->rafagas_totales;
-	int esp = esi->tiempo_esperado;
-	return (float)(raf + esp)/raf;
+	float rest = esi->sentencias_restantes;
+	float esp = esi->tiempo_esperado;
+	printf("\nCalculando RR de esi %d con S = %.2f y W = %.2f", esi->id, rest, esp);
+	return (float)(rest + esp)/rest;
 }
 
 void calcular_response_ratios() {
-	fprintf(output, GREEN"\nCalculando response ratios...\n"RESET);
 	for (int i = 0; i < list_size(cola_de_listos); i++) {
 		ESI* esi = list_get(cola_de_listos, i);
 		esi->response_ratio = response_ratio(esi);
-		fprintf(output, GREEN"\nESI %d: "RED"%f", esi->id, esi->response_ratio);
+	}
+	for (int i = 0; i < list_size(cola_de_bloqueados); i++) {
+		ESI* esi = list_get(cola_de_bloqueados, i);
+		esi->response_ratio = response_ratio(esi);
 	}
 }
 
@@ -851,30 +966,29 @@ ESI* esi_resp_ratio_mas_alto() {
 }
 
 ESI* esi_rafaga_mas_corta() {
-	s_wait(&lista_disponible);
+	pthread_mutex_lock(&lista_disponible);
+	printf("\nbuscando esi mas corto..");
 	ESI* mas_corto = list_get(cola_de_listos, 0);
 	if (esi_ejecutando != NULL)
 		mas_corto = esi_ejecutando;
-	//int indice = 0;
 	for (int i = 0; i < list_size(cola_de_listos); i++) {
 		ESI* esi = list_get(cola_de_listos, i);
 		if (esi != NULL) {
-			if (esi->rafagas_restantes < mas_corto->rafagas_restantes) {
+			if (esi->sentencias_restantes < mas_corto->sentencias_restantes) {
 				mas_corto = esi;
-				//indice = i;
 			}
 		}
 	}
 
 	if (esi_ejecutando != NULL)
 		if (mas_corto->id == esi_ejecutando->id) {
-			s_signal(&lista_disponible);
+			pthread_mutex_unlock(&lista_disponible);
 			return mas_corto;
 	}
-	s_signal(&lista_disponible);
-	return list_remove(cola_de_listos, indice_en_lista(mas_corto, cola_de_listos));
-	//return list_remove(cola_de_listos, indice);
-
+	ESI* retorno = list_remove(cola_de_listos, indice_en_lista(mas_corto, cola_de_listos));
+	pthread_mutex_unlock(&lista_disponible);
+	printf("\nmachete al machote %d", retorno->id);
+	return retorno;
 }
 
 ESI* primero_llegado() {

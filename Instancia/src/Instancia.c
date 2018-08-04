@@ -14,7 +14,6 @@
 #include "../../Bibliotecas/src/Estructuras.h"
 #include "../../Bibliotecas/src/Socket.c"
 #include "../../Bibliotecas/src/Configuracion.c"
-#include "../../Bibliotecas/src/Semaforo.c"
 #include "Instancia.h"
 
 #include "commons/string.h"
@@ -356,7 +355,7 @@ int* bits_disponibles(t_bitarray* bitarray) {
 
 void* compactacion() {
 
-	s_wait(&semaforo_compactacion);
+	pthread_mutex_lock(&semaforo_compactacion);
 
 	printf(RED"\nCOMPACTANDO...\n"RESET);
 
@@ -372,7 +371,7 @@ void* compactacion() {
 	avisar(socketServer, compactacion_ok);
 	sem_post(&compactacion_espera);
 
-	s_signal(&semaforo_compactacion);
+	pthread_mutex_unlock(&semaforo_compactacion);
 
 	return NULL;
 }
@@ -605,6 +604,7 @@ t_list* reemplazoSegunAlgoritmo(int cantNecesita){
 
 void reemplazarValor(char* clave, char* valor, int tamEnEntradas){
 
+	//t_list* paraReemplazar = reemplazoSegunAlgoritmo(tamEnEntradas - cantEntradasDisp);
 	t_list* paraReemplazar = reemplazoSegunAlgoritmo(tamEnEntradas);
 
 	int i;
