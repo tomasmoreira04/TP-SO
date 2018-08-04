@@ -18,10 +18,6 @@ cd /home/utnso/tp-2018-1c-PMD/ESI/Debug
 rm ESI
 make ESI
 
-cd ../../Bibliotecas/Debug
-rm Bibliotecas
-make Bibliotecas
-
 cd ../../Instancia/Debug
 rm Instancia
 make Instancia
