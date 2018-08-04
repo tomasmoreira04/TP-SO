@@ -152,7 +152,6 @@ void procesar_permiso_planificador(Accion mensaje, t_sentencia sentencia, int so
 	int resultado; //lo mando luego de ejecutar
 	switch (mensaje) {
 		case sentencia_coordinador:
-			printf("el planif me dijo que haga sent con clave %s de esi %d", sentencia.clave, sentencia.id_esi);
 			realizar_sentencia(sentencia);
 			resultado = exitoso;
 			break;

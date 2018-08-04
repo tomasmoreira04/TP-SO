@@ -72,6 +72,8 @@ void bloquear_claves_iniciales(char** claves, int n);
 void copiar_lista_strings(char** destino, char** claves, int n);
 void actualizar_clave(char* clave, char* instancia);
 
+char* string_mostrar_estimacion();
+
 void terminar_programa(int sig);
 void imprimir_orden_finalizacion();
 

@@ -17,6 +17,7 @@ typedef struct {
 	char ip_coordinador[LARGO_IP];
 	char** claves_bloqueadas;
 	int n_claves;
+	int mostrar_estimacion;
 } ConfigPlanificador;
 
 typedef struct {

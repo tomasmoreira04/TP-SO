@@ -326,20 +326,6 @@ void procesar_resultado(ResultadoEjecucion resultado) {
 	pthread_mutex_unlock(&respuesta_recibida);
 }
 
-
-char* donde_mierda_esta(int id_esi) {
-	ESI* e = obtener_esi(id_esi);
-	if (e == NULL)
-		return "aun no esta en ninguna cola ni exec";
-	if (e->cola_actual == cola_de_listos)
-		return "cola de listos";
-	if (e->cola_actual == cola_de_bloqueados)
-		return "cola de bloqueados";
-	if (e->cola_actual == cola_de_finalizados)
-		return "cola de finalizados";
-	return "ejecutando";
-}
-
 int puedo_ejecutarlo(ESI* esi) {
 	return esi != NULL && esi->cola_actual != cola_de_bloqueados && esi->cola_actual != cola_de_finalizados;
 }
@@ -435,7 +421,6 @@ void GET(char* clave, ESI* esi, int coordinador) {
 
 	if (esta_bloqueada(clave) == 1) {
 		fprintf(output, YELLOW"\n(GET) de clave"RED" %s"YELLOW", pero se encuentra bloqueada, se bloqueará el "GREEN"ESI %d."RESET, clave, esi->id);
-		fprintf(output, "\nsent execut anteriores: %.2f", esi->sentencias_ejecutadas);
 		nueva_solicitud_clave(clave, esi); //va bien esto
 		bloquear_esi(esi);
 		avisar(coordinador, esi_bloqueado);
@@ -443,15 +428,11 @@ void GET(char* clave, ESI* esi, int coordinador) {
 	else {
 		bloquear_clave(clave, esi);
 		fprintf(output, "\n(GET) La clave "GREEN"%s "RESET"se asigno a "GREEN"ESI %d"RESET, clave, esi->id);
-		fprintf(output, "\nsent execut anteriores: %.2f", esi->sentencias_ejecutadas);
 		avisar(coordinador, sentencia_coordinador);
 	}
 
 	esi->sentencias_ejecutadas++;
 	esi->sentencias_restantes--;
-
-	fprintf(output, "\nsent execut ahora: %.2f", esi->sentencias_ejecutadas);
-
 }
 
 int esi_es_duenio(ESI* esi, t_clave* clave) {
@@ -662,14 +643,11 @@ t_clave* buscar_clave_bloqueada(char* clave) {
 
 void bloquear_esi(ESI* esi) {
 	mover_esi(esi, cola_de_bloqueados);
-	//pthread_mutex_lock(&mutex_flag_desalojo);
 	flag_desalojo = 1;
-	//pthread_mutex_unlock(&mutex_flag_desalojo);
 }
 
 void desbloquear_esi(ESI* esi) {
 	ingreso_cola_de_listos(esi);
-	//if (config.algoritmo == sjf_cd)
 	float estimacion = estimar(esi);
 	esi->sentencias_restantes = estimacion;
 	esi->estimacion_anterior = estimacion;
@@ -709,10 +687,7 @@ void imprimir_nuevo_esi(ESI* esi) {
 
 void ingreso_cola_de_listos(ESI* esi) {
 	mover_esi(esi, cola_de_listos);
-
-	//pthread_mutex_lock(&mutex_flag_desalojo);
 	flag_desalojo = 1;
-	//pthread_mutex_unlock(&mutex_flag_desalojo);
 }
 
 int hay_desalojo(AlgoritmoPlanif algoritmo) {
@@ -812,10 +787,6 @@ void destruir_estructuras() {
 
 	pthread_cancel(thread_output);
 	pthread_join(thread_output, NULL);
-
-	//pthread_cancel(thread_planificar);
-	//pthread_join(thread_planificar, NULL);
-
 }
 
 
@@ -851,42 +822,41 @@ void imprimir_estimaciones() {
 void ejecutar_por_sjf(int desalojar) {
 	ESI* esi;
 
-	char* asd = desalojar ? "si" : "no";
-	printf("\nsjf cd, desalojo?: %s", asd);
-	imprimir_estimaciones();
-	imprimir_colas();
+	if (config.mostrar_estimacion)
+		imprimir_estimaciones();
 
 	if (esi_ejecutando == NULL || desalojar) {
+		imprimir_estimaciones();
 		esi = esi_rafaga_mas_corta();
 		if (esi_ejecutando != NULL && esi->id != esi_ejecutando->id) {
-			int esi_anterior = esi_ejecutando->id;
 			mover_esi(esi_ejecutando, cola_de_listos);
-			printf("\ndesalojado esi %d", esi_anterior);
 		}
-		printf("\nayuda");
 	}
 	else
 		esi = esi_ejecutando;
-
-	printf("\nmas corto: %d", esi->id);
 
 	if (esi != NULL && puedo_ejecutarlo(esi))
 		ejecutar_esi(esi);
 }
 
+void imprimir_rr_esi(ESI* esi) {
+	if (esi != NULL)
+		fprintf(output, GREEN"\nESI %d: "RED"%.2f RR"RESET"\t(S = %.2f\tW = %.2f)", esi->id, esi->response_ratio, esi->sentencias_restantes, esi->tiempo_esperado);
+}
+
+void imprimir_rr_lista(t_list* lista) {
+	for (int i = 0; i < list_size(lista); i++) {
+		ESI* e = list_get(lista, i);
+		imprimir_rr_esi(e);
+	}
+}
+
 void imprimir_ratios() {
 	fprintf(output, "\n\n");
 	fprintf(output, "\nResponse ratios de esis:");
-	for (int i = 0; i < list_size(cola_de_listos); i++) {
-		ESI* e = list_get(cola_de_listos, i);
-		fprintf(output, GREEN"\nESI %d: "RED"%.2f RR"RESET, e->id, e->response_ratio);
-	}
-	for (int i = 0; i < list_size(cola_de_bloqueados); i++) {
-		ESI* e = list_get(cola_de_bloqueados, i);
-		fprintf(output, GREEN"\nESI %d: "RED"%.2f RR"RESET, e->id,e->response_ratio);
-	}
-	if (esi_ejecutando != NULL)
-		fprintf(output, GREEN"\nESI %d: "RED"%.2f RR"RESET, esi_ejecutando->id, esi_ejecutando->response_ratio);
+	imprimir_rr_lista(cola_de_listos);
+	imprimir_rr_lista(cola_de_bloqueados);
+	imprimir_rr_esi(esi_ejecutando);
 	fprintf(output, "\n\n");
 }
 
@@ -895,8 +865,9 @@ void ejecutar_por_hrrn() {
 	pthread_mutex_lock(&ejecucion);
 
 	calcular_response_ratios();
-	imprimir_ratios();
-	imprimir_colas();
+
+	if (config.mostrar_estimacion)
+		imprimir_ratios();
 
 	if (esi_ejecutando == NULL) {
 		pthread_mutex_lock(&lista_disponible); //cambiar a otro semaforo para cola de listos
@@ -918,16 +889,12 @@ void ejecutar_por_hrrn() {
 float estimar(ESI* esi) {
 	float a = config.alfa_planif / 100.0;
 	float est = esi->estimacion_anterior;
-
-	printf("Estimando esi %d con est anterior %.2f y sent ejecut %.2f", esi->id, esi->estimacion_anterior, esi->sentencias_ejecutadas);
-
 	return a * esi->sentencias_ejecutadas + (1 - a) * est;
 }
 
 float response_ratio(ESI* esi) {
 	float rest = esi->sentencias_restantes;
 	float esp = esi->tiempo_esperado;
-	printf("\nCalculando RR de esi %d con S = %.2f y W = %.2f", esi->id, rest, esp);
 	return (float)(rest + esp)/rest;
 }
 
@@ -961,13 +928,13 @@ ESI* esi_resp_ratio_mas_alto() {
 		fprintf(output, RED"\nNo hay esis listos para calcular RR\n"RESET);
 		return NULL;
 	}
+	imprimir_ratios();
 	fprintf(output, GREEN"\nESI elegido -> "RED"%d\n"RESET, mas_alto->id);
 	return list_remove(cola_de_listos, indice);
 }
 
 ESI* esi_rafaga_mas_corta() {
 	pthread_mutex_lock(&lista_disponible);
-	printf("\nbuscando esi mas corto..");
 	ESI* mas_corto = list_get(cola_de_listos, 0);
 	if (esi_ejecutando != NULL)
 		mas_corto = esi_ejecutando;
@@ -987,7 +954,6 @@ ESI* esi_rafaga_mas_corta() {
 	}
 	ESI* retorno = list_remove(cola_de_listos, indice_en_lista(mas_corto, cola_de_listos));
 	pthread_mutex_unlock(&lista_disponible);
-	printf("\nmachete al machote %d", retorno->id);
 	return retorno;
 }
 
@@ -1009,7 +975,12 @@ void imprimir_configuracion() {
 	printf(GREEN"\n\nConfiguracion cargada con exito:"RESET);
 	printf(GREEN"\nAlgoritmo: "RED"%s", algoritmo(config.algoritmo));
 	printf(GREEN"\nAlfa: "RED"%d", config.alfa_planif);
-	printf(GREEN"\nEstimacion inicial: "RED"%f\n"RESET, config.estimacion_inicial);
+	printf(GREEN"\nEstimacion inicial: "RED"%f"RESET, config.estimacion_inicial);
+	printf(GREEN"\nMostrar est. / resp. ratio: "RED"%s\n"RESET, string_mostrar_estimacion());
+}
+
+char* string_mostrar_estimacion() {
+	return config.mostrar_estimacion ? "SI" : "NO";
 }
 
 char* algoritmo(AlgoritmoPlanif alg) {

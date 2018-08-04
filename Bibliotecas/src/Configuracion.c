@@ -22,7 +22,7 @@ ConfigGlobal cargar_config_global() {
 
 ConfigPlanificador cargar_config_planificador(char* ruta) {
 
-	char* campos[] = { "ESTIMACION_INICIAL", "ALFA_PLANIFICACION", "ALGORITMO_PLANIFICACION", "CLAVES_BLOQUEADAS"};
+	char* campos[] = { "ESTIMACION_INICIAL", "ALFA_PLANIFICACION", "ALGORITMO_PLANIFICACION", "CLAVES_BLOQUEADAS", "MOSTRAR_ESTIMACION"};
 	t_config* config = cargar_archivo(ruta, campos);
 	ConfigPlanificador configuracion;
 	ConfigGlobal global = cargar_config_global();
@@ -35,6 +35,7 @@ ConfigPlanificador cargar_config_planificador(char* ruta) {
 	configuracion.claves_bloqueadas = config_get_array_value(config, "CLAVES_BLOQUEADAS");
 	char* linea_con_claves = config_get_string_value(config, "CLAVES_BLOQUEADAS");
 	configuracion.n_claves = numero_claves(linea_con_claves);
+	configuracion.mostrar_estimacion = procesar_config_estimacion(config_get_string_value(config, "MOSTRAR_ESTIMACION"));
 	config_destroy(config);
 	return configuracion;
 }
@@ -82,6 +83,10 @@ ConfigInstancia cargar_config_inst(char* ruta) {
 }
 
 int procesar_config_storage(char* valor_campo) {
+	return strcmp(valor_campo, "SI") == 0 ? 1 : 0;
+}
+
+int procesar_config_estimacion(char* valor_campo) {
 	return strcmp(valor_campo, "SI") == 0 ? 1 : 0;
 }
 
